@@ -6,10 +6,10 @@
         <div class="account-bg">
             <div class="card-box m-b-0">
                 <div class="text-xs-center m-t-20">
-                    <a class="logo">
-                    <i class="zmdi zmdi-group-work icon-c-logo"></i>
-                    <span>Lumbung Network</span>
-                    </a>
+                    <div class="logo">
+                        <img src="/image/lumbung2.png" style="width: 50px;">
+                    </div>
+                    <h4>Lumbung Network</h4>
                 </div>
                 <div class="m-t-30 m-b-20">
                     <div class="col-xs-12 text-xs-center">
@@ -38,7 +38,7 @@
                         <div class="form-group text-center m-t-30">
                             <input type="hidden" name="type" value="10">
                             <div class="col-xs-12">
-                                <button class="btn btn-success btn-block waves-effect waves-light" type="submit" style="background-color: #333;">Log In</button>
+                                <button class="btn btn-dark btn-block waves-effect waves-light" type="submit" style="background-color: #333;">Log In</button>
                             </div>
                         </div>
                     </form>

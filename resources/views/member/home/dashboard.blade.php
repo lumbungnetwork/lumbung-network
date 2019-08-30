@@ -13,8 +13,8 @@
                             <b> Permintaan order paket (Total {{$dataOrder}}) - </b> <a href="{{ URL::to('/') }}/m/list/order-package" class="label label-primary">link</a>
                         </div>
                     @endif
-                    @if($dataUser->upline_id == null)
-                        @if($dataUser->id > 4)
+                    @if($dataUser->id > 4)
+                        @if($dataUser->upline_id == null)
                             <div class="alert alert-warning" role="alert">
                                 Akun anda belum diplacement, Silahkan Hubungi Sponsor Anda Untuk Placement
                             </div>

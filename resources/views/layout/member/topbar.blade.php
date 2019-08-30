@@ -1,14 +1,14 @@
 <div class="topbar">
     <div class="topbar-left">
         <a class="logo">
-            <span>Lumbung.</span>
+            <span>Lumbung</span>
         </a>
     </div>
     <nav class="navbar navbar-custom">
         <ul class="nav navbar-nav">
             <li class="nav-item">
                 <button class="button-menu-mobile open-left waves-light waves-effect">
-                <i class="zmdi zmdi-menu"></i>
+                <i class="zmdi zmdi-view-headline"></i>
                 </button>
             </li>
         </ul>
