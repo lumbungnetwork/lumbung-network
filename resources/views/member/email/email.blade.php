@@ -199,15 +199,15 @@
                                         <tr>
                                             <td class="hide-for-mobile"  height="150" valign="top" >
                                                 <b>
-                                                <span>Safra</span>
+                                                <span>Lumbung Network</span>
                                                 </b>
                                                 <br>
-                                                <span>Beautiful and Natural</span>
+                                                <span>komunitas konsumen, pemasar dan produsen kebutuhan pokok</span>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td class="hide-for-mobile" style="height:180px; width:140px;">
-                                                <img width="180" height="140"src="https://safra.id/wp-content/uploads/2019/08/Logo-Safra-2.png" alt="large logo" />
+                                                <img width="140" src="https://lumbung.network/wp-content/uploads/2019/08/lmb-logo-dark-rounded@2x-150x150.png" alt="large logo" />
                                             </td>
                                         </tr>
                                     </table>
@@ -285,7 +285,7 @@
                                                 <table cellspacing="0" cellpadding="10" width="100%">
                                                     <tr>
                                                         <td>
-                                                            <b>Welcome to Safra!</b><br>
+                                                            <b>Welcome to Lumbung Network!</b><br>
                                                             We're really excited for you to join our community! 
                                                             <br>
                                                             Silakan login
@@ -298,7 +298,7 @@
                                                             &nbsp;
                                                         </td>
                                                         <td width="150" style="width:150px;">
-                                                            <div style="text-align:center; background-color:#48be19;">
+                                                            <div style="text-align:center; background-color:#97951b;">
                                                                 <!--[if mso]>
                                                                 <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="#" style="height:35px;v-text-anchor:middle;width:150px;" arcsize="8%" stroke="f" fillcolor="#48be19">
                                                                     <w:anchorlock/>
@@ -306,7 +306,7 @@
                                                                 </v:roundrect>
                                                                 <![endif]-->
                                                                 <!--[if !mso]><!-- -->
-                                                                <a href="{{ URL::to('/') }}/member/login">
+                                                                <a href="{{ URL::to('/') }}/area/login">
                                                                     <table cellspacing="0" cellpadding="0" width="100%" style="width:100%">
                                                                         <tr>
                                                                             <td style="background-color:#48be19;border-radius:5px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:16px;line-height:45px;text-align:center;text-decoration:none;width:150px;-webkit-text-size-adjust:none;mso-hide:all;"><span style="color:#ffffff">Login Now!</span></td>

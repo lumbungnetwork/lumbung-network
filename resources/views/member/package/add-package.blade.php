@@ -17,7 +17,7 @@
                 <div class="col-sm-12">
                     <div class="card-box">
                         <div class="alert alert-info" role="alert" style="color:#222;">
-                            Halo {{$dataUser->name}}, Selamat bergabung di keluarga SAFRA. Saat ini status keanggotaan anda belum aktif, Silakan memilih paket di bawah ini  dengan klik "Beli Paket"
+                            Halo {{$dataUser->name}}, Selamat bergabung di keluarga Lumbung Network. Saat ini status keanggotaan anda belum aktif, Silakan memilih paket di bawah ini  dengan klik "Beli Paket"
                         </div>
                         <div class="row">
                             <div class="col-md-12">
@@ -29,17 +29,13 @@
                                     <div class="col-lg-3">
                                         <div class="card">
                                             <div class="card-block">
-                                                <h4 class="card-title">{{$row->name}} ({{$row->pin}} PIN)</h4>
+                                                <h4 class="card-title">{{$row->name}}</h4>
+                                                <h4 class="card-title">({{$row->pin}} PIN)</h4>
                                                 <p class="card-text">Rp. {{number_format($price, 0, ',', ',')}}</p>
-                                                <p class="card-text">{{$row->short_desc}} Paket Safra</p>
-                                                <p class="card-text">Bonus Sponsor Rp. 75.000 / PIN</p>
-                                                <p class="card-text">Bonus Pasangan Rp. 15.000 / Pasangan</p>
-                                                <p class="card-text">Bonus RO 10 Level Rp. 75.000 /Pin</p>
-                                                <p class="card-text">Kuota Bonus /Bulan Max Rp. {{number_format($row->stock_wd, 0, ',', ',')}}</p>
-                                                <p class="card-text">XXX Bonus Extra Bulanan XXX</p>
-                                                <p class="card-text">Discount Safra Poin</p>
+                                                <p class="card-text">{{$row->short_desc}} Paket</p>
+                                                <p class="card-text">Bonus Sponsor Rp. 20.000 / PIN</p>
                                                 <p class="card-text">Link Referal</p>
-                                                <p class="card-text">Download Tools Promosi</p>
+                                                <!--<p class="card-text">Download Tools Promosi</p>-->
                                                 <a rel="tooltip" title="View" data-toggle="modal" data-target="#orderPackage" class="btn  btn-primary" href="{{ URL::to('/') }}/m/cek/add-package/{{$row->id}}">Beli Paket</i></a>
                                             </div>
                                         </div>
