@@ -1,0 +1,18 @@
+<?php
+
+namespace App\Http\Controllers\FrontEnd;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+
+class FrontEndController extends Controller {
+
+    public function __construct(){
+        
+    }
+    public function getIndex(){
+        return view('frontend.index');
+    }
+
+
+}
