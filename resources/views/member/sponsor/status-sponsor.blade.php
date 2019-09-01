@@ -53,7 +53,7 @@
                                         ?>
                                         <tr>
                                             <td>{{$no}}</td>
-                                            <td>{{$row->name}}</td>
+                                            <td>{{$row->user_code}}</td>
                                             <td>{{$row->email}}</td>
                                             <td>{{$row->hp}}</td>
                                             <td><label class="label label-info">{{$status}}</label></td>

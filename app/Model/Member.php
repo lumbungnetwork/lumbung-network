@@ -40,7 +40,7 @@ class Member extends Model {
     
     public function getAllMemberByAdmin(){
         $sql = DB::table('users')
-                    ->selectRaw('users.id, users.name, users.email, users.hp, users.is_active, users.active_at, u1.name as sp_name, '
+                    ->selectRaw('users.id, users.name, users.email, users.hp, users.is_active, users.active_at, u1.user_code as sp_name, '
                             . 'users.user_code')
                     ->leftJoin('users as u1', 'users.sponsor_id', '=', 'u1.id')
                     ->where('users.is_active', '=', 1)
@@ -60,6 +60,14 @@ class Member extends Model {
         $sqlCode = DB::table('users')->selectRaw('id')->where('user_code', '=', $usercode)->where('user_type', '=', 10)->count();
         $data = (object) array(
             'cekEmail' => $sqlEmail, 'cekHP' => $sqlHP, 'cekCode' => $sqlCode
+        );
+        return $data;
+    }
+    
+    public function getCheckUsercode($usercode){
+        $sqlCode = DB::table('users')->selectRaw('id')->where('user_code', '=', $usercode)->where('user_type', '=', 10)->count();
+        $data = (object) array(
+            'cekCode' => $sqlCode
         );
         return $data;
     }

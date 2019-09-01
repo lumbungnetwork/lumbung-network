@@ -116,7 +116,7 @@ class MemberController extends Controller {
         $modelMember = New Member;
         $sponsor_id = $dataUser->id;
         $dataInsertNewMember = array(
-            'name' => $request->name,
+            'name' => $request->user_code,
             'email' => $request->email,
             'password' => bcrypt($request->password),
             'hp' => $request->hp,
@@ -130,7 +130,7 @@ class MemberController extends Controller {
         );
         $modelMember->getUpdateUsers('id', $sponsor_id, $dataUpdateSponsor);
         $dataEmail = array(
-            'name' => $request->name,
+            'email' => $request->email,
             'password' => $request->password,
             'hp' => $request->hp,
             'user_code' => $request->user_code

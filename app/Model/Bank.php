@@ -54,6 +54,16 @@ class Bank extends Model {
         return $dataReturn;
     }
     
+    public function getBankMemberActive($data){
+        $sql = DB::table('bank')
+                    ->selectRaw('id, bank_name, account_no, account_name, is_active, active_at')
+                    ->where('user_id', '=', $data->id)
+                    ->where('bank_type', '=', 10)
+                    ->where('is_active', '=', 1)
+                    ->first();
+        return $sql;
+    }
+    
     public function getCheckNoRek($norek, $bankname){
         $sql = DB::table('bank')
                 ->selectRaw('id')

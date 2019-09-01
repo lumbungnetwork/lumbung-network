@@ -41,11 +41,9 @@
                                 <thead class=" text-primary">
                                     <tr>
                                         <th>No</th>
-                                        <th>Nama</th>
-                                        <th>No. HP</th>
                                         <th>UserID</th>
+                                        <th>No. HP</th>
                                         <th>Sponsor</th>
-                                        <th>Email</th>
                                         <th>Status</th>
                                         <th>Tgl. Aktif</th>
                                         <th>Tgl. Expired</th>
@@ -77,11 +75,9 @@
                                         ?>
                                             <tr>
                                                 <td>{{$no}}</td>
-                                                <td>{{$row->name}}</td>
-                                                <td>{{$row->hp}}</td>
                                                 <td>{{$row->user_code}}</td>
+                                                <td>{{$row->hp}}</td>
                                                 <td>{{$sp}}</td>
-                                                <td>{{$row->email}}</td>
                                                 <td><span class="badge badge-pill badge-{{$label}}">{{$active}}</span></td>
                                                 <td>{{date('d F Y', strtotime($row->active_at))}}</td>
                                                 <td>{{date('d F Y', strtotime('+365 days', strtotime($row->active_at)))}}</td>

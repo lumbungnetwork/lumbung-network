@@ -17,7 +17,7 @@ class BonusTransfer extends Migration {
             $table->decimal('wd_total', 12, 2);
             $table->date('wd_date');
             $table->integer('admin_fee');
-            $table->smallInteger('status')->default(0)->comment('0 = belum, 1 = tuntas dr member, 2 = batal');
+            $table->smallInteger('status')->default(0)->comment('0 = belum, 1 = tuntas dr admin, 2 = batal');
             $table->string('reason', 150)->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('transfer_at')->nullable();

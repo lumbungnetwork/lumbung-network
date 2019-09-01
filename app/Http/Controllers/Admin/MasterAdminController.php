@@ -16,6 +16,7 @@ use App\Model\Member;
 use App\Model\Masterpin;
 use App\Model\Pengiriman;
 use App\Model\Bonussetting;
+use App\Model\Transferwd;
 use App\Model\Bonus;
 
 class MasterAdminController extends Controller {
@@ -390,6 +391,21 @@ class MasterAdminController extends Controller {
                 ->with('headerTitle', 'Bonus Sponsor')
                 ->with('getData', $getData)
                 ->with('getTotal', $getCountData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function getAllWD(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = New Bonus;
+        $modelWD = new Transferwd;
+        $getData = $modelWD->getAllRequestWD();
+        return view('admin.member.list-wd')
+                ->with('headerTitle', 'Request Withdrawal')
+                ->with('getData', $getData)
                 ->with('dataUser', $dataUser);
     }
     

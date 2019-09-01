@@ -85,7 +85,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f0b7a1', end
 
 .binary-node-single-item{line-height: normal;background-color: #fff;border-color:#cfdadd;}
 .binary-node-single-item .images_wrapper img{width: 100%;height: auto;border-radius: 50%;padding: 4px;margin: 0;}
-.binary-node-single-item .wrap_content{background-color: #7266ba;color: #fff;margin-top: 5px;border-radius: 2px;}
+.binary-node-single-item .wrap_content{background-color: #9b9a18;color: #fff;margin-top: 5px;border-radius: 2px;}
 .binar-hr-line-left,.binar-hr-line-left:after,.binar-hr-line-right,.binar-hr-line-right:after,.node-item-root:after,.hr_class.binar-hr-line-right.line_logic:before,.binar-hr-line-left.line_logic:before {background: #cfdadd;}
 .last_level_user{font-size: 1.6em;color: #6e7bad;margin-top: 30px;}
 .last_level_user .fa-2x{font-size: 26px;}

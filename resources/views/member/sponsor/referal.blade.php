@@ -10,8 +10,8 @@
                                     <div>
                                         <img src="/asset_member/images/profile.jpg" class="img-responsive img-circle" alt="user">
                                         <div class="wid-u-info">
-                                            <h5 class="m-t-20 m-b-5">{{$dataUser->name}}</h5>
-                                            <p class="text-muted m-b-0 font-13">{{$dataUser->email}}</p>
+                                            <h5 class="m-t-20 m-b-5">{{$dataUser->user_code}}</h5>
+                                            <p class="text-muted m-b-0 font-13">{{$dataUser->hp}}</p>
                                             <div class="user-position">
                                                 <span class="text-info font-weight-bold">Sponsor</span>
                                             </div>
@@ -33,11 +33,6 @@
                     @endif
                     <form class="form-horizontal m-t-20" method="post" action="/refsp">
                         {{ csrf_field() }}
-                        <div class="form-group ">
-                            <div class="col-xs-12">
-                                <input type="text" class="form-control" placeholder="Nama" name="name" autocomplete="off" value="{{$dataValue->name}}">
-                            </div>
-                        </div>
                         <div class="form-group ">
                             <div class="col-xs-12">
                                 <input type="text" class="form-control" placeholder="Email" name="email" autocomplete="off" value="{{$dataValue->email}}">

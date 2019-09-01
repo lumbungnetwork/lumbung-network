@@ -83,10 +83,7 @@
                                                                 <span class="wrap_content ">{{$getData[0]->user_code}}</span>
                                                                 <div class="pop-up-content">
                                                                     <div class="profile_tooltip_pick">
-                                                                        <div class="full-name">{{$getData[0]->name}} </div>
-                                                                        <div class="username">
-                                                                            <span class="text-value">{{$getData[0]->user_code}}</span>
-                                                                        </div>
+                                                                        <div class="full-name">{{$getData[0]->user_code}} </div>
                                                                         <div class="username">
                                                                             <span class="text-value">Joined</span>
                                                                             <span class="text-value">{{date('d F Y', strtotime($getData[0]->created_at))}}</span>
@@ -134,10 +131,7 @@
                                                                             <span class="wrap_content ">{{$getData[1]->user_code}}</span>
                                                                             <div class="pop-up-content">
                                                                                 <div class="profile_tooltip_pick">
-                                                                                    <div class="full-name">{{$getData[1]->name}}</div>
-                                                                                    <div class="username">
-                                                                                        <span class="text-value">{{$getData[1]->user_code}}</span>
-                                                                                    </div>
+                                                                                    <div class="full-name">{{$getData[1]->user_code}}</div>
                                                                                     <div class="username">
                                                                                         <span class="text-value">Joined</span>
                                                                                         <span class="text-value">{{date('d F Y', strtotime($getData[1]->created_at))}}</span>
@@ -187,10 +181,7 @@
                                                                                     <span class="wrap_content ">{{$getData[3]->user_code}}</span>
                                                                                     <div class="pop-up-content">
                                                                                         <div class="profile_tooltip_pick">
-                                                                                            <div class="full-name">{{$getData[3]->name}}</div>
-                                                                                            <div class="username">
-                                                                                                <span class="text-value">{{$getData[3]->user_code}}</span>
-                                                                                            </div>
+                                                                                            <div class="full-name">{{$getData[3]->user_code}}</div>
                                                                                             <div class="username">
                                                                                                 <span class="text-value">Joined</span>
                                                                                                 <span class="text-value">{{date('d F Y', strtotime($getData[3]->created_at))}}</span>
@@ -238,10 +229,7 @@
                                                                                     <span class="wrap_content ">{{$getData[4]->user_code}}</span>
                                                                                     <div class="pop-up-content">
                                                                                         <div class="profile_tooltip_pick">
-                                                                                            <div class="full-name">{{$getData[4]->name}}</div>
-                                                                                            <div class="username">
-                                                                                                <span class="text-value">{{$getData[4]->user_code}}</span>
-                                                                                            </div>
+                                                                                            <div class="full-name">{{$getData[4]->user_code}}</div>
                                                                                             <div class="username">
                                                                                                 <span class="text-value">Joined</span>
                                                                                                 <span class="text-value">{{date('d F Y', strtotime($getData[4]->created_at))}}</span>
@@ -299,10 +287,7 @@
                                                                             <span class="wrap_content ">{{$getData[2]->user_code}}</span>
                                                                             <div class="pop-up-content">
                                                                                 <div class="profile_tooltip_pick">
-                                                                                    <div class="full-name">{{$getData[2]->name}}</div>
-                                                                                    <div class="username">
-                                                                                        <span class="text-value">{{$getData[2]->user_code}}</span>
-                                                                                    </div>
+                                                                                    <div class="full-name">{{$getData[2]->user_code}}</div>
                                                                                     <div class="username">
                                                                                         <span class="text-value">Joined</span>
                                                                                         <span class="text-value">{{date('d F Y', strtotime($getData[2]->created_at))}}</span>
@@ -352,10 +337,7 @@
                                                                                     <span class="wrap_content ">{{$getData[5]->user_code}}</span>
                                                                                     <div class="pop-up-content">
                                                                                         <div class="profile_tooltip_pick">
-                                                                                            <div class="full-name">{{$getData[5]->name}}</div>
-                                                                                            <div class="username">
-                                                                                                <span class="text-value">{{$getData[5]->user_code}}</span>
-                                                                                            </div>
+                                                                                            <div class="full-name">{{$getData[5]->user_code}}</div>
                                                                                             <div class="username">
                                                                                                 <span class="text-value">Joined</span>
                                                                                                 <span class="text-value">{{date('d F Y', strtotime($getData[5]->created_at))}}</span>
@@ -403,10 +385,7 @@
                                                                                     <span class="wrap_content ">{{$getData[6]->user_code}}</span>
                                                                                     <div class="pop-up-content">
                                                                                         <div class="profile_tooltip_pick">
-                                                                                            <div class="full-name">{{$getData[6]->name}}</div>
-                                                                                            <div class="username">
-                                                                                                <span class="text-value">{{$getData[6]->user_code}}</span>
-                                                                                            </div>
+                                                                                            <div class="full-name">{{$getData[6]->user_code}}</div>
                                                                                             <div class="username">
                                                                                                 <span class="text-value">Joined</span>
                                                                                                 <span class="text-value">{{date('d F Y', strtotime($getData[6]->created_at))}}</span>

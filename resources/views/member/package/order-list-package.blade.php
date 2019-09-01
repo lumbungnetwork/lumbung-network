@@ -44,7 +44,7 @@
                                 ?>
                                 <tr>
                                     <td>{{$no}}</td>
-                                    <td>{{$row->name_user}}</td>
+                                    <td>{{$row->user_code}}</td>
                                     <td>{{$row->hp}}</td>
                                     <td>{{$row->name}}</td>
                                     <td class="td-actions text-left" >

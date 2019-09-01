@@ -70,7 +70,7 @@
                                                                         <i class="icon-user"></i>
                                                                     @endif
                                                                 </div>
-                                                                <span class="wrap_content ">{{$getData[0]->name}}</span>
+                                                                <span class="wrap_content ">{{$getData[0]->user_code}}</span>
                                                             </div>
                                                         </div>
                                                         <div class="parent-wrapper clearfix">
@@ -93,7 +93,7 @@
                                                                                     <i class="icon-user"></i>
                                                                                 @endif
                                                                             </div>
-                                                                            <span class="wrap_content ">{{$getData[1]->name}}</span>
+                                                                            <span class="wrap_content ">{{$getData[1]->user_code}}</span>
                                                                         </div>
                                                                         @else 
                                                                             <div class="binary-node-single-item user-block user-13">
@@ -120,7 +120,7 @@
                                                                                             <i class="icon-user"></i>
                                                                                         @endif
                                                                                     </div>
-                                                                                    <span class="wrap_content ">{{$getData[3]->name}}</span>
+                                                                                    <span class="wrap_content ">{{$getData[3]->user_code}}</span>
                                                                                 </div>
                                                                                 @else 
                                                                                     <div class="binary-node-single-item user-block user-13">
@@ -146,7 +146,7 @@
                                                                                             <i class="icon-user"></i>
                                                                                         @endif
                                                                                     </div>
-                                                                                    <span class="wrap_content ">{{$getData[4]->name}}</span>
+                                                                                    <span class="wrap_content ">{{$getData[4]->user_code}}</span>
                                                                                 </div>
                                                                                 @else 
                                                                                 <div class="binary-node-single-item user-block user-13">
@@ -182,7 +182,7 @@
                                                                                     <i class="icon-user"></i>
                                                                                 @endif
                                                                             </div>
-                                                                            <span class="wrap_content ">{{$getData[2]->name}}</span>
+                                                                            <span class="wrap_content ">{{$getData[2]->user_code}}</span>
                                                                         </div>
                                                                         @else 
                                                                         <div class="binary-node-single-item user-block user-13">
@@ -209,7 +209,7 @@
                                                                                             <i class="icon-user"></i>
                                                                                         @endif
                                                                                     </div>
-                                                                                    <span class="wrap_content ">{{$getData[5]->name}}</span>
+                                                                                    <span class="wrap_content ">{{$getData[5]->user_code}}</span>
                                                                                 </div>
                                                                                 @else 
                                                                                     <div class="binary-node-single-item user-block user-13">
@@ -235,7 +235,7 @@
                                                                                             <i class="icon-user"></i>
                                                                                         @endif
                                                                                     </div>
-                                                                                    <span class="wrap_content ">{{$getData[6]->name}}</span>
+                                                                                    <span class="wrap_content ">{{$getData[6]->user_code}}</span>
                                                                                 </div>
                                                                                 @else 
                                                                                 <div class="binary-node-single-item user-block user-13">

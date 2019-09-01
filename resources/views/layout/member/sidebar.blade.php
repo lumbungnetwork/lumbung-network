@@ -28,13 +28,6 @@
                     </ul>
                 </li>
                 <li class="has_sub">
-                    <a class="waves-effect"><i class="zmdi zmdi-money-box"></i> <span> Bonus </span> <span class="menu-arrow"></span></a>
-                    <ul class="list-unstyled">
-                        <li><a href="{{ URL::to('/') }}/m/summary/bonus">Ringkasan</a></li>
-                        <li><a href="{{ URL::to('/') }}/m/sponsor/bonus">Sponsor</a></li>
-                    </ul>
-                </li>
-                <li class="has_sub">
                     <a class="waves-effect"><i class="zmdi zmdi-archive"></i> <span> Pin </span> <span class="menu-arrow"></span></a>
                     <ul class="list-unstyled">
                         <li><a href="{{ URL::to('/') }}/m/add/pin">Beli</a></li>
@@ -44,6 +37,21 @@
                         <li><a href="{{ URL::to('/') }}/m/pin/history">History</a></li>
                     </ul>
                 </li>
+                <li class="has_sub">
+                    <a class="waves-effect"><i class="zmdi zmdi-money-box"></i> <span> Bonus </span> <span class="menu-arrow"></span></a>
+                    <ul class="list-unstyled">
+                        <li><a href="{{ URL::to('/') }}/m/summary/bonus">Ringkasan</a></li>
+                        <li><a href="{{ URL::to('/') }}/m/sponsor/bonus">Sponsor</a></li>
+                    </ul>
+                </li>
+                <li class="has_sub">
+                    <a class="waves-effect"><i class="zmdi zmdi-money-box"></i> <span> Saldo </span> <span class="menu-arrow"></span></a>
+                    <ul class="list-unstyled">
+                        <li><a href="{{ URL::to('/') }}/m/saldo/bonus">Bonus</a></li>
+                        <li><a href="#">eIDR</a></li>
+                    </ul>
+                </li>
+                
 <!--                <li class="has_sub">
                     <a class="waves-effect"><i class="zmdi zmdi-comment-alt-text"></i> <span> News </span> <span class="menu-arrow"></span></a>
                     <ul class="list-unstyled">

@@ -37,7 +37,7 @@
                             </div>
                         @endif
                          <div class="table-responsive">
-                            <table class="table" id="myTable">
+                            <table class="table table-striped nowrap" id="myTable">
                                 <thead class=" text-primary">
                                     <tr>
                                         <th>No</th>
@@ -69,7 +69,7 @@
                                         ?>
                                             <tr>
                                                 <td>{{$no}}</td>
-                                                <td>{{$row->name}}</td>
+                                                <td>{{$row->user_code}}</td>
                                                 <td>{{$row->hp}}</td>
                                                 <td>{{$row->transaction_code}}</td>
                                                 <td>{{number_format($row->total_pin, 0, ',', ',')}}</td>

@@ -34,6 +34,28 @@
                 </div>
             </li>
             <li>
+                <a data-toggle="collapse" href="#pageLaporanWD" class="collapsed" aria-expanded="false">
+                    <i class="nc-icon nc-money-coins"></i>
+                    <p>Withdrawal  <b class="caret"></b></p>
+                </a>
+                <div class="collapse" id="pageLaporanWD" style="">
+                    <ul class="nav">
+                        <li>
+                            <a href="#">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> Request Withdrawal </span>
+                            </a>
+                        </li>
+                         <li>
+                            <a href="#">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> History Withdrawal </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li>
                 <a data-toggle="collapse" href="#pagePin" class="collapsed" aria-expanded="false">
                     <i class="nc-icon nc-bank"></i>
                     <p>Pin  <b class="caret"></b></p>

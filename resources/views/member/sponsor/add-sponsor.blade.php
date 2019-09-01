@@ -25,42 +25,40 @@
                             </div>
                         @endif
                         <div class="row">
-                            <div class="col-xl-6">
+                            <div class="col-xl-12">
                                     <fieldset class="form-group">
                                         <label for="input_email">Email</label>
                                         <input type="email" class="form-control" id="input_email" name="email" autocomplete="off">
                                     </fieldset>
                             </div>
-                            <div class="col-xl-3">
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-12">
                                     <fieldset class="form-group">
-                                        <label for="input_password">Password</label>
-                                        <input type="password" class="form-control" id="input_password" name="password">
-                                    </fieldset>
-                            </div>
-                            <div class="col-xl-3">
-                                    <fieldset class="form-group">
-                                        <label for="input_repassword">Ketik Ulang Password</label>
-                                        <input type="password" class="form-control" id="input_repassword" name="repassword">
+                                        <label for="input_hp">No. HP</label>
+                                        <input type="text" class="form-control" id="input_hp" name="hp" autocomplete="off">
                                     </fieldset>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xl-4">
-                                    <fieldset class="form-group">
-                                        <label for="input_nama">Nama</label>
-                                        <input type="text" class="form-control" id="input_name" name="name" autocomplete="off">
-                                    </fieldset>
-                            </div>
-                            <div class="col-xl-4">
+                            <div class="col-xl-12">
                                     <fieldset class="form-group">
                                         <label for="input_username">Username (Login User)</label>
                                         <input type="text" class="form-control" id="input_username" name="user_code" autocomplete="off">
                                     </fieldset>
                             </div>
-                            <div class="col-xl-4">
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-6">
                                     <fieldset class="form-group">
-                                        <label for="input_hp">No. HP</label>
-                                        <input type="text" class="form-control" id="input_hp" name="hp" autocomplete="off">
+                                        <label for="input_password">Password</label>
+                                        <input type="password" class="form-control" id="input_password" name="password">
+                                    </fieldset>
+                            </div>
+                            <div class="col-xl-6">
+                                    <fieldset class="form-group">
+                                        <label for="input_repassword">Ketik Ulang Password</label>
+                                        <input type="password" class="form-control" id="input_repassword" name="repassword">
                                     </fieldset>
                             </div>
                         </div>

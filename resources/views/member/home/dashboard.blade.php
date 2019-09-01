@@ -51,7 +51,7 @@
                                     @endif
                                 </div>
                                 <div class="text-xs-right">
-                                    <h6 class="text-success text-uppercase m-b-15 m-t-10">{{$dataSponsor->name}}</h6>
+                                    <h6 class="text-success text-uppercase m-b-15 m-t-10">{{$dataSponsor->user_code}}</h6>
                                     <h6 class="text-muted m-b-15 m-t-10">{{$dataSponsor->hp}}</h6>
                                     <h2 class="text-warning m-b-10"><span data-plugin="counterup">Sponsor</span></h2>
                                 </div>
@@ -66,7 +66,6 @@
                                 <div>
                                     <img src="/asset_member/images/profile.jpg" class="img-responsive img-circle" alt="user">
                                     <div class="wid-u-info">
-                                        <h5 class="m-t-20 m-b-5">{{$dataUser->name}}</h5>
                                         <p class="text-muted m-b-0 font-13">{{$dataUser->user_code}}</p>
                                         <div class="user-position">
                                             <span class="text-warning font-weight-bold">Aktif</span>
@@ -103,7 +102,7 @@
                         <div class="col-xs-12 col-md-6 col-lg-6 col-xl-4">
                             <div class="card-box tilebox-one">
                                 <i class="icon-lock pull-xs-right text-muted text-warning"></i>
-                                <h6 class="text-muted text-uppercase m-b-20">Bonus Tertunda (Rp.)</h6>
+                                <h6 class="text-muted text-uppercase m-b-20">Saldo Bonus (Rp.)</h6>
                                 <h2 class="m-b-20" data-plugin="counterup">{{number_format($dataAll->total_tunda, 0, ',', '.')}}</h2>
                             </div>
                         </div>
@@ -152,7 +151,7 @@
                                 @endif
                             </div>
                             <div class="text-xs-right">
-                                <h6 class="text-success text-uppercase m-b-15 m-t-10">{{$dataSponsor->name}}</h6>
+                                <h6 class="text-success text-uppercase m-b-15 m-t-10">{{$dataSponsor->user_code}}</h6>
                                 <h6 class="text-muted m-b-15 m-t-10">{{$dataSponsor->hp}}</h6>
                                 <h2 class="text-warning m-b-10"><span data-plugin="counterup">Sponsor</span></h2>
                             </div>

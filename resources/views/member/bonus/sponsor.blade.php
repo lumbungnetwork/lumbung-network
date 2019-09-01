@@ -43,7 +43,7 @@
                                     <tr>
                                         <td>{{$no}}</td>
                                         <td>{{number_format($row->bonus_price, 0, ',', '.')}}</td>
-                                        <td>{{$row->name}} ({{$row->user_code}})</td>
+                                        <td>{{$row->user_code}}</td>
                                         <td>{{date('d F Y', strtotime($row->bonus_date))}}</td>
                                     </tr>
                                     @endforeach

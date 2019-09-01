@@ -33,10 +33,10 @@
                             </div>
                             <div class="col-xl-10">
                                 <fieldset class="form-group">
-                                    <label for="to_id">Nama Penerima</label>
+                                    <label for="to_id">Penerima</label>
                                     <select class="form-control" name="to_id" id="to_id">
                                         @foreach($getData as $row)
-                                            <option value="{{$row->id}}">{{$row->name}} ({{$row->user_code}} - {{$row->hp}})</option>
+                                            <option value="{{$row->id}}">{{$row->user_code}} - {{$row->hp}}</option>
                                         @endforeach
                                     </select>
                                 </fieldset>

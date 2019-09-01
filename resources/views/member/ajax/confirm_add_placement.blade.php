@@ -10,10 +10,10 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group">
-                        <label>Nama yang diplacement</label>
+                        <label>Member yang diplacement</label>
                         <select class="form-control" name="id_calon" id="id_calon">
                             @foreach($dataCalon as $row)
-                                <option value="{{$row->id}}">{{$row->name}} ({{$row->user_code}} - {{$row->hp}})</option>
+                                <option value="{{$row->id}}">{{$row->user_code}} - {{$row->hp}}</option>
                             @endforeach
                         </select>
                     </div>

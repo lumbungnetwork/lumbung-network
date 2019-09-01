@@ -60,7 +60,7 @@ class Memberpackage extends Model {
                     ->join('users', 'member_package.request_user_id', '=', 'users.id')
                     ->selectRaw('member_package.id, member_package.request_user_id, '
                             . 'member_package.package_id, member_package.name, member_package.short_desc, member_package.total_pin, '
-                            . 'users.email, users.hp, users.name as name_user')
+                            . 'users.email, users.hp, users.name as name_user, users.user_code')
                     ->where('member_package.user_id', '=', $data->id)
                     ->where('member_package.status', '=', 0)
                     ->get();

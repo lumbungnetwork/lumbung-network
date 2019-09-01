@@ -231,13 +231,13 @@
                                                             <table class="data-table" cellpadding="0" cellspacing="0">
                                                                 <tr>
                                                                     <th>
-                                                                        Nama
+                                                                        Email
                                                                     </th>
                                                                 </tr>
                                                                 <tr>
                                                                     <td>
                                                                         <span>
-                                                                        {{$name}}
+                                                                        {{$email}}
                                                                         </span>
                                                                     </td>
                                                                 </tr>
