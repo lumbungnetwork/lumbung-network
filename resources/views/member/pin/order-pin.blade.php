@@ -28,7 +28,7 @@
                             <div class="col-xl-12">
                                     <fieldset class="form-group">
                                         <label for="input_jml_pin">Jumlah Pin</label>
-                                        <input type="number" class="form-control" id="input_jml_pin" name="total_pin" autocomplete="off">
+                                        <input type="text" class="form-control allownumericwithoutdecimal" id="input_jml_pin" name="total_pin" autocomplete="off">
                                     </fieldset>
                             </div>
                         </div>
@@ -70,6 +70,13 @@
             var dataInput = $("#form-add").serializeArray();
             $('#form-add').submit();
         }
+        
+        $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {    
+           $(this).val($(this).val().replace(/[^\d].+/, ""));
+            if ((event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+        });
 
 </script>
 @stop
