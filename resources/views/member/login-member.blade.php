@@ -7,9 +7,8 @@
             <div class="card-box m-b-0">
                 <div class="text-xs-center m-t-20">
                     <div class="logo">
-                        <img src="/image/lumbung2.png" style="width: 50px;">
+                        <img src="/image/logo_lumbung.jpg" style="width: 100px;">
                     </div>
-                    <h4>Lumbung Network</h4>
                 </div>
                 <div class="m-t-30 m-b-20">
                     <div class="col-xs-12 text-xs-center">
