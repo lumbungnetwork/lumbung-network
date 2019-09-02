@@ -90,7 +90,7 @@ class ReferalController extends Controller {
             $message->to($emailSend, 'Lumbung Network Registration')
                     ->subject('Welcome to Lumbung Network');
         });
-        return redirect()->route('memberLogin')
+        return redirect()->route('areaLogin')
                 ->with('message', 'Registrasi melalui referal link berhasil, silakan login')
                 ->with('messageclass', 'success');
     }

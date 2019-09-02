@@ -16,7 +16,7 @@ class HomeController extends Controller {
     }
     
     public function getFront(){
-        return redirect()->route('memberLogin');
+        return redirect()->route('areaLogin');
     }
     
     public function getAreaLogin(){

@@ -12,7 +12,7 @@ class RedirectIfAuthenticated {
 //            return redirect('/home');
             return $next($request);
         }
-        return redirect()->route('memberLogin');
+        return redirect()->route('areaLogin');
 //        return $next($request);
     }
 }
