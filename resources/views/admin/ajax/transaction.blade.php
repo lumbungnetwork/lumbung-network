@@ -29,7 +29,7 @@
             </div>
             <?php
                 $price = $getData->price + $getData->unique_digit;
-                $status = 'prose transfer';
+                $status = 'proses transfer';
                 if($getData->status == 1){
                     $status = 'konfirmasi';
                 }

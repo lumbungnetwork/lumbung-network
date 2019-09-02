@@ -386,11 +386,9 @@ class MasterAdminController extends Controller {
         $modelMember = New Member;
         $modelBonus = New Bonus;
         $getData = $modelBonus->getBonusSponsorByAdmin();
-        $getCountData = count($getData);
         return view('admin.bonus.bonus-sponsor')
                 ->with('headerTitle', 'Bonus Sponsor')
                 ->with('getData', $getData)
-                ->with('getTotal', $getCountData)
                 ->with('dataUser', $dataUser);
     }
     

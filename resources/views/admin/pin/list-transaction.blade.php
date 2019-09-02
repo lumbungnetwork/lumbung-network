@@ -60,7 +60,7 @@
                                         <?php 
                                             $no++;
                                             $price = $row->price + $row->unique_digit;
-                                            $status = 'prose transfer';
+                                            $status = 'proses transfer';
                                             $label = 'info';
                                             if($row->status == 1){
                                                 $status = 'konfirmasi';

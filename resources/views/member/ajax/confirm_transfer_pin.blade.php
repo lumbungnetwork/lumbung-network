@@ -17,7 +17,7 @@
                 <div class="col-md-9">
                     <div class="form-group">
                         <label>Nama Penerima</label>
-                        <input type="text" class="form-control" readonly="" value="{{$dataRequest->name}} ({{$dataRequest->user_code}})">
+                        <input type="text" class="form-control" readonly="" value="{{$dataRequest->user_code}}">
                     </div>
                 </div>
                 <input type="hidden" name="to_id" value="{{$dataRequest->id}}">

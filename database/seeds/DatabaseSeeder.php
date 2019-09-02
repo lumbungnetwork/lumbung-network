@@ -190,73 +190,72 @@ class DatabaseSeeder extends Seeder {
                 'sponsor_id' => 4
             ),
         );
-        foreach($dataPlacement as $rowPlacement){
-            $lastInsertedID = DB::table('users')->insertGetId($rowPlacement);
-            $dataInsert = array(
-                'user_id' => $getUser001->id,
-                'request_user_id' => $lastInsertedID,
-                'package_id' => 1,
-                'name' => 'Master Stockist',
-                'short_desc' => '10 Box',
-                'total_pin' => 1,
-            );
-            $paketId = DB::table('member_package')->insertGetId($dataInsert);
-            $dataUpdatePackageId = array(
-                'package_id' => 1,
-                'package_id_at' => date('Y-m-d H:i:s')
-            );
-            DB::table('users')->where('id', '=', $lastInsertedID)->update($dataUpdatePackageId);
-            $memberPin1 = array(
-                'user_id' => $getUser001->id,
-                'total_pin' => 1,
-                'setting_pin' => 1,
-                'pin_code' => 'PIN201908154001'.$lastInsertedID,
-                'is_used' => 1,
-                'used_at' => date('Y-m-d H:i:s'),
-                'used_user_id' => $lastInsertedID,
-                 'pin_status' => 1,
-            );
-            DB::table('member_pin')->insertGetId($memberPin1);
-            $dataUpdate = array(
-                'status' => 1
-            );
-            DB::table('member_package')->where('id', '=', $paketId)->update($dataUpdate);
-            $modelBonusSetting = new Bonussetting;
-            $getBonusStart =$modelBonusSetting->getActiveBonusStart();
-            $bonus_price = $getBonusStart->start_price * 10;
-            $dataInsertBonus = array(
-                'user_id' => $getUser001->id,
-                'from_user_id' => $lastInsertedID,
-                'type' => 1,
-                'bonus_price' => $bonus_price,
-                'bonus_date' => date('Y-m-d')
-            );
-            DB::table('bonus_member')->insertGetId($dataInsertBonus);
-            $dataUpdateIsActive = array(
-                'is_active' => 1,
-                'active_at' => date('Y-m-d H:i:s'),
-                'member_type' => 1,
-                 'full_name' => $rowPlacement['name'].'2019',
-                'alamat' => 'Jl. Simpang '.($lastInsertedID + 7),
-                'provinsi' => 'Jawa Tengah',
-                'kota' => 'Semarang',
-                'kode_pos' => '18'.($lastInsertedID + 19),
-                'gender' => 1,
-                'ktp' => '105020'.($lastInsertedID + 56),
-                'is_profile' => 1,
-                'profile_created_at' =>  date('Y-m-d'),
-                'upline_id' => $getUser001->id,
-                'upline_detail' => '['.$getUser001->id.']'
-            );
-            DB::table('users')->where('id', '=', $lastInsertedID)->update($dataUpdateIsActive);
-        }
+//        foreach($dataPlacement as $rowPlacement){
+//            $lastInsertedID = DB::table('users')->insertGetId($rowPlacement);
+//            $dataInsert = array(
+//                'user_id' => $getUser001->id,
+//                'request_user_id' => $lastInsertedID,
+//                'package_id' => 1,
+//                'name' => 'Master Stockist',
+//                'short_desc' => '10 Box',
+//                'total_pin' => 1,
+//            );
+//            $paketId = DB::table('member_package')->insertGetId($dataInsert);
+//            $dataUpdatePackageId = array(
+//                'package_id' => 1,
+//                'package_id_at' => date('Y-m-d H:i:s')
+//            );
+//            DB::table('users')->where('id', '=', $lastInsertedID)->update($dataUpdatePackageId);
+//            $memberPin1 = array(
+//                'user_id' => $getUser001->id,
+//                'total_pin' => 1,
+//                'setting_pin' => 1,
+//                'pin_code' => 'PIN201908154001'.$lastInsertedID,
+//                'is_used' => 1,
+//                'used_at' => date('Y-m-d H:i:s'),
+//                'used_user_id' => $lastInsertedID,
+//                 'pin_status' => 1,
+//            );
+//            DB::table('member_pin')->insertGetId($memberPin1);
+//            $dataUpdate = array(
+//                'status' => 1
+//            );
+//            DB::table('member_package')->where('id', '=', $paketId)->update($dataUpdate);
+//            $modelBonusSetting = new Bonussetting;
+//            $getBonusStart =$modelBonusSetting->getActiveBonusStart();
+//            $bonus_price = $getBonusStart->start_price * 10;
+//            $dataInsertBonus = array(
+//                'user_id' => $getUser001->id,
+//                'from_user_id' => $lastInsertedID,
+//                'type' => 1,
+//                'bonus_price' => $bonus_price,
+//                'bonus_date' => date('Y-m-d')
+//            );
+//            DB::table('bonus_member')->insertGetId($dataInsertBonus);
+//            $dataUpdateIsActive = array(
+//                'is_active' => 1,
+//                'active_at' => date('Y-m-d H:i:s'),
+//                'member_type' => 1,
+//                 'full_name' => $rowPlacement['name'].'2019',
+//                'alamat' => 'Jl. Simpang '.($lastInsertedID + 7),
+//                'provinsi' => 'Jawa Tengah',
+//                'kota' => 'Semarang',
+//                'kode_pos' => '18'.($lastInsertedID + 19),
+//                'gender' => 1,
+//                'ktp' => '105020'.($lastInsertedID + 56),
+//                'is_profile' => 1,
+//                'profile_created_at' =>  date('Y-m-d'),
+//                'upline_id' => $getUser001->id,
+//                'upline_detail' => '['.$getUser001->id.']'
+//            );
+//            DB::table('users')->where('id', '=', $lastInsertedID)->update($dataUpdateIsActive);
+//        }
         $dataUpdateSponsor = array(
             'total_sponsor' => 2,
             'kiri_id' => 5,
             'kanan_id' => 6
         );
         DB::table('users')->where('id', '=', $getUser001->id)->update($dataUpdateSponsor);
-        
         
         dd('done All seed');
     }

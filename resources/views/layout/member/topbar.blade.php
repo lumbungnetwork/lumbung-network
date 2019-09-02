@@ -4,7 +4,7 @@
             <span>Lumbung</span>
         </a>
     </div>
-    <nav class="navbar navbar-custom">
+    <nav class="navbar navbar-custom" style="background-color: #ffcc00;">
         <ul class="nav navbar-nav">
             <li class="nav-item">
                 <button class="button-menu-mobile open-left waves-light waves-effect">

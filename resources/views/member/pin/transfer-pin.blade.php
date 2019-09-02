@@ -34,11 +34,9 @@
                             <div class="col-xl-10">
                                 <fieldset class="form-group">
                                     <label for="to_id">Penerima</label>
-                                    <select class="form-control" name="to_id" id="to_id">
-                                        @foreach($getData as $row)
-                                            <option value="{{$row->id}}">{{$row->user_code}} - {{$row->hp}}</option>
-                                        @endforeach
-                                    </select>
+                                    <input type="text" class="form-control" id="get_id" autocomplete="off">
+                                    <input type="hidden" name="to_id" id="to_id">
+                                    <ul class="typeahead dropdown-menu form-control" style="max-height: 120px; overflow: auto;border: 1px solid #ddd;width: 98%;margin-left: 11px;" id="get_id-box"></ul>
                                 </fieldset>
                             </div>
                         </div>
@@ -88,6 +86,25 @@
                 event.preventDefault();
             }
         });
+        
+        $(document).ready(function(){
+        $("#get_id").keyup(function(){
+            $.ajax({
+                type: "GET",
+                url: "{{ URL::to('/') }}/m/cek/usercode" + "?name=" + $(this).val() ,
+                success: function(data){
+                    $("#get_id-box").show();
+                    $("#get_id-box").html(data);
+                }
+            });
+        });
+    });
+    function selectUsername(val) {
+        var valNew = val.split("____");
+        $("#get_id").val(valNew[1]);
+        $("#to_id").val(valNew[0]);
+        $("#get_id-box").hide();
+    }
 
 </script>
 @stop
