@@ -5,9 +5,9 @@
     <div class="wrapper-page">
         <div class="account-bg">
             <div class="card-box m-b-0">
-                <div class="text-xs-center m-t-20">
+                <div class="text-xs-center">
                     <div class="logo">
-                        <img src="/image/logo_lumbung.jpg" style="width: 100px;">
+                        <img src="/image/logo_lumbung2.png" style="width: 120px;">
                     </div>
                 </div>
                 <div class="m-t-30 m-b-20">

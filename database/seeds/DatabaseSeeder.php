@@ -250,12 +250,12 @@ class DatabaseSeeder extends Seeder {
 //            );
 //            DB::table('users')->where('id', '=', $lastInsertedID)->update($dataUpdateIsActive);
 //        }
-        $dataUpdateSponsor = array(
-            'total_sponsor' => 2,
-            'kiri_id' => 5,
-            'kanan_id' => 6
-        );
-        DB::table('users')->where('id', '=', $getUser001->id)->update($dataUpdateSponsor);
+//        $dataUpdateSponsor = array(
+//            'total_sponsor' => 2,
+//            'kiri_id' => 5,
+//            'kanan_id' => 6
+//        );
+//        DB::table('users')->where('id', '=', $getUser001->id)->update($dataUpdateSponsor);
         
         dd('done All seed');
     }
