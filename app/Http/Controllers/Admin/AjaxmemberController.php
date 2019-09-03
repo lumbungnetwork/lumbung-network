@@ -150,10 +150,10 @@ class AjaxmemberController extends Controller {
         $modelValidasi = New Validation;
         $modelBank = New Bank;
         $canInsert = $modelValidasi->getCheckAddBank($request);
-        $getCek = $modelBank->getCheckNoRek($request->account_no, $request->bank_name);
-        if($getCek > 0){
-            $canInsert = (object) array('can' => false,  'pesan' => 'Identitas rekening bank sudah terpakai');
-        }
+//        $getCek = $modelBank->getCheckNoRek($request->account_no, $request->bank_name);
+//        if($getCek > 0){
+//            $canInsert = (object) array('can' => false,  'pesan' => 'Identitas rekening bank sudah terpakai');
+//        }
         $data = (object) array(
             'bank_name' => $request->bank_name,
             'account_no' => $request->account_no,
