@@ -1035,7 +1035,9 @@ class MemberController extends Controller {
         );
         $emailSend = 'chairil.hakim@domikado.com';
         Mail::send('member.email.email', $dataEmail, function($message) use($emailSend){
-            $message->to($emailSend, 'Lumbung Network Registration')
+            $message
+                    ->from('noreply@lumbung.network', 'Noreply')
+                    ->to($emailSend, 'Lumbung Network Registration')
                     ->subject('Welcome to Lumbung Network');
         });
         dd('done');
