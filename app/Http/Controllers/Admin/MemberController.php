@@ -1025,4 +1025,24 @@ class MemberController extends Controller {
     
     
     
+    #######################
+    public function getTestEmail(){
+        $dataEmail = array(
+            'email' => 'chairil.ptmgahama@gmail.com',
+            'password' => '123456',
+            'hp' => '087811112222',
+            'user_code' => 'test123'
+        );
+        $emailSend = 'chairil.ptmgahama@gmail.com';
+        Mail::send('member.email.email', $dataEmail, function($message) use($emailSend){
+            $message->to($emailSend, 'Lumbung Network Registration')
+                    ->subject('Welcome to Lumbung Network');
+        });
+        dd('done');
+    }
+    
+    
+    
+    
+    
 }

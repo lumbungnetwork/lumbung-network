@@ -56,6 +56,7 @@ Route::prefix('/')->group(function () {
         
         
     //Wilayah Member
+        Route::get('/m/test/email', 'Admin\MemberController@getTestEmail')->middleware('auth');
         Route::get('/m/dashboard', 'Admin\DashboardController@getMemberDashboard')->name('mainDashboard')->middleware('auth');
         
         //profile
