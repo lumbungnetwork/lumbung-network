@@ -54,7 +54,7 @@ class Transaction extends Model {
     public function getDetailTransactionsAdmin($id, $user_id){
         $sql = DB::table('transaction')
                         ->join('users', 'transaction.user_id', '=', 'users.id')
-                        ->selectRaw('users.name, users.hp, '
+                        ->selectRaw('users.name, users.hp, users.user_code, '
                                 . 'transaction.transaction_code, transaction.type, transaction.total_pin, transaction.price, transaction.status,'
                                 . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id')
                         ->where('transaction.id', '=', $id)
@@ -68,7 +68,7 @@ class Transaction extends Model {
         if($status == null){
             $sql = DB::table('transaction')
                         ->join('users', 'transaction.user_id', '=', 'users.id')
-                        ->selectRaw('users.user_code, users.hp, '
+                        ->selectRaw('users.user_code, users.hp, users.user_code, '
                                 . 'transaction.transaction_code, transaction.type, transaction.total_pin, transaction.price, transaction.status,'
                                 . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id')
                         ->where('transaction.status', '<', 2)
@@ -76,7 +76,7 @@ class Transaction extends Model {
         } else {
             $sql = DB::table('transaction')
                         ->join('users', 'transaction.user_id', '=', 'users.id')
-                        ->selectRaw('users.user_code, users.hp, '
+                        ->selectRaw('users.user_code, users.hp, users.user_code, '
                                 . 'transaction.transaction_code, transaction.type, transaction.total_pin, transaction.price, transaction.status,'
                                 . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id')
                         ->where('transaction.status', '=', $status)
