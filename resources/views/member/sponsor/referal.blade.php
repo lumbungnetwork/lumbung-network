@@ -31,7 +31,7 @@
                             </div>
                         </div>
                     @endif
-                    <form class="form-horizontal m-t-20" method="post" action="/refsp">
+                    <form class="form-horizontal m-t-20" method="post" action="/ref">
                         {{ csrf_field() }}
                         <div class="form-group ">
                             <div class="col-xs-12">
@@ -56,6 +56,7 @@
                         <div class="form-group text-center m-t-30">
                             <input type="hidden" name="ref" class="form-control" value="{{$dataUser->user_code}}">
                             <input type="hidden" name="user_code" class="form-control" value="{{$kode}}">
+                            <input type="hidden" name="name" class="form-control" value="{{$kode}}">
                             <div class="col-xs-12">
                                 <button class="btn btn-success btn-block waves-effect waves-light" type="submit">Submit</button>
                             </div>

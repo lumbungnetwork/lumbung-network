@@ -78,8 +78,8 @@ class Member extends Model {
                     ->where('user_type', '=', 10)
                     ->whereDate('created_at', date('Y-m-d'))
                     ->count();
-        $tmp = $getCount+1;
-         $getCode = 'U'.date('Ymd').sprintf("%04s", $tmp);
+        $tmp = $getCount+13;
+         $getCode = 'LN'.date('ymd').sprintf("%04s", $tmp);
         return $getCode;
     }
     
@@ -266,6 +266,11 @@ class Member extends Model {
                     ->where('upline_detail', 'LIKE', $downline.'%')
                     ->orderBy('id', 'ASC')
                     ->first();
+        return $sql;
+    }
+    
+    public function getUsersCodeEmail($user_code, $email){
+        $sql = DB::table('users')->where('user_code', '=', $user_code)->where('email', '=', $email)->first();
         return $sql;
     }
     

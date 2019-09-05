@@ -68,7 +68,6 @@ class ReferalController extends Controller {
             'hp' => $request->hp,
             'user_code' => $request->user_code,
             'sponsor_id' => $getDataSponsor->id,
-            'active_at' => date('Y-m-d H:i:s'),
             'is_referal_link' => 1
             
         );
