@@ -40,6 +40,11 @@
                                 <button class="btn btn-dark btn-block waves-effect waves-light" type="submit" style="background-color: #333;">Log In</button>
                             </div>
                         </div>
+                        <div class="form-group m-t-30 m-b-0">
+                            <div class="col-sm-12">
+                                <a href="/forgot/passwd" class="text-muted"><i class="fa fa-lock m-r-5"></i> Forgot password?</a>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>

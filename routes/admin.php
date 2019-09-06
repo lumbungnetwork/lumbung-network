@@ -6,6 +6,10 @@ Route::post('/area/login', 'Admin\HomeController@postAreaLogin');
 //referal link
 Route::get('/ref/{code_referal}', 'FrontEnd\ReferalController@getAddReferalLink')->name('referalLink');
 Route::post('/ref', 'FrontEnd\ReferalController@postAddReferalLink');
+Route::get('/forgot/passwd', 'FrontEnd\FrontEndController@getForgotPassword')->name('forgotPasswd');
+Route::post('/forgot/passwd', 'FrontEnd\FrontEndController@postForgotPassword');
+Route::get('/auth/passwd/{code}/{email}', 'FrontEnd\FrontEndController@getAuthPassword')->name('passwdauth');
+Route::post('/auth/passwd', 'FrontEnd\FrontEndController@postAuthPassword');
 
 Auth::routes();
 Route::prefix('/')->group(function () {
@@ -39,6 +43,7 @@ Route::prefix('/')->group(function () {
         Route::get('/adm/list/member', 'Admin\MasterAdminController@getAllMember')->name('adm_listMember')->middleware('auth');
         Route::get('/adm/list/bonus-sp', 'Admin\MasterAdminController@getAllBonusSponsor')->name('adm_listBonusSP')->middleware('auth');
         Route::get('/adm/list/wd', 'Admin\MasterAdminController@getAllWD')->name('adm_listWD')->middleware('auth');
+        Route::post('/adm/check/wd', 'Admin\MasterAdminController@postCheckWD')->middleware('auth');
 
         //Ajax
         Route::get('/ajax/adm/admin/{type}/{id}', 'Admin\AjaxController@getAdminById')->middleware('auth');

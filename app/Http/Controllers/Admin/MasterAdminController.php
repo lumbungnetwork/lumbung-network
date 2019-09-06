@@ -407,6 +407,10 @@ class MasterAdminController extends Controller {
                 ->with('dataUser', $dataUser);
     }
     
+    public function postCheckWD(Request $request){
+        dd($request);
+    }
+    
     
 
 }

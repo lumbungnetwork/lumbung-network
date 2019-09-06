@@ -37,8 +37,10 @@
                             </div>
                         @endif
                          <div class="table-responsive">
+                             <form method="post" name="emailCompose" id="emailCompose" action="/adm/check/wd">
+                                 {{ csrf_field() }}
                              <p class="form-group">
-                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <button type="submit" class="btn btn-primary" id="formCheck">Submit</button>
                              </p>
                             <table class="table table-striped nowrap" id="myTable">
                                 <thead class=" text-primary">
@@ -80,6 +82,7 @@
                                     @endif
                                 </tbody>
                             </table>
+                             </form>
                              <div class="modal fade" id="popUp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content"></div>
@@ -112,7 +115,7 @@
         $(this).find(".modal-content").load(link.attr("href"));
     });
     $(document).ready(function() {
-        $('#myTable').DataTable( {
+        var myTableRow =  $('#myTable').DataTable( {
                 columnDefs: [{
                     orderable: false,
                     className: 'select-checkbox',
@@ -122,11 +125,7 @@
                 "deferRender": true,
                 columnDefs: [{ 
                     orderable: false, 
-                    targets: -1,
-                    'className': 'dt-body-center',
-                    'render': function (data, type, full, meta){
-                        return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
-                    }
+                    targets: 0,
                 }],
                 buttons: [
                     {
@@ -140,13 +139,23 @@
                  "info":     false,
                  "ordering": false,
         } );
+        $('#myTable #example-select-all').change(function() {
+                var checked = $(this).is(":checked");
+                $("input", myTableRow.rows({search:'applied'}).nodes()).each(function(){
+                        if(checked){
+                                $(this).attr("checked", true);
+                        }
+                        else {
+                                $(this).attr("checked", false);
+                        }
+                });
+        });
+        $("form").submit(function() {
+                $(myTableRow.rows({search:'applied'}).nodes()).find('input[type="checkbox"]:checked').appendTo('#emailCompose');
+        });
+        
     } );
-    $('#example-select-all').on('click', function(){
-      // Get all rows with search applied
-      var rows = table.rows({ 'search': 'applied' }).nodes();
-      // Check/uncheck checkboxes for all rows in the table
-      $('input[type="checkbox"]', rows).prop('checked', this.checked);
-   });
+    
 </script>
 @stop
 
