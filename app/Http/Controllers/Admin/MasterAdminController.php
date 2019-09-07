@@ -408,7 +408,60 @@ class MasterAdminController extends Controller {
     }
     
     public function postCheckWD(Request $request){
-        dd($request);
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = New Bonus;
+        $modelWD = new Transferwd;
+        $getRowID = $request->id;
+        foreach($getRowID as $getID){
+            $dataUpdate = array(
+                'status' => 1,
+                'transfer_at' => date('Y-m-d H:i:s')
+            );
+            $modelWD->getUpdateWD('id', $getID, $dataUpdate);
+        }
+        return redirect()->route('adm_listWD')
+                    ->with('message', 'Konfirmasi Transfer WD berhasil')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function postRejectWD(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = New Bonus;
+        $modelWD = new Transferwd;
+        $getID = $request->cekId;
+        $alesan = $request->reason;
+        $getData = $modelWD->getIDRequestWD($getID);
+        $dataUpdate = array(
+            'status' => 2,
+            'reason' => $alesan,
+            'deleted_at' => date('Y-m-d H:i:s')
+        );
+        $modelWD->getUpdateWD('id', $getID, $dataUpdate);
+        return redirect()->route('adm_listWD')
+                    ->with('message', 'Data WD '.$getData->full_name.' senilai Rp. '.number_format($getData->wd_total + $getData->admin_fee, 0, ',', '.').' direject')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function getAllHistoryWD(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelWD = new Transferwd;
+        $getData = $modelWD->getAllHistoryWD();
+        return view('admin.member.history-wd')
+                ->with('headerTitle', 'History Withdrawal')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
     }
     
     

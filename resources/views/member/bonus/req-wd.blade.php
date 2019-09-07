@@ -26,11 +26,27 @@
                 <div class="row">
                     <div class="col-sm-12 col-xs-12">
                         <div class="card">
-                            <h3 class="card-header">Withdraw</h3>
                             <div class="card-block">
-                                <h4 class="card-title">Minimum Withdraw Rp. 20.000 Admin Fee Rp. 6.500</h4>
                                 <p class="card-text">Ajukan withdraw anda disini</p>
-                                <button type="submit" class="btn btn-primary"  id="submitBtn" data-toggle="modal" data-target="#confirmSubmit" onClick="inputSubmit()">Submit</button>
+                                <div class="row">
+                                    <div class="col-xl-8">
+                                        <fieldset class="form-group">
+                                            <label for="input_jml">Jumlah (Rp.)</label>
+                                            <input type="text" class="form-control allownumericwithoutdecimal" id="input_jml" name="jml_wd" autocomplete="off" placeholder="Minimum Withdraw Rp. 20.000">
+                                        </fieldset>
+                                    </div>
+                                    <div class="col-xl-4">
+                                        <fieldset class="form-group">
+                                            <label>Admin Fee (Rp.)</label>
+                                            <input type="text" class="form-control" disabled="" value="6.500">
+                                        </fieldset>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xl-6">
+                                        <button type="submit" class="btn btn-primary"  id="submitBtn" data-toggle="modal" data-target="#confirmSubmit" onClick="inputSubmit()">Submit</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -57,9 +73,10 @@
 <script src="{{ asset('asset_member/pages/jquery.dashboard.js') }}"></script>
 <script>
        function inputSubmit(){
+           var input_jml_wd = $("#input_jml").val();
             $.ajax({
                 type: "GET",
-                url: "{{ URL::to('/') }}/m/cek/confirm-wd",
+                url: "{{ URL::to('/') }}/m/cek/confirm-wd?input_jml_wd="+input_jml_wd,
                 success: function(url){
                     $("#confirmDetail" ).empty();
                     $("#confirmDetail").html(url);
@@ -71,6 +88,13 @@
             var dataInput = $("#form-add").serializeArray();
             $('#form-add').submit();
         }
+        
+        $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {    
+           $(this).val($(this).val().replace(/[^\d].+/, ""));
+            if ((event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+        });
 
 </script>
 @stop

@@ -175,17 +175,21 @@ class Validation extends Model {
     }
     
     public function getCheckWD($data){
+        $canInsert = (object) array('can' => true, 'pesan' => '');
         if($data->bank == null){
             $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum mengisi data profil dan data bank');
             return $canInsert;
         }
-        $canInsert = (object) array('can' => true, 'pesan' => '');
-        if($data->saldo < 20000){
+        if($data->req_wd < 20000){
             $canInsert = (object) array('can' => false, 'pesan' => 'Saldo yang tersedia tidak mencukupi untuk withdraw. batas minimum withdraw adalah Rp. 20.000');
             return $canInsert;
         }
-        if(($data->saldo -  $data->admin_fee) < 20000){
+        if(($data->req_wd -  $data->admin_fee) < 20000){
             $canInsert = (object) array('can' => false, 'pesan' => 'Saldo yang tersedia tidak mencukupi untuk withdraw. batas minimum withdraw adalah Rp. 20.000 dengan biaya admin (fee) Rp. 6.500');
+            return $canInsert;
+        }
+        if($data->req_wd < $data->saldo){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Pengajuan withdrawal anda kurang dari sisa saldo');
             return $canInsert;
         }
         return $canInsert;

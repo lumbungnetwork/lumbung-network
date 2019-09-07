@@ -37,24 +37,16 @@
                             </div>
                         @endif
                          <div class="table-responsive">
-                             <form method="post" name="emailCompose" id="emailCompose" action="/adm/check/wd">
-                                 {{ csrf_field() }}
-                             <p class="form-group">
-                                <button type="submit" class="btn btn-primary" id="formCheck">Submit Transfer</button>
-                             </p>
                             <table class="table table-striped nowrap" id="myTable">
                                 <thead class=" text-primary">
                                     <tr>
-                                         <th><input type="checkbox" name="select_all" value="1" id="example-select-all"></th>
                                         <th>No</th>
                                         <th>UserID</th>
                                         <th>Bank</th>
                                         <th>No. Rek</th>
-                                        <th>Nama. Rek</th>
                                         <th>Tgl. WD</th>
                                         <th>Jml. WD (Rp.)</th>
-                                        <th>Admin Fee (Rp.)</th>
-                                        <th>Jml. Transfer (Rp.)</th>
+                                        <th>Status</th>
                                         <th>###</th>
                                     </tr>
                                 </thead>
@@ -68,27 +60,35 @@
                                         <?php 
                                             $no++;
                                             $jmlWD = $row->wd_total + $row->admin_fee;
+                                            $status = 'Proses Transfer';
+                                            $label = 'info';
+                                            if($row->status == 1){
+                                                $status = 'Tuntas';
+                                                $label = 'success';
+                                            }
+                                            if($row->status == 2){
+                                                $status = 'Reject';
+                                                $label = 'danger';
+                                            }
                                         ?>
                                             <tr>
-                                                <td><input type="checkbox" name="id[]" value="{{$row->id}}"></td>
                                                 <td>{{$no}}</td>
                                                 <td>{{$row->user_code}}</td>
                                                 <td>{{$row->bank_name}}</td>
                                                 <td>{{$row->account_no}}</td>
-                                                <td>{{$row->account_name}}</td>
                                                 <td>{{date('d M Y', strtotime($row->wd_date))}}</td>
                                                 <td>{{number_format($jmlWD, 0, ',', ',')}}</td>
-                                                <td>{{number_format($row->admin_fee, 0, ',', ',')}}</td>
-                                                <td>{{number_format($row->wd_total, 0, ',', ',')}}</td>
                                                 <td>
-                                                    <a rel="tooltip"  data-toggle="modal" data-target="#popUp" class="text-danger" href="{{ URL::to('/') }}/ajax/adm/cek/reject-wd/{{$row->id}}">reject</a>
+                                                    <span class="badge badge-pill badge-{{$label}}">{{$status}}</span>
+                                                </td>
+                                                <td>
+                                                    <a rel="tooltip"  data-toggle="modal" data-target="#popUp" class="text-info" href="{{ URL::to('/') }}/ajax/adm/cek/detail-wd/{{$row->id}}">detail</a>
                                                 </td>
                                             </tr>
                                         @endforeach
                                     @endif
                                 </tbody>
                             </table>
-                             </form>
                              <div class="modal fade" id="popUp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content"></div>
@@ -143,93 +143,9 @@
                  pagingType: "full_numbers",
                  "paging":   true,
                  "info":     false,
-                 "ordering": true,
+                 "ordering": false,
         } );
-        $('#myTable #example-select-all').change(function() {
-                var checked = $(this).is(":checked");
-                $("input", myTableRow.rows({search:'applied'}).nodes()).each(function(){
-                        if(checked){
-                                $(this).attr("checked", true);
-                        }
-                        else {
-                                $(this).attr("checked", false);
-                        }
-                });
-        });
-        $("form").submit(function() {
-                $(myTableRow.rows({search:'applied'}).nodes()).find('input[type="checkbox"]:checked').appendTo('#emailCompose');
-        });
-        
     } );
     
 </script>
-<script type="text/javascript">
-    $("#popUp").on("show.bs.modal", function(e) {
-        var link = $(e.relatedTarget);
-        $(this).find(".modal-content").load(link.attr("href"));
-    });
-</script>
 @stop
-
-<!--$(document).ready(function (){
-   var table = $('#example').DataTable({
-      'ajax': {
-         'url': '/lab/articles/jquery-datatables-how-to-add-a-checkbox-column/ids-arrays.txt'
-      },
-      'columnDefs': [{
-         'targets': 0,
-         'searchable': false,
-         'orderable': false,
-         'className': 'dt-body-center',
-         'render': function (data, type, full, meta){
-             return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
-         }
-      }],
-      'order': [[1, 'asc']]
-   });
-
-   // Handle click on "Select all" control
-   $('#example-select-all').on('click', function(){
-      // Get all rows with search applied
-      var rows = table.rows({ 'search': 'applied' }).nodes();
-      // Check/uncheck checkboxes for all rows in the table
-      $('input[type="checkbox"]', rows).prop('checked', this.checked);
-   });
-
-   // Handle click on checkbox to set state of "Select all" control
-   $('#example tbody').on('change', 'input[type="checkbox"]', function(){
-      // If checkbox is not checked
-      if(!this.checked){
-         var el = $('#example-select-all').get(0);
-         // If "Select all" control is checked and has 'indeterminate' property
-         if(el && el.checked && ('indeterminate' in el)){
-            // Set visual state of "Select all" control
-            // as 'indeterminate'
-            el.indeterminate = true;
-         }
-      }
-   });
-
-   // Handle form submission event
-   $('#frm-example').on('submit', function(e){
-      var form = this;
-
-      // Iterate over all checkboxes in the table
-      table.$('input[type="checkbox"]').each(function(){
-         // If checkbox doesn't exist in DOM
-         if(!$.contains(document, this)){
-            // If checkbox is checked
-            if(this.checked){
-               // Create a hidden element
-               $(form).append(
-                  $('<input>')
-                     .attr('type', 'hidden')
-                     .attr('name', this.name)
-                     .val(this.value)
-               );
-            }
-         }
-      });
-   });
-
-});-->

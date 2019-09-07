@@ -10,6 +10,8 @@ use App\Model\Package;
 use App\Model\Transaction;
 use App\Model\Bank;
 use App\Model\Pengiriman;
+use App\Model\Transferwd;
+use App\Model\Bonus;
 
 class AjaxController extends Controller {
 
@@ -97,6 +99,26 @@ class AjaxController extends Controller {
                 ->with('headerTitle', 'Confirm Pengiriman')
                 ->with('getData', $getPengiriman)
                 ->with('data', $data)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function getCekRejectWD($id){
+        $dataUser = Auth::user();
+        $modelWD = new Transferwd;
+        $getData = $modelWD->getIDRequestWD($id);
+        return view('admin.ajax.reject-wd')
+                ->with('headerTitle', 'Reject Withdrawal')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function getCekDetailWD($id){
+        $dataUser = Auth::user();
+        $modelWD = new Transferwd;
+        $getData = $modelWD->getIDRequestWD($id);
+        return view('admin.ajax.detail-wd')
+                ->with('headerTitle', 'Detail Withdrawal')
+                ->with('getData', $getData)
                 ->with('dataUser', $dataUser);
     }
     

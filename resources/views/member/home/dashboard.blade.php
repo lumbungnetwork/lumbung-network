@@ -91,7 +91,12 @@
                                 <h2 class="m-b-20" data-plugin="counterup">{{number_format($dataAll->total_bonus, 0, ',', '.')}}</h2>
                             </div>
                         </div>
-
+                        <?php
+                            $saldo = $dataAll->total_bonus - $dataAll->total_wd - $dataAll->total_tunda - $dataAll->total_fee_admin;
+                            if($saldo < 0){
+                                $saldo = 0;
+                            }
+                        ?>
                         <div class="col-xs-12 col-md-6 col-lg-6 col-xl-4">
                             <div class="card-box tilebox-one">
                                 <i class="icon-rocket pull-xs-right text-muted text-warning"></i>
@@ -103,7 +108,7 @@
                             <div class="card-box tilebox-one">
                                 <i class="icon-lock pull-xs-right text-muted text-warning"></i>
                                 <h6 class="text-muted text-uppercase m-b-20">Saldo Bonus (Rp.)</h6>
-                                <h2 class="m-b-20" data-plugin="counterup">{{number_format($dataAll->total_tunda, 0, ',', '.')}}</h2>
+                                <h2 class="m-b-20" data-plugin="counterup">{{number_format($saldo, 0, ',', '.')}}</h2>
                             </div>
                         </div>
                     </div>

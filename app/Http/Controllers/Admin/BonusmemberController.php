@@ -36,7 +36,8 @@ class BonusmemberController extends Controller {
         $dataAll = (object) array(
             'total_bonus' => $totalBonus->total_bonus,
             'total_wd' => $totalWD->total_wd,
-            'total_tunda' => $totalWD->total_tunda
+            'total_tunda' => $totalWD->total_tunda,
+            'total_fee_admin' => $totalWD->total_fee_admin
         );
         return view('member.bonus.summary')
                 ->with('dataAll', $dataAll)
@@ -122,6 +123,7 @@ class BonusmemberController extends Controller {
             'total_wd' => $totalWD->total_wd,
             'total_tunda' => $totalWD->total_tunda,
             'admin_fee' => 6500,
+            'total_fee_admin' => $totalWD->total_fee_admin
         );
         return view('member.bonus.saldo')
                 ->with('dataAll', $dataAll)

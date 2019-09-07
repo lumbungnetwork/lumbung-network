@@ -14,7 +14,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-12">
+                <div class="col-xs-12">
                     <div class="card-box">
                         @if ( Session::has('message') )
                             <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible fade in" role="alert">
@@ -27,7 +27,7 @@
                         <form class="login100-form validate-form" method="get" action="/m/my/binary">
                         {{ csrf_field() }}
                         <div class="row">
-                            <div class="col-xl-12">
+                            <div class="col-xs-12">
                                 <fieldset class="form-group">
                                     <label>Cari Member (By Username)</label>
                                     <input type="text" class="form-control" id="get_id" autocomplete="off">
@@ -54,7 +54,7 @@
                         @endif
                         @if($back == true)
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-xs-12">
                                 <a href="{{ URL::to('/') }}/m/my/binary" class="btn btn-dark btn-sm">
                                     Back
                                 </a>
@@ -62,7 +62,7 @@
                         </div>
                         @endif
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-xs-12">
                                 <div class="region region-content">
                                     <div id="block-system-main" class="block block-system clearfix">
                                         <div class="binary-genealogy-tree binary_tree_extended">

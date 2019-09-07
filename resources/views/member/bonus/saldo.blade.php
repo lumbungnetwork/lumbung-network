@@ -48,7 +48,7 @@
                             </div>
                         </div>
                     <?php
-                    $saldo = $dataAll->total_bonus - $dataAll->total_wd - $dataAll->total_tunda - $dataAll->admin_fee;
+                    $saldo = $dataAll->total_bonus - $dataAll->total_wd - $dataAll->total_tunda - $dataAll->total_fee_admin;
                     if($saldo < 0){
                         $saldo = 0;
                     }

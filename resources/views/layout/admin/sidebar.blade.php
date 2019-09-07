@@ -41,13 +41,13 @@
                 <div class="collapse" id="pageLaporanWD" style="">
                     <ul class="nav">
                         <li>
-                            <a href="#">
+                            <a href="{{ URL::to('/') }}/adm/list/wd">
                             <span class="sidebar-mini-icon">+</span>
                             <span class="sidebar-normal"> Request Withdrawal </span>
                             </a>
                         </li>
                          <li>
-                            <a href="#">
+                            <a href="{{ URL::to('/') }}/adm/history/wd">
                             <span class="sidebar-mini-icon">+</span>
                             <span class="sidebar-normal"> History Withdrawal </span>
                             </a>

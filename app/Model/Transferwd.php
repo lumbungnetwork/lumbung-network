@@ -18,11 +18,23 @@ class Transferwd extends Model {
         return $result;
     }
     
+    public function getUpdateWD($fieldName, $name, $data){
+        try {
+            DB::table('transfer_wd')->where($fieldName, '=', $name)->update($data);
+            $result = (object) array('status' => true, 'message' => null);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message);
+        }
+        return $result;
+    }
+    
     public function getTotalDiTransfer($data){
         $sql = DB::table('transfer_wd')
-                    ->selectRaw('sum(case when status = 1 then wd_total else 0 end) total_wd, '
-                            . 'sum(case when status = 0 then wd_total else 0 end) total_tunda,'
-                            . 'sum(case when status = 2 then wd_total else 0 end) total_cancel')
+                    ->selectRaw('sum(case when status = 1 then wd_total else 0 end) as total_wd, '
+                            . 'sum(case when status = 0 then wd_total else 0 end) as total_tunda,'
+                            . 'sum(case when status = 2 then wd_total else 0 end) as  total_cancel,'
+                            . 'sum(case when status IN (0, 1) then admin_fee else 0 end) as total_fee_admin')
                     ->where('user_id', '=', $data->id)
                     ->first();
         $total_wd = 0;
@@ -37,10 +49,15 @@ class Transferwd extends Model {
         if($sql->total_cancel != null){
             $total_cancel = $sql->total_cancel;
         }
+        $total_fee_admin = 0;
+        if($sql->total_fee_admin != null){
+            $total_fee_admin = $sql->total_fee_admin;
+        }
         $return = (object) array(
             'total_wd' => $total_wd,
             'total_tunda' => $total_tunda,
-            'total_cancel' => $total_cancel
+            'total_cancel' => $total_cancel,
+            'total_fee_admin' => $total_fee_admin
         );
         return $return;
     }
@@ -75,6 +92,35 @@ class Transferwd extends Model {
                             . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee,'
                             . 'transfer_wd.status, transfer_wd.reason, transfer_wd.wd_date')
                     ->where('transfer_wd.user_id', '=', $data->id)
+                    ->orderBy('transfer_wd.id', 'DESC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getIDRequestWD($id){
+        $sql = DB::table('transfer_wd')
+                    ->join('users', 'transfer_wd.user_id', '=', 'users.id')
+                    ->join('bank', 'transfer_wd.user_bank', '=', 'bank.id')
+                    ->selectRaw('transfer_wd.id, users.user_code, users.hp, bank.bank_name, bank.account_no, bank.account_name,'
+                            . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee, users.full_name,'
+                            . 'transfer_wd.reason, transfer_wd.status')
+                    ->where('transfer_wd.id', '=', $id)
+                    ->orderBy('transfer_wd.id', 'DESC')
+                    ->first();
+        return $sql;
+    }
+    
+    public function getAllHistoryWD(){
+        $sql = DB::table('transfer_wd')
+                    ->join('users', 'transfer_wd.user_id', '=', 'users.id')
+                    ->join('bank', 'transfer_wd.user_bank', '=', 'bank.id')
+                    ->selectRaw('transfer_wd.id, users.user_code, users.hp, bank.bank_name, bank.account_no, bank.account_name,'
+                            . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee, transfer_wd.status,  '
+                            . 'transfer_wd.reason')
                     ->orderBy('transfer_wd.id', 'DESC')
                     ->get();
         $return = null;
