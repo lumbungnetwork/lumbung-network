@@ -150,6 +150,29 @@ class BonusmemberController extends Controller {
                     ->with('messageclass', 'success');
     }
     
+    public function getHistoryWithdrawal(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelWD = new Transferwd;
+        $getData = $modelWD->getAllMemberWD($dataUser);
+        return view('member.bonus.history-wd')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function getRequestWithdrawal(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        return view('member.bonus.req-wd')
+                ->with('dataUser', $dataUser);
+    }
+    
     
 }
 

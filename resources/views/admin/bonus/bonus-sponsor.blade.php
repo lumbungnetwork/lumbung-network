@@ -41,6 +41,7 @@
                                 <thead class=" text-primary">
                                     <tr>
                                         <th>No</th>
+                                        <th>Nama</th>
                                         <th>UserID</th>
                                         <th>No. HP</th>
                                         <th>Jml.Direct Sponsor</th>
@@ -62,6 +63,7 @@
                                         ?>
                                             <tr>
                                                 <td>{{$no}}</td>
+                                                <td>{{$row->full_name}}</td>
                                                 <td>{{$row->user_code}}</td>
                                                 <td>{{$row->hp}}</td>
                                                 <td>{{$row->total_sponsor}}</td>

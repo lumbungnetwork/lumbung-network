@@ -67,10 +67,6 @@ class Validation extends Model {
             $canInsert = (object) array('can' => false, 'pesan' => 'Nama lengkap harus diisi, sesuai dengan nama pada rekening Bank');
             return $canInsert;
         }
-        if($request->ktp == null){
-            $canInsert = (object) array('can' => false, 'pesan' => 'Nomor KTP harus diisi');
-            return $canInsert;
-        }
         if($request->alamat == null){
             $canInsert = (object) array('can' => false, 'pesan' => 'Alamat harus diisi');
             return $canInsert;

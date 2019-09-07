@@ -48,17 +48,9 @@ class AjaxmemberController extends Controller {
         $modelValidasi = New Validation;
         $modelMember = New Member;
         $canInsert = $modelValidasi->getCheckNewProfile($request);
-        $getCekKTP = null;
-        if($canInsert->can == true){
-            $getCekKTP = $modelMember->getCheckKTP($request->ktp);
-            if($getCekKTP > 3){
-                $canInsert = (object) array('can' => false,  'pesan' => 'KTP Sudah terpakai lebih dari 3 kali');
-            }
-        }
         $data = (object) array(
             'full_name' => $request->full_name,
             'gender' => $request->gender,
-            'ktp' => $request->ktp,
             'alamat' => $request->alamat,
             'provinsi' => $request->provinsi,
             'kode_pos' => $request->kode_pos,

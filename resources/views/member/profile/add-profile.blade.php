@@ -26,25 +26,19 @@
                         @endif
                         {{ csrf_field() }}
                         <div class="row">
-                            <div class="col-xl-6">
+                            <div class="col-xl-8">
                                     <fieldset class="form-group">
                                         <label for="input_nama_lengkap">Nama Lengkap (sesuai dengan Nama pada Rekening Bank)</label>
                                         <input type="text" class="form-control" id="full_name" name="full_name" autocomplete="off">
                                     </fieldset>
                             </div>
-                            <div class="col-xl-3">
+                            <div class="col-xl-4">
                                     <fieldset class="form-group">
                                         <label for="gender">Gender</label>
                                         <select class="form-control" name="gender" id="gender">
                                                 <option value="1">Pria</option>
                                                 <option value="2">Wanita</option>
                                         </select>
-                                    </fieldset>
-                            </div>
-                            <div class="col-xl-3">
-                                    <fieldset class="form-group">
-                                        <label for="no_ktp">Nomor KTP</label>
-                                        <input type="text" class="form-control" id="ktp" name="ktp" autocomplete="off">
                                     </fieldset>
                             </div>
                         </div>
@@ -135,14 +129,13 @@
        function inputSubmit(){
            var full_name = $("#full_name").val();
            var gender = $("#gender").val();
-           var ktp = $("#ktp").val();
            var alamat = $("#alamat").val();
            var kota = $("#kota").val();
            var provinsi = $("#provinsi").val();
            var kode_pos = $("#kode_pos").val();
             $.ajax({
                 type: "GET",
-                url: "{{ URL::to('/') }}/m/cek/add-profile?full_name="+full_name+"&gender="+gender+"&ktp="+ktp+"&kota="+kota+"&provinsi="+provinsi+"&kode_pos="+kode_pos+"&alamat="+alamat ,
+                url: "{{ URL::to('/') }}/m/cek/add-profile?full_name="+full_name+"&gender="+gender+"&kota="+kota+"&provinsi="+provinsi+"&kode_pos="+kode_pos+"&alamat="+alamat ,
                 success: function(url){
                     $("#confirmDetail" ).empty();
                     $("#confirmDetail").html(url);

@@ -70,7 +70,6 @@ class MemberController extends Controller {
         $dataUpdate = array(
             'full_name' => $request->full_name,
             'gender' => $request->gender,
-            'ktp' => $request->ktp,
             'alamat' => $request->alamat,
             'provinsi' => $request->provinsi,
             'kode_pos' => $request->kode_pos,
@@ -124,11 +123,11 @@ class MemberController extends Controller {
             'sponsor_id' => $sponsor_id
         );
         $modelMember->getInsertUsers($dataInsertNewMember);
-        $total_sponsor = $dataUser->total_sponsor + 1;
-        $dataUpdateSponsor = array(
-            'total_sponsor' => $total_sponsor,
-        );
-        $modelMember->getUpdateUsers('id', $sponsor_id, $dataUpdateSponsor);
+//        $total_sponsor = $dataUser->total_sponsor + 1;
+//        $dataUpdateSponsor = array(
+//            'total_sponsor' => $total_sponsor,
+//        );
+//        $modelMember->getUpdateUsers('id', $sponsor_id, $dataUpdateSponsor);
         $dataEmail = array(
             'email' => $request->email,
             'password' => $request->password,
@@ -309,6 +308,11 @@ class MemberController extends Controller {
         );
         $modelMember = New Member;
         $modelMember->getUpdateUsers('id', $getData->request_user_id, $dataUpdateIsActive);
+        $total_sponsor = $dataUser->total_sponsor + 1;
+        $dataUpdateSponsor = array(
+            'total_sponsor' => $total_sponsor,
+        );
+        $modelMember->getUpdateUsers('id', $dataUser->id, $dataUpdateSponsor);
         return redirect()->route('mainDashboard')
                         ->with('message', 'Berhasil mengaktifasi sponsor baru')
                         ->with('messageclass', 'success');
@@ -344,9 +348,9 @@ class MemberController extends Controller {
             return redirect()->route('mainDashboard');
         }
         $disc = 0;
-        if($request->total_pin >= 100){
-            $disc = 3;
-        }
+//        if($request->total_pin >= 100){
+//            $disc = 3;
+//        }
         $modelSettingPin = New Pinsetting;
         $modelSettingTrans = New Transaction;
         $getActivePinSetting = $modelSettingPin->getActivePinSetting();
@@ -363,6 +367,20 @@ class MemberController extends Controller {
             'unique_digit' => $rand,
         );
         $modelSettingTrans->getInsertTransaction($dataInsert);
+        $dataEmail = array(
+            'tgl_order' => date('d F Y'),
+            'nama' => $dataUser->user_code,
+            'hp' => $dataUser->hp,
+            'transaction_code' => 'TR'.date('Ymd').$dataUser->id.$code,
+            'total_pin' => $request->total_pin,
+            'price' => $harga,
+            'unique_digit' => $rand,
+        );
+        $emailSend = 'chairil.ptmgahama@gmail.com';
+        Mail::send('member.email.pin_confirm', $dataEmail, function($message) use($emailSend){
+            $message->to($emailSend, 'Konfirmasi Data Pembelian PIN Member Lumbung Network')
+                    ->subject('Konfirmasi Data Pembelian PIN Member Lumbung Network');
+        });
         return redirect()->route('m_listTransactions')
                     ->with('message', 'Order Pin berhasil, silakan lakukan proses transfer')
                     ->with('messageclass', 'success');

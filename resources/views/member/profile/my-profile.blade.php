@@ -18,7 +18,7 @@
                 <div class="col-sm-12">
                     <div class="card-box">
                         <div class="row">
-                            <div class="col-xl-6">
+                            <div class="col-xl-9">
                                     <fieldset class="form-group" disabled>
                                         <label>Nama Lengkap (sesuai dengan Nama pada Rekening Bank)</label>
                                         <input type="text" class="form-control" value="{{$dataUser->full_name}}">
@@ -34,12 +34,6 @@
                                     <fieldset class="form-group" disabled>
                                         <label for="gender">Gender</label>
                                         <input type="text" class="form-control" id="gender" value="{{$gender}}">
-                                    </fieldset>
-                            </div>
-                            <div class="col-xl-3">
-                                    <fieldset class="form-group" disabled>
-                                        <label for="no_ktp">Nomor KTP</label>
-                                        <input type="text" class="form-control" id="no_ktp" value="{{$dataUser->ktp}}">
                                     </fieldset>
                             </div>
                         </div>

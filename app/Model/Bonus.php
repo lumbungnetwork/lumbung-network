@@ -88,11 +88,13 @@ class Bonus extends Model {
                     ->join('bank', 'users.id', '=', 'bank.user_id')
                     ->selectRaw('sum(bonus_member.bonus_price) as total_bonus, '
                             . 'users.name, users.user_code, users.total_sponsor, users.hp, '
-                            . 'bank.bank_name, bank.account_no')
+                            . 'bank.bank_name, bank.account_no,'
+                            . 'users.full_name')
                     ->where('bonus_member.type', '=', 1)
                     ->where('bonus_member.poin_type', '=', 1)
                     ->where('bank.is_active', '=', 1)
                     ->groupBy('users.name')
+                    ->groupBy('users.full_name')
                     ->groupBy('users.user_code')
                     ->groupBy('users.total_sponsor')
                     ->groupBy('bank.bank_name')

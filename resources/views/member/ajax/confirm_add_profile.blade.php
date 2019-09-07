@@ -8,21 +8,13 @@
         <form id="form-add" method="POST" action="/m/add/profile">
             {{ csrf_field() }}
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-8">
                     <div class="form-group">
                         <label>Nama Lengkap</label>
                         <input type="text" class="form-control" readonly="" name="full_name" value="{{$dataRequest->full_name}}">
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>No. KTP</label>
-                        <input type="text" class="form-control" readonly="" name="ktp" value="{{$dataRequest->ktp}}">
-                    </div>
-                </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="form-group">
                         <label>Gender</label>
                         <?php
@@ -35,6 +27,8 @@
                         <input type="hidden" class="form-control" name="gender" value="{{$dataRequest->gender}}">
                     </div>
                 </div>
+            </div>
+            <div class="row">
             </div>
             <div class="row">
                 <div class="col-md-12">

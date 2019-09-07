@@ -38,7 +38,7 @@
                     </ul>
                 </li>
                 <li class="has_sub">
-                    <a class="waves-effect"><i class="zmdi zmdi-money-box"></i> <span> Bonus </span> <span class="menu-arrow"></span></a>
+                    <a class="waves-effect"><i class="zmdi zmdi-card-giftcard"></i> <span> Bonus </span> <span class="menu-arrow"></span></a>
                     <ul class="list-unstyled">
                         <li><a href="{{ URL::to('/') }}/m/summary/bonus">Ringkasan</a></li>
                         <li><a href="{{ URL::to('/') }}/m/sponsor/bonus">Sponsor</a></li>
@@ -49,6 +49,13 @@
                     <ul class="list-unstyled">
                         <li><a href="{{ URL::to('/') }}/m/saldo/bonus">Bonus</a></li>
                         <li><a href="#">eIDR</a></li>
+                    </ul>
+                </li>
+                <li class="has_sub">
+                    <a class="waves-effect"><i class="zmdi zmdi-money"></i> <span> Withdrawal </span> <span class="menu-arrow"></span></a>
+                    <ul class="list-unstyled">
+                        <li><a href="{{ URL::to('/') }}/m/history/wd">History Withdrawal</a></li>
+                        <li><a href="{{ URL::to('/') }}/m/req/wd">Request Withdrawal</a></li>
                     </ul>
                 </li>
                 
