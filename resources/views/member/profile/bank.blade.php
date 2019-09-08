@@ -25,19 +25,19 @@
                             </div>
                         @endif
                         <div class="row">
-                            <div class="col-xl-5">
+                            <div class="col-xl-5 col-xs-12">
                                     <fieldset class="form-group">
                                         <label>Nama Rekening (Sesuai dengan nama di profil)</label>
                                         <input type="text" class="form-control" disabled="" autocomplete="off" value="{{$dataUser->full_name}}">
                                     </fieldset>
                             </div>
-                            <div class="col-xl-3">
+                            <div class="col-xl-3 col-xs-12">
                                     <fieldset class="form-group">
                                         <label for="account_no">Nomor Rekening</label>
                                         <input type="text" class="form-control" id="account_no" name="account_no" autocomplete="off">
                                     </fieldset>
                             </div>
-                            <div class="col-xl-4">
+                            <div class="col-xl-4 col-xs-12">
                                 <fieldset class="form-group">
                                     <label for="bank_name">Nama Bank</label>
                                     <select class="form-control" name="bank_name" id="bank_name">
@@ -64,8 +64,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-12">
-                    <div class="card-box table-responsive">
+                <div class="col-sm-12 card-box table-responsive">
                         <table id="datatable" class="table table-striped table-bordered">
                             <thead>
                                 <tr>
@@ -112,7 +111,6 @@
                             <div class="modal-dialog" role="document">
                             </div>
                         </div>
-                    </div>
                 </div>
             </div>
         </div>

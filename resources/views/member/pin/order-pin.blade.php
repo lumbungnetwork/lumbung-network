@@ -25,7 +25,7 @@
                             </div>
                         @endif
                         <div class="row">
-                            <div class="col-xl-12">
+                            <div class="col-xl-12 col-xs-12">
                                     <fieldset class="form-group">
                                         <label for="input_jml_pin">Jumlah Pin</label>
                                         <input type="text" class="form-control allownumericwithoutdecimal" id="input_jml_pin" name="total_pin" autocomplete="off">

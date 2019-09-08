@@ -25,13 +25,13 @@
                             </div>
                         @endif
                         <div class="row">
-                            <div class="col-xl-2">
+                            <div class="col-xl-2 col-xs-12">
                                 <fieldset class="form-group">
                                     <label for="total_pin">Jumlah Pin</label>
                                     <input type="text" class="form-control allownumericwithoutdecimal" id="total_pin" name="total_pin" autocomplete="off">
                                 </fieldset>
                             </div>
-                            <div class="col-xl-10">
+                            <div class="col-xl-10 col-xs-12">
                                 <fieldset class="form-group">
                                     <label for="to_id">Penerima</label>
                                     <input type="text" class="form-control" id="get_id" autocomplete="off">

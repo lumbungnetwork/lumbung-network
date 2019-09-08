@@ -8,7 +8,7 @@
         <form id="form-add" method="POST" action="/m/add/placement">
             {{ csrf_field() }}
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-12 col-xs-12">
                     <div class="form-group">
                         <label>Member yang diplacement</label>
                         <select class="form-control" name="id_calon" id="id_calon">

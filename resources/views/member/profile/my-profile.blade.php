@@ -18,7 +18,7 @@
                 <div class="col-sm-12">
                     <div class="card-box">
                         <div class="row">
-                            <div class="col-xl-9">
+                            <div class="col-xl-9 col-xs-12">
                                     <fieldset class="form-group" disabled>
                                         <label>Nama Lengkap (sesuai dengan Nama pada Rekening Bank)</label>
                                         <input type="text" class="form-control" value="{{$dataUser->full_name}}">
@@ -30,7 +30,7 @@
                                     $gender = 'Wanita';
                                 }
                             ?>
-                            <div class="col-xl-3">
+                            <div class="col-xl-3 col-xs-12">
                                     <fieldset class="form-group" disabled>
                                         <label for="gender">Gender</label>
                                         <input type="text" class="form-control" id="gender" value="{{$gender}}">
@@ -38,25 +38,25 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xl-4">
+                            <div class="col-xl-4 col-xs-12">
                                 <fieldset class="form-group" disabled>
                                     <label for="alamt_lengkap">Alamat Lengkap</label>
                                     <textarea class="form-control" id="alamt_lengkap" rows="2">{{$dataUser->alamat}}</textarea>
                                 </fieldset>
                             </div>
-                            <div class="col-xl-3">
+                            <div class="col-xl-3 col-xs-12">
                                     <fieldset class="form-group" disabled>
                                         <label for="city">Kota/Kabupaten</label>
                                         <input type="text" class="form-control" id="city" value="{{$dataUser->kota}}">
                                     </fieldset>
                             </div>
-                            <div class="col-xl-3">
+                            <div class="col-xl-3 col-xs-12">
                                     <fieldset class="form-group" disabled>
                                         <label for="province">Provinsi</label>
                                         <input type="text" class="form-control" id="province" value="{{$dataUser->provinsi}}">
                                     </fieldset>
                             </div>
-                            <div class="col-xl-2">
+                            <div class="col-xl-2 col-xs-12">
                                     <fieldset class="form-group" disabled>
                                         <label for="kode_pos">Kode Pos</label>
                                         <input type="text" class="form-control" id="kode_pos" value="{{$dataUser->kode_pos}}">

@@ -8,7 +8,7 @@
         <form id="form-add" method="POST" action="/m/add/bank">
             {{ csrf_field() }}
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-12 col-xs-12">
                     <div class="form-group">
                         <label>Nama Rekening (Sesuai dengan nama di profil)</label>
                         <input type="text" class="form-control" readonly="" value="{{$dataRequest->account_name}}">
@@ -16,13 +16,13 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-6 col-xs-12">
                     <div class="form-group">
                         <label>Nomor Rekening</label>
                         <input type="text" class="form-control" readonly="" name="account_no" value="{{$dataRequest->account_no}}">
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 col-xs-12">
                     <div class="form-group">
                         <label>Nama Bank</label>
                         <input type="text" class="form-control" readonly="" name="bank_name" value="{{$dataRequest->bank_name}}">

@@ -24,18 +24,18 @@
                     </div>
                 @endif
                 <div class="row">
-                    <div class="col-sm-12 col-xs-12">
+                    <div class="col-sm-12">
                         <div class="card">
                             <div class="card-block">
                                 <p class="card-text">Ajukan withdraw anda disini</p>
                                 <div class="row">
-                                    <div class="col-xl-8">
+                                    <div class="col-xl-8 col-xs-12">
                                         <fieldset class="form-group">
                                             <label for="input_jml">Jumlah (Rp.)</label>
                                             <input type="text" class="form-control allownumericwithoutdecimal" id="input_jml" name="jml_wd" autocomplete="off" placeholder="Minimum Withdraw Rp. 20.000">
                                         </fieldset>
                                     </div>
-                                    <div class="col-xl-4">
+                                    <div class="col-xl-4 col-xs-12">
                                         <fieldset class="form-group">
                                             <label>Admin Fee (Rp.)</label>
                                             <input type="text" class="form-control" disabled="" value="6.500">

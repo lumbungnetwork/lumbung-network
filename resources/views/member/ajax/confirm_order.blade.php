@@ -7,7 +7,7 @@
         <form id="form-add" method="post" action="/m/confirm/package">
             {{ csrf_field() }}
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-12 col-xs-12">
                     <div class="form-group">
                         <input type="hidden" name="id_paket" value="{{$data->id_paket}}">
                         <p class="lead text-muted" style="display: block;text-align: center;">Apakah anda ingin mengaktifasi member baru</p>

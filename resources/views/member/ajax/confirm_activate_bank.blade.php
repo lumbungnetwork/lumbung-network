@@ -16,13 +16,13 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-6 col-xs-12">
                     <div class="form-group">
                         <label>Nomor Rekening</label>
                         <input type="text" class="form-control" readonly="" value="{{$getData->account_no}}">
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 col-xs-12">
                     <div class="form-group">
                         <label>Nama Bank</label>
                         <input type="text" class="form-control" readonly="" value="{{$getData->bank_name}}">

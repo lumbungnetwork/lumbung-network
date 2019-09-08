@@ -11,13 +11,13 @@
                         $saldo_wd = $data->saldo - $data->admin_fee;
                     ?>
                     <div class="row">
-                        <div class="col-md-7">
+                        <div class="col-md-7 col-xs-12">
                             <div class="form-group">
                                 <label>Total Withdraw</label>
                                 <input type="text" class="form-control" readonly="" value="Rp. {{number_format($saldo_wd, 0, ',', '.')}}">
                             </div>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-md-5 col-xs-12">
                             <div class="form-group">
                                 <label>Biaya Admin (fee)</label>
                                 <input type="text" class="form-control" readonly="" value="Rp. {{number_format($data->admin_fee, 0, ',', '.')}}">

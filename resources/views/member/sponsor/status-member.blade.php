@@ -14,13 +14,12 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-12">
+                <div class="col-sm-12 card-box table-responsive">
                     @if($dataOrder > 0)
                         <div class="alert alert-warning" role="alert">
                             <b> Permintaan order paket (Total {{$dataOrder}}) - </b> <a href="{{ URL::to('/') }}/m/list/order-package" class="label label-primary">link</a>
                         </div>
                     @endif
-                    <div class="card-box table-responsive">
                         @if ( Session::has('message') )
                             <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible fade in" role="alert">
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -73,7 +72,6 @@
                                 @endif
                             </tbody>
                         </table>
-                    </div>
                 </div>
             </div>
         </div>

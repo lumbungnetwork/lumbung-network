@@ -27,7 +27,7 @@
                         <form class="login100-form validate-form" method="get" action="/m/my/binary">
                         {{ csrf_field() }}
                         <div class="row">
-                            <div class="col-xs-12">
+                            <div class="col-xs-12 col-xs-12">
                                 <fieldset class="form-group">
                                     <label>Cari Member (By Username)</label>
                                     <input type="text" class="form-control" id="get_id" autocomplete="off">

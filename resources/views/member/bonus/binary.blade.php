@@ -14,8 +14,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-12">
-                    <div class="card-box table-responsive">
+                <div class="col-sm-12 card-box table-responsive">
                         @if ( Session::has('message') )
                             <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible fade in" role="alert">
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -35,7 +34,6 @@
                             </thead>
                             
                         </table>
-                    </div>
                 </div>
             </div>
             <!-- end row -->

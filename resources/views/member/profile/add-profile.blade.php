@@ -26,13 +26,13 @@
                         @endif
                         {{ csrf_field() }}
                         <div class="row">
-                            <div class="col-xl-8">
+                            <div class="col-xl-8 col-xs-12">
                                     <fieldset class="form-group">
                                         <label for="input_nama_lengkap">Nama Lengkap (sesuai dengan Nama pada Rekening Bank)</label>
                                         <input type="text" class="form-control" id="full_name" name="full_name" autocomplete="off">
                                     </fieldset>
                             </div>
-                            <div class="col-xl-4">
+                            <div class="col-xl-4 col-xs-12">
                                     <fieldset class="form-group">
                                         <label for="gender">Gender</label>
                                         <select class="form-control" name="gender" id="gender">
@@ -43,19 +43,19 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xl-4">
+                            <div class="col-xl-4 col-xs-12">
                                 <fieldset class="form-group">
                                     <label for="alamat">Alamat Lengkap</label>
                                     <textarea class="form-control" id="alamat" rows="2" name="alamat" autocomplete="off"></textarea>
                                 </fieldset>
                             </div>
-                            <div class="col-xl-3">
+                            <div class="col-xl-3 col-xs-12">
                                     <fieldset class="form-group">
                                         <label for="kota">Kota/Kabupaten</label>
                                         <input type="text" class="form-control" id="kota" name="kota" autocomplete="off">
                                     </fieldset>
                             </div>
-                            <div class="col-xl-3">
+                            <div class="col-xl-3 col-xs-12">
                                     <fieldset class="form-group">
                                         <label for="provinsi">Provinsi</label>
                                         <select class="form-control" name="provinsi" id="provinsi">
@@ -96,7 +96,7 @@
                                         </select>
                                     </fieldset>
                             </div>
-                            <div class="col-xl-2">
+                            <div class="col-xl-2 col-xs-12">
                                     <fieldset class="form-group">
                                         <label for="kode_pos">Kode Pos</label>
                                         <input type="text" class="form-control" id="kode_pos" name="kode_pos" autocomplete="off">
