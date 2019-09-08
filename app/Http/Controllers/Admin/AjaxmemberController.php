@@ -288,11 +288,11 @@ class AjaxmemberController extends Controller {
             $id_bank = $getMyActiveBank->id;
         }
         $dataAll = (object) array(
-            'req_wd' => $totalBonus,
+            'req_wd' => (int) $totalBonus,
             'total_bonus' => $totalBonus,
             'total_wd' => $totalWD->total_wd,
             'total_tunda' => $totalWD->total_tunda,
-            'saldo' => $totalBonusAll->total_bonus - ($totalWD->total_wd + $totalWD->total_tunda + $totalWD->total_fee_admin),
+            'saldo' => (int) ($totalBonusAll->total_bonus - ($totalWD->total_wd + $totalWD->total_tunda + $totalWD->total_fee_admin)),
             'admin_fee' => 6500,
             'bank' => $id_bank
         );

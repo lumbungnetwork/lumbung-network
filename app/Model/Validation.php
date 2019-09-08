@@ -188,7 +188,7 @@ class Validation extends Model {
             $canInsert = (object) array('can' => false, 'pesan' => 'Saldo yang tersedia tidak mencukupi untuk withdraw. batas minimum withdraw adalah Rp. 20.000 dengan biaya admin (fee) Rp. 6.500');
             return $canInsert;
         }
-        if($data->req_wd < $data->saldo){
+        if(($data->req_wd - $data->saldo) > 0){
             $canInsert = (object) array('can' => false, 'pesan' => 'Pengajuan withdrawal anda kurang dari sisa saldo');
             return $canInsert;
         }

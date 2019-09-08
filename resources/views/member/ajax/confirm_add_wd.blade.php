@@ -8,7 +8,7 @@
                 <form id="form-add" method="POST" action="/m/request/wd">
                     {{ csrf_field() }}
                     <?php
-                        $saldo_wd = $data->saldo - $data->admin_fee;
+                        $saldo_wd = $data->req_wd - $data->admin_fee;
                     ?>
                     <div class="row">
                         <div class="col-md-7 col-xs-12">

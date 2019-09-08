@@ -171,7 +171,19 @@ class BonusmemberController extends Controller {
         if(!in_array($dataUser->user_type, $onlyUser)){
             return redirect()->route('mainDashboard');
         }
+        $modelBonus = new Bonus;
+        $modelWD = new Transferwd;
+        $totalBonus = $modelBonus->getTotalBonus($dataUser);
+        $totalWD = $modelWD->getTotalDiTransfer($dataUser);
+        $dataAll = (object) array(
+            'total_bonus' => $totalBonus->total_bonus,
+            'total_wd' => $totalWD->total_wd,
+            'total_tunda' => $totalWD->total_tunda,
+            'admin_fee' => 6500,
+            'total_fee_admin' => $totalWD->total_fee_admin
+        );
         return view('member.bonus.req-wd')
+                ->with('dataAll', $dataAll)
                 ->with('dataUser', $dataUser);
     }
     
