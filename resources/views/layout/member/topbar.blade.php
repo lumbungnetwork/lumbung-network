@@ -1,7 +1,7 @@
 <div class="topbar">
     <div class="topbar-left">
-        <a class="logo">
-            <span>Lumbung</span>
+        <a class="logo" href="{{ URL::to('/') }}/adm/dashboard">
+            <img src="/image/logo_lumbung2.png" style="width: 60px;">
         </a>
     </div>
     <nav class="navbar navbar-custom" style="background-color: #ffcc00;">
