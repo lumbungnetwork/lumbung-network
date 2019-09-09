@@ -54,7 +54,7 @@
                                         <tbody>
                                             <tr>
                                                 <td style="word-wrap:break-word;font-size:0px;padding:20px 30px 18px;" align="left">
-                                                    <div style="cursor:auto;color:#000000;font-family:Open Sans, Proxima Nova, Arial, Arial, Helvetica, sans-serif;font-size:20px;line-height:22px;text-align:left;">Berikut Data Member yang Melakukan Proses Withdraw {{date('d F Y')}}</div>
+                                                    <div style="cursor:auto;color:#000000;font-family:Open Sans, Proxima Nova, Arial, Arial, Helvetica, sans-serif;font-size:20px;line-height:22px;text-align:left;">Berikut Data Member yang Melakukan Proses Withdraw {{date('d F Y',strtotime("-1 days"))}}</div>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -91,7 +91,7 @@
                                         <tbody>
                                             @if($dataEmail != null)
                                                 <?php $no = 0; ?>
-                                                @if($dataEmail as $row)
+                                                <?php foreach($dataEmail as $row){ ?>
                                                     <?php $no++; ?>
                                                     <tr>
                                                         <td style="word-wrap:break-word;font-size:0px;padding:0px 30px 18px;" align="left">
@@ -125,7 +125,7 @@
                                                             </div>
                                                         </td>
                                                     </tr>
-                                                @endif
+                                                <?php } ?>
                                             @endif
                                         </tbody>
                                     </table>

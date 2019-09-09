@@ -376,7 +376,7 @@ class MemberController extends Controller {
             'price' => $harga,
             'unique_digit' => $rand,
         );
-        $emailSend = 'chairil.ptmgahama@gmail.com';
+        $emailSend = 'noreply@lumbung.network';
         Mail::send('member.email.pin_confirm', $dataEmail, function($message) use($emailSend){
             $message->to($emailSend, 'Konfirmasi Data Pembelian PIN Member Lumbung Network')
                     ->subject('Konfirmasi Data Pembelian PIN Member Lumbung Network');

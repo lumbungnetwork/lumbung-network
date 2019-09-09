@@ -21,15 +21,16 @@ class CronPushNotif extends Command {
 
     public function handle() {
         $modelWD = new Transferwd;
-        $getData = $modelWD->getAllRequestWD();
+        $getData = $modelWD->getAllRequestWDYesterday();
         $dataEmail = array(
             'dataEmail' => $getData
         );
-        dd($dataEmail);
-        $emailSend = 'chairil.ptmgahama@gmail.com';
+//        dd($dataEmail['dataEmail']);
+        $emailSend = 'chairil.hakim@domikado.com';
         Mail::send('member.email.push_notif', $dataEmail, function($message) use($emailSend){
-            $message->to($emailSend, 'Data Request WD Member '.date('d F Y').' Lumbung Network')
-                    ->subject('Data Request WD Member '.date('d F Y').' Lumbung Network');
+            $yesterday = date('d F Y',strtotime("-1 days"));
+            $message->to($emailSend, 'Data Request WD Member '.$yesterday.' Lumbung Network')
+                    ->subject('Data Request WD Member '.$yesterday.' Lumbung Network');
         });
     }
     
