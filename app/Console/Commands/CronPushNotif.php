@@ -26,7 +26,7 @@ class CronPushNotif extends Command {
             'dataEmail' => $getData
         );
 //        dd($dataEmail['dataEmail']);
-        $emailSend = 'chairil.hakim@domikado.com';
+        $emailSend = 'noreply@lumbung.network';
         Mail::send('member.email.push_notif', $dataEmail, function($message) use($emailSend){
             $yesterday = date('d F Y',strtotime("-1 days"));
             $message->to($emailSend, 'Data Request WD Member '.$yesterday.' Lumbung Network')
