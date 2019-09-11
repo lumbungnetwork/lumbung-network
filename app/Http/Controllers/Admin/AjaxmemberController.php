@@ -98,7 +98,7 @@ class AjaxmemberController extends Controller {
     
     public function postCekAddTransaction(Request $request){
         $modelBank = New Bank;
-        $getPerusahaanBank = $modelBank->getBankPerusahaan();
+        $getPerusahaanBank = $modelBank->getBankPerusahaanID($request->id_bank);
         $data = (object) array('id_trans' => $request->id_trans);
         return view('member.ajax.confirm_add_transaction')
                         ->with('bankPerusahaan', $getPerusahaanBank)

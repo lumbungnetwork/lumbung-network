@@ -26,6 +26,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h5 class="card-title">List</h5>
+                        <a class="btn btn-info btn-fill btn-sm" href="{{ URL::to('/') }}/adm/add/bank">Tambah Bank</a>
                     </div>
                     <div class="card-body">
                         @if ( Session::has('message') )
@@ -49,12 +50,14 @@
                                 
                                 <tbody>
                                     @if($getData != null)
-                                        <tr>
-                                            <td>{{$getData->bank_name}}</td>
-                                            <td>{{$getData->account_no}}</td>
-                                            <td>{{$getData->account_name}}</td>
-                                            <td><a rel="tooltip"  data-toggle="modal" data-target="#editBankPerusahaan" class="text-primary" href="{{ URL::to('/') }}/ajax/adm/bank">edit</a></td>
-                                        </tr>
+                                        @foreach($getData as $row)
+                                            <tr>
+                                                <td>{{$row->bank_name}}</td>
+                                                <td>{{$row->account_name}}</td>
+                                                <td>{{$row->account_no}}</td>
+                                                <td><a rel="tooltip"  data-toggle="modal" data-target="#editBankPerusahaan" class="text-primary" href="{{ URL::to('/') }}/ajax/adm/bank/{{$row->id}}">edit</a></td>
+                                            </tr>
+                                        @endforeach
                                     @endif
                                 </tbody>
                             </table>

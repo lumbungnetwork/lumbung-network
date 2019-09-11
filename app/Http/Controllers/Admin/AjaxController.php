@@ -61,10 +61,10 @@ class AjaxController extends Controller {
                 ->with('getData', $getData);
     }
     
-    public function getBankPerusahaan(){
+    public function getBankPerusahaan($id){
         $dataUser = Auth::user();
         $modelBank = new Bank;
-        $getPerusahaanBank = $modelBank->getBankPerusahaan();
+        $getPerusahaanBank = $modelBank->getBankPerusahaanID($id);
         return view('admin.ajax.bank')
                 ->with('headerTitle', 'Edit Bank Perusahaan')
                 ->with('getData', $getPerusahaanBank)

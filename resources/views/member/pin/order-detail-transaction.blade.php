@@ -39,14 +39,23 @@
 
                                                 <div class="pull-xs-left m-t-30">
                                                     <address>
-                                                      <strong>Transfer Ke:</strong>
-                                                      <br>
-                                                      Nama Rekening : <strong>{{$bankPerusahaan->account_name}}</strong>
-                                                      <br>
-                                                      Nama Bank: <strong>{{$bankPerusahaan->bank_name}}</strong>
-                                                      <br>
-                                                      No. Rekening: <strong>{{$bankPerusahaan->account_no}}</strong>
-                                                      </address>
+                                                        @if($getData->bank_perusahaan_id != null)
+                                                            <br>
+                                                            Nama Rekening : <strong>{{$bankPerusahaan->account_name}}</strong>
+                                                            <br>
+                                                            Nama Bank: <strong>{{$bankPerusahaan->bank_name}}</strong>
+                                                            <br>
+                                                            No. Rekening: <strong>{{$bankPerusahaan->account_no}}</strong>
+                                                        @endif
+                                                        @if($getData->bank_perusahaan_id == null)
+                                                        <select class="form-control" name="bank_perusahaan_id" id="bank_name">
+                                                            <option value="0">- Pilih Bank -</option>
+                                                            @foreach($bankPerusahaan as $rowBank)
+                                                                <option value="{{$rowBank->id}}">{{$rowBank->bank_name}} ({{$rowBank->account_name}} - {{$rowBank->account_no}}) </option>
+                                                            @endforeach
+                                                        </select>
+                                                        @endif
+                                                    </address>
                                                 </div>
                                                 <?php
                                                     $status = 'Tuntas';
@@ -121,6 +130,14 @@
                                             <div class="clearfix"></div>
                                         </div>
                                         @endif
+                                        @if($getData->status == 1 || $getData->status == 2 || $getData->status == 3)
+                                        <div class="hidden-print">
+                                            <div class="pull-xs-right">
+                                                <a  class="btn btn-success" href="{{ URL::to('/') }}/m/list/transactions">Kembali</a>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                        @endif
                                     </div>
                         <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document" id="confirmDetail">
@@ -148,9 +165,10 @@
     <script>
            function inputSubmit(){
                 var id_trans = $("#id_trans").val();
+                var id_bank = $("#bank_name").val();
                  $.ajax({
                      type: "GET",
-                     url: "{{ URL::to('/') }}/m/cek/add-transaction?id_trans="+id_trans,
+                     url: "{{ URL::to('/') }}/m/cek/add-transaction?id_trans="+id_trans+"&id_bank="+id_bank,
                      success: function(url){
                          $("#confirmDetail" ).empty();
                          $("#confirmDetail").html(url);

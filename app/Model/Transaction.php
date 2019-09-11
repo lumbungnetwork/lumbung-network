@@ -54,9 +54,11 @@ class Transaction extends Model {
     public function getDetailTransactionsAdmin($id, $user_id){
         $sql = DB::table('transaction')
                         ->join('users', 'transaction.user_id', '=', 'users.id')
+                        ->join('bank', 'transaction.bank_perusahaan_id', '=', 'bank.id')
                         ->selectRaw('users.name, users.hp, users.user_code, '
                                 . 'transaction.transaction_code, transaction.type, transaction.total_pin, transaction.price, transaction.status,'
-                                . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id')
+                                . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id, '
+                                . 'bank.bank_name, bank.account_name, bank.account_no')
                         ->where('transaction.id', '=', $id)
                         ->where('transaction.user_id', '=', $user_id)
                         ->where('transaction.status', '=', 1)

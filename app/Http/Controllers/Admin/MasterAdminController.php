@@ -260,15 +260,47 @@ class MasterAdminController extends Controller {
             return redirect()->route('mainDashboard');
         }
         $modelBank = new Bank;
-        $getPerusahaanBank = $modelBank->getBankPerusahaan();
+        $getPerusahaanBank = $modelBank->getBankPerusahaanID($request->id);
         $dataUpdate = array(
             'bank_name' => $request->bank_name,
             'account_no' => $request->account_no,
             'account_name' => $request->account_name,
         );
-        $modelBank->getUpdateBank('id', $getPerusahaanBank->id, $dataUpdate);
+        $modelBank->getUpdateBank('id', $request->id, $dataUpdate);
         return redirect()->route('adm_bankPerusahaan')
                 ->with('message', 'Berhasil update bank perusahaan')
+                ->with('messageclass', 'success');
+    }
+    
+    public function getAddBankPerusahaan(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        return view('admin.bank.add-bank')
+                ->with('headerTitle', 'Bank Perusahaan')
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postAddBankPerusahaan(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBank = new Bank;
+        $dataInsert = array(
+            'user_id' => 2,
+            'bank_name' => $request->bank_name,
+            'account_no' => $request->account_no,
+            'account_name' => $request->account_name,
+            'bank_type' => 1,
+            'active_at' => date('Y-m-d H:i:s')
+        );
+        $modelBank->getInsertBank($dataInsert);
+        return redirect()->route('adm_bankPerusahaan')
+                ->with('message', 'Berhasil tambah bank perusahaan')
                 ->with('messageclass', 'success');
     }
     

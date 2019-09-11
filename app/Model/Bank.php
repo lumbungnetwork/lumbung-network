@@ -35,6 +35,16 @@ class Bank extends Model {
                     ->selectRaw('id, bank_name, account_no, account_name')
                     ->where('bank_type', '=', 1)
                     ->where('is_active', '=', 1)
+                    ->get();
+        return $sql;
+    }
+    
+    public function getBankPerusahaanID($id){
+        $sql = DB::table('bank')
+                    ->selectRaw('id, bank_name, account_no, account_name')
+                    ->where('id', '=', $id)
+                    ->where('bank_type', '=', 1)
+                    ->where('is_active', '=', 1)
                     ->first();
         return $sql;
     }

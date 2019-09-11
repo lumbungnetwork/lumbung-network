@@ -29,6 +29,8 @@ Route::prefix('/')->group(function () {
         Route::post('/adm/package', 'Admin\MasterAdminController@postUpdatePackage')->middleware('auth');
         Route::get('/adm/bank', 'Admin\MasterAdminController@getBankPerusahaan')->name('adm_bankPerusahaan')->middleware('auth');
         Route::post('/adm/bank', 'Admin\MasterAdminController@postBankPerusahaan')->middleware('auth');
+        Route::get('/adm/add/bank', 'Admin\MasterAdminController@getAddBankPerusahaan')->name('adm_addBankPerusahaan')->middleware('auth');
+        Route::post('/adm/add/bank', 'Admin\MasterAdminController@postAddBankPerusahaan')->middleware('auth');
         Route::get('/adm/bonus-start', 'Admin\MasterAdminController@getBonusStart')->name('adm_bonusStart')->middleware('auth');
         Route::post('/adm/bonus-start', 'Admin\MasterAdminController@postBonusStart')->middleware('auth');
         
@@ -51,7 +53,7 @@ Route::prefix('/')->group(function () {
         Route::get('/ajax/adm/admin/{type}/{id}', 'Admin\AjaxController@getAdminById')->middleware('auth');
         Route::get('/ajax/adm/package/{id}', 'Admin\AjaxController@getPackageById')->middleware('auth');
         Route::get('/ajax/adm/cek/transaction/{id}/{user_id}', 'Admin\AjaxController@getCekTransactionById')->middleware('auth');
-        Route::get('/ajax/adm/bank', 'Admin\AjaxController@getBankPerusahaan')->middleware('auth');
+        Route::get('/ajax/adm/bank/{id}', 'Admin\AjaxController@getBankPerusahaan')->middleware('auth');
         Route::get('/ajax/adm/kirim-paket/{id}/{user_id}', 'Admin\AjaxController@getKirimPaket')->middleware('auth');
         Route::get('/ajax/adm/cek/kirim-paket', 'Admin\AjaxController@getCekKirimPaket')->middleware('auth');
         Route::get('/ajax/adm/cek/reject-wd/{id}', 'Admin\AjaxController@getCekRejectWD')->middleware('auth');

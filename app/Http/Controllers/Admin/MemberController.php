@@ -424,7 +424,11 @@ class MemberController extends Controller {
         if($getTrans == null){
             return redirect()->route('mainDashboard');
         }
-        $getPerusahaanBank = $modelBank->getBankPerusahaan();
+        if($getTrans->bank_perusahaan_id != null){
+            $getPerusahaanBank = $modelBank->getBankPerusahaanID($getTrans->bank_perusahaan_id);
+        } else {
+            $getPerusahaanBank = $modelBank->getBankPerusahaan();
+        }
         return view('member.pin.order-detail-transaction')
                 ->with('headerTitle', 'Transaction')
                 ->with('bankPerusahaan', $getPerusahaanBank)
@@ -448,7 +452,9 @@ class MemberController extends Controller {
         $modelSettingTrans = New Transaction;
         $id_trans = $request->id_trans;
         $dataUpdate = array(
-            'status' => 1
+            'status' => 1,
+            'bank_perusahaan_id' => $request->bank_perusahaan_id,
+            'updated_at' => date('Y-m-d H:i:s')
         );
         $modelSettingTrans->getUpdateTransaction('id', $id_trans, $dataUpdate);
         return redirect()->route('m_listTransactions')

@@ -2,13 +2,15 @@
     <div class="modal-header">
         <h5 class="modal-title" id="modalLabel">Konfirmasi Transfer</h5>
     </div>
+    @if($bankPerusahaan != null)
     <div class="modal-body"  style="overflow-y: auto;max-height: 330px;">
         <form id="form-add" method="POST" action="/m/add/transaction">
             {{ csrf_field() }}
             <div class="row">
-                <div class="col-md-12 col-xs-12">
+                <div class="col-md-12">
                     <div class="form-group">
                         <input type="hidden" name="id_trans" value="{{$data->id_trans}}">
+                        <input type="hidden" name="bank_perusahaan_id" value="{{$bankPerusahaan->id}}">
                         <p class="lead text-muted" style="display: block;text-align: center;">Untuk mendapatkan Pin,</p>
                         <p class="lead text-muted" style="display: block;text-align: center;">Silakan transfer ke rekening tersebut.</p>
                     </div>
@@ -42,4 +44,14 @@
         <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Tutup</button>
         <button type="button" class="btn btn-primary waves-effect waves-light" id="submit" onclick="confirmSubmit()">Submit</button>
     </div>
+    @endif
+    @if($bankPerusahaan == null)
+    <div class="modal-body"  style="overflow-y: auto;max-height: 330px;">
+        <h4 class="text-danger" style="text-align: center;"> Anda belum memilih bank untuk ditransfer</h4>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Tutup</button>
+    </div>
+    @endif
+    
 </div>
