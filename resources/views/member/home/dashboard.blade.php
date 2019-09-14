@@ -96,12 +96,13 @@
                             if($saldo < 0){
                                 $saldo = 0;
                             }
+                            $total_wd = $dataAll->total_wd + $dataAll->fee_tuntas;
                         ?>
                         <div class="col-xs-12 col-md-6 col-lg-6 col-xl-4">
                             <div class="card-box tilebox-one">
                                 <i class="icon-rocket pull-xs-right text-muted text-warning"></i>
                                 <h6 class="text-muted text-uppercase m-b-20">Bonus Ditransfer (Rp.)</h6>
-                                <h2 class="m-b-20" data-plugin="counterup">{{number_format($dataAll->total_wd, 0, ',', '.')}}</h2>
+                                <h2 class="m-b-20" data-plugin="counterup">{{number_format($total_wd, 0, ',', '.')}}</h2>
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-6 col-lg-6 col-xl-4">

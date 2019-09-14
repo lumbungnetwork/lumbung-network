@@ -34,7 +34,9 @@ class Transferwd extends Model {
                     ->selectRaw('sum(case when status = 1 then wd_total else 0 end) as total_wd, '
                             . 'sum(case when status = 0 then wd_total else 0 end) as total_tunda,'
                             . 'sum(case when status = 2 then wd_total else 0 end) as  total_cancel,'
-                            . 'sum(case when status IN (0, 1) then admin_fee else 0 end) as total_fee_admin')
+                            . 'sum(case when status IN (0, 1) then admin_fee else 0 end) as total_fee_admin,'
+                            . 'sum(case when status = 1 then admin_fee else 0 end) as fee_tuntas,'
+                            . 'sum(case when status = 0 then admin_fee else 0 end) as fee_tunda')
                     ->where('user_id', '=', $data->id)
                     ->first();
         $total_wd = 0;
@@ -53,11 +55,21 @@ class Transferwd extends Model {
         if($sql->total_fee_admin != null){
             $total_fee_admin = $sql->total_fee_admin;
         }
+        $fee_tuntas = 0;
+        if($sql->fee_tuntas != null){
+            $fee_tuntas = $sql->fee_tuntas;
+        }
+        $fee_tunda = 0;
+        if($sql->fee_tunda != null){
+            $fee_tunda = $sql->fee_tunda;
+        }
         $return = (object) array(
             'total_wd' => $total_wd,
             'total_tunda' => $total_tunda,
             'total_cancel' => $total_cancel,
-            'total_fee_admin' => $total_fee_admin
+            'total_fee_admin' => $total_fee_admin,
+            'fee_tuntas' => $fee_tuntas,
+            'fee_tunda' => $fee_tunda
         );
         return $return;
     }

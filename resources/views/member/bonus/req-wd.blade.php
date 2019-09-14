@@ -24,6 +24,14 @@
                     </div>
                 @endif
                 <div class="row">
+                    <?php
+                        $saldo = $dataAll->total_bonus - $dataAll->total_wd - $dataAll->total_tunda - $dataAll->total_fee_admin;
+                        if($saldo < 0){
+                            $saldo = 0;
+                        }
+                        $total_wd = $dataAll->total_wd + $dataAll->fee_tuntas;
+                        $total_tunda = $dataAll->total_tunda + $dataAll->fee_tunda;
+                    ?>
                     <div class="col-xs-12 col-md-6 col-lg-6 col-xl-3">
                         <div class="card-box tilebox-one">
                             <i class="icon-trophy pull-xs-right text-muted text-warning"></i>
@@ -36,7 +44,7 @@
                         <div class="card-box tilebox-one">
                             <i class="icon-rocket pull-xs-right text-muted text-success"></i>
                             <h6 class="text-muted text-uppercase m-b-20">Ditransfer (Rp.)</h6>
-                            <h2 class="m-b-20" data-plugin="counterup">{{number_format($dataAll->total_wd, 0, ',', '.')}}</h2>
+                            <h2 class="m-b-20" data-plugin="counterup">{{number_format($total_wd, 0, ',', '.')}}</h2>
                         </div>
                     </div>
 
@@ -44,15 +52,10 @@
                         <div class="card-box tilebox-one">
                             <i class="icon-speedometer pull-xs-right text-muted text-warning"></i>
                             <h6 class="text-muted text-uppercase m-b-20">Proses Transfer (Rp.)</h6>
-                            <h2 class="m-b-20" data-plugin="counterup">{{number_format($dataAll->total_tunda, 0, ',', '.')}}</h2>
+                            <h2 class="m-b-20" data-plugin="counterup">{{number_format($total_tunda, 0, ',', '.')}}</h2>
                         </div>
                     </div>
-                <?php
-                $saldo = $dataAll->total_bonus - $dataAll->total_wd - $dataAll->total_tunda - $dataAll->total_fee_admin;
-                if($saldo < 0){
-                    $saldo = 0;
-                }
-                ?>
+                
                     <div class="col-xs-12 col-md-6 col-lg-6 col-xl-3">
                         <div class="card-box tilebox-one">
                             <i class="icon-lock pull-xs-right text-muted text-warning"></i>

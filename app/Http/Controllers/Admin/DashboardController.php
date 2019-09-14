@@ -84,6 +84,8 @@ class DashboardController extends Controller {
             'total_wd' => $totalWD->total_wd,
             'total_tunda' => $totalWD->total_tunda,
             'total_fee_admin' => $totalWD->total_fee_admin,
+            'fee_tuntas' => $totalWD->fee_tuntas,
+            'fee_tunda' => $totalWD->fee_tunda,
             'stock_wd' => $stock_wd,
             'kanan' => $kanan,
             'kiri' => $kiri,

@@ -99,7 +99,7 @@
                             <div class="col-xl-2 col-xs-12">
                                     <fieldset class="form-group">
                                         <label for="kode_pos">Kode Pos</label>
-                                        <input type="text" class="form-control" id="kode_pos" name="kode_pos" autocomplete="off">
+                                        <input type="text" class="form-control allownumericwithoutdecimal" id="kode_pos" name="kode_pos" autocomplete="off">
                                     </fieldset>
                             </div>
                         </div>
@@ -147,6 +147,13 @@
             var dataInput = $("#form-add").serializeArray();
             $('#form-add').submit();
         }
+        
+        $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {    
+           $(this).val($(this).val().replace(/[^\d].+/, ""));
+            if ((event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+        });
 
 </script>
 @stop

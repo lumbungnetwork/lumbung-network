@@ -28,7 +28,7 @@
                             <div class="col-xl-12 col-xs-12">
                                     <fieldset class="form-group">
                                         <label for="input_email">Email</label>
-                                        <input type="email" class="form-control" id="input_email" name="email" autocomplete="off">
+                                        <input type="email" class="form-control" id="input_email" name="email" autocomplete="off" required="">
                                     </fieldset>
                             </div>
                         </div>
@@ -36,7 +36,7 @@
                             <div class="col-xl-12 col-xs-12">
                                     <fieldset class="form-group">
                                         <label for="input_hp">No. HP</label>
-                                        <input type="text" class="form-control" id="input_hp" name="hp" autocomplete="off">
+                                        <input type="text" class="form-control allownumericwithoutdecimal" id="input_hp" name="hp" autocomplete="off" required="">
                                     </fieldset>
                             </div>
                         </div>
@@ -44,7 +44,7 @@
                             <div class="col-xl-12 col-xs-12">
                                     <fieldset class="form-group">
                                         <label for="input_username">Username (Login User)</label>
-                                        <input type="text" class="form-control" id="input_username" name="user_code" autocomplete="off">
+                                        <input type="text" class="form-control" id="input_username" name="user_code" autocomplete="off" required="">
                                     </fieldset>
                             </div>
                         </div>
@@ -52,13 +52,13 @@
                             <div class="col-xl-6 col-xs-12">
                                     <fieldset class="form-group">
                                         <label for="input_password">Password</label>
-                                        <input type="password" class="form-control" id="input_password" name="password">
+                                        <input type="password" class="form-control" id="input_password" name="password" required="">
                                     </fieldset>
                             </div>
                             <div class="col-xl-6 col-xs-12">
                                     <fieldset class="form-group">
                                         <label for="input_repassword">Ketik Ulang Password</label>
-                                        <input type="password" class="form-control" id="input_repassword" name="repassword">
+                                        <input type="password" class="form-control" id="input_repassword" name="repassword" required="">
                                     </fieldset>
                             </div>
                         </div>
@@ -105,6 +105,13 @@
             var dataInput = $("#form-add").serializeArray();
             $('#form-add').submit();
         }
+        
+        $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {    
+           $(this).val($(this).val().replace(/[^\d].+/, ""));
+            if ((event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+        });
 
 </script>
 @stop

@@ -37,7 +37,9 @@ class BonusmemberController extends Controller {
             'total_bonus' => $totalBonus->total_bonus,
             'total_wd' => $totalWD->total_wd,
             'total_tunda' => $totalWD->total_tunda,
-            'total_fee_admin' => $totalWD->total_fee_admin
+            'total_fee_admin' => $totalWD->total_fee_admin,
+            'fee_tuntas' => $totalWD->fee_tuntas,
+            'fee_tunda' => $totalWD->fee_tunda
         );
         return view('member.bonus.summary')
                 ->with('dataAll', $dataAll)
@@ -180,7 +182,9 @@ class BonusmemberController extends Controller {
             'total_wd' => $totalWD->total_wd,
             'total_tunda' => $totalWD->total_tunda,
             'admin_fee' => 6500,
-            'total_fee_admin' => $totalWD->total_fee_admin
+            'total_fee_admin' => $totalWD->total_fee_admin,
+            'fee_tuntas' => $totalWD->fee_tuntas,
+            'fee_tunda' => $totalWD->fee_tunda
         );
         return view('member.bonus.req-wd')
                 ->with('dataAll', $dataAll)

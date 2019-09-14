@@ -34,7 +34,7 @@
                             <div class="col-xl-3 col-xs-12">
                                     <fieldset class="form-group">
                                         <label for="account_no">Nomor Rekening</label>
-                                        <input type="text" class="form-control" id="account_no" name="account_no" autocomplete="off">
+                                        <input type="text" class="form-control allownumericwithoutdecimal" id="account_no" name="account_no" autocomplete="off">
                                     </fieldset>
                             </div>
                             <div class="col-xl-4 col-xs-12">
@@ -140,6 +140,13 @@
             var dataInput = $("#form-add").serializeArray();
             $('#form-add').submit();
         }
+        
+        $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {    
+           $(this).val($(this).val().replace(/[^\d].+/, ""));
+            if ((event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+        });
 
 </script>
 <script type="text/javascript">
