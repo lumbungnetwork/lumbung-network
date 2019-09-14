@@ -61,8 +61,8 @@
                                             <td>{{$no}}</td>
                                             <td>{{date('d M Y', strtotime($row->wd_date))}}</td>
                                             <td>{{number_format($jml_WD, 0, ',', '.')}}</td>
-                                            <td>{{number_format($row->wd_total, 0, ',', '.')}}</td>
                                             <td>{{number_format($row->admin_fee, 0, ',', '.')}}</td>
+                                            <td>{{number_format($row->wd_total, 0, ',', '.')}}</td>
                                             <td><label class="label label-{{$label}}">{{$status}}</label></td>
                                             <td>{{$row->reason}}</td>
                                         </tr>
