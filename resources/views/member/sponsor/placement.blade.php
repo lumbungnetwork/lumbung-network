@@ -64,11 +64,13 @@
                                                         <div class="node-item-root">
                                                             <div class="binary-node-single-item user-block user-0">
                                                                 <div class="images_wrapper" style="font-size: 40px;margin: 18px 0;">
+                                                                    <a href="{{ URL::to('/') }}/m/add/placement?get_id={{$getData[0]->id}}">
                                                                     @if($getData[0]->gender == 2)
                                                                         <i class="icon-user-female"></i>
                                                                     @else 
                                                                         <i class="icon-user"></i>
                                                                     @endif
+                                                                    </a>
                                                                 </div>
                                                                 <span class="wrap_content ">{{$getData[0]->user_code}}</span>
                                                             </div>
@@ -87,11 +89,13 @@
                                                                         @if($getData[1] != null)
                                                                         <div class="binary-node-single-item user-block user-9">
                                                                             <div class="images_wrapper" style="font-size: 40px;margin: 18px 0;">
+                                                                                <a href="{{ URL::to('/') }}/m/add/placement?get_id={{$getData[1]->id}}">
                                                                                 @if($getData[1]->gender == 2)
                                                                                     <i class="icon-user-female"></i>
                                                                                 @else 
                                                                                     <i class="icon-user"></i>
                                                                                 @endif
+                                                                                </a>
                                                                             </div>
                                                                             <span class="wrap_content ">{{$getData[1]->user_code}}</span>
                                                                         </div>
@@ -114,11 +118,13 @@
                                                                                 @if($getData[3] != null)
                                                                                 <div class="binary-node-single-item user-block user-9">
                                                                                     <div class="images_wrapper" style="font-size: 40px;margin: 18px 0;">
+                                                                                        <a href="{{ URL::to('/') }}/m/add/placement?get_id={{$getData[3]->id}}">
                                                                                         @if($getData[3]->gender == 2)
                                                                                             <i class="icon-user-female"></i>
                                                                                         @else 
                                                                                             <i class="icon-user"></i>
                                                                                         @endif
+                                                                                        </a>
                                                                                     </div>
                                                                                     <span class="wrap_content ">{{$getData[3]->user_code}}</span>
                                                                                 </div>
@@ -140,11 +146,13 @@
                                                                                 @if($getData[4] != null)
                                                                                 <div class="binary-node-single-item user-block user-10">
                                                                                     <div class="images_wrapper" style="font-size: 40px;margin: 20px 0;">
+                                                                                        <a href="{{ URL::to('/') }}/m/add/placement?get_id={{$getData[4]->id}}">
                                                                                         @if($getData[4]->gender == 2)
                                                                                             <i class="icon-user-female"></i>
                                                                                         @else 
                                                                                             <i class="icon-user"></i>
                                                                                         @endif
+                                                                                        </a>
                                                                                     </div>
                                                                                     <span class="wrap_content ">{{$getData[4]->user_code}}</span>
                                                                                 </div>
@@ -176,11 +184,13 @@
                                                                         @if($getData[2] != null)
                                                                         <div class="binary-node-single-item user-block user-10">
                                                                             <div class="images_wrapper" style="font-size: 40px;margin: 18px 0;">
+                                                                                <a href="{{ URL::to('/') }}/m/add/placement?get_id={{$getData[2]->id}}">
                                                                                 @if($getData[2]->gender == 2)
                                                                                     <i class="icon-user-female"></i>
                                                                                 @else 
                                                                                     <i class="icon-user"></i>
                                                                                 @endif
+                                                                                </a>
                                                                             </div>
                                                                             <span class="wrap_content ">{{$getData[2]->user_code}}</span>
                                                                         </div>
@@ -203,11 +213,13 @@
                                                                                 @if($getData[5] != null)
                                                                                 <div class="binary-node-single-item user-block user-9">
                                                                                     <div class="images_wrapper" style="font-size: 40px;margin: 18px 0;">
+                                                                                        <a href="{{ URL::to('/') }}/m/add/placement?get_id={{$getData[5]->id}}">
                                                                                         @if($getData[5]->gender == 2)
                                                                                             <i class="icon-user-female"></i>
                                                                                         @else 
                                                                                             <i class="icon-user"></i>
                                                                                         @endif
+                                                                                        </a>
                                                                                     </div>
                                                                                     <span class="wrap_content ">{{$getData[5]->user_code}}</span>
                                                                                 </div>
@@ -229,11 +241,13 @@
                                                                                 @if($getData[6] != null)
                                                                                 <div class="binary-node-single-item user-block user-10">
                                                                                     <div class="images_wrapper" style="font-size: 40px;margin: 18px 0;">
+                                                                                        <a href="{{ URL::to('/') }}/m/add/placement?get_id={{$getData[6]->id}}">
                                                                                         @if($getData[6]->gender == 2)
                                                                                             <i class="icon-user-female"></i>
                                                                                         @else 
                                                                                             <i class="icon-user"></i>
                                                                                         @endif
+                                                                                        </a>
                                                                                     </div>
                                                                                     <span class="wrap_content ">{{$getData[6]->user_code}}</span>
                                                                                 </div>
