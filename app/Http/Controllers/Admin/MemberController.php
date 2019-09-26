@@ -454,7 +454,7 @@ class MemberController extends Controller {
             'price' => 'Rp '.number_format($getTrans->price, 0, ',', '.'),
             'unique_digit' => $getTrans->unique_digit,
         );
-        $emailSend = 'chairil.hakim@domikado.com';
+        $emailSend = 'noreply@lumbung.network';
         Mail::send('member.email.pin_confirm', $dataEmail, function($message) use($emailSend){
             $message->to($emailSend, 'Konfirmasi Data Pembelian PIN Member Lumbung Network')
                     ->subject('Konfirmasi Data Pembelian PIN Member Lumbung Network');
