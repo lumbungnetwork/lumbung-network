@@ -367,20 +367,6 @@ class MemberController extends Controller {
             'unique_digit' => $rand,
         );
         $modelSettingTrans->getInsertTransaction($dataInsert);
-        $dataEmail = array(
-            'tgl_order' => date('d F Y'),
-            'nama' => $dataUser->user_code,
-            'hp' => $dataUser->hp,
-            'transaction_code' => 'TR'.date('Ymd').$dataUser->id.$code,
-            'total_pin' => $request->total_pin,
-            'price' => $harga,
-            'unique_digit' => $rand,
-        );
-        $emailSend = 'noreply@lumbung.network';
-        Mail::send('member.email.pin_confirm', $dataEmail, function($message) use($emailSend){
-            $message->to($emailSend, 'Konfirmasi Data Pembelian PIN Member Lumbung Network')
-                    ->subject('Konfirmasi Data Pembelian PIN Member Lumbung Network');
-        });
         return redirect()->route('m_listTransactions')
                     ->with('message', 'Order Pin berhasil, silakan lakukan proses transfer')
                     ->with('messageclass', 'success');
@@ -456,7 +442,23 @@ class MemberController extends Controller {
             'bank_perusahaan_id' => $request->bank_perusahaan_id,
             'updated_at' => date('Y-m-d H:i:s')
         );
+        
         $modelSettingTrans->getUpdateTransaction('id', $id_trans, $dataUpdate);
+        $getTrans = $modelSettingTrans->getDetailTransactionsMember($id_trans, $dataUser);
+        $dataEmail = array(
+            'tgl_order' => date('d F Y'),
+            'nama' => $dataUser->user_code,
+            'hp' => $dataUser->hp,
+            'transaction_code' => $getTrans->transaction_code,
+            'total_pin' => $getTrans->total_pin,
+            'price' => 'Rp '.number_format($getTrans->price, 0, ',', '.'),
+            'unique_digit' => $getTrans->unique_digit,
+        );
+        $emailSend = 'chairil.hakim@domikado.com';
+        Mail::send('member.email.pin_confirm', $dataEmail, function($message) use($emailSend){
+            $message->to($emailSend, 'Konfirmasi Data Pembelian PIN Member Lumbung Network')
+                    ->subject('Konfirmasi Data Pembelian PIN Member Lumbung Network');
+        });
         return redirect()->route('m_listTransactions')
                     ->with('message', 'Konfirmasi transfer berhasil')
                     ->with('messageclass', 'success');
