@@ -29,6 +29,10 @@ class Validation extends Model {
             $canInsert = (object) array('can' => false, 'pesan' => 'No. Handphone tidak boleh kosong');
             return $canInsert;
         }
+        if (!filter_var($request->email, FILTER_VALIDATE_EMAIL)) {
+            $canInsert = (object) array('can' => false, 'pesan' => 'Format email salah');
+            return $canInsert;
+        }
         if($request->password != $request->repassword){
             $canInsert = (object) array('can' => false, 'pesan' => 'Password tidak sama');
             return $canInsert;
