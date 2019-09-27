@@ -71,7 +71,7 @@
                                                     <div class="node-centere-item binary-level-width-100">
                                                         <div class="node-item-root">
                                                             <div class="binary-node-single-item user-block user-0">
-                                                                <div class="images_wrapper" style="font-size: 40px;margin: 18px 0;">
+                                                                <div class="images_wrapper" style="font-size: 40px;margin: 11px 0;">
                                                                     <a href="{{ URL::to('/') }}/m/my/binary?get_id={{$getData[0]->id}}">
                                                                         @if($getData[0]->gender == 2)
                                                                             <i class="icon-user-female"></i>
@@ -119,7 +119,7 @@
                                                                     <div class="node-item-1-child-left">
                                                                         @if($getData[1] != null)
                                                                         <div class="binary-node-single-item user-block user-9">
-                                                                            <div class="images_wrapper" style="font-size: 40px;margin: 18px 0;">
+                                                                            <div class="images_wrapper" style="font-size: 40px;margin: 11px 0;">
                                                                                 <a href="{{ URL::to('/') }}/m/my/binary?get_id={{$getData[1]->id}}">
                                                                                     @if($getData[1]->gender == 2)
                                                                                         <i class="icon-user-female"></i>
@@ -153,7 +153,7 @@
                                                                         </div>
                                                                         @else 
                                                                             <div class="binary-node-single-item user-block user-13">
-                                                                                <div class="images_wrapper" style="font-size: 40px;margin: 18px 0;">
+                                                                                <div class="images_wrapper" style="font-size: 40px;margin: 11px 0;">
                                                                                     <i class="icon-user-follow text-danger"></i>
                                                                                 </div>
                                                                                 <!--<span class="wrap_content">Belum tersedia</span>-->
@@ -169,7 +169,7 @@
                                                                             <div class="node-item-1-child-left">
                                                                                 @if($getData[3] != null)
                                                                                 <div class="binary-node-single-item user-block user-9">
-                                                                                    <div class="images_wrapper" style="font-size: 40px;margin: 18px 0;">
+                                                                                    <div class="images_wrapper" style="font-size: 40px;margin: 11px 0;">
                                                                                         <a href="{{ URL::to('/') }}/m/my/binary?get_id={{$getData[3]->id}}">
                                                                                             @if($getData[3]->gender == 2)
                                                                                                 <i class="icon-user-female"></i>
@@ -203,7 +203,7 @@
                                                                                 </div>
                                                                                 @else 
                                                                                     <div class="binary-node-single-item user-block user-13">
-                                                                                        <div class="images_wrapper" style="font-size: 40px;margin: 18px 0;">
+                                                                                        <div class="images_wrapper" style="font-size: 40px;margin: 11px 0;">
                                                                                             <i class="icon-user-follow text-danger"></i>
                                                                                         </div>
                                                                                         <!--<span class="wrap_content">Belum tersedia</span>-->
@@ -217,7 +217,7 @@
                                                                             <div class="node-item-1-child-right">
                                                                                 @if($getData[4] != null)
                                                                                 <div class="binary-node-single-item user-block user-10">
-                                                                                    <div class="images_wrapper" style="font-size: 40px;margin: 20px 0;">
+                                                                                    <div class="images_wrapper" style="font-size: 40px;margin: 11px 0;">
                                                                                         <a href="{{ URL::to('/') }}/m/my/binary?get_id={{$getData[4]->id}}">
                                                                                             @if($getData[4]->gender == 2)
                                                                                                 <i class="icon-user-female"></i>
@@ -251,7 +251,7 @@
                                                                                 </div>
                                                                                 @else 
                                                                                 <div class="binary-node-single-item user-block user-13">
-                                                                                    <div class="images_wrapper" style="font-size: 40px;margin: 18px 0;">
+                                                                                    <div class="images_wrapper" style="font-size: 40px;margin: 11px 0;">
                                                                                         <i class="icon-user-follow text-danger"></i>
                                                                                     </div>
                                                                                     <!--<span class="wrap_content">Belum tersedia</span>-->
@@ -275,7 +275,7 @@
                                                                     <div class="node-item-1-child-right">
                                                                         @if($getData[2] != null)
                                                                         <div class="binary-node-single-item user-block user-10">
-                                                                            <div class="images_wrapper" style="font-size: 40px;margin: 18px 0;">
+                                                                            <div class="images_wrapper" style="font-size: 40px;margin: 11px 0;">
                                                                                 <a href="{{ URL::to('/') }}/m/my/binary?get_id={{$getData[2]->id}}">
                                                                                     @if($getData[2]->gender == 2)
                                                                                         <i class="icon-user-female"></i>
@@ -309,7 +309,7 @@
                                                                         </div>
                                                                         @else 
                                                                         <div class="binary-node-single-item user-block user-13">
-                                                                            <div class="images_wrapper" style="font-size: 40px;margin: 18px 0;">
+                                                                            <div class="images_wrapper" style="font-size: 40px;margin: 11px 0;">
                                                                                 <i class="icon-user-follow text-danger"></i>
                                                                             </div>
                                                                             <!--<span class="wrap_content">Belum tersedia</span>-->
@@ -325,7 +325,7 @@
                                                                             <div class="node-item-1-child-left">
                                                                                 @if($getData[5] != null)
                                                                                 <div class="binary-node-single-item user-block user-9">
-                                                                                    <div class="images_wrapper" style="font-size: 40px;margin: 18px 0;">
+                                                                                    <div class="images_wrapper" style="font-size: 40px;margin: 11px 0;">
                                                                                         <a href="{{ URL::to('/') }}/m/my/binary?get_id={{$getData[5]->id}}">
                                                                                             @if($getData[5]->gender == 2)
                                                                                                 <i class="icon-user-female"></i>
@@ -359,7 +359,7 @@
                                                                                 </div>
                                                                                 @else 
                                                                                     <div class="binary-node-single-item user-block user-13">
-                                                                                        <div class="images_wrapper" style="font-size: 40px;margin: 18px 0;">
+                                                                                        <div class="images_wrapper" style="font-size: 40px;margin: 11px 0;">
                                                                                             <i class="icon-user-follow text-danger"></i>
                                                                                         </div>
                                                                                         <!--<span class="wrap_content">Belum tersedia</span>-->
@@ -373,7 +373,7 @@
                                                                             <div class="node-item-1-child-right">
                                                                                 @if($getData[6] != null)
                                                                                 <div class="binary-node-single-item user-block user-10">
-                                                                                    <div class="images_wrapper" style="font-size: 40px;margin: 18px 0;">
+                                                                                    <div class="images_wrapper" style="font-size: 40px;margin: 11px 0;">
                                                                                         <a href="{{ URL::to('/') }}/m/my/binary?get_id={{$getData[6]->id}}">
                                                                                             @if($getData[6]->gender == 2)
                                                                                                 <i class="icon-user-female"></i>
@@ -407,7 +407,7 @@
                                                                                 </div>
                                                                                 @else 
                                                                                 <div class="binary-node-single-item user-block user-13">
-                                                                                    <div class="images_wrapper" style="font-size: 40px;margin: 18px 0;">
+                                                                                    <div class="images_wrapper" style="font-size: 40px;margin: 11px 0;">
                                                                                         <i class="icon-user-follow text-danger"></i>
                                                                                     </div>
                                                                                     <!--<span class="wrap_content">Belum tersedia</span>-->
@@ -437,7 +437,7 @@
 @include('layout.member.footer')
 @stop
 @section('styles')
-<link href="{{ asset('asset_member/plugins/switchery/switchery.min.css') }}" rel="stylesheet" type="text/css" />
+<!--<link href="{{ asset('asset_member/plugins/switchery/switchery.min.css') }}" rel="stylesheet" type="text/css" />-->
 <link href="{{ asset('asset_member/css/binary.css') }}" rel="stylesheet" type="text/css" />
 <link href="{{ asset('asset_member/css/developer.css') }}" rel="stylesheet" type="text/css" />
 @stop

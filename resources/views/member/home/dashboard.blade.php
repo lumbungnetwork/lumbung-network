@@ -53,7 +53,7 @@
                                 <div class="text-xs-right">
                                     <h6 class="text-success text-uppercase m-b-15 m-t-10">{{$dataSponsor->user_code}}</h6>
                                     <h6 class="text-muted m-b-15 m-t-10">{{$dataSponsor->hp}}</h6>
-                                    <h2 class="text-warning m-b-10"><span data-plugin="counterup">Sponsor</span></h2>
+                                    <h2 class="text-warning m-b-10"><span>Sponsor</span></h2>
                                 </div>
                             </div>
                         </div>
@@ -88,7 +88,7 @@
                             <div class="card-box tilebox-one">
                                 <i class="icon-trophy pull-xs-right text-muted text-warning"></i>
                                 <h6 class="text-muted text-uppercase m-b-20">Total Bonus (Rp.)</h6>
-                                <h2 class="m-b-20" data-plugin="counterup">{{number_format($dataAll->total_bonus, 0, ',', '.')}}</h2>
+                                <h2 class="m-b-20">{{number_format($dataAll->total_bonus, 0, ',', '.')}}</h2>
                             </div>
                         </div>
                         <?php
@@ -102,14 +102,14 @@
                             <div class="card-box tilebox-one">
                                 <i class="icon-rocket pull-xs-right text-muted text-warning"></i>
                                 <h6 class="text-muted text-uppercase m-b-20">Bonus Ditransfer (Rp.)</h6>
-                                <h2 class="m-b-20" data-plugin="counterup">{{number_format($total_wd, 0, ',', '.')}}</h2>
+                                <h2 class="m-b-20">{{number_format($total_wd, 0, ',', '.')}}</h2>
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-6 col-lg-6 col-xl-4">
                             <div class="card-box tilebox-one">
                                 <i class="icon-lock pull-xs-right text-muted text-warning"></i>
                                 <h6 class="text-muted text-uppercase m-b-20">Saldo Bonus (Rp.)</h6>
-                                <h2 class="m-b-20" data-plugin="counterup">{{number_format($saldo, 0, ',', '.')}}</h2>
+                                <h2 class="m-b-20">{{number_format($saldo, 0, ',', '.')}}</h2>
                             </div>
                         </div>
                     </div>
@@ -118,28 +118,28 @@
                             <div class="card-box tilebox-one">
                                 <i class="icon-user-following pull-xs-right text-muted text-success"></i>
                                 <h6 class="text-muted text-uppercase m-b-20">Jml Sponsor</h6>
-                                <h2 class="m-b-20" data-plugin="counterup">{{$dataUser->total_sponsor}}</h2>
+                                <h2 class="m-b-20">{{$dataUser->total_sponsor}}</h2>
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-6 col-lg-6 col-xl-3">
                             <div class="card-box tilebox-one">
                                 <i class="icon-vector pull-xs-right text-muted text-purple"></i>
                                 <h6 class="text-muted text-uppercase m-b-20">Jml Kiri</h6>
-                                <h2 class="m-b-20" data-plugin="counterup">{{$dataAll->kiri}}</h2>
+                                <h2 class="m-b-20">{{$dataAll->kiri}}</h2>
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-6 col-lg-6 col-xl-3">
                             <div class="card-box tilebox-one">
                                 <i class="icon-vector pull-xs-right text-muted text-pink"></i>
                                 <h6 class="text-muted text-uppercase m-b-20">Jml Kanan</h6>
-                                <h2 class="m-b-20" data-plugin="counterup">{{$dataAll->kanan}}</h2>
+                                <h2 class="m-b-20">{{$dataAll->kanan}}</h2>
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-6 col-lg-6 col-xl-3">
                             <div class="card-box tilebox-one">
                                 <i class="icon-user-unfollow pull-xs-right text-muted text-danger"></i>
                                 <h6 class="text-muted text-uppercase m-b-20">Member Belum Aktif</h6>
-                                <h2 class="m-b-20" data-plugin="counterup">{{$dataAll->member_tdk_aktif}}</h2>
+                                <h2 class="m-b-20">{{$dataAll->member_tdk_aktif}}</h2>
                             </div>
                         </div>
                     </div>
@@ -159,7 +159,7 @@
                             <div class="text-xs-right">
                                 <h6 class="text-success text-uppercase m-b-15 m-t-10">{{$dataSponsor->user_code}}</h6>
                                 <h6 class="text-muted m-b-15 m-t-10">{{$dataSponsor->hp}}</h6>
-                                <h2 class="text-warning m-b-10"><span data-plugin="counterup">Sponsor</span></h2>
+                                <h2 class="text-warning m-b-10"><span>Sponsor</span></h2>
                             </div>
                         </div>
                     </div>
@@ -172,13 +172,13 @@
 @stop
 
 @section('styles')
-<link href="{{ asset('asset_member/plugins/switchery/switchery.min.css') }}" rel="stylesheet" type="text/css" />
-<link rel="stylesheet" href="{{ asset('asset_member/plugins/morris/morris.css') }}">
+<!--<link href="{{ asset('asset_member/plugins/switchery/switchery.min.css') }}" rel="stylesheet" type="text/css" />-->
+<!--<link rel="stylesheet" href="{{ asset('asset_member/plugins/morris/morris.css') }}">-->
 @stop
 @section('javascript')
-<script src="{{ asset('asset_member/plugins/morris/morris.min.js') }}"></script>
-<script src="{{ asset('asset_member/plugins/raphael/raphael-min.js') }}"></script>
-<script src="{{ asset('asset_member/plugins/waypoints/lib/jquery.waypoints.js') }}"></script>
-<script src="{{ asset('asset_member/plugins/counterup/jquery.counterup.min.js') }}"></script>
-<script src="{{ asset('asset_member/pages/jquery.dashboard.js') }}"></script>
+<!--<script src="{{ asset('asset_member/plugins/morris/morris.min.js') }}"></script>-->
+<!--<script src="{{ asset('asset_member/plugins/raphael/raphael-min.js') }}"></script>-->
+<!--<script src="{{ asset('asset_member/plugins/waypoints/lib/jquery.waypoints.js') }}"></script>-->
+<!--<script src="{{ asset('asset_member/plugins/counterup/jquery.counterup.min.js') }}"></script>-->
+<!--<script src="{{ asset('asset_member/pages/jquery.dashboard.js') }}"></script>-->
 @stop
