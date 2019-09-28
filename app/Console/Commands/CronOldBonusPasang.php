@@ -95,6 +95,9 @@ class CronOldBonusPasang extends Command {
             dd('done here');
         }
         $indexBonus = $totalActivateDate * $getBonusStart->start_price / $totalPasang;
+        if($indexBonus > 20000){
+            $indexBonus = 20000;
+        }
         $dataInsertIndex = array(
             'total_binary' => $totalPasang,
             'total_activated' => $totalActivateDate,
