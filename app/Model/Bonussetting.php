@@ -32,7 +32,7 @@ class Bonussetting extends Model {
     
     public function getActiveBonusStart(){
         $sql = DB::table('bonus_start')
-                    ->selectRaw('start_price')
+                    ->selectRaw('id, start_price')
                     ->where('is_active', '=', 1)
                     ->first();
         return $sql;

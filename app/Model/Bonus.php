@@ -107,6 +107,23 @@ class Bonus extends Model {
         }
         return $return;
     }
+    
+    public function getBonusBinary($data){
+        $sql = DB::table('bonus_member')
+                    ->selectRaw('bonus_member.bonus_price, bonus_member.bonus_date, bonus_member.total_binary,'
+                            . 'bonus_member.total_activated, bonus_member.bonus_index, bonus_member.total_all_binary, '
+                            . 'bonus_member.index_date, bonus_member.bonus_setting')
+                    ->where('bonus_member.user_id', '=', $data->id)
+                    ->where('bonus_member.type', '=', 2)
+                    ->where('bonus_member.poin_type', '=', 1)
+                    ->orderBy('bonus_member.id', 'DESC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
    
     
 }

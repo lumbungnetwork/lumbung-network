@@ -71,7 +71,10 @@ class BonusmemberController extends Controller {
         if($dataUser->package_id == null){
             return redirect()->route('m_newPackage');
         }
+        $modelBonus = New Bonus;
+        $getData = $modelBonus->getBonusBinary($dataUser);
         return view('member.bonus.binary')
+                ->with('getData', $getData)
                 ->with('dataUser', $dataUser);
     }
     

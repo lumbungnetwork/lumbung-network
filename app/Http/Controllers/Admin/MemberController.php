@@ -609,7 +609,8 @@ class MemberController extends Controller {
         }
         $dataUpdateDownline = array(
             'upline_id' => $getUplineId->id,
-            'upline_detail' => $newMemberUpline
+            'upline_detail' => $newMemberUpline,
+            'placement_at' => date('Y-m-d H:i:s')
         );
         $modelMember->getUpdateUsers('id', $getNewMember->id, $dataUpdateDownline);
         $dataUpdateUpline = array(

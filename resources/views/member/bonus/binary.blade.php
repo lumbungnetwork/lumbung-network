@@ -27,12 +27,33 @@
                             <thead>
                                 <tr>
                                     <th>No.</th>
-                                    <th>Jml Bonus</th>
-                                    <th>Asal</th>
                                     <th>Tgl</th>
+                                    <th>Jml. Pasangan</th>
+                                    <th>Total Aktifasi</th>
+                                    <th>Index (Rp.)</th>
+                                    <th>Total Pasangan</th>
+                                    <th>Jml Bonus (Rp.)</th>
                                 </tr>
                             </thead>
-                            
+                            <tbody>
+                                @if($getData != null)
+                                <?php $no = 0; ?>
+                                    @foreach($getData as $row)
+                                    <?php
+                                        $no++;
+                                    ?>
+                                    <tr>
+                                        <td>{{$no}}</td>
+                                        <td>{{date('d M Y', strtotime($row->index_date))}}</td>
+                                        <td>{{$row->total_binary}}</td>
+                                        <td>{{$row->total_activated}}</td>
+                                        <td>{{number_format($row->bonus_index, 0, ',', '.')}}</td>
+                                        <td>{{$row->total_all_binary}}</td>
+                                        <td>{{number_format($row->bonus_price, 0, ',', '.')}}</td>
+                                    </tr>
+                                    @endforeach
+                                @endif
+                            </tbody>
                         </table>
                 </div>
             </div>
@@ -58,9 +79,6 @@
         var table = $('#datatable-buttons').DataTable({
             lengthChange: false,
         });
-    
-        table.buttons().container()
-                .appendTo('#datatable-buttons_wrapper .col-md-6:eq(0)');
     } );
     
 </script>

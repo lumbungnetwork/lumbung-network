@@ -42,6 +42,7 @@
                     <ul class="list-unstyled">
                         <li><a href="{{ URL::to('/') }}/m/summary/bonus">Ringkasan</a></li>
                         <li><a href="{{ URL::to('/') }}/m/sponsor/bonus">Sponsor</a></li>
+                        <li><a href="{{ URL::to('/') }}/m/binary/bonus">Binary</a></li>
                     </ul>
                 </li>
                 <li class="has_sub">

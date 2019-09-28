@@ -274,5 +274,113 @@ class Member extends Model {
         return $sql;
     }
     
+    public function getAllOldMemberByDate($date){
+        $sql = DB::table('users')
+                    ->whereDate('active_at', '<=',$date)
+                    ->where('is_active', '=', 1)
+                    ->where('user_type', '=', 10)
+                    ->orderBy('id', 'ASC')
+                    ->get();
+        return $sql;
+    }
+    
+    public function getCountOldMemberByDate($date){
+        $sql = DB::table('users')
+                    ->selectRaw('id')
+                    ->whereDate('active_at', '=',$date)
+                    ->where('is_active', '=', 1)
+                    ->where('user_type', '=', 10)
+                    ->orderBy('id', 'ASC')
+                    ->count();
+        return $sql;
+    }
+    
+    public function getCountOuterDownlineByDate($downline, $date){
+        $sql = DB::table('users')
+                    ->selectRaw('count(users.id) as total_downline')
+                    ->where('users.user_type', '=', 10)
+                    ->where('is_active', '=', 1)
+                    ->whereDate('active_at', $date)
+                    ->where('users.upline_detail', 'LIKE', $downline.'%')
+                    ->first();
+        $return = 0;
+        if($sql->total_downline != null){
+            $return = $sql->total_downline;
+        }
+        return $return;
+    }
+    
+    public function getCountInnerDownlineByDate($id, $date){
+        $sql = DB::table('users')
+                    ->selectRaw('id')
+                    ->where('users.id', '=', $id)
+                    ->where('users.user_type', '=', 10)
+                    ->where('is_active', '=', 1)
+                    ->whereDate('active_at', '=', $date)
+                    ->count();
+        return $sql;
+    }
+    
+    public function getCheckOuterDownlineByDate($downline, $date){
+        $sql = DB::table('users')
+                    ->where('users.user_type', '=', 10)
+                    ->where('is_active', '=', 1)
+                    ->whereDate('active_at', $date)
+                    ->where('users.upline_detail', 'LIKE', $downline.'%')
+                    ->get();
+        $return = 0;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getAllMemberByDate($date){
+        $sql = DB::table('users')
+                    ->whereDate('active_at', '<=', $date)
+                    ->where('is_active', '=', 1)
+                    ->where('user_type', '=', 10)
+                    ->orderBy('id', 'ASC')
+                    ->get();
+        return $sql;
+    }
+    
+    public function getCountMemberByDate($date){
+        $sql = DB::table('users')
+                    ->selectRaw('id')
+                    ->whereDate('placement_at', '=', $date)
+                    ->where('is_active', '=', 1)
+                    ->where('user_type', '=', 10)
+                    ->orderBy('id', 'ASC')
+                    ->count();
+        return $sql;
+    }
+    
+    public function getNewCountOuterDownlineByDate($downline, $date){
+        $sql = DB::table('users')
+                    ->selectRaw('count(users.id) as total_downline')
+                    ->where('users.user_type', '=', 10)
+                    ->where('is_active', '=', 1)
+                    ->whereDate('placement_at', $date)
+                    ->where('users.upline_detail', 'LIKE', $downline.'%')
+                    ->first();
+        $return = 0;
+        if($sql->total_downline != null){
+            $return = $sql->total_downline;
+        }
+        return $return;
+    }
+    
+    public function getNewCountInnerDownlineByDate($id, $date){
+        $sql = DB::table('users')
+                    ->selectRaw('id')
+                    ->where('users.id', '=', $id)
+                    ->where('users.user_type', '=', 10)
+                    ->where('is_active', '=', 1)
+                    ->whereDate('placement_at', '=', $date)
+                    ->count();
+        return $sql;
+    }
+    
 }
 
