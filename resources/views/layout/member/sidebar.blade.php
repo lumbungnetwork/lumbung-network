@@ -3,60 +3,85 @@
         <div id="sidebar-menu">
             <ul>
                 <li class="has_sub">
-                    <a href="{{ URL::to('/') }}/m/dashboard" class="waves-effect"><i class="zmdi zmdi-view-dashboard"></i><span> Dashboard </span> </a>
+                    <a href="{{ URL::to('/') }}/m/dashboard" class="waves-effect @if(Route::currentRouteName() == 'mainDashboard') active @endif">
+                        <i class="zmdi zmdi-view-dashboard"></i>
+                        <span> Dashboard </span> 
+                    </a>
                 </li>
                 <li class="has_sub">
-                    <a class="waves-effect"><i class="zmdi zmdi-account-circle"></i> <span> User Profile</span> <span class="menu-arrow"></span></a>
+                    <a class="waves-effect @if(Route::currentRouteName() == 'm_myProfile' || Route::currentRouteName() == 'm_newProfile' || Route::currentRouteName() == 'm_myBank') active @endif">
+                        <i class="zmdi zmdi-account-circle"></i> 
+                        <span> User Profile</span> <span class="menu-arrow"></span>
+                    </a>
                     <ul class="list-unstyled">
-                        <li><a href="{{ URL::to('/') }}/m/profile">Profile</a></li>
-                        <li><a href="{{ URL::to('/') }}/m/bank">Bank</a></li>
+                        <li @if(Route::currentRouteName() == 'm_myProfile' || Route::currentRouteName() == 'm_newProfile') class="active" @endif><a href="{{ URL::to('/') }}/m/profile">Profile</a></li>
+                        <li @if(Route::currentRouteName() == 'm_myBank') class="active" @endif><a href="{{ URL::to('/') }}/m/bank">Bank</a></li>
                     </ul>
                 </li>
                 <li class="has_sub">
-                    <a class="waves-effect"><i class="zmdi zmdi-accounts"></i> <span> Member </span> <span class="menu-arrow"></span></a>
+                    <a class="waves-effect @if(Route::currentRouteName() == 'm_newSponsor' || Route::currentRouteName() == 'm_addPlacement' || Route::currentRouteName() == 'm_statusMember') active @endif">
+                        <i class="zmdi zmdi-accounts"></i> 
+                        <span> Member </span> <span class="menu-arrow"></span>
+                    </a>
                     <ul class="list-unstyled">
-                        <li><a href="{{ URL::to('/') }}/m/add/sponsor">Daftar</a></li>
-                        <li><a href="{{ URL::to('/') }}/m/add/placement">Placement</a></li>
-                        <li><a href="{{ URL::to('/') }}/m/status/member">Status</a></li>
+                        <li @if(Route::currentRouteName() == 'm_newSponsor') class="active" @endif><a href="{{ URL::to('/') }}/m/add/sponsor">Daftar</a></li>
+                        <li @if(Route::currentRouteName() == 'm_addPlacement') class="active" @endif><a href="{{ URL::to('/') }}/m/add/placement">Placement</a></li>
+                        <li @if(Route::currentRouteName() == 'm_statusMember') class="active" @endif><a href="{{ URL::to('/') }}/m/status/member">Status</a></li>
                     </ul>
                 </li>
                 <li class="has_sub">
-                    <a class="waves-effect"><i class="zmdi zmdi-device-hub"></i> <span> Networking </span> <span class="menu-arrow"></span></a>
+                    <a class="waves-effect @if(Route::currentRouteName() == 'm_statusSponsor' || Route::currentRouteName() == 'm_myBinary') active @endif">
+                        <i class="zmdi zmdi-device-hub"></i> 
+                        <span> Networking </span> <span class="menu-arrow"></span>
+                    </a>
                     <ul class="list-unstyled">
-                        <li><a href="{{ URL::to('/') }}/m/status/sponsor">Sponsor</a></li>
-                        <li><a href="{{ URL::to('/') }}/m/my/binary">Binary</a></li>
+                        <li @if(Route::currentRouteName() == 'm_statusSponsor') class="active" @endif><a href="{{ URL::to('/') }}/m/status/sponsor">Sponsor</a></li>
+                        <li @if(Route::currentRouteName() == 'm_myBinary') class="active" @endif><a href="{{ URL::to('/') }}/m/my/binary">Binary</a></li>
                     </ul>
                 </li>
                 <li class="has_sub">
-                    <a class="waves-effect"><i class="zmdi zmdi-archive"></i> <span> Pin </span> <span class="menu-arrow"></span></a>
+                    <a class="waves-effect @if(Route::currentRouteName() == 'm_newPin' || Route::currentRouteName() == 'm_listTransactions' || Route::currentRouteName() == 'm_addTransferPin' 
+                       || Route::currentRouteName() == 'm_myPinStock' || Route::currentRouteName() == 'm_myPinHistory') active @endif">
+                        <i class="zmdi zmdi-archive"></i> 
+                        <span> Pin </span> <span class="menu-arrow"></span>
+                    </a>
                     <ul class="list-unstyled">
-                        <li><a href="{{ URL::to('/') }}/m/add/pin">Beli</a></li>
-                        <li><a href="{{ URL::to('/') }}/m/list/transactions">Transaksi</a></li>
-                        <li><a href="{{ URL::to('/') }}/m/add/transfer-pin">Transfer</a></li>
-                        <li><a href="{{ URL::to('/') }}/m/pin/stock">Stock</a></li>
-                        <li><a href="{{ URL::to('/') }}/m/pin/history">History</a></li>
+                        <li @if(Route::currentRouteName() == 'm_newPin') class="active" @endif><a href="{{ URL::to('/') }}/m/add/pin">Beli</a></li>
+                        <li @if(Route::currentRouteName() == 'm_listTransactions') class="active" @endif><a href="{{ URL::to('/') }}/m/list/transactions">Transaksi</a></li>
+                        <li @if(Route::currentRouteName() == 'm_addTransferPin') class="active" @endif><a href="{{ URL::to('/') }}/m/add/transfer-pin">Transfer</a></li>
+                        <li @if(Route::currentRouteName() == 'm_myPinStock') class="active" @endif><a href="{{ URL::to('/') }}/m/pin/stock">Stock</a></li>
+                        <li @if(Route::currentRouteName() == 'm_myPinHistory') class="active" @endif><a href="{{ URL::to('/') }}/m/pin/history">History</a></li>
                     </ul>
                 </li>
                 <li class="has_sub">
-                    <a class="waves-effect"><i class="zmdi zmdi-card-giftcard"></i> <span> Bonus </span> <span class="menu-arrow"></span></a>
+                    <a class="waves-effect @if(Route::currentRouteName() == 'm_myBonusSummary' || Route::currentRouteName() == 'm_myBonusSponsor' || Route::currentRouteName() == 'm_myBonusBinary') active @endif">
+                        <i class="zmdi zmdi-card-giftcard"></i> 
+                        <span> Bonus </span> <span class="menu-arrow"></span>
+                    </a>
                     <ul class="list-unstyled">
-                        <li><a href="{{ URL::to('/') }}/m/summary/bonus">Ringkasan</a></li>
-                        <li><a href="{{ URL::to('/') }}/m/sponsor/bonus">Sponsor</a></li>
-                        <li><a href="{{ URL::to('/') }}/m/binary/bonus">Binary</a></li>
+                        <li @if(Route::currentRouteName() == 'm_myBonusSummary') class="active" @endif><a href="{{ URL::to('/') }}/m/summary/bonus">Ringkasan</a></li>
+                        <li @if(Route::currentRouteName() == 'm_myBonusSponsor') class="active" @endif><a href="{{ URL::to('/') }}/m/sponsor/bonus">Sponsor</a></li>
+                        <li @if(Route::currentRouteName() == 'm_myBonusBinary') class="active" @endif><a href="{{ URL::to('/') }}/m/binary/bonus">Binary</a></li>
                     </ul>
                 </li>
                 <li class="has_sub">
-                    <a class="waves-effect"><i class="zmdi zmdi-money-box"></i> <span> Saldo </span> <span class="menu-arrow"></span></a>
+                    <a class="waves-effect @if(Route::currentRouteName() == 'm_myBonusSaldo') active @endif">
+                        <i class="zmdi zmdi-money-box"></i> 
+                        <span> Saldo </span> <span class="menu-arrow"></span>
+                    </a>
                     <ul class="list-unstyled">
-                        <li><a href="{{ URL::to('/') }}/m/saldo/bonus">Bonus</a></li>
+                        <li @if(Route::currentRouteName() == 'm_myBonusSaldo') class="active" @endif><a href="{{ URL::to('/') }}/m/saldo/bonus">Bonus</a></li>
                         <li><a href="#">eIDR</a></li>
                     </ul>
                 </li>
                 <li class="has_sub">
-                    <a class="waves-effect"><i class="zmdi zmdi-money"></i> <span> Withdrawal </span> <span class="menu-arrow"></span></a>
+                    <a class="waves-effect @if(Route::currentRouteName() == 'm_requestWD' || Route::currentRouteName() == 'm_historyWD') active @endif">
+                        <i class="zmdi zmdi-money"></i> 
+                        <span> Withdrawal </span> <span class="menu-arrow"></span>
+                    </a>
                     <ul class="list-unstyled">
-                        <li><a href="{{ URL::to('/') }}/m/history/wd">History Withdrawal</a></li>
-                        <li><a href="{{ URL::to('/') }}/m/req/wd">Request Withdrawal</a></li>
+                        <li @if(Route::currentRouteName() == 'm_historyWD') class="active" @endif><a href="{{ URL::to('/') }}/m/history/wd">History Withdrawal</a></li>
+                        <li @if(Route::currentRouteName() == 'm_requestWD') class="active" @endif><a href="{{ URL::to('/') }}/m/req/wd">Request Withdrawal</a></li>
                     </ul>
                 </li>
                 
@@ -67,7 +92,10 @@
                     </ul>
                 </li>-->
                 <li class="has_sub">
-                    <a href="{{ URL::to('/') }}/user_logout" class="waves-effect"><i class="zmdi zmdi-power text-danger"></i><span> Logout </span> </a>
+                    <a href="{{ URL::to('/') }}/user_logout" class="waves-effect">
+                        <i class="zmdi zmdi-power text-danger"></i>
+                        <span> Logout </span> 
+                    </a>
                 </li>
             </ul>
             <div class="clearfix"></div>

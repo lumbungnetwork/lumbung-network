@@ -44,12 +44,12 @@
                                     ?>
                                     <tr>
                                         <td>{{$no}}</td>
-                                        <td>{{date('d M Y', strtotime($row->index_date))}}</td>
+                                        <td>{{date('d M Y', strtotime($row->bonus_date))}}</td>
                                         <td>{{$row->total_binary}}</td>
                                         <td>{{$row->total_activated}}</td>
-                                        <td>{{number_format($row->bonus_index, 0, ',', '.')}}</td>
+                                        <td>{{number_format($row->bonus_index, 2, ',', '.')}}</td>
                                         <td>{{$row->total_all_binary}}</td>
-                                        <td>{{number_format($row->bonus_price, 0, ',', '.')}}</td>
+                                        <td>{{number_format(floor($row->bonus_price), 0, ',', '.')}}</td>
                                     </tr>
                                     @endforeach
                                 @endif
@@ -65,14 +65,14 @@
 @stop
 @section('styles')
 <link href="{{ asset('asset_member/plugins/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
-<link href="{{ asset('asset_member/plugins/datatables/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
-<link href="{{ asset('asset_member/plugins/switchery/switchery.min.css') }}" rel="stylesheet" type="text/css" />
+<!--<link href="{{ asset('asset_member/plugins/datatables/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('asset_member/plugins/switchery/switchery.min.css') }}" rel="stylesheet" type="text/css" />-->
 @stop
 @section('javascript')
 <script src="/asset_member/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="/asset_member/plugins/datatables/dataTables.bootstrap4.min.js"></script>
-<script src="/asset_member/plugins/datatables/dataTables.responsive.min.js"></script>
-<script src="/asset_member/plugins/datatables/responsive.bootstrap4.min.js"></script>
+<!--<script src="/asset_member/plugins/datatables/dataTables.responsive.min.js"></script>
+<script src="/asset_member/plugins/datatables/responsive.bootstrap4.min.js"></script>-->
 <script type="text/javascript">
     $(document).ready(function() {
         $('#datatable').DataTable();

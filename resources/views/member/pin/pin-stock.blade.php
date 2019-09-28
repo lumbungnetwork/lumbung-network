@@ -31,7 +31,7 @@
                         <div class="card-box tilebox-one">
                             <i class="icon-pin pull-xs-right text-success"></i>
                             <h6 class="text-muted text-uppercase m-b-20">Pin Tesedia</h6>
-                            <h2 class="m-b-20" data-plugin="counterup">{{$total}}</h2>
+                            <h2 class="m-b-20">{{$total}}</h2>
                         </div>
                     </div>
 
@@ -39,7 +39,7 @@
                         <div class="card-box tilebox-one">
                             <i class="ion-forward pull-xs-right text-pink"></i>
                             <h6 class="text-muted text-uppercase m-b-20">Pin Terpakai</h6>
-                            <h2 class="m-b-20" data-plugin="counterup">{{$sum_pin_keluar}}</h2>
+                            <h2 class="m-b-20">{{$sum_pin_keluar}}</h2>
                         </div>
                     </div>
                     
@@ -47,7 +47,7 @@
                         <div class="card-box tilebox-one">
                             <i class="icon-rocket pull-xs-right text-info"></i>
                             <h6 class="text-muted text-uppercase m-b-20">Pin Paket Terkirim</h6>
-                            <h2 class="m-b-20" data-plugin="counterup">{{$dataTerkirim}}</h2>
+                            <h2 class="m-b-20">{{$dataTerkirim}}</h2>
                         </div>
                     </div>
                 </div>
@@ -58,13 +58,13 @@
 @stop
 
 @section('styles')
-<link href="{{ asset('asset_member/plugins/switchery/switchery.min.css') }}" rel="stylesheet" type="text/css" />
-<link rel="stylesheet" href="{{ asset('asset_member/plugins/morris/morris.css') }}">
+<!--<link href="{{ asset('asset_member/plugins/switchery/switchery.min.css') }}" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="{{ asset('asset_member/plugins/morris/morris.css') }}">-->
 @stop
 @section('javascript')
-<script src="{{ asset('asset_member/plugins/morris/morris.min.js') }}"></script>
+<!--<script src="{{ asset('asset_member/plugins/morris/morris.min.js') }}"></script>
 <script src="{{ asset('asset_member/plugins/raphael/raphael-min.js') }}"></script>
 <script src="{{ asset('asset_member/plugins/waypoints/lib/jquery.waypoints.js') }}"></script>
 <script src="{{ asset('asset_member/plugins/counterup/jquery.counterup.min.js') }}"></script>
-<script src="{{ asset('asset_member/pages/jquery.dashboard.js') }}"></script>
+<script src="{{ asset('asset_member/pages/jquery.dashboard.js') }}"></script>-->
 @stop

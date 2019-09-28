@@ -80,7 +80,7 @@ class DashboardController extends Controller {
         $downline_saya = '['.$dataUser->id.']';
         $total_tdkAktif = $modelMember->getCountMemberActivate($downline_saya, 0);
         $dataDashboard = (object) array(
-            'total_bonus' => $totalBonus->total_bonus,
+            'total_bonus' => floor($totalBonus->total_bonus),
             'total_wd' => $totalWD->total_wd,
             'total_tunda' => $totalWD->total_tunda,
             'total_fee_admin' => $totalWD->total_fee_admin,

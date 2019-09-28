@@ -34,7 +34,7 @@ class BonusmemberController extends Controller {
         $totalBonus = $modelBonus->getTotalBonus($dataUser);
         $totalWD = $modelWD->getTotalDiTransfer($dataUser);
         $dataAll = (object) array(
-            'total_bonus' => $totalBonus->total_bonus,
+            'total_bonus' => floor($totalBonus->total_bonus),
             'total_wd' => $totalWD->total_wd,
             'total_tunda' => $totalWD->total_tunda,
             'total_fee_admin' => $totalWD->total_fee_admin,
@@ -124,7 +124,7 @@ class BonusmemberController extends Controller {
         $totalBonus = $modelBonus->getTotalBonus($dataUser);
         $totalWD = $modelWD->getTotalDiTransfer($dataUser);
         $dataAll = (object) array(
-            'total_bonus' => $totalBonus->total_bonus,
+            'total_bonus' => floor($totalBonus->total_bonus),
             'total_wd' => $totalWD->total_wd,
             'total_tunda' => $totalWD->total_tunda,
             'admin_fee' => 6500,
@@ -181,7 +181,7 @@ class BonusmemberController extends Controller {
         $totalBonus = $modelBonus->getTotalBonus($dataUser);
         $totalWD = $modelWD->getTotalDiTransfer($dataUser);
         $dataAll = (object) array(
-            'total_bonus' => $totalBonus->total_bonus,
+            'total_bonus' => floor($totalBonus->total_bonus),
             'total_wd' => $totalWD->total_wd,
             'total_tunda' => $totalWD->total_tunda,
             'admin_fee' => 6500,
