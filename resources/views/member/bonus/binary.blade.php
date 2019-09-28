@@ -30,8 +30,8 @@
                                     <th>Tgl</th>
                                     <th>Jml. Pasangan</th>
                                     <th>Total Aktifasi</th>
-                                    <th>Index (Rp.)</th>
                                     <th>Total Pasangan</th>
+                                    <th>Index (Rp.)</th>
                                     <th>Jml Bonus (Rp.)</th>
                                 </tr>
                             </thead>
@@ -47,8 +47,8 @@
                                         <td>{{date('d M Y', strtotime($row->bonus_date))}}</td>
                                         <td>{{$row->total_binary}}</td>
                                         <td>{{$row->total_activated}}</td>
-                                        <td>{{number_format($row->bonus_index, 2, ',', '.')}}</td>
                                         <td>{{$row->total_all_binary}}</td>
+                                        <td>{{number_format(floor($row->bonus_index), 0, ',', '.')}}</td>
                                         <td>{{number_format(floor($row->bonus_price), 0, ',', '.')}}</td>
                                     </tr>
                                     @endforeach
