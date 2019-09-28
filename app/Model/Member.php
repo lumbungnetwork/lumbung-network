@@ -276,7 +276,7 @@ class Member extends Model {
     
     public function getAllOldMemberByDate($date){
         $sql = DB::table('users')
-                    ->whereDate('active_at', '<=',$date)
+//                    ->whereDate('created_at', '<=', $date)
                     ->where('is_active', '=', 1)
                     ->where('user_type', '=', 10)
                     ->orderBy('id', 'ASC')
@@ -287,7 +287,7 @@ class Member extends Model {
     public function getCountOldMemberByDate($date){
         $sql = DB::table('users')
                     ->selectRaw('id')
-                    ->whereDate('active_at', '=',$date)
+                    ->whereDate('active_at', '=', $date)
                     ->where('is_active', '=', 1)
                     ->where('user_type', '=', 10)
                     ->orderBy('id', 'ASC')
@@ -300,7 +300,7 @@ class Member extends Model {
                     ->selectRaw('count(users.id) as total_downline')
                     ->where('users.user_type', '=', 10)
                     ->where('is_active', '=', 1)
-                    ->whereDate('active_at', $date)
+                    ->whereDate('active_at', '<=', $date)
                     ->where('users.upline_detail', 'LIKE', $downline.'%')
                     ->first();
         $return = 0;
@@ -316,7 +316,7 @@ class Member extends Model {
                     ->where('users.id', '=', $id)
                     ->where('users.user_type', '=', 10)
                     ->where('is_active', '=', 1)
-                    ->whereDate('active_at', '=', $date)
+                    ->whereDate('active_at', '<=', $date)
                     ->count();
         return $sql;
     }
@@ -361,7 +361,8 @@ class Member extends Model {
                     ->selectRaw('count(users.id) as total_downline')
                     ->where('users.user_type', '=', 10)
                     ->where('is_active', '=', 1)
-                    ->whereDate('placement_at', $date)
+//                    ->whereDate('placement_at', $date)
+                    ->whereDate('active_at', '<=', $date)
                     ->where('users.upline_detail', 'LIKE', $downline.'%')
                     ->first();
         $return = 0;
@@ -377,8 +378,33 @@ class Member extends Model {
                     ->where('users.id', '=', $id)
                     ->where('users.user_type', '=', 10)
                     ->where('is_active', '=', 1)
-                    ->whereDate('placement_at', '=', $date)
+//                    ->whereDate('placement_at', '=', $date)
+                    ->whereDate('active_at', '<=', $date)
                     ->count();
+        return $sql;
+    }
+    
+    public function getLevelSponsoring($id){
+        $sql = DB::table('users')
+                    ->selectRaw('users.id, users.user_code, '
+                            . 'u1.id as id_lvl1, u1.user_code as user_code_lvl1, '
+                            . 'u2.id as id_lvl2, u2.user_code as user_code_lvl2, '
+                            . 'u3.id as id_lvl3, u3.user_code as user_code_lvl3, '
+                            . 'u4.id as id_lvl4, u4.user_code as user_code_lvl4, '
+                            . 'u5.id as id_lvl5, u5.user_code as user_code_lvl5, '
+                            . 'u6.id as id_lvl6, u6.user_code as user_code_lvl6, '
+                            . 'u7.id as id_lvl7, u7.user_code as user_code_lvl7')
+                    ->leftJoin('users as u1', 'users.sponsor_id', '=', 'u1.id')
+                    ->leftJoin('users as u2', 'u1.sponsor_id', '=', 'u2.id')
+                    ->leftJoin('users as u3', 'u2.sponsor_id', '=', 'u3.id')
+                    ->leftJoin('users as u4', 'u3.sponsor_id', '=', 'u4.id')
+                    ->leftJoin('users as u5', 'u4.sponsor_id', '=', 'u5.id')
+                    ->leftJoin('users as u6', 'u5.sponsor_id', '=', 'u6.id')
+                    ->leftJoin('users as u7', 'u6.sponsor_id', '=', 'u7.id')
+                    ->where('users.id', '=', $id)
+                    ->where('users.user_type', '=', 10)
+                    ->where('users.is_active', '=', 1)
+                    ->first();
         return $sql;
     }
     
