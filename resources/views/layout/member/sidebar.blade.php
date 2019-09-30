@@ -41,13 +41,13 @@
                 </li>
                 <li class="has_sub">
                     <a class="waves-effect @if(Route::currentRouteName() == 'm_newPin' || Route::currentRouteName() == 'm_listTransactions' || Route::currentRouteName() == 'm_addTransferPin' 
-                       || Route::currentRouteName() == 'm_myPinStock' || Route::currentRouteName() == 'm_myPinHistory') active @endif">
+                       || Route::currentRouteName() == 'm_myPinStock' || Route::currentRouteName() == 'm_myPinHistory' || Route::currentRouteName() == 'm_addTransaction') active @endif">
                         <i class="zmdi zmdi-archive"></i> 
                         <span> Pin </span> <span class="menu-arrow"></span>
                     </a>
                     <ul class="list-unstyled">
                         <li @if(Route::currentRouteName() == 'm_newPin') class="active" @endif><a href="{{ URL::to('/') }}/m/add/pin">Beli</a></li>
-                        <li @if(Route::currentRouteName() == 'm_listTransactions') class="active" @endif><a href="{{ URL::to('/') }}/m/list/transactions">Transaksi</a></li>
+                        <li @if(Route::currentRouteName() == 'm_listTransactions' || Route::currentRouteName() == 'm_addTransaction') class="active" @endif><a href="{{ URL::to('/') }}/m/list/transactions">Transaksi</a></li>
                         <li @if(Route::currentRouteName() == 'm_addTransferPin') class="active" @endif><a href="{{ URL::to('/') }}/m/add/transfer-pin">Transfer</a></li>
                         <li @if(Route::currentRouteName() == 'm_myPinStock') class="active" @endif><a href="{{ URL::to('/') }}/m/pin/stock">Stock</a></li>
                         <li @if(Route::currentRouteName() == 'm_myPinHistory') class="active" @endif><a href="{{ URL::to('/') }}/m/pin/history">History</a></li>

@@ -28,7 +28,7 @@
                             <div class="col-xl-12 col-xs-12">
                                     <fieldset class="form-group">
                                         <label for="input_jml_pin">Jumlah Pin</label>
-                                        <input type="text" class="form-control allownumericwithoutdecimal" id="input_jml_pin" name="total_pin" autocomplete="off">
+                                        <input type="text" class="form-control allownumericwithoutdecimal invalidpaste" id="input_jml_pin" name="total_pin" autocomplete="off">
                                     </fieldset>
                             </div>
                         </div>
@@ -74,6 +74,12 @@
         $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {    
            $(this).val($(this).val().replace(/[^\d].+/, ""));
             if ((event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+        });
+        
+        $('.invalidpaste').on('paste', function (event) {
+            if (event.originalEvent.clipboardData.getData('Text').match(/[^\d]/)) {
                 event.preventDefault();
             }
         });

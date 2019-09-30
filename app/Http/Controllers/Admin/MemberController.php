@@ -366,8 +366,8 @@ class MemberController extends Controller {
             'price' => $harga,
             'unique_digit' => $rand,
         );
-        $modelSettingTrans->getInsertTransaction($dataInsert);
-        return redirect()->route('m_listTransactions')
+        $getIDTrans = $modelSettingTrans->getInsertTransaction($dataInsert);
+        return redirect()->route('m_addTransaction', [$getIDTrans->lastID])
                     ->with('message', 'Order Pin berhasil, silakan lakukan proses transfer')
                     ->with('messageclass', 'success');
     }
@@ -979,6 +979,9 @@ class MemberController extends Controller {
             }
         }
         $modelPin = New Pin;
+        $modelMember = New Member;
+        $modelBonusSetting = new Bonussetting;
+        $modelBonus = new Bonus;
         $getMylastPin = $modelPin->getMyLastPin($dataUser);
         $code = sprintf("%03s", $request->total_pin);
         $memberPin = array(
@@ -993,55 +996,110 @@ class MemberController extends Controller {
             'is_ro' => 1
         );
         $modelPin->getInsertMemberPin($memberPin);
-        $modelBonusSetting = new Bonussetting;
-        $modelBonus = new Bonus;
-        $getBonusStart =$modelBonusSetting->getActiveBonusStart();
-        $bonus_price = $getBonusStart->start_price * $request->total_pin;
-        $dataInsertBonus = array(
-            'user_id' => $dataUser->sponsor_id,
-            'from_user_id' => $dataUser->id,
-            'type' => 1,
-            'bonus_price' => $bonus_price,
-            'bonus_date' => date('Y-m-d'),
-            'poin_type' => 1,
-            'total_pin' => $request->total_pin
-        );
-        $modelBonus->getInsertBonusMember($dataInsertBonus);
-        
-        //Bonus RO
-        $uplineDetail = $dataUser->upline_detail;
-        $arraySpId = explode(',', $uplineDetail);
-        $dataSp = array();
-        $no = count($arraySpId) + 1;
-        foreach($arraySpId as $rowSp){
-            $no--;
-            $rm1 = str_replace('[', '', $rowSp);
-            $rm2 = str_replace(']', '', $rm1);
-            $int = (int) $rm2;
-            $dataSp[] = array(
-                'level' => $no,
-                'id' => $int
-            );
+        $getDay1_thisMonth = date('Y-m-01', strtotime(date('Y-m-d')));
+        $getDay1_nextMonth = date('Y-m-01', strtotime('+1 Month'));
+        $getMaxPin = $modelPin->getCheckMaxPinROByDate($dataUser->sponsor_id, $getDay1_thisMonth, $getDay1_nextMonth);
+        if($getMaxPin >= 4){
+            return redirect()->route('mainDashboard')
+                        ->with('message', 'Repeat Order member berhasil')
+                        ->with('messageclass', 'success');
         }
-        $getBonusRO = $modelBonusSetting->getActiveBonusRO();
-        $dataSpReverse = array_reverse($dataSp);
-        foreach($dataSpReverse as $rowUpline){
-            foreach($getBonusRO as $rowRO){
-                if($rowUpline['level'] == $rowRO->level){
-                    $real_bonus_priceRO = $rowRO->ro_price * $request->total_pin;
-                    $dataInsertBonusRO = array(
-                        'user_id' => $rowUpline['id'],
-                        'from_user_id' => $dataUser->id,
-                        'type' => 3,
-                        'bonus_price' => $real_bonus_priceRO,
-                        'bonus_date' => date('Y-m-d'),
-                        'poin_type' => 1,
-                        'level_id' => $rowUpline['level'],
-                        'total_pin' => $request->total_pin
-                    );
-                    $modelBonus->getInsertBonusMember($dataInsertBonusRO);
-                }
-            }
+        $getLevelSp = $modelMember->getLevelSponsoring($dataUser->id);
+        $modelSettingPin = New Pinsetting;
+        $getActivePinSetting = $modelSettingPin->getActivePinSetting();
+        $price_pin = $getActivePinSetting->price * $request->total_pin;
+        $royalti_statik = 1;
+        $bonus_royalti = $royalti_statik/100 * $price_pin;
+        if($getLevelSp->id_lvl1 != null){
+            $dataInsertBonusLvl1 = array(
+                'user_id' => $getLevelSp->id_lvl1,
+                'from_user_id' => $dataUser->id,
+                'type' => 3,
+                'bonus_price' => $bonus_royalti,
+                'bonus_date' => date('Y-m-d'),
+                'poin_type' => 1,
+                'level_id' => 1,
+                'total_pin' => $request->total_pin
+            );
+            $modelBonus->getInsertBonusMember($dataInsertBonusLvl1);
+        }
+        if($getLevelSp->id_lvl2 != null){
+            $dataInsertBonusLvl2 = array(
+                'user_id' => $getLevelSp->id_lvl2,
+                'from_user_id' => $dataUser->id,
+                'type' => 3,
+                'bonus_price' => $bonus_royalti,
+                'bonus_date' => date('Y-m-d'),
+                'poin_type' => 1,
+                'level_id' => 2,
+                'total_pin' => $request->total_pin
+            );
+            $modelBonus->getInsertBonusMember($dataInsertBonusLvl2);
+        }
+        if($getLevelSp->id_lvl3 != null){
+            $dataInsertBonusLvl3 = array(
+                'user_id' => $getLevelSp->id_lvl3,
+                'from_user_id' => $dataUser->id,
+                'type' => 3,
+                'bonus_price' => $bonus_royalti,
+                'bonus_date' => date('Y-m-d'),
+                'poin_type' => 1,
+                'level_id' => 3,
+                'total_pin' => $request->total_pin
+            );
+            $modelBonus->getInsertBonusMember($dataInsertBonusLvl3);
+        }
+        if($getLevelSp->id_lvl4 != null){
+            $dataInsertBonusLvl4 = array(
+                'user_id' => $getLevelSp->id_lvl4,
+                'from_user_id' => $dataUser->id,
+                'type' => 3,
+                'bonus_price' => $bonus_royalti,
+                'bonus_date' => date('Y-m-d'),
+                'poin_type' => 1,
+                'level_id' => 4,
+                'total_pin' => $request->total_pin
+            );
+            $modelBonus->getInsertBonusMember($dataInsertBonusLvl4);
+        }
+        if($getLevelSp->id_lvl5 != null){
+            $dataInsertBonusLvl5 = array(
+                'user_id' => $getLevelSp->id_lvl5,
+                'from_user_id' => $dataUser->id,
+                'type' => 3,
+                'bonus_price' => $bonus_royalti,
+                'bonus_date' => date('Y-m-d'),
+                'poin_type' => 1,
+                'level_id' => 5,
+                'total_pin' => $request->total_pin
+            );
+            $modelBonus->getInsertBonusMember($dataInsertBonusLvl5);
+        }
+        if($getLevelSp->id_lvl6 != null){
+            $dataInsertBonusLvl6 = array(
+                'user_id' => $getLevelSp->id_lvl6,
+                'from_user_id' => $dataUser->id,
+                'type' => 3,
+                'bonus_price' => $bonus_royalti,
+                'bonus_date' => date('Y-m-d'),
+                'poin_type' => 1,
+                'level_id' => 6,
+                'total_pin' => $request->total_pin
+            );
+            $modelBonus->getInsertBonusMember($dataInsertBonusLvl6);
+        }
+        if($getLevelSp->id_lvl7 != null){
+            $dataInsertBonusLvl7 = array(
+                'user_id' => $getLevelSp->id_lvl7,
+                'from_user_id' => $dataUser->id,
+                'type' => 3,
+                'bonus_price' => $bonus_royalti,
+                'bonus_date' => date('Y-m-d'),
+                'poin_type' => 1,
+                'level_id' => 7,
+                'total_pin' => $request->total_pin
+            );
+            $modelBonus->getInsertBonusMember($dataInsertBonusLvl7);
         }
         return redirect()->route('mainDashboard')
                     ->with('message', 'Repeat Order member berhasil')
@@ -1052,23 +1110,6 @@ class MemberController extends Controller {
     
     
     
-    #######################
-    public function getTestEmail(){
-        $dataEmail = array(
-            'email' => 'chairil.ptmgahama@gmail.com',
-            'password' => '123456',
-            'hp' => '087811112222',
-            'user_code' => 'test123'
-        );
-        $emailSend = 'chairil.hakim@domikado.com';
-        Mail::send('member.email.email', $dataEmail, function($message) use($emailSend){
-            $message
-                    ->from('noreply@lumbung.network', 'Noreply')
-                    ->to($emailSend, 'Lumbung Network Registration')
-                    ->subject('Welcome to Lumbung Network');
-        });
-        dd('done');
-    }
     
     
     
