@@ -63,6 +63,12 @@
                     <div class="row">
                         <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
                             <div class="card-box widget-user">
+                                <a href="{{ URL::to('/') }}/m/add/repeat-order" class="btn btn-primary waves-effect waves-light">
+                                    <span class="btn-label">
+                                        <i class="fa fa-shopping-cart"></i>
+                                    </span>
+                                    Repeat Order
+                                </a>
                                 <div>
                                     <img src="/asset_member/images/profile.jpg" class="img-responsive img-circle" alt="user">
                                     <div class="wid-u-info">

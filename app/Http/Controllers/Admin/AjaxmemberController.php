@@ -301,6 +301,35 @@ class AjaxmemberController extends Controller {
                         ->with('check', $canInsert)
                         ->with('data', $dataAll);
     }
+    
+    public function getCekConfirmWDRoyalti(Request $request){
+        $dataUser = Auth::user();
+        $modelValidasi = New Validation;
+        $modelBonus = new Bonus;
+        $modelWD = new Transferwd;
+        $modelBank = New Bank;
+        $totalBonus = $request->input_jml_wd; //$modelBonus->getTotalBonus($dataUser);
+        $totalBonusAll = $modelBonus->getTotalBonusRoyalti($dataUser);
+        $totalWD = $modelWD->getTotalDiTransferRoyalti($dataUser);
+        $getMyActiveBank = $modelBank->getBankMemberActive($dataUser);
+        $id_bank = null;
+        if($getMyActiveBank != null){
+            $id_bank = $getMyActiveBank->id;
+        }
+        $dataAll = (object) array(
+            'req_wd' => (int) $totalBonus,
+            'total_bonus' => $totalBonus,
+            'total_wd' => $totalWD->total_wd,
+            'total_tunda' => $totalWD->total_tunda,
+            'saldo' => (int) ($totalBonusAll->total_bonus - ($totalWD->total_wd + $totalWD->total_tunda + $totalWD->total_fee_admin)),
+            'admin_fee' => 6500,
+            'bank' => $id_bank
+        );
+        $canInsert = $modelValidasi->getCheckWD($dataAll);
+         return view('member.ajax.confirm_add_wd_royalti')
+                        ->with('check', $canInsert)
+                        ->with('data', $dataAll);
+    }
 
     
     

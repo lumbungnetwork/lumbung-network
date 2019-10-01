@@ -18,7 +18,7 @@
                 </form>    
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Tutup</button>
+                <button type="button" class="btn btn-secondary waves-effect" id="tutupModal" data-dismiss="modal">Tutup</button>
                 <button type="button" class="btn btn-primary waves-effect waves-light" id="submit" onclick="confirmSubmit()">Order</button>
             </div>
         </div>

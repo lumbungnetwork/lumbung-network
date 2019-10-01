@@ -1106,6 +1106,45 @@ class MemberController extends Controller {
                     ->with('messageclass', 'success');
     }
     
+    public function getMySponsorTree(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->upline_id == null){
+            if($dataUser->id > 4){
+                return redirect()->route('mainDashboard');
+            }
+        }
+        $modelMember = New Member;
+        $back = false;
+        $downline = $dataUser->upline_detail.',['.$dataUser->id.']';
+        if($dataUser->upline_detail == null){
+            $downline = '['.$dataUser->id.']';
+        }
+        if($request->get_id != null){
+            if($request->get_id != $dataUser->id){
+                $back = true;
+                $dataUser = $modelMember->getCekIdDownlineSponsor($request->get_id, $dataUser->id);
+            }
+        }
+        if($dataUser == null){
+            return redirect()->route('mainDashboard');
+        }
+        $getBinary = $modelMember->getStructureSponsor($dataUser);
+        return view('member.networking.sponsor-tree')
+                        ->with('getData', $getBinary)
+                        ->with('back', $back)
+                        ->with('dataUser', $dataUser);
+    }
+    
     
     
     

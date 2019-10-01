@@ -22,6 +22,24 @@ class Bonus extends Model {
         $sql = DB::table('bonus_member')
                     ->selectRaw('sum(bonus_price) as total_bonus')
                     ->where('user_id', '=', $data->id)
+                    ->whereIn('type', array(1, 2))
+                    ->where('poin_type', '=', 1)
+                    ->first();
+        $total_bonus = 0;
+        if($sql->total_bonus != null){
+            $total_bonus = $sql->total_bonus;
+        }
+        $return = (object) array(
+            'total_bonus' => $total_bonus
+        );
+        return $return;
+    }
+    
+    public function getTotalBonusRoyalti($data){
+        $sql = DB::table('bonus_member')
+                    ->selectRaw('sum(bonus_price) as total_bonus')
+                    ->where('user_id', '=', $data->id)
+                    ->where('type', '=', 3)
                     ->where('poin_type', '=', 1)
                     ->first();
         $total_bonus = 0;

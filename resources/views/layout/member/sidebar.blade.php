@@ -30,13 +30,14 @@
                     </ul>
                 </li>
                 <li class="has_sub">
-                    <a class="waves-effect @if(Route::currentRouteName() == 'm_statusSponsor' || Route::currentRouteName() == 'm_myBinary') active @endif">
+                    <a class="waves-effect @if(Route::currentRouteName() == 'm_statusSponsor' || Route::currentRouteName() == 'm_myBinary' || Route::currentRouteName() == 'm_mySponsorTree') active @endif">
                         <i class="zmdi zmdi-device-hub"></i> 
                         <span> Networking </span> <span class="menu-arrow"></span>
                     </a>
                     <ul class="list-unstyled">
                         <li @if(Route::currentRouteName() == 'm_statusSponsor') class="active" @endif><a href="{{ URL::to('/') }}/m/status/sponsor">Sponsor</a></li>
-                        <li @if(Route::currentRouteName() == 'm_myBinary') class="active" @endif><a href="{{ URL::to('/') }}/m/my/binary">Binary</a></li>
+                        <li @if(Route::currentRouteName() == 'm_myBinary') class="active" @endif><a href="{{ URL::to('/') }}/m/my/binary">Binary Tree</a></li>
+                        <li @if(Route::currentRouteName() == 'm_mySponsorTree') class="active" @endif><a href="{{ URL::to('/') }}/m/my/sponsor-tree">Sponsor Tree</a></li>
                     </ul>
                 </li>
                 <li class="has_sub">
@@ -75,13 +76,14 @@
                     </ul>
                 </li>
                 <li class="has_sub">
-                    <a class="waves-effect @if(Route::currentRouteName() == 'm_requestWD' || Route::currentRouteName() == 'm_historyWD') active @endif">
+                    <a class="waves-effect @if(Route::currentRouteName() == 'm_requestWD' || Route::currentRouteName() == 'm_historyWD' || Route::currentRouteName() == 'm_requestWDRoyalti') active @endif">
                         <i class="zmdi zmdi-money"></i> 
                         <span> Withdrawal </span> <span class="menu-arrow"></span>
                     </a>
                     <ul class="list-unstyled">
-                        <li @if(Route::currentRouteName() == 'm_historyWD') class="active" @endif><a href="{{ URL::to('/') }}/m/history/wd">History Withdrawal</a></li>
-                        <li @if(Route::currentRouteName() == 'm_requestWD') class="active" @endif><a href="{{ URL::to('/') }}/m/req/wd">Request Withdrawal</a></li>
+                        <li @if(Route::currentRouteName() == 'm_historyWD') class="active" @endif><a href="{{ URL::to('/') }}/m/history/wd">History WD</a></li>
+                        <li @if(Route::currentRouteName() == 'm_requestWD') class="active" @endif><a href="{{ URL::to('/') }}/m/req/wd">Request WD</a></li>
+                        <li @if(Route::currentRouteName() == 'm_requestWDRoyalti') class="active" @endif><a href="{{ URL::to('/') }}/m/req/wd-royalti">Request WD Royalti</a></li>
                     </ul>
                 </li>
                 

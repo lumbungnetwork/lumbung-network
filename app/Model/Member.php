@@ -408,5 +408,32 @@ class Member extends Model {
         return $sql;
     }
     
+    public function getCekIdDownlineSponsor($id, $sp_id){
+        $sql = DB::table('users')
+                    ->where('id', '=', $id)
+                    ->where('sponsor_id', '=', $sp_id)
+                    ->where('user_type', '=', 10)
+                    ->where('is_active', '=', 1)
+                    ->orderBy('id', 'ASC')
+                    ->first();
+        return $sql;
+    }
+    
+    public function getStructureSponsor($data){
+        $sql = DB::table('users')
+                    ->where('sponsor_id', '=', $data->id)
+                    ->where('user_type', '=', 10)
+                    ->where('is_active', '=', 1)
+                    ->orderBy('id', 'ASC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    
+    
 }
 

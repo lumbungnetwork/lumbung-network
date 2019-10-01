@@ -194,6 +194,53 @@ class BonusmemberController extends Controller {
                 ->with('dataUser', $dataUser);
     }
     
+    public function getRequestWithdrawalRoyalti(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = new Bonus;
+        $modelWD = new Transferwd;
+        $totalBonus = $modelBonus->getTotalBonusRoyalti($dataUser);
+        $totalWD = $modelWD->getTotalDiTransferRoyalti($dataUser);
+        $dataAll = (object) array(
+            'total_bonus' => floor($totalBonus->total_bonus),
+            'total_wd' => $totalWD->total_wd,
+            'total_tunda' => $totalWD->total_tunda,
+            'admin_fee' => 6500,
+            'total_fee_admin' => $totalWD->total_fee_admin,
+            'fee_tuntas' => $totalWD->fee_tuntas,
+            'fee_tunda' => $totalWD->fee_tunda
+        );
+        return view('member.bonus.req-wd-royalti')
+                ->with('dataAll', $dataAll)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postRequestWithdrawRoyalti(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelWD = new Transferwd;
+        $getCode = $modelWD->getCodeWD($dataUser);
+        $dataInsert = array(
+            'user_id' => $dataUser->id,
+            'user_bank' => $request->user_bank,
+            'wd_code' => $getCode,
+            'type' => 3, 
+            'wd_total' => $request->saldo_wd,
+            'wd_date' => date('Y-m-d'),
+            'admin_fee' => $request->admin_fee
+        );
+        $modelWD->getInsertWD($dataInsert);
+        return redirect()->route('m_myBonusSaldo')
+                    ->with('message', 'request Withdraw berhasil')
+                    ->with('messageclass', 'success');
+    }
+    
     
 }
 

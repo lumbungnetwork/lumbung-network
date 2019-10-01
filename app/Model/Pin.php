@@ -85,5 +85,22 @@ class Pin extends Model {
         return $sql;
     }
     
+    public function getCheckMaxPinROByDate($sp_id, $startDate, $endDate){
+        $sql = DB::table('member_pin')
+                    ->leftJoin('users', 'member_pin.user_id', '=', 'users.id')
+                    ->selectRaw('sum(member_pin.total_pin) as total_pin_ro')
+                    ->where('users.sponsor_id', '=', $sp_id)
+                    ->whereDate('member_pin.used_at', '>=', $startDate)
+                    ->whereDate('member_pin.used_at', '<', $endDate)
+                    ->where('member_pin.is_used', '=', 1)
+                    ->where('member_pin.is_ro', '=', 1)
+                    ->first();
+        $return = 0;
+        if($sql->total_pin_ro != null){
+            $return = $sql->total_pin_ro;
+        }
+        return $return;
+    }
+    
     
 }

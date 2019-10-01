@@ -67,7 +67,6 @@ Route::prefix('/')->group(function () {
         
         
     //Wilayah Member
-        Route::get('/m/test/email', 'Admin\MemberController@getTestEmail')->middleware('auth');
         Route::get('/m/dashboard', 'Admin\DashboardController@getMemberDashboard')->name('mainDashboard')->middleware('auth');
         
         //profile
@@ -89,6 +88,7 @@ Route::prefix('/')->group(function () {
         Route::get('/m/my/sponsor', 'Admin\MemberController@getMySponsor')->name('m_mySponsor')->middleware('auth');
         Route::get('/m/my/binary', 'Admin\MemberController@getMyBinary')->name('m_myBinary')->middleware('auth');
         Route::get('/m/status/member', 'Admin\MemberController@getStatusMember')->name('m_statusMember')->middleware('auth');
+        Route::get('/m/my/sponsor-tree', 'Admin\MemberController@getMySponsorTree')->name('m_mySponsorTree')->middleware('auth');
         
         //Package
         Route::get('/m/add/package', 'Admin\MemberController@getAddPackage')->name('m_newPackage')->middleware('auth');
@@ -123,6 +123,8 @@ Route::prefix('/')->group(function () {
         Route::post('/m/request/wd', 'Admin\BonusmemberController@postRequestWithdraw')->middleware('auth');
         Route::get('/m/history/wd', 'Admin\BonusmemberController@getHistoryWithdrawal')->name('m_historyWD')->middleware('auth');
         Route::get('/m/req/wd', 'Admin\BonusmemberController@getRequestWithdrawal')->name('m_requestWD')->middleware('auth');
+        Route::get('/m/req/wd-royalti', 'Admin\BonusmemberController@getRequestWithdrawalRoyalti')->name('m_requestWDRoyalti')->middleware('auth');
+        Route::post('/m/request/wd-royalti', 'Admin\BonusmemberController@postRequestWithdrawRoyalti')->middleware('auth');
         
         //Ajax
         Route::get('/m/cek/add-sponsor', 'Admin\AjaxmemberController@postCekAddSponsor')->middleware('auth');
@@ -141,4 +143,5 @@ Route::prefix('/')->group(function () {
         Route::get('/m/cek/usercode', 'Admin\AjaxmemberController@getSearchUserCode')->middleware('auth');
         Route::get('/m/cek/repeat-order', 'Admin\AjaxmemberController@getCekRO')->middleware('auth');
         Route::get('/m/cek/confirm-wd', 'Admin\AjaxmemberController@getCekConfirmWD')->middleware('auth');
+        Route::get('/m/cek/confirm-wd-royalti', 'Admin\AjaxmemberController@getCekConfirmWDRoyalti')->middleware('auth');
 });

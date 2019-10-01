@@ -10,7 +10,7 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="page-title-box">
-                            <h4 class="page-title">Request WD</h4>
+                            <h4 class="page-title">Request WD Royalti</h4>
                             <div class="clearfix"></div>
                         </div>
                     </div>
@@ -103,21 +103,31 @@
 @stop
 
 @section('styles')
+<?php
+/*
 <!--<link href="{{ asset('asset_member/plugins/switchery/switchery.min.css') }}" rel="stylesheet" type="text/css" />-->
 <!--<link rel="stylesheet" href="{{ asset('asset_member/plugins/morris/morris.css') }}">-->
+ * 
+ */
+?>
 @stop
 @section('javascript')
+<?php
+/*
 <!--<script src="{{ asset('asset_member/plugins/morris/morris.min.js') }}"></script>-->
 <!--<script src="{{ asset('asset_member/plugins/raphael/raphael-min.js') }}"></script>-->
 <!--<script src="{{ asset('asset_member/plugins/waypoints/lib/jquery.waypoints.js') }}"></script>-->
 <!--<script src="{{ asset('asset_member/plugins/counterup/jquery.counterup.min.js') }}"></script>-->
 <!--<script src="{{ asset('asset_member/pages/jquery.dashboard.js') }}"></script>-->
+ * 
+ */
+?>
 <script>
        function inputSubmit(){
            var input_jml_wd = $("#input_jml").val();
             $.ajax({
                 type: "GET",
-                url: "{{ URL::to('/') }}/m/cek/confirm-wd?input_jml_wd="+input_jml_wd,
+                url: "{{ URL::to('/') }}/m/cek/confirm-wd-royalti?input_jml_wd="+input_jml_wd,
                 success: function(url){
                     $("#confirmDetail" ).empty();
                     $("#confirmDetail").html(url);
