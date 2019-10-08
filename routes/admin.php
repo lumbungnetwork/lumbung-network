@@ -128,7 +128,7 @@ Route::prefix('/')->group(function () {
         
         //Ajax
         Route::get('/m/cek/add-sponsor', 'Admin\AjaxmemberController@postCekAddSponsor')->middleware('auth');
-        Route::get('/m/cek/add-package/{id_paket}', 'Admin\AjaxmemberController@getCekAddPackage')->middleware('auth');
+        Route::get('/m/cek/add-package/{id_paket}/{setuju}', 'Admin\AjaxmemberController@getCekAddPackage')->middleware('auth');
         Route::get('/m/cek/add-pin', 'Admin\AjaxmemberController@postCekAddPin')->middleware('auth');
         Route::get('/m/cek/add-profile', 'Admin\AjaxmemberController@postCekAddProfile')->middleware('auth');
         Route::get('/m/cek/add-transaction', 'Admin\AjaxmemberController@postCekAddTransaction')->middleware('auth');

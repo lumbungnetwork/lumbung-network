@@ -7,7 +7,7 @@
         <meta name="author" content="Lumbung Network IT">
         <link rel="shortcut icon" href="/image/icon2.png">
         <title>Lumbung Network</title>
-        <link href="{{ asset('asset_member/css/style.css') }}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('asset_member/css/main_all.css') }}" rel="stylesheet" type="text/css" />
         @yield('styles')
         <script src="{{ asset('asset_member/js/modernizr.min.js') }}"></script>
         

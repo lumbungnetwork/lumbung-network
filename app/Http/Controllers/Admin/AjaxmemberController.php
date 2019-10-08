@@ -62,12 +62,13 @@ class AjaxmemberController extends Controller {
                         ->with('dataUser', $dataUser);
     }
     
-    public function getCekAddPackage($id_paket){
+    public function getCekAddPackage($id_paket, $setuju){
         $modePackage = New Package;
         $modelSettingPin = New Pinsetting;
         $getActivePinSetting = $modelSettingPin->getActivePinSetting();
         $getDetailPackage = $modePackage->getPackageId($id_paket);
         return view('member.ajax.confirm_add_package')
+                        ->with('setuju', $setuju)
                         ->with('getData', $getDetailPackage)
                         ->with('pinSetting', $getActivePinSetting);
     }
