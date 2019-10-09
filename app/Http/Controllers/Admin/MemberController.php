@@ -1145,6 +1145,66 @@ class MemberController extends Controller {
                         ->with('dataUser', $dataUser);
     }
     
+    public function getMyTron(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_tron == 0){
+            return redirect()->route('m_newTron')
+                    ->with('message', 'data Tron belum ada, silakan isi data tron anda')
+                    ->with('messageclass', 'danger');
+        }
+        return view('member.profile.my-tron')
+                    ->with('headerTitle', 'Tron')
+                    ->with('dataUser', $dataUser);
+    }
+    
+    public function getAddMyTron(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_tron == 1){
+            return redirect()->route('m_myTron');
+        }
+        return view('member.profile.add-tron')
+                ->with('headerTitle', 'TRON')
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postAddMyTron(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_tron == 1){
+            return redirect()->route('m_myTron');
+        }
+        $dataUpdate = array(
+            'is_tron' => 1,
+            'tron' => $request->tron,
+            'tron_at' => date('Y-m-d H:i:s')
+        );
+        $modelMember = New Member;
+        $modelMember->getUpdateUsers('id', $dataUser->id, $dataUpdate);
+        return redirect()->route('m_myTron')
+                    ->with('message', 'Data Tron berhasil dibuat')
+                    ->with('messageclass', 'success');
+    }
+    
     
     
     

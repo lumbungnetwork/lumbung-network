@@ -74,6 +74,11 @@ Route::prefix('/')->group(function () {
         Route::get('/m/add/profile', 'Admin\MemberController@getAddMyProfile')->name('m_newProfile')->middleware('auth');
         Route::post('/m/add/profile', 'Admin\MemberController@postAddMyProfile')->middleware('auth');
         
+        //profile
+        Route::get('/m/tron', 'Admin\MemberController@getMyTron')->name('m_myTron')->middleware('auth');
+        Route::get('/m/add/tron', 'Admin\MemberController@getAddMyTron')->name('m_newTron')->middleware('auth');
+        Route::post('/m/add/tron', 'Admin\MemberController@postAddMyTron')->middleware('auth');
+        
         //Bank
         Route::get('/m/bank', 'Admin\MemberController@getMyBank')->name('m_myBank')->middleware('auth');
         Route::post('/m/add/bank', 'Admin\MemberController@postAddBank')->middleware('auth');
@@ -144,4 +149,5 @@ Route::prefix('/')->group(function () {
         Route::get('/m/cek/repeat-order', 'Admin\AjaxmemberController@getCekRO')->middleware('auth');
         Route::get('/m/cek/confirm-wd', 'Admin\AjaxmemberController@getCekConfirmWD')->middleware('auth');
         Route::get('/m/cek/confirm-wd-royalti', 'Admin\AjaxmemberController@getCekConfirmWDRoyalti')->middleware('auth');
+        Route::get('/m/cek/add-tron', 'Admin\AjaxmemberController@getCekAddTron')->middleware('auth');
 });

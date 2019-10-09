@@ -433,6 +433,11 @@ class Member extends Model {
         return $return;
     }
     
+    public function getCheckTron($tron){
+        $sql = DB::table('users')->selectRaw('id')->where('tron', '=', $tron)->where('user_type', '=', 10)->first();
+        return $sql;
+    }
+    
     
     
 }

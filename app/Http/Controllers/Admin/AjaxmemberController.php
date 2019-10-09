@@ -331,6 +331,38 @@ class AjaxmemberController extends Controller {
                         ->with('check', $canInsert)
                         ->with('data', $dataAll);
     }
+    
+    public function getCekAddTron(Request $request){
+        $dataUser = Auth::user();
+        $canInsert = (object) array('can' => true, 'pesan' => '');
+        $modelMember = New Member;
+        $data = (object) array(
+            'tron' => $request->tron
+        );
+        if($request->tron == null){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Alamat TRON harus diisi');
+            return view('member.ajax.confirm_add_tron')
+                        ->with('dataRequest', null)
+                        ->with('check', $canInsert);
+        }
+        if(strpos($request->tron, ' ') !== false){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Alamat TRON tidak boleh ada spasi');
+            return view('member.ajax.confirm_add_tron')
+                        ->with('dataRequest', null)
+                        ->with('check', $canInsert);
+        }
+        $cekTron = $modelMember->getCheckTron($request->tron);
+        if($cekTron != null){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Gunakan alamat TRON yang lain');
+            return view('member.ajax.confirm_add_tron')
+                        ->with('dataRequest', null)
+                        ->with('check', $canInsert);
+        }
+        return view('member.ajax.confirm_add_tron')
+                        ->with('dataRequest', $data)
+                        ->with('check', $canInsert)
+                        ->with('dataUser', $dataUser);
+    }
 
     
     
