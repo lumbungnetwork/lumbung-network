@@ -247,9 +247,11 @@ class MasterAdminController extends Controller {
         }
         $modelBank = new Bank;
         $getPerusahaanBank = $modelBank->getBankPerusahaan();
+        $getPerusahaanTron = $modelBank->getTronPerusahaan();
         return view('admin.bank.list-bank')
                 ->with('headerTitle', 'Bank Perusahaan')
                 ->with('getData', $getPerusahaanBank)
+                ->with('getDataTron', $getPerusahaanTron)
                 ->with('dataUser', $dataUser);
     }
     
@@ -301,6 +303,55 @@ class MasterAdminController extends Controller {
         $modelBank->getInsertBank($dataInsert);
         return redirect()->route('adm_bankPerusahaan')
                 ->with('message', 'Berhasil tambah bank perusahaan')
+                ->with('messageclass', 'success');
+    }
+    
+    public function postTronPerusahaan(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBank = new Bank;
+//        $getPerusahaanTron = $modelBank->getTronPerusahaanID($request->id);
+        $dataUpdate = array(
+            'tron' => $request->tron,
+            'updated_at' => date('Y-m-d H:i:s')
+        );
+        $modelBank->getUpdateTron('id', $request->id, $dataUpdate);
+        return redirect()->route('adm_bankPerusahaan')
+                ->with('message', 'Berhasil update tron perusahaan')
+                ->with('messageclass', 'success');
+    }
+    
+    public function getAddTronPerusahaan(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        return view('admin.bank.add-tron')
+                ->with('headerTitle', 'Tron Perusahaan')
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postAddTronPerusahaan(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBank = new Bank;
+        $dataInsert = array(
+            'user_id' => 2,
+            'tron_name' => 'eIDR',
+            'tron' => $request->tron,
+            'tron_type' => 1,
+            'active_at' => date('Y-m-d H:i:s')
+        );
+        $modelBank->getInsertTron($dataInsert);
+        return redirect()->route('adm_bankPerusahaan')
+                ->with('message', 'Berhasil tambah tron perusahaan')
                 ->with('messageclass', 'success');
     }
     
@@ -439,6 +490,21 @@ class MasterAdminController extends Controller {
                 ->with('dataUser', $dataUser);
     }
     
+    public function getAllWDeIDR(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = New Bonus;
+        $modelWD = new Transferwd;
+        $getData = $modelWD->getAllRequestWDeIDR();
+        return view('admin.member.list-wd-eidr')
+                ->with('headerTitle', 'Request Withdrawal Konversi eIDR')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
     public function postCheckWD(Request $request){
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
@@ -460,6 +526,27 @@ class MasterAdminController extends Controller {
                     ->with('messageclass', 'success');
     }
     
+    public function postCheckWDeIDR(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = New Bonus;
+        $modelWD = new Transferwd;
+        $getRowID = $request->id;
+        foreach($getRowID as $getID){
+            $dataUpdate = array(
+                'status' => 1,
+                'transfer_at' => date('Y-m-d H:i:s')
+            );
+            $modelWD->getUpdateWD('id', $getID, $dataUpdate);
+        }
+        return redirect()->route('adm_listWDeIDR')
+                    ->with('message', 'Konfirmasi Transfer WD berhasil')
+                    ->with('messageclass', 'success');
+    }
+    
     public function postRejectWD(Request $request){
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
@@ -470,15 +557,21 @@ class MasterAdminController extends Controller {
         $modelWD = new Transferwd;
         $getID = $request->cekId;
         $alesan = $request->reason;
-        $getData = $modelWD->getIDRequestWD($getID);
+        $getData = $modelWD->getIDRequestWDReject($getID);
         $dataUpdate = array(
             'status' => 2,
             'reason' => $alesan,
             'deleted_at' => date('Y-m-d H:i:s')
         );
         $modelWD->getUpdateWD('id', $getID, $dataUpdate);
-        return redirect()->route('adm_listWD')
-                    ->with('message', 'Data WD '.$getData->full_name.' senilai Rp. '.number_format($getData->wd_total + $getData->admin_fee, 0, ',', '.').' direject')
+        $redirect = 'adm_listWD';
+        $wd = 'WD';
+        if($getData->is_tron == 1){
+            $redirect = 'adm_listWDeIDR';
+            $wd = 'Konversi';
+        }
+        return redirect()->route($redirect)
+                    ->with('message', 'Data '.$wd.' '.$getData->full_name.' senilai Rp. '.number_format($getData->wd_total + $getData->admin_fee, 0, ',', '.').' direject')
                     ->with('messageclass', 'success');
     }
     
@@ -492,6 +585,20 @@ class MasterAdminController extends Controller {
         $getData = $modelWD->getAllHistoryWD();
         return view('admin.member.history-wd')
                 ->with('headerTitle', 'History Withdrawal')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function getAllHistoryWDeIDR(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelWD = new Transferwd;
+        $getData = $modelWD->getAllHistoryWDeIDR();
+        return view('admin.member.history-wd-eidr')
+                ->with('headerTitle', 'History Konversi eIDR')
                 ->with('getData', $getData)
                 ->with('dataUser', $dataUser);
     }

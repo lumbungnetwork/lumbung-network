@@ -27,28 +27,48 @@
                     </div>
                 </div>
             </div>
+            @if($getData->is_tron == 0)
             <div class="row">
                 <div class="col-md-12">
-                    <div class="form-group">
-                        <label>Bank</label>
-                        <input type="text" class="form-control" readonly="" value="{{$getData->bank_name}}">
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-8">
                     <div class="form-group">
                         <label>Nama Rekening</label>
                         <input type="text" class="form-control" readonly="" value="{{$getData->account_name}}">
                     </div>
                 </div>
-                <div class="col-md-4">
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Bank</label>
+                        <input type="text" class="form-control" readonly="" value="{{$getData->bank_name}}">
+                    </div>
+                </div>
+                <div class="col-md-6">
                     <div class="form-group">
                         <label>Nomor Rekening</label>
                         <input type="text" readonly=""  class="form-control" value="{{$getData->account_no}}">
                     </div>
                 </div>
             </div>
+            @endif
+            @if($getData->is_tron == 1)
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Nama</label>
+                        <input type="text" class="form-control" readonly="" value="{{$getData->tron_name}}">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Alamat Tron</label>
+                        <input type="text" class="form-control" readonly="" value="{{$getData->tron}}">
+                    </div>
+                </div>
+            </div>
+            @endif
             <?php
                 $price = $getData->price + $getData->unique_digit;
                 $status = 'proses transfer';

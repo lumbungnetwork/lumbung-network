@@ -77,7 +77,7 @@
                                                 <td><span class="text-{{$label}}">{{$status}}</span></td>
                                                 <td>
                                                     @if($row->status == 1)
-                                                    <a rel="tooltip"  data-toggle="modal" data-target="#popUp" class="text-primary" href="{{ URL::to('/') }}/ajax/adm/cek/transaction/{{$row->id}}/{{$row->user_id}}">confirm</a>
+                                                    <a rel="tooltip"  data-toggle="modal" data-target="#popUp" class="text-primary" href="{{ URL::to('/') }}/ajax/adm/cek/transaction/{{$row->id}}/{{$row->user_id}}/{{$row->is_tron}}">confirm</a>
                                                     @endif
                                                 </td>
                                             </tr>

@@ -32,6 +32,11 @@
                                                     <small>{{$getData->transaction_code}}</small>
                                                 </h5>
                                             </div>
+                                            @if($getData->bank_perusahaan_id == null)
+                                            <div style="text-align: center;">
+                                                <h3>Pilih Metode Pembayaran Anda</h3>
+                                            </div>
+                                            @endif
                                         </div>
                                         <hr>
                                         <div class="row">
@@ -40,20 +45,46 @@
                                                 <div class="pull-xs-left m-t-30">
                                                     <address>
                                                         @if($getData->bank_perusahaan_id != null)
-                                                            <br>
-                                                            Nama Rekening : <strong>{{$bankPerusahaan->account_name}}</strong>
-                                                            <br>
-                                                            Nama Bank: <strong>{{$bankPerusahaan->bank_name}}</strong>
-                                                            <br>
-                                                            No. Rekening: <strong>{{$bankPerusahaan->account_no}}</strong>
+                                                            @if($getData->is_tron == 0)
+                                                                <br>
+                                                                Nama Rekening: <strong>{{$bankPerusahaan->account_name}}</strong>
+                                                                <br>
+                                                                Nama Bank: <strong>{{$bankPerusahaan->bank_name}}</strong>
+                                                                <br>
+                                                                No. Rekening: <strong>{{$bankPerusahaan->account_no}}</strong>
+                                                            @endif
+                                                            @if($getData->is_tron == 1)
+                                                                <br>
+                                                                Nama: <strong>{{$bankPerusahaan->tron_name}}</strong>
+                                                                <br>
+                                                                Alamat Tron: <strong>{{$bankPerusahaan->tron}}</strong>
+                                                            @endif
                                                         @endif
                                                         @if($getData->bank_perusahaan_id == null)
-                                                        <select class="form-control" name="bank_perusahaan_id" id="bank_name">
-                                                            <option value="0">- Pilih Bank -</option>
-                                                            @foreach($bankPerusahaan as $rowBank)
-                                                                <option value="{{$rowBank->id}}">{{$rowBank->bank_name}} ({{$rowBank->account_name}} - {{$rowBank->account_no}}) </option>
-                                                            @endforeach
-                                                        </select>
+                                                        <?php $no = 1; ?>
+                                                        @foreach($bankPerusahaan as $rowBank)
+                                                            <?php $no++; ?>
+                                                            <div class="radio radio-primary">
+                                                                <input type="radio" name="radio" id="radio{{$no}}" value="0_{{$rowBank->id}}">
+                                                                <label for="radio{{$no}}">
+                                                                    {{$rowBank->bank_name}} a/n <b>{{$rowBank->account_name}}</b>
+                                                                    <br>
+                                                                    {{$rowBank->account_no}}
+                                                                </label>
+                                                            </div>
+                                                        @endforeach
+                                                        <?php $no1 = count($bankPerusahaan) + 1; ?>
+                                                        @foreach($tronPerusahaan as $rowTron)
+                                                            <?php $no1++; ?>
+                                                            <div class="radio radio-primary">
+                                                                <input type="radio" name="radio" id="radio{{$no1}}" value="1_{{$rowTron->id}}">
+                                                                <label for="radio{{$no1}}">
+                                                                    {{$rowTron->tron_name}}
+                                                                    <br>
+                                                                    <b>{{$rowTron->tron}}</b>
+                                                                </label>
+                                                            </div>
+                                                        @endforeach
                                                         @endif
                                                     </address>
                                                 </div>
@@ -165,7 +196,8 @@
     <script>
            function inputSubmit(){
                 var id_trans = $("#id_trans").val();
-                var id_bank = $("#bank_name").val();
+//                var id_bank = $("#bank_name").val();
+                var id_bank = $('input[name=radio]:checked').val(); 
                  $.ajax({
                      type: "GET",
                      url: "{{ URL::to('/') }}/m/cek/add-transaction?id_trans="+id_trans+"&id_bank="+id_bank,
@@ -191,6 +223,8 @@
             function confirmSubmit(){
                 var dataInput = $("#form-add").serializeArray();
                 $('#form-add').submit();
+                $('#tutupModal').remove();
+                $('#submit').remove();
             }
     </script>
 @endif

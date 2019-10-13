@@ -31,6 +31,9 @@ Route::prefix('/')->group(function () {
         Route::post('/adm/bank', 'Admin\MasterAdminController@postBankPerusahaan')->middleware('auth');
         Route::get('/adm/add/bank', 'Admin\MasterAdminController@getAddBankPerusahaan')->name('adm_addBankPerusahaan')->middleware('auth');
         Route::post('/adm/add/bank', 'Admin\MasterAdminController@postAddBankPerusahaan')->middleware('auth');
+        Route::post('/adm/tron', 'Admin\MasterAdminController@postTronPerusahaan')->middleware('auth');
+        Route::get('/adm/add/tron', 'Admin\MasterAdminController@getAddTronPerusahaan')->name('adm_addTronPerusahaan')->middleware('auth');
+        Route::post('/adm/add/tron', 'Admin\MasterAdminController@postAddTronPerusahaan')->middleware('auth');
         Route::get('/adm/bonus-start', 'Admin\MasterAdminController@getBonusStart')->name('adm_bonusStart')->middleware('auth');
         Route::post('/adm/bonus-start', 'Admin\MasterAdminController@postBonusStart')->middleware('auth');
         
@@ -45,19 +48,25 @@ Route::prefix('/')->group(function () {
         Route::get('/adm/list/member', 'Admin\MasterAdminController@getAllMember')->name('adm_listMember')->middleware('auth');
         Route::get('/adm/list/bonus-sp', 'Admin\MasterAdminController@getAllBonusSponsor')->name('adm_listBonusSP')->middleware('auth');
         Route::get('/adm/list/wd', 'Admin\MasterAdminController@getAllWD')->name('adm_listWD')->middleware('auth');
+        Route::get('/adm/list/wd-eidr', 'Admin\MasterAdminController@getAllWDeIDR')->name('adm_listWDeIDR')->middleware('auth');
         Route::post('/adm/check/wd', 'Admin\MasterAdminController@postCheckWD')->middleware('auth');
+        Route::post('/adm/check/wd-eidr', 'Admin\MasterAdminController@postCheckWDeIDR')->middleware('auth');
         Route::post('/adm/reject/wd', 'Admin\MasterAdminController@postRejectWD')->middleware('auth');
         Route::get('/adm/history/wd', 'Admin\MasterAdminController@getAllHistoryWD')->name('adm_listHistoryWD')->middleware('auth');
+        Route::get('/adm/history/wd-eidr', 'Admin\MasterAdminController@getAllHistoryWDeIDR')->name('adm_listHistoryWDeIDR')->middleware('auth');
 
         //Ajax
         Route::get('/ajax/adm/admin/{type}/{id}', 'Admin\AjaxController@getAdminById')->middleware('auth');
         Route::get('/ajax/adm/package/{id}', 'Admin\AjaxController@getPackageById')->middleware('auth');
-        Route::get('/ajax/adm/cek/transaction/{id}/{user_id}', 'Admin\AjaxController@getCekTransactionById')->middleware('auth');
+        Route::get('/ajax/adm/cek/transaction/{id}/{user_id}/{is_tron}', 'Admin\AjaxController@getCekTransactionById')->middleware('auth');
         Route::get('/ajax/adm/bank/{id}', 'Admin\AjaxController@getBankPerusahaan')->middleware('auth');
+        Route::get('/ajax/adm/tron/{id}', 'Admin\AjaxController@getTronPerusahaan')->middleware('auth');
         Route::get('/ajax/adm/kirim-paket/{id}/{user_id}', 'Admin\AjaxController@getKirimPaket')->middleware('auth');
         Route::get('/ajax/adm/cek/kirim-paket', 'Admin\AjaxController@getCekKirimPaket')->middleware('auth');
         Route::get('/ajax/adm/cek/reject-wd/{id}', 'Admin\AjaxController@getCekRejectWD')->middleware('auth');
         Route::get('/ajax/adm/cek/detail-wd/{id}', 'Admin\AjaxController@getCekDetailWD')->middleware('auth');
+        Route::get('/ajax/adm/cek/reject-wd-eidr/{id}', 'Admin\AjaxController@getCekRejectWDeIDR')->middleware('auth');
+        Route::get('/ajax/adm/cek/detail-wd-eidr/{id}', 'Admin\AjaxController@getCekDetailWDeIDR')->middleware('auth');
         
         
         ////////////////////////////////////////////////////////////////////////
@@ -130,6 +139,8 @@ Route::prefix('/')->group(function () {
         Route::get('/m/req/wd', 'Admin\BonusmemberController@getRequestWithdrawal')->name('m_requestWD')->middleware('auth');
         Route::get('/m/req/wd-royalti', 'Admin\BonusmemberController@getRequestWithdrawalRoyalti')->name('m_requestWDRoyalti')->middleware('auth');
         Route::post('/m/request/wd-royalti', 'Admin\BonusmemberController@postRequestWithdrawRoyalti')->middleware('auth');
+        Route::get('/m/req/wd-eidr', 'Admin\BonusmemberController@getRequestWithdrawaleIDR')->name('m_requestWDeIDR')->middleware('auth');
+        Route::post('/m/request/wd-eidr', 'Admin\BonusmemberController@postRequestWithdraweIDR')->middleware('auth');
         
         //Ajax
         Route::get('/m/cek/add-sponsor', 'Admin\AjaxmemberController@postCekAddSponsor')->middleware('auth');
@@ -150,4 +161,5 @@ Route::prefix('/')->group(function () {
         Route::get('/m/cek/confirm-wd', 'Admin\AjaxmemberController@getCekConfirmWD')->middleware('auth');
         Route::get('/m/cek/confirm-wd-royalti', 'Admin\AjaxmemberController@getCekConfirmWDRoyalti')->middleware('auth');
         Route::get('/m/cek/add-tron', 'Admin\AjaxmemberController@getCekAddTron')->middleware('auth');
+        Route::get('/m/cek/confirm-wd-eidr', 'Admin\AjaxmemberController@getCekConfirmWDeIDR')->middleware('auth');
 });

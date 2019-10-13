@@ -10,7 +10,7 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="page-title-box">
-                            <h4 class="page-title">Request WD</h4>
+                            <h4 class="page-title">eIDR (Rupiah Elektronik)</h4>
                             <div class="clearfix"></div>
                         </div>
                     </div>
@@ -44,27 +44,26 @@
 
                     <div class="col-xs-12 col-md-6 col-lg-6 col-xl-4">
                         <div class="card-box tilebox-one">
-                            <i class="icon-rocket pull-xs-right text-muted text-success"></i>
-                            <h6 class="text-muted text-uppercase m-b-20">Ditransfer (Rp.)</h6>
-                            <h2 class="m-b-20">{{number_format($total_wd, 0, ',', '.')}}</h2>
+                            <i class="icon-speedometer pull-xs-right text-muted text-warning"></i>
+                            <h6 class="text-muted text-uppercase m-b-20">Proses Konversi (Rp.)</h6>
+                            <h2 class="m-b-20">{{number_format($total_tunda_eidr, 0, ',', '.')}}</h2>
                         </div>
                     </div>
-
+                    
                     <div class="col-xs-12 col-md-6 col-lg-6 col-xl-4">
                         <div class="card-box tilebox-one">
-                            <i class="icon-speedometer pull-xs-right text-muted text-warning"></i>
-                            <h6 class="text-muted text-uppercase m-b-20">Proses Transfer (Rp.)</h6>
-                            <h2 class="m-b-20">{{number_format($total_tunda, 0, ',', '.')}}</h2>
+                            <i class="icon-rocket pull-xs-right text-muted text-success"></i>
+                            <h6 class="text-muted text-uppercase m-b-20">Konversi (Rp.)</h6>
+                            <h2 class="m-b-20">{{number_format($total_wd_eidr, 0, ',', '.')}}</h2>
                         </div>
                     </div>
-                
                     
                 </div>
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="card">
                             <div class="card-block">
-                                <p class="card-text">Ajukan withdraw anda disini</p>
+                                <p class="card-text">Konversi Saldo Bonus ke eIDR</p>
                                 <div class="row">
                                     <div class="col-xl-8 col-xs-12">
                                         <fieldset class="form-group">
@@ -98,22 +97,13 @@
 @include('layout.member.footer')
 @stop
 
-@section('styles')
-<!--<link href="{{ asset('asset_member/plugins/switchery/switchery.min.css') }}" rel="stylesheet" type="text/css" />-->
-<!--<link rel="stylesheet" href="{{ asset('asset_member/plugins/morris/morris.css') }}">-->
-@stop
 @section('javascript')
-<!--<script src="{{ asset('asset_member/plugins/morris/morris.min.js') }}"></script>-->
-<!--<script src="{{ asset('asset_member/plugins/raphael/raphael-min.js') }}"></script>-->
-<!--<script src="{{ asset('asset_member/plugins/waypoints/lib/jquery.waypoints.js') }}"></script>-->
-<!--<script src="{{ asset('asset_member/plugins/counterup/jquery.counterup.min.js') }}"></script>-->
-<!--<script src="{{ asset('asset_member/pages/jquery.dashboard.js') }}"></script>-->
 <script>
        function inputSubmit(){
            var input_jml_wd = $("#input_jml").val();
             $.ajax({
                 type: "GET",
-                url: "{{ URL::to('/') }}/m/cek/confirm-wd?input_jml_wd="+input_jml_wd,
+                url: "{{ URL::to('/') }}/m/cek/confirm-wd-eidr?input_jml_wd="+input_jml_wd,
                 success: function(url){
                     $("#confirmDetail" ).empty();
                     $("#confirmDetail").html(url);
@@ -124,6 +114,8 @@
         function confirmSubmit(){
             var dataInput = $("#form-add").serializeArray();
             $('#form-add').submit();
+            $('#tutupModal').remove();
+            $('#submit').remove();
         }
         
         $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {    

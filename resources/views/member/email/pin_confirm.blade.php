@@ -79,6 +79,16 @@
                                             </tr>
                                             <tr>
                                                 <td style="word-wrap:break-word;font-size:0px;padding:0px 30px 18px;" align="left">
+                                                    <div style="cursor:auto;color:#000000;font-family:Open Sans, Proxima Nova, Arial, Arial, Helvetica, sans-serif;font-size:14px;line-height:22px;text-align:left;">Metode Pembayaran : {{$metode}}</div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="word-wrap:break-word;font-size:0px;padding:0px 30px 18px;" align="left">
+                                                    <div style="cursor:auto;color:#000000;font-family:Open Sans, Proxima Nova, Arial, Arial, Helvetica, sans-serif;font-size:14px;line-height:22px;text-align:left;">Tujuan : {{$alamat}}</div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="word-wrap:break-word;font-size:0px;padding:0px 30px 18px;" align="left">
                                                     <div style="cursor:auto;color:#000000;font-family:Open Sans, Proxima Nova, Arial, Arial, Helvetica, sans-serif;font-size:14px;line-height:22px;text-align:left;">Total PIN : {{$total_pin}}</div>
                                                 </td>
                                             </tr>

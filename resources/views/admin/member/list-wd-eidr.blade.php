@@ -37,7 +37,7 @@
                             </div>
                         @endif
                          <div class="table-responsive">
-                             <form method="post" name="emailCompose" id="emailCompose" action="/adm/check/wd">
+                             <form method="post" name="emailCompose" id="emailCompose" action="/adm/check/wd-eidr">
                                  {{ csrf_field() }}
                              <p class="form-group">
                                 <button type="submit" class="btn btn-primary" id="formCheck">Submit Transfer</button>
@@ -48,13 +48,11 @@
                                          <th><input type="checkbox" name="select_all" value="1" id="example-select-all"></th>
                                         <th>No</th>
                                         <th>UserID</th>
-                                        <th>Bank</th>
-                                        <th>No. Rek</th>
-                                        <th>Nama. Rek</th>
+                                        <th>Tron</th>
                                         <th>Tgl. WD</th>
-                                        <th>Jml. WD (Rp.)</th>
+                                        <th>Konversi (Rp.)</th>
                                         <th>Admin Fee (Rp.)</th>
-                                        <th>Jml. Transfer (Rp.)</th>
+                                        <th>Jml. Konversi (Rp.)</th>
                                         <th>###</th>
                                     </tr>
                                 </thead>
@@ -73,15 +71,13 @@
                                                 <td><input type="checkbox" name="id[]" value="{{$row->id}}"></td>
                                                 <td>{{$no}}</td>
                                                 <td>{{$row->user_code}}</td>
-                                                <td>{{$row->bank_name}}</td>
-                                                <td>{{$row->account_no}}</td>
-                                                <td>{{$row->account_name}}</td>
+                                                <td>{{$row->tron}}</td>
                                                 <td>{{date('d M Y', strtotime($row->wd_date))}}</td>
                                                 <td>{{number_format($jmlWD, 0, ',', ',')}}</td>
                                                 <td>{{number_format($row->admin_fee, 0, ',', ',')}}</td>
                                                 <td>{{number_format($row->wd_total, 0, ',', ',')}}</td>
                                                 <td>
-                                                    <a rel="tooltip"  data-toggle="modal" data-target="#popUp" class="text-danger" href="{{ URL::to('/') }}/ajax/adm/cek/reject-wd/{{$row->id}}">reject</a>
+                                                    <a rel="tooltip"  data-toggle="modal" data-target="#popUp" class="text-danger" href="{{ URL::to('/') }}/ajax/adm/cek/reject-wd-eidr/{{$row->id}}">reject</a>
                                                 </td>
                                             </tr>
                                         @endforeach

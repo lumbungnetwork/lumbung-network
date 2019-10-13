@@ -410,17 +410,23 @@ class MemberController extends Controller {
         if($getTrans == null){
             return redirect()->route('mainDashboard');
         }
+        $getPerusahaanTron = null;
         if($getTrans->bank_perusahaan_id != null){
-            $getPerusahaanBank = $modelBank->getBankPerusahaanID($getTrans->bank_perusahaan_id);
+            if($getTrans->is_tron == 0){
+                $getPerusahaanBank = $modelBank->getBankPerusahaanID($getTrans->bank_perusahaan_id);
+            } else {
+                $getPerusahaanBank = $modelBank->getTronPerusahaanID($getTrans->bank_perusahaan_id);
+            }
         } else {
             $getPerusahaanBank = $modelBank->getBankPerusahaan();
+            $getPerusahaanTron = $modelBank->getTronPerusahaan();
         }
         return view('member.pin.order-detail-transaction')
                 ->with('headerTitle', 'Transaction')
                 ->with('bankPerusahaan', $getPerusahaanBank)
+                ->with('tronPerusahaan', $getPerusahaanTron)
                 ->with('getData', $getTrans)
                 ->with('dataUser', $dataUser);
-        //history id_type member peringkat
     }
     
     public function postAddTransaction(Request $request){
@@ -440,11 +446,17 @@ class MemberController extends Controller {
         $dataUpdate = array(
             'status' => 1,
             'bank_perusahaan_id' => $request->bank_perusahaan_id,
-            'updated_at' => date('Y-m-d H:i:s')
+            'updated_at' => date('Y-m-d H:i:s'),
+            'is_tron' => $request->is_tron
         );
-        
         $modelSettingTrans->getUpdateTransaction('id', $id_trans, $dataUpdate);
-        $getTrans = $modelSettingTrans->getDetailTransactionsMember($id_trans, $dataUser);
+        $getTrans = $modelSettingTrans->getDetailTransactionsMemberNew($id_trans, $dataUser->id, $request->is_tron);
+        $metodePembayaran = 'Transfer Antar Bank';
+        $alamat = $getTrans->to_name.' a/n '.$getTrans->account_name.' no rek. '.$getTrans->account;
+        if($request->is_tron == 1){
+            $metodePembayaran = 'Transfer eIDR';
+            $alamat = $getTrans->to_name.' a/n '.$getTrans->account;
+        }
         $dataEmail = array(
             'tgl_order' => date('d F Y'),
             'nama' => $dataUser->user_code,
@@ -453,6 +465,8 @@ class MemberController extends Controller {
             'total_pin' => $getTrans->total_pin,
             'price' => 'Rp '.number_format($getTrans->price, 0, ',', '.'),
             'unique_digit' => $getTrans->unique_digit,
+            'metode' => $metodePembayaran,
+            'alamat' => $alamat
         );
         $emailSend = 'noreply@lumbung.network';
         Mail::send('member.email.pin_confirm', $dataEmail, function($message) use($emailSend){

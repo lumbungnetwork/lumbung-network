@@ -93,6 +93,46 @@ class Bank extends Model {
         return $sql;
     }
     
+    public function getInsertTron($data){
+        try {
+            $lastInsertedID = DB::table('tron')->insertGetId($data);
+            $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
+        }
+        return $result;
+    }
+    
+    public function getUpdateTron($fieldName, $name, $data){
+        try {
+            DB::table('tron')->where($fieldName, '=', $name)->update($data);
+            $result = (object) array('status' => true, 'message' => null);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message);
+        }
+        return $result;
+    }
+    
+    public function getTronPerusahaan(){
+        $sql = DB::table('tron')
+                    ->selectRaw('id, tron, tron_name')
+                    ->where('tron_type', '=', 1)
+                    ->where('is_active', '=', 1)
+                    ->get();
+        return $sql;
+    }
+    
+    public function getTronPerusahaanID($id){
+        $sql = DB::table('tron')
+                    ->where('id', '=', $id)
+                    ->where('tron_type', '=', 1)
+                    ->where('is_active', '=', 1)
+                    ->first();
+        return $sql;
+    }
+    
     public function getMutasiBank(){
 //        API Key :
 //        3566a92a9975bb88df1f0abba7da0a16

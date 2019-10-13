@@ -69,6 +69,8 @@
         function confirmSubmit(){
             var dataInput = $("#form-add").serializeArray();
             $('#form-add').submit();
+            $('#tutupModal').remove();
+            $('#submit').remove();
         }
         
         $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {    

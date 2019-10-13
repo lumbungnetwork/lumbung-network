@@ -46,10 +46,22 @@
                             <span class="sidebar-normal"> Request Withdrawal </span>
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ URL::to('/') }}/adm/list/wd-eidr">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> Request Konversi eIDR </span>
+                            </a>
+                        </li>
                          <li>
                             <a href="{{ URL::to('/') }}/adm/history/wd">
                             <span class="sidebar-mini-icon">+</span>
                             <span class="sidebar-normal"> History Withdrawal </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ URL::to('/') }}/adm/history/wd-eidr">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> History Konversi eIDR </span>
                             </a>
                         </li>
                     </ul>

@@ -5,35 +5,33 @@
                 <h5 class="modal-title" id="modalLabel">Konfirmasi Data</h5>
             </div>
             <div class="modal-body"  style="overflow-y: auto;max-height: 330px;">
-                <form id="form-add" method="POST" action="/m/add/pin">
+                <form id="form-add" method="POST" action="/m/request/wd-eidr">
                     {{ csrf_field() }}
-                <div class="row">
-                    <div class="col-md-4 col-xs-12">
-                        <div class="form-group">
-                            <label>Total Pin</label>
-                            <input type="number" class="form-control" readonly="" name="total_pin" value="{{$data->total_pin}}">
-                        </div>
-                    </div>
-                    <div class="col-md-8 col-xs-12">
-                        <div class="form-group">
-                            <label>Harga</label>
-                            <input type="text" class="form-control" disabled="" value="Rp {{number_format($data->harga, 0, ',', ',')}}">
-                        </div>
-                    </div>
-                    @if($disc == 3)
-                        <div class="col-md-3 col-xs-12">
+                    <?php
+                        $saldo_wd = $data->req_wd - $data->admin_fee;
+                    ?>
+                    <div class="row">
+                        <div class="col-md-7 col-xs-12">
                             <div class="form-group">
-                                <label>Discount</label>
-                                <input type="text" class="form-control" disabled="" value="{{$data->disc}} %">
+                                <label>Total Withdraw</label>
+                                <input type="text" class="form-control" readonly="" value="Rp. {{number_format($saldo_wd, 0, ',', '.')}}">
                             </div>
                         </div>
-                    @endif
-                </div>
+                        <div class="col-md-5 col-xs-12">
+                            <div class="form-group">
+                                <label>Biaya Admin (fee)</label>
+                                <input type="text" class="form-control" readonly="" value="Rp. {{number_format($data->admin_fee, 0, ',', '.')}}">
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="saldo_wd" value="{{$saldo_wd}}">
+                    <input type="hidden" name="admin_fee" value="{{$data->admin_fee}}">
+                    <input type="hidden" name="user_bank" value="0">
                 </form>    
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary waves-effect" id="tutupModal" data-dismiss="modal">Tutup</button>
-                <button type="button" class="btn btn-primary waves-effect waves-light" id="submit" onclick="confirmSubmit()">Order</button>
+                <button type="button" class="btn btn-primary waves-effect waves-light" id="submit" onclick="confirmSubmit()">Submit</button>
             </div>
         </div>
 

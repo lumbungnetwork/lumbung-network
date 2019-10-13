@@ -53,9 +53,9 @@ class AjaxController extends Controller {
                 ->with('dataUser', $dataUser);
     }
     
-    public function getCekTransactionById($id, $user_id){
+    public function getCekTransactionById($id, $user_id, $is_tron){
         $modelSettingTrans = New Transaction;
-        $getData = $modelSettingTrans->getDetailTransactionsAdmin($id, $user_id);
+        $getData = $modelSettingTrans->getDetailTransactionsAdminNew($id, $user_id, $is_tron);
         return view('admin.ajax.transaction')
                 ->with('headerTitle', 'Cek Transaksi')
                 ->with('getData', $getData);
@@ -68,6 +68,16 @@ class AjaxController extends Controller {
         return view('admin.ajax.bank')
                 ->with('headerTitle', 'Edit Bank Perusahaan')
                 ->with('getData', $getPerusahaanBank)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function getTronPerusahaan($id){
+        $dataUser = Auth::user();
+        $modelBank = new Bank;
+        $getPerusahaanTron = $modelBank->getTronPerusahaanID($id);
+        return view('admin.ajax.tron')
+                ->with('headerTitle', 'Edit Tron Perusahaan')
+                ->with('getData', $getPerusahaanTron)
                 ->with('dataUser', $dataUser);
     }
     
@@ -117,6 +127,26 @@ class AjaxController extends Controller {
         $modelWD = new Transferwd;
         $getData = $modelWD->getIDRequestWD($id);
         return view('admin.ajax.detail-wd')
+                ->with('headerTitle', 'Detail Withdrawal')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function getCekRejectWDeIDR($id){
+        $dataUser = Auth::user();
+        $modelWD = new Transferwd;
+        $getData = $modelWD->getIDRequestWDeIDR($id);
+        return view('admin.ajax.reject-wd-eidr')
+                ->with('headerTitle', 'Reject Withdrawal')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function getCekDetailWDeIDR($id){
+        $dataUser = Auth::user();
+        $modelWD = new Transferwd;
+        $getData = $modelWD->getIDRequestWDeIDR($id);
+        return view('admin.ajax.detail-wd-eidr')
                 ->with('headerTitle', 'Detail Withdrawal')
                 ->with('getData', $getData)
                 ->with('dataUser', $dataUser);

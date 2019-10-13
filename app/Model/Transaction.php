@@ -51,18 +51,76 @@ class Transaction extends Model {
         return $sql;
     }
     
+    public function getDetailTransactionsMemberNew($id, $user_id, $isTron){
+        if($isTron == 0){
+            $sql = DB::table('transaction')
+                        ->join('users', 'transaction.user_id', '=', 'users.id')
+                        ->join('bank', 'transaction.bank_perusahaan_id', '=', 'bank.id')
+                        ->selectRaw('users.name, users.hp, users.user_code, '
+                                . 'transaction.transaction_code, transaction.type, transaction.total_pin, transaction.price, transaction.status,'
+                                . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id, transaction.is_tron, '
+                                . 'bank.bank_name as to_name, bank.account_name, bank.account_no as account')
+                        ->where('transaction.id', '=', $id)
+                        ->where('transaction.user_id', '=', $user_id)
+                        ->first();
+        } else {
+            $sql = DB::table('transaction')
+                        ->join('users', 'transaction.user_id', '=', 'users.id')
+                        ->join('tron', 'transaction.bank_perusahaan_id', '=', 'tron.id')
+                        ->selectRaw('users.name, users.hp, users.user_code, '
+                                . 'transaction.transaction_code, transaction.type, transaction.total_pin, transaction.price, transaction.status,'
+                                . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id, transaction.is_tron, '
+                                . 'tron.tron_name as to_name, tron.tron as account, " " as account_name ')
+                        ->where('transaction.id', '=', $id)
+                        ->where('transaction.user_id', '=', $user_id)
+                        ->first();
+        }
+        
+        return $sql;
+    }
+    
     public function getDetailTransactionsAdmin($id, $user_id){
         $sql = DB::table('transaction')
                         ->join('users', 'transaction.user_id', '=', 'users.id')
                         ->join('bank', 'transaction.bank_perusahaan_id', '=', 'bank.id')
                         ->selectRaw('users.name, users.hp, users.user_code, '
                                 . 'transaction.transaction_code, transaction.type, transaction.total_pin, transaction.price, transaction.status,'
-                                . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id, '
+                                . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id, transaction.is_tron, '
                                 . 'bank.bank_name, bank.account_name, bank.account_no')
                         ->where('transaction.id', '=', $id)
                         ->where('transaction.user_id', '=', $user_id)
                         ->where('transaction.status', '=', 1)
                         ->first();
+        return $sql;
+    }
+    
+    public function getDetailTransactionsAdminNew($id, $user_id, $is_tron){
+        if($is_tron == 0){
+            $sql = DB::table('transaction')
+                        ->join('users', 'transaction.user_id', '=', 'users.id')
+                        ->join('bank', 'transaction.bank_perusahaan_id', '=', 'bank.id')
+                        ->selectRaw('users.name, users.hp, users.user_code, '
+                                . 'transaction.transaction_code, transaction.type, transaction.total_pin, transaction.price, transaction.status,'
+                                . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id, transaction.is_tron, '
+                                . 'bank.bank_name, bank.account_name, bank.account_no')
+                        ->where('transaction.id', '=', $id)
+                        ->where('transaction.user_id', '=', $user_id)
+                        ->where('transaction.status', '=', 1)
+                        ->first();
+        } else {
+            $sql = DB::table('transaction')
+                        ->join('users', 'transaction.user_id', '=', 'users.id')
+                        ->join('tron', 'transaction.bank_perusahaan_id', '=', 'tron.id')
+                        ->selectRaw('users.name, users.hp, users.user_code, '
+                                . 'transaction.transaction_code, transaction.type, transaction.total_pin, transaction.price, transaction.status,'
+                                . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id, transaction.is_tron, '
+                                . 'tron.tron_name, tron.tron')
+                        ->where('transaction.id', '=', $id)
+                        ->where('transaction.user_id', '=', $user_id)
+                        ->where('transaction.status', '=', 1)
+                        ->first();
+        }
+        
         return $sql;
     }
     
@@ -72,7 +130,7 @@ class Transaction extends Model {
                         ->join('users', 'transaction.user_id', '=', 'users.id')
                         ->selectRaw('users.user_code, users.hp, users.user_code, '
                                 . 'transaction.transaction_code, transaction.type, transaction.total_pin, transaction.price, transaction.status,'
-                                . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id')
+                                . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id, transaction.is_tron')
                         ->where('transaction.status', '<', 2)
                         ->get();
         } else {
@@ -80,7 +138,7 @@ class Transaction extends Model {
                         ->join('users', 'transaction.user_id', '=', 'users.id')
                         ->selectRaw('users.user_code, users.hp, users.user_code, '
                                 . 'transaction.transaction_code, transaction.type, transaction.total_pin, transaction.price, transaction.status,'
-                                . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id')
+                                . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id, transaction.is_tron')
                         ->where('transaction.status', '=', $status)
                         ->get();
         }

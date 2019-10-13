@@ -15,6 +15,7 @@ use App\Model\Pin;
 use App\Model\Memberpackage;
 use App\Model\Transferwd;
 use App\Model\Bonus;
+use App\Model\Transaction;
 
 class AjaxmemberController extends Controller {
 
@@ -78,9 +79,9 @@ class AjaxmemberController extends Controller {
         $modelValidasi = New Validation;
         $canInsert = $modelValidasi->getCheckAddPin($request, $dataUser);
         $disc = 0;
-        if($request->total_pin >= 100){
-            $disc = 3;
-        }
+//        if($request->total_pin >= 100){
+//            $disc = 0;
+//        }
         $modelSettingPin = New Pinsetting;
         $getActivePinSetting = $modelSettingPin->getActivePinSetting();
         $hargaAwal = $getActivePinSetting->price * $request->total_pin;
@@ -98,11 +99,27 @@ class AjaxmemberController extends Controller {
     }
     
     public function postCekAddTransaction(Request $request){
+        $dataUser = Auth::user();
         $modelBank = New Bank;
-        $getPerusahaanBank = $modelBank->getBankPerusahaanID($request->id_bank);
+        $modelTrans = New Transaction;
+        $separate = explode('_', $request->id_bank);
+        $getPerusahaanBank = null;
+        $cekType = null;
+        if(count($separate) == 2){
+            $cekType = $separate[0];
+            $bankId = $separate[1];
+            if($cekType == 0){
+                $getPerusahaanBank = $modelBank->getBankPerusahaanID($bankId);
+            } else {
+                $getPerusahaanBank = $modelBank->getTronPerusahaanID($bankId);
+            }
+        }
+        $getTrans = $modelTrans->getDetailTransactionsMember($request->id_trans, $dataUser);
         $data = (object) array('id_trans' => $request->id_trans);
         return view('member.ajax.confirm_add_transaction')
                         ->with('bankPerusahaan', $getPerusahaanBank)
+                        ->with('getTrans', $getTrans)
+                        ->with('cekType', $cekType)
                         ->with('data', $data);
     }
     
@@ -328,6 +345,32 @@ class AjaxmemberController extends Controller {
         );
         $canInsert = $modelValidasi->getCheckWD($dataAll);
          return view('member.ajax.confirm_add_wd_royalti')
+                        ->with('check', $canInsert)
+                        ->with('data', $dataAll);
+    }
+    
+    public function getCekConfirmWDeIDR(Request $request){
+        $dataUser = Auth::user();
+        $modelValidasi = New Validation;
+        $modelBonus = new Bonus;
+        $modelWD = new Transferwd;
+        $totalBonus = $request->input_jml_wd; //$modelBonus->getTotalBonus($dataUser);
+        $totalBonusAll = $modelBonus->getTotalBonus($dataUser);
+        $totalWD = $modelWD->getTotalDiTransfer($dataUser);
+        $totalWDeIDR = $modelWD->getTotalDiTransfereIDR($dataUser);
+        $dataAll = (object) array(
+            'req_wd' => (int) $totalBonus,
+            'total_bonus' => $totalBonus,
+            'total_wd' => $totalWD->total_wd,
+            'total_tunda' => $totalWD->total_tunda,
+            'total_wd_eidr' => $totalWDeIDR->total_wd,
+            'total_tunda_eidr' => $totalWDeIDR->total_tunda,
+            'saldo' => (int) ($totalBonusAll->total_bonus - ($totalWD->total_wd + $totalWD->total_tunda + $totalWD->total_fee_admin + $totalWDeIDR->total_wd + $totalWDeIDR->total_tunda + $totalWDeIDR->total_fee_admin)),
+            'admin_fee' => 6500,
+            'tron' => $dataUser->tron
+        );
+        $canInsert = $modelValidasi->getCheckWDeIDR($dataAll);
+         return view('member.ajax.confirm_add_wdeidr')
                         ->with('check', $canInsert)
                         ->with('data', $dataAll);
     }

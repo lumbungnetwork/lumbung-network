@@ -100,12 +100,6 @@ class Validation extends Model {
             $canInsert = (object) array('can' => false, 'pesan' => 'Pin harus diatas 0');
             return $canInsert;
         }
-        if($data->member_status == 2){
-            if($request->total_pin < 100){
-                $canInsert = (object) array('can' => false, 'pesan' => 'Anda Director Stockist, maka anda harus membeli pin minimal 100');
-                return $canInsert;
-            }
-        }
         return $canInsert;
     }
     
@@ -185,11 +179,32 @@ class Validation extends Model {
             return $canInsert;
         }
         if($data->req_wd < 20000){
-            $canInsert = (object) array('can' => false, 'pesan' => 'Saldo yang tersedia tidak mencukupi untuk withdraw. batas minimum withdraw adalah Rp. 20.000');
+            $canInsert = (object) array('can' => false, 'pesan' => 'Batas minimum withdraw adalah Rp. 20.000');
             return $canInsert;
         }
         if(($data->req_wd -  $data->admin_fee) < 20000){
             $canInsert = (object) array('can' => false, 'pesan' => 'Saldo yang tersedia tidak mencukupi untuk withdraw. batas minimum withdraw adalah Rp. 20.000 dengan biaya admin (fee) Rp. 6.500');
+            return $canInsert;
+        }
+        if(($data->req_wd - $data->saldo) > 0){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Pengajuan withdrawal anda kurang dari sisa saldo');
+            return $canInsert;
+        }
+        return $canInsert;
+    }
+    
+    public function getCheckWDeIDR($data){
+        $canInsert = (object) array('can' => true, 'pesan' => '');
+        if($data->tron == null){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum mengisi data alamat tron');
+            return $canInsert;
+        }
+        if($data->req_wd < 20000){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Batas minimum Konversi Saldo Bonus ke eIDR adalah Rp. 20.000');
+            return $canInsert;
+        }
+        if(($data->req_wd -  $data->admin_fee) < 20000){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Saldo yang tersedia tidak mencukupi untuk withdraw. batas minimum Konversi Saldo Bonus ke eIDR adalah Rp. 20.000 dengan biaya admin (fee) Rp. 6.500');
             return $canInsert;
         }
         if(($data->req_wd - $data->saldo) > 0){

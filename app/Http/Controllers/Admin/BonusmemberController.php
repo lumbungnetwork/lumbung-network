@@ -123,12 +123,20 @@ class BonusmemberController extends Controller {
         $modelWD = new Transferwd;
         $totalBonus = $modelBonus->getTotalBonus($dataUser);
         $totalWD = $modelWD->getTotalDiTransfer($dataUser);
+        $totalWDeIDR = $modelWD->getTotalDiTransfereIDR($dataUser);
         $dataAll = (object) array(
             'total_bonus' => floor($totalBonus->total_bonus),
             'total_wd' => $totalWD->total_wd,
             'total_tunda' => $totalWD->total_tunda,
             'admin_fee' => 6500,
-            'total_fee_admin' => $totalWD->total_fee_admin
+            'total_fee_admin' => $totalWD->total_fee_admin,
+            'fee_tuntas' => $totalWD->fee_tuntas,
+            'fee_tunda' => $totalWD->fee_tunda,
+            'total_wd_eidr' => $totalWDeIDR->total_wd,
+            'total_tunda_eidr' => $totalWDeIDR->total_tunda,
+            'total_fee_admin_eidr' => $totalWDeIDR->total_fee_admin,
+            'fee_tuntas_eidr' => $totalWDeIDR->fee_tuntas,
+            'fee_tunda_eidr' => $totalWDeIDR->fee_tunda
         );
         return view('member.bonus.saldo')
                 ->with('dataAll', $dataAll)
@@ -180,6 +188,7 @@ class BonusmemberController extends Controller {
         $modelWD = new Transferwd;
         $totalBonus = $modelBonus->getTotalBonus($dataUser);
         $totalWD = $modelWD->getTotalDiTransfer($dataUser);
+        $totalWDeIDR = $modelWD->getTotalDiTransfereIDR($dataUser);
         $dataAll = (object) array(
             'total_bonus' => floor($totalBonus->total_bonus),
             'total_wd' => $totalWD->total_wd,
@@ -187,7 +196,12 @@ class BonusmemberController extends Controller {
             'admin_fee' => 6500,
             'total_fee_admin' => $totalWD->total_fee_admin,
             'fee_tuntas' => $totalWD->fee_tuntas,
-            'fee_tunda' => $totalWD->fee_tunda
+            'fee_tunda' => $totalWD->fee_tunda,
+            'total_wd_eidr' => $totalWDeIDR->total_wd,
+            'total_tunda_eidr' => $totalWDeIDR->total_tunda,
+            'total_fee_admin_eidr' => $totalWDeIDR->total_fee_admin,
+            'fee_tuntas_eidr' => $totalWDeIDR->fee_tuntas,
+            'fee_tunda_eidr' => $totalWDeIDR->fee_tunda
         );
         return view('member.bonus.req-wd')
                 ->with('dataAll', $dataAll)
@@ -238,6 +252,60 @@ class BonusmemberController extends Controller {
         $modelWD->getInsertWD($dataInsert);
         return redirect()->route('m_myBonusSaldo')
                     ->with('message', 'request Withdraw berhasil')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function getRequestWithdrawaleIDR(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = new Bonus;
+        $modelWD = new Transferwd;
+        $totalBonus = $modelBonus->getTotalBonus($dataUser);
+        $totalWD = $modelWD->getTotalDiTransfer($dataUser);
+        $totalWDeIDR = $modelWD->getTotalDiTransfereIDR($dataUser);
+        $dataAll = (object) array(
+            'total_bonus' => floor($totalBonus->total_bonus),
+            'admin_fee' => 6500,
+            'total_wd' => $totalWD->total_wd,
+            'total_tunda' => $totalWD->total_tunda,
+            'total_fee_admin' => $totalWD->total_fee_admin,
+            'fee_tuntas' => $totalWD->fee_tuntas,
+            'fee_tunda' => $totalWD->fee_tunda,
+            'total_wd_eidr' => $totalWDeIDR->total_wd,
+            'total_tunda_eidr' => $totalWDeIDR->total_tunda,
+            'total_fee_admin_eidr' => $totalWDeIDR->total_fee_admin,
+            'fee_tuntas_eidr' => $totalWDeIDR->fee_tuntas,
+            'fee_tunda_eidr' => $totalWDeIDR->fee_tunda
+        );
+        return view('member.bonus.req-wd-eidr')
+                ->with('dataAll', $dataAll)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postRequestWithdraweIDR(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelWD = new Transferwd;
+        $getCode = $modelWD->getCodeWDeIDR($dataUser);
+        $dataInsert = array(
+            'user_id' => $dataUser->id,
+            'user_bank' => $request->user_bank,
+            'type' => 5, 
+            'wd_code' => $getCode,
+            'wd_total' => $request->saldo_wd,
+            'wd_date' => date('Y-m-d'),
+            'admin_fee' => $request->admin_fee,
+            'is_tron' => 1
+        );
+        $modelWD->getInsertWD($dataInsert);
+        return redirect()->route('m_requestWDeIDR')
+                    ->with('message', 'request Konversi eIDR berhasil')
                     ->with('messageclass', 'success');
     }
     
