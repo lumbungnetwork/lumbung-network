@@ -63,8 +63,16 @@
                                             $status = 'proses transfer';
                                             $label = 'info';
                                             if($row->status == 1){
-                                                $status = 'konfirmasi';
+                                                $status = 'Transfered';
                                                 $label = 'muted';
+                                            }
+                                            if($row->status == 2){
+                                                $status = 'Tuntas';
+                                                $label = 'success';
+                                            }
+                                            if($row->status == 3){
+                                                $status = 'Reject';
+                                                $label = 'danger';
                                             }
                                         ?>
                                             <tr>
@@ -77,7 +85,9 @@
                                                 <td><span class="text-{{$label}}">{{$status}}</span></td>
                                                 <td>
                                                     @if($row->status == 1)
-                                                    <a rel="tooltip"  data-toggle="modal" data-target="#popUp" class="text-primary" href="{{ URL::to('/') }}/ajax/adm/cek/transaction/{{$row->id}}/{{$row->user_id}}/{{$row->is_tron}}">confirm</a>
+                                                    <a rel="tooltip"  data-toggle="modal" data-target="#popUp" class="text-info" href="{{ URL::to('/') }}/ajax/adm/cek/transaction/{{$row->id}}/{{$row->user_id}}/{{$row->is_tron}}">confirm</a>
+                                                    &nbsp;&nbsp;
+                                                    <a rel="tooltip"  data-toggle="modal" data-target="#popUpReject" class="text-danger" href="{{ URL::to('/') }}/ajax/adm/reject/transaction/{{$row->id}}/{{$row->user_id}}/{{$row->is_tron}}">reject</a>
                                                     @endif
                                                 </td>
                                             </tr>
@@ -85,11 +95,16 @@
                                     @endif
                                 </tbody>
                             </table>
-                             <div class="modal fade" id="popUp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content"></div>
-                                </div>
-                            </div>
+                            <div class="modal fade" id="popUp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                               <div class="modal-dialog" role="document">
+                                   <div class="modal-content"></div>
+                               </div>
+                           </div>
+                            <div class="modal fade" id="popUpReject" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                               <div class="modal-dialog" role="document">
+                                   <div class="modal-content"></div>
+                               </div>
+                           </div>
                         </div>
                     </div>
                 </div>
@@ -102,6 +117,11 @@
 @section('javascript')
 <script type="text/javascript">
     $("#popUp").on("show.bs.modal", function(e) {
+        var link = $(e.relatedTarget);
+        $(this).find(".modal-content").load(link.attr("href"));
+    });
+    
+    $("#popUpReject").on("show.bs.modal", function(e) {
         var link = $(e.relatedTarget);
         $(this).find(".modal-content").load(link.attr("href"));
     });

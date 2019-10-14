@@ -40,6 +40,7 @@ Route::prefix('/')->group(function () {
         //Pin & Transaction
         Route::get('/adm/list/transactions', 'Admin\MasterAdminController@getListTransactions')->name('adm_listTransaction')->middleware('auth');
         Route::post('/adm/confirm/transaction', 'Admin\MasterAdminController@postConfirmTransaction')->middleware('auth');
+        Route::post('/adm/reject/transaction', 'Admin\MasterAdminController@postRejectTransaction')->middleware('auth');
         Route::get('/adm/list/kirim-paket', 'Admin\MasterAdminController@getListKirimPaket')->name('adm_listKirimPaket')->middleware('auth');
         Route::get('/adm/kirim-paket/{id}/{user_id}', 'Admin\MasterAdminController@getKirimPaketByID')->name('adm_KirimPaketID')->middleware('auth');
         Route::post('/adm/kirim-paket', 'Admin\MasterAdminController@postConfirmKirimPaket')->middleware('auth');
@@ -59,6 +60,7 @@ Route::prefix('/')->group(function () {
         Route::get('/ajax/adm/admin/{type}/{id}', 'Admin\AjaxController@getAdminById')->middleware('auth');
         Route::get('/ajax/adm/package/{id}', 'Admin\AjaxController@getPackageById')->middleware('auth');
         Route::get('/ajax/adm/cek/transaction/{id}/{user_id}/{is_tron}', 'Admin\AjaxController@getCekTransactionById')->middleware('auth');
+        Route::get('/ajax/adm/reject/transaction/{id}/{user_id}/{is_tron}', 'Admin\AjaxController@getRejectTransactionById')->middleware('auth');
         Route::get('/ajax/adm/bank/{id}', 'Admin\AjaxController@getBankPerusahaan')->middleware('auth');
         Route::get('/ajax/adm/tron/{id}', 'Admin\AjaxController@getTronPerusahaan')->middleware('auth');
         Route::get('/ajax/adm/kirim-paket/{id}/{user_id}', 'Admin\AjaxController@getKirimPaket')->middleware('auth');

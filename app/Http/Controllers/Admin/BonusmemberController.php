@@ -268,7 +268,7 @@ class BonusmemberController extends Controller {
         $totalWDeIDR = $modelWD->getTotalDiTransfereIDR($dataUser);
         $dataAll = (object) array(
             'total_bonus' => floor($totalBonus->total_bonus),
-            'admin_fee' => 6500,
+            'admin_fee' => 5000,
             'total_wd' => $totalWD->total_wd,
             'total_tunda' => $totalWD->total_tunda,
             'total_fee_admin' => $totalWD->total_fee_admin,

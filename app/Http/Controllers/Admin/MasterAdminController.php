@@ -236,7 +236,32 @@ class MasterAdminController extends Controller {
         return redirect()->route('adm_listTransaction')
                 ->with('message', 'Berhasil konfirmasi transfer pin')
                 ->with('messageclass', 'success');
-        
+    }
+    
+    public function postRejectTransaction(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $id = $request->cekId;
+        $user_id = $request->cekMemberId;
+        $modelSettingTrans = New Transaction;
+        $getData = $modelSettingTrans->getDetailTransactionsAdmin($id, $user_id);
+        if($getData == null){
+            return redirect()->route('adm_listTransaction')
+                ->with('message', 'Data tidak ditemukan')
+                ->with('messageclass', 'danger');
+        }
+        $dataUpdate = array(
+            'status' => 3,
+            'deleted_at' => date('Y-m-d H:i:s'),
+            'reason' => $request->reason
+        );
+        $modelSettingTrans->getUpdateTransaction('id', $id, $dataUpdate);
+        return redirect()->route('adm_listTransaction')
+                    ->with('message', 'Transaksi dibatalkan')
+                    ->with('messageclass', 'success');
     }
     
     public function getBankPerusahaan(){

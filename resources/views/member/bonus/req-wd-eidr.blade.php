@@ -74,7 +74,7 @@
                                     <div class="col-xl-4 col-xs-12">
                                         <fieldset class="form-group">
                                             <label>Admin Fee (Rp.)</label>
-                                            <input type="text" class="form-control" disabled="" value="6.500">
+                                            <input type="text" class="form-control" disabled="" value="Rp. 5.000">
                                         </fieldset>
                                     </div>
                                 </div>

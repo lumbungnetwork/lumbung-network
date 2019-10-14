@@ -203,10 +203,10 @@ class Validation extends Model {
             $canInsert = (object) array('can' => false, 'pesan' => 'Batas minimum Konversi Saldo Bonus ke eIDR adalah Rp. 20.000');
             return $canInsert;
         }
-        if(($data->req_wd -  $data->admin_fee) < 20000){
-            $canInsert = (object) array('can' => false, 'pesan' => 'Saldo yang tersedia tidak mencukupi untuk withdraw. batas minimum Konversi Saldo Bonus ke eIDR adalah Rp. 20.000 dengan biaya admin (fee) Rp. 6.500');
-            return $canInsert;
-        }
+//        if(($data->req_wd -  $data->admin_fee) < 20000){
+//            $canInsert = (object) array('can' => false, 'pesan' => 'Saldo yang tersedia tidak mencukupi untuk withdraw. batas minimum Konversi Saldo Bonus ke eIDR adalah Rp. 20.000 dengan biaya admin (fee) Rp. 6.500');
+//            return $canInsert;
+//        }
         if(($data->req_wd - $data->saldo) > 0){
             $canInsert = (object) array('can' => false, 'pesan' => 'Pengajuan withdrawal anda kurang dari sisa saldo');
             return $canInsert;
