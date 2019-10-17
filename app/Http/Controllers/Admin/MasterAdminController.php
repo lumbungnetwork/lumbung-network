@@ -18,6 +18,8 @@ use App\Model\Pengiriman;
 use App\Model\Bonussetting;
 use App\Model\Transferwd;
 use App\Model\Bonus;
+use File;
+use App\Model\Sales;
 
 class MasterAdminController extends Controller {
 
@@ -626,6 +628,177 @@ class MasterAdminController extends Controller {
                 ->with('headerTitle', 'History Konversi eIDR')
                 ->with('getData', $getData)
                 ->with('dataUser', $dataUser);
+    }
+    
+    public function getAllDaerah(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        ini_set("memory_limit",-1);
+        ini_set('max_execution_time', 1500);
+        $modelAdmin = New Admin;
+//        $getData = $modelAdmin->getDaerah();
+//        $jsonDaerah = json_encode($getData);
+//        $file = 'daerah.json';
+//        $destinationPath = storage_path()."/app/public/";
+//        File::put($destinationPath.$file, $jsonDaerah);
+//        return response()->download($destinationPath.$file);
+        $jsonFile = public_path().'/image/daerah_indonesia.json';
+        $fileData = file_get_contents($jsonFile);
+        $dataArray = json_decode($fileData, true);
+//        $dataArray = array(
+//            "daerahID" => 1,
+//            "kode" => "11.00.00.0000",
+//            "nama" => "Nanggroe Aceh Darussalaam",
+//            "propinsi" => 11,
+//            "kabupatenkota" => 0,
+//            "kecamatan" => 0,
+//            "kelurahan" => 0,
+//        );
+//        dd($dataArray[0]);
+        foreach($dataArray as $row){
+            $modelAdmin->getInsertDaerah($row);
+        }
+        dd('done');
+    }
+    
+    public function getAllRequestMemberStockist(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelMember = New Member;
+        $getData = $modelMember->getAllMemberReqSotckist();
+        return view('admin.member.req-stockist')
+                ->with('headerTitle', 'Request Stockist')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postRequestMemberStockist(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelMember = New Member;
+        $date =  date('Y-m-d H:i:s');
+        $dataUpdate = array(
+            'status' => 1,
+            'active_at' => $date
+        );
+        $modelMember->getUpdateStockist('id', $request->id, $dataUpdate);
+        $dataUpdateUser = array(
+            'is_stockist' => 1,
+            'stockist_at' => $date
+        );
+        $modelMember->getUpdateUsers('id', $request->id_user, $dataUpdateUser);
+        return redirect()->route('adm_listReqStockist')
+                    ->with('message', 'Member berhasil menjadi stockist')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function getAllPurchase(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSales = New Sales;
+        $getData = $modelSales->getAllPurchase();
+        return view('admin.sales.all_purchase')
+                ->with('headerTitle', 'All Products')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function getAddPurchase(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSales = New Sales;
+        $modelMember = New Member;
+        $getProvince = $modelMember->getProvinsi();
+        return view('admin.sales.add_purchase')
+                ->with('headerTitle', 'Create Products')
+                ->with('provinsi', $getProvince)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postAddPurchase(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSales = New Sales;
+        $modelMember = New Member;
+        if($request->provinsi == 0){
+            return redirect()->route('adm_addPurchase')
+                    ->with('message', 'Anda Tidak memilih propinsi')
+                    ->with('messageclass', 'danger');
+        }
+        $provinsiSearch = $modelMember->getProvinsiByID($request->provinsi);
+        $provinsiName = $provinsiSearch->nama;
+        $kota = 0;
+        $kotaName = '';
+        if($request->kota != null){
+            if($request->kota != 0){
+                $kotaSearch = $modelMember->getNamaByKode($request->kota);
+                $kota = $kotaSearch->kabupatenkota;
+                $kotaName = ' - '.$kotaSearch->nama;
+            }
+        }
+        $kecamatan = 0;
+        $kecamatanName = '';
+        if($request->kecamatan != null){
+            if($request->kecamatan != 0){
+                $kecamatanSearch = $modelMember->getNamaByKode($request->kecamatan);
+                $kecamatan = $kecamatanSearch->kecamatan;
+                $kecamatanName = ' - '.$kecamatanSearch->nama;
+            }
+        }
+        $kelurahan = 0;
+        $kelurahanName = '';
+        if($request->kelurahan != null){
+            if($request->kelurahan != 0){
+                $kelurahanSearch = $modelMember->getNamaByKode($request->kelurahan);
+                $kelurahan = $kelurahanSearch->kelurahan;
+                $kelurahanName = ' - '.$kelurahanSearch->nama;
+            }
+            
+        }
+        $dataInsert = array(
+            'name' => $request->name,
+            'ukuran' => $request->ukuran,
+            'stockist_price' => $request->stockist_price,
+            'member_price' => $request->member_price,
+            'code' => $request->code,
+            'image' => $request->image,
+            'provinsi' => $request->provinsi,
+            'kota' => $kota,
+            'kecamatan' => $kecamatan,
+            'kelurahan' => $kelurahan,
+            'qty' => $request->qty,
+            'area' => $provinsiName.' '.$kotaName.' '.$kecamatanName.' '.$kelurahanName
+        );
+        $getInsertPurchase = $modelSales->getInsertPurchase($dataInsert);
+        //insert stock
+        $dataInsertStock = array(
+            'purchase_id' => $getInsertPurchase->lastID,
+            'user_id' => $dataUser->id,
+            'type' => 1,
+            'amount' => $request->qty
+        );
+        $modelSales->getInsertStock($dataInsertStock);
+        return redirect()->route('adm_listPurchases')
+                    ->with('message', 'Produk berhasil ditambahkan')
+                    ->with('messageclass', 'success');
     }
     
     

@@ -96,6 +96,12 @@
                             <span class="sidebar-normal"> List Member </span>
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ URL::to('/') }}/adm/list/purchases">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> List Product </span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </li>

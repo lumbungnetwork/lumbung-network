@@ -29,26 +29,38 @@
                 </div>
             </div>
             <div class="row">
-            </div>
-            <div class="row">
-                <div class="col-md-12 col-xs-12">
+                <div class="col-md-6 col-xs-12">
                     <div class="form-group">
-                        <label>Alamat</label>
-                        <input type="text" class="form-control" readonly="" name="alamat" value="{{$dataRequest->alamat}}">
+                        <label>Provinsi</label>
+                        <input type="text" class="form-control" readonly="" name="provinsi"  value="{{$dataRequest->provinsi}}">
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-5 col-xs-12">
+                <div class="col-md-6 col-xs-12">
                     <div class="form-group">
                         <label>Kota</label>
                         <input type="text" class="form-control" readonly="" name="kota"  value="{{$dataRequest->kota}}">
                     </div>
                 </div>
-                <div class="col-md-4 col-xs-12">
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-xs-12">
                     <div class="form-group">
-                        <label>Provinsi</label>
-                        <input type="text" class="form-control" readonly="" name="provinsi"  value="{{$dataRequest->provinsi}}">
+                        <label>Kecamatan</label>
+                        <input type="text" class="form-control" readonly="" name="kecamatan"  value="{{$dataRequest->kecamatan}}">
+                    </div>
+                </div>
+                <div class="col-md-6 col-xs-12">
+                    <div class="form-group">
+                        <label>Kelurahan</label>
+                        <input type="text" class="form-control" readonly="" name="kelurahan"  value="{{$dataRequest->kelurahan}}">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-9 col-xs-12">
+                    <div class="form-group">
+                        <label>Alamat</label>
+                        <input type="text" class="form-control" readonly="" name="alamat" value="{{$dataRequest->alamat}}">
                     </div>
                 </div>
                 <div class="col-md-3 col-xs-12">
@@ -58,6 +70,7 @@
                     </div>
                 </div>
             </div>
+            <input type="hidden" name="kode_daerah"  value="{{$dataRequest->kode_daerah}}">
         </form>    
     </div>
     <div class="modal-footer">

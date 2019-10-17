@@ -43,58 +43,49 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xl-4 col-xs-12">
+                            <div class="col-xl-5 col-xs-12">
+                                    <fieldset class="form-group">
+                                        <label for="provinsi">Provinsi</label>
+                                        <select class="form-control" name="provinsi" id="provinsi" onChange="getSearchKota(this.value);">
+                                                <option value="0">- Pilih Provinsi -</option>
+                                                @if($provinsi != null) 
+                                                    @foreach($provinsi as $row)
+                                                        <option value="{{$row->propinsi}}">{{$row->nama}}</option>
+                                                    @endforeach
+                                                @endif
+                                        </select>
+                                    </fieldset>
+                            </div>
+                            <div class="col-xl-7 col-xs-12">
+                                    <fieldset class="form-group">
+                                        <label for="kota">Kota/Kabupaten</label>
+                                        <select class="form-control" name="kota" id="kota" onChange="getSearchKecamatan(this.value);">
+                                        </select>
+                                    </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-5 col-xs-12">
+                                <fieldset class="form-group">
+                                    <label for="kecamatan">Kecamatan</label>
+                                    <select class="form-control" name="kecamatan" id="kecamatan" onChange="getSearchKelurahan(this.value);">
+                                    </select>
+                                </fieldset>
+                            </div>
+                            <div class="col-xl-5 col-xs-12">
+                                <fieldset class="form-group">
+                                    <label for="kelurahan">Kelurahan</label>
+                                    <select class="form-control" name="kelurahan" id="kelurahan">
+                                    </select>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-8 col-xs-12">
                                 <fieldset class="form-group">
                                     <label for="alamat">Alamat Lengkap</label>
                                     <textarea class="form-control" id="alamat" rows="2" name="alamat" autocomplete="off"></textarea>
                                 </fieldset>
-                            </div>
-                            <div class="col-xl-3 col-xs-12">
-                                    <fieldset class="form-group">
-                                        <label for="kota">Kota/Kabupaten</label>
-                                        <input type="text" class="form-control" id="kota" name="kota" autocomplete="off">
-                                    </fieldset>
-                            </div>
-                            <div class="col-xl-3 col-xs-12">
-                                    <fieldset class="form-group">
-                                        <label for="provinsi">Provinsi</label>
-                                        <select class="form-control" name="provinsi" id="provinsi">
-                                                <option value="Aceh">Aceh</option>
-                                                <option value="Sumatera Utara">Sumatera Utara</option>
-                                                <option value="Sumatera Barat">Sumatera Barat</option>
-                                                <option value="Riau">Riau</option>
-                                                <option value="Jambi">Jambi</option>
-                                                <option value="Sumatera Selatan">Sumatera Selatan</option>
-                                                <option value="Bengkulu">Bengkulu</option>
-                                                <option value="Lampung">Lampung</option>
-                                                <option value="Kep. Bangka Belitung">Kep. Bangka Belitung</option>
-                                                <option value="Kepulauan Riau">Kepulauan Riau</option>
-                                                <option value="DKI Jakarta">DKI Jakarta</option>
-                                                <option value="Jawa Barat">Jawa Barat</option>
-                                                <option value="Banten">Banten</option>
-                                                <option value="Jawa Tengah">Jawa Tengah</option>
-                                                <option value="Yogyakarta">Yogyakarta</option>
-                                                <option value="Jawa Timur">Jawa Timur</option>
-                                                <option value="Kalimantan Barat">Kalimantan Barat</option>
-                                                <option value="Kalimantan Tengah">Kalimantan Tengah</option>
-                                                <option value="Kalimantan Selatan">Kalimantan Selatan</option>
-                                                <option value="Kalimantan Timur">Kalimantan Timur</option>
-                                                <option value="Kalimantan Utara">Kalimantan Utara</option>
-                                                <option value="Bali">Bali</option>
-                                                <option value="Nusa Tenggara Timur">Nusa Tenggara Timur</option>
-                                                <option value="Nusa Tenggara Barat">Nusa Tenggara Barat</option>
-                                                <option value="Sulawesi Utara">Sulawesi Utara</option>
-                                                <option value="Sulawesi Tengah">Sulawesi Tengah</option>
-                                                <option value="Sulawesi Selatan">Sulawesi Selatan</option>
-                                                <option value="Sulawesi Tenggara">Sulawesi Tenggara</option>
-                                                <option value="Sulawesi Barat">Sulawesi Barat</option>
-                                                <option value="Gorontalo">Gorontalo</option>
-                                                <option value="Maluku">Maluku</option>
-                                                <option value="Maluku Utara">Maluku Utara</option>
-                                                <option value="Papua">Papua</option>
-                                                <option value="Papua Barat">Papua Barat</option>
-                                        </select>
-                                    </fieldset>
                             </div>
                             <div class="col-xl-2 col-xs-12">
                                     <fieldset class="form-group">
@@ -131,11 +122,13 @@
            var gender = $("#gender").val();
            var alamat = $("#alamat").val();
            var kota = $("#kota").val();
+           var kecamatan = $("#kecamatan").val();
+           var kelurahan = $("#kelurahan").val();
            var provinsi = $("#provinsi").val();
            var kode_pos = $("#kode_pos").val();
             $.ajax({
                 type: "GET",
-                url: "{{ URL::to('/') }}/m/cek/add-profile?full_name="+full_name+"&gender="+gender+"&kota="+kota+"&provinsi="+provinsi+"&kode_pos="+kode_pos+"&alamat="+alamat ,
+                url: "{{ URL::to('/') }}/m/cek/add-profile?full_name="+full_name+"&gender="+gender+"&kota="+kota+"&provinsi="+provinsi+"&kecamatan="+kecamatan+"&kelurahan="+kelurahan+"&kode_pos="+kode_pos+"&alamat="+alamat ,
                 success: function(url){
                     $("#confirmDetail" ).empty();
                     $("#confirmDetail").html(url);
@@ -154,6 +147,39 @@
                 event.preventDefault();
             }
         });
+        
+        function getSearchKota(val) {
+            $.ajax({
+                type: "GET",
+                url: "{{ URL::to('/') }}/m/search/kota" + "?provinsi=" + val,
+                success: function(url){
+                        $( "#kota" ).empty();
+                        $("#kota").html(url);
+                }
+            });
+        }
+        
+        function getSearchKecamatan(val) {
+            $.ajax({
+                type: "GET",
+                url: "{{ URL::to('/') }}/m/search/kecamatan" + "?kota=" + val,
+                success: function(url){
+                        $( "#kecamatan" ).empty();
+                        $("#kecamatan").html(url);
+                }
+            });
+        }
+        
+        function getSearchKelurahan(val) {
+            $.ajax({
+                type: "GET",
+                url: "{{ URL::to('/') }}/m/search/kelurahan" + "?kecamatan=" + val,
+                success: function(url){
+                        $( "#kelurahan" ).empty();
+                        $("#kelurahan").html(url);
+                }
+            });
+        }
 
 </script>
 @stop

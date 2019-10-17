@@ -16,6 +16,7 @@ use App\Model\Memberpackage;
 use App\Model\Transferwd;
 use App\Model\Bonus;
 use App\Model\Transaction;
+use App\Model\Sales;
 
 class AjaxmemberController extends Controller {
 
@@ -49,13 +50,51 @@ class AjaxmemberController extends Controller {
         $modelValidasi = New Validation;
         $modelMember = New Member;
         $canInsert = $modelValidasi->getCheckNewProfile($request);
+        $provinsi = $modelMember->getProvinsiByID($request->provinsi);
+        if($provinsi == null){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Provinsi harus dipilih');
+            return view('member.ajax.confirm_add_profile')
+                            ->with('dataRequest', null)
+                            ->with('check', $canInsert)
+                            ->with('dataUser', $dataUser);
+        }
+        $kota = $modelMember->getNamaByKode($request->kota);
+        if($kota == null){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Kabupaten/Kota harus dipilih');
+            return view('member.ajax.confirm_add_profile')
+                            ->with('dataRequest', null)
+                            ->with('check', $canInsert)
+                            ->with('dataUser', $dataUser);
+        }
+        $kode = $kota->kode;
+        $kecamatan = $modelMember->getNamaByKode($request->kecamatan);
+        if($kecamatan == null){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Kecamatan harus dipilih');
+            return view('member.ajax.confirm_add_profile')
+                            ->with('dataRequest', null)
+                            ->with('check', $canInsert)
+                            ->with('dataUser', $dataUser);
+        }
+        $kode = $kecamatan->kode;
+        $kelurahan = $modelMember->getNamaByKode($request->kelurahan);
+        if($kelurahan == null){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Kelurahan harus dipilih');
+            return view('member.ajax.confirm_add_profile')
+                            ->with('dataRequest', null)
+                            ->with('check', $canInsert)
+                            ->with('dataUser', $dataUser);
+        }
+        $kode = $kelurahan->kode;
         $data = (object) array(
             'full_name' => $request->full_name,
             'gender' => $request->gender,
             'alamat' => $request->alamat,
-            'provinsi' => $request->provinsi,
+            'provinsi' => $provinsi->nama,
             'kode_pos' => $request->kode_pos,
-            'kota' => $request->kota,
+            'kota' => $kota->nama,
+            'kecamatan' => $kecamatan->nama,
+            'kelurahan' => $kelurahan->nama,
+            'kode_daerah' => $kode,
         );
         return view('member.ajax.confirm_add_profile')
                         ->with('dataRequest', $data)
@@ -405,6 +444,98 @@ class AjaxmemberController extends Controller {
                         ->with('dataRequest', $data)
                         ->with('check', $canInsert)
                         ->with('dataUser', $dataUser);
+    }
+    
+    public function getSearchByType($type, Request $request){
+        $modelMember = New Member;
+        $getData = null;
+        if($type == 'kota'){
+            if($request->provinsi != 0){
+                $getData = $modelMember->getKabupatenKotaByPropinsi($request->provinsi);
+            }
+        }
+        if($type == 'kecamatan'){
+            if($request->kota != 0){
+                $dataKec = explode('.', $request->kota);
+                $getData = $modelMember->getKecamatanByKabupatenKota($dataKec[0], $dataKec[1]);
+            }
+        }
+        if($type == 'kelurahan'){
+            if($request->kecamatan != 0){
+                $dataKel = explode('.', $request->kecamatan);
+                $getData = $modelMember->getKelurahanByKecamatan($dataKel[0], $dataKel[1], $dataKel[2]);
+            }
+        }
+        return view('member.ajax.searchDaerah')
+                        ->with('type', $type)
+                        ->with('getData', $getData);
+    }
+    
+    public function getCekRequestMemberStockist(Request $request){
+        $dataUser = Auth::user();
+        $modelMember = New Member;
+        $modelValidasi = New Validation;
+        $cekHU1 = null;
+        if($request->hu1 != null){
+            $getHU1 = $modelMember->getCekHakUsaha($dataUser, $request->hu1);
+            if($getHU1 != null){
+                $cekHU1 = $getHU1->id;
+            }
+        }
+        $cekHU2 = null;
+        if($request->hu2 != null){
+            $getHU2 = $modelMember->getCekHakUsaha($dataUser, $request->hu2);
+            if($getHU2 != null){
+                $cekHU2 = $getHU2->id;
+            }
+        }
+        $cekHU3 = null;
+        if($request->hu3 != null){
+            $getHU3 = $modelMember->getCekHakUsaha($dataUser, $request->hu3);
+            if($getHU3 != null){
+                $cekHU3 = $getHU3->id;
+            }
+        }
+        $dataAll = (object) array(
+            'syarat1' => $request->syarat1,
+            'syarat2' => $request->syarat2,
+            'syarat3' => $request->syarat3,
+            'syarat4' => $request->syarat4,
+            'hu1' => $cekHU1,
+            'hu2' => $cekHU2,
+            'hu3' => $cekHU3,
+            'total_sp' => $dataUser->total_sponsor
+        );
+        $canInsert = $modelValidasi->getCheckRequestStockist($dataAll);
+        return view('member.ajax.confirm_request_stockistr')
+                        ->with('check', $canInsert)
+                        ->with('data', $dataAll);
+    }
+    
+    public function getStockistCekSoping(Request $request){
+        $dataUser = Auth::user();
+        $idPurchase = $request->id_barang;
+        $quantity = $request->total_buy;
+        $modelSales = New Sales;
+        $modelMember = New Member;
+        $getData = $modelSales->getDetailPurchase($idPurchase);
+        return view('member.ajax.confirm_buy_barang')
+                        ->with('getData', $getData)
+                        ->with('qty', $quantity);
+    }
+    
+    public function getCekSoping(Request $request){
+        $dataUser = Auth::user();
+        $idPurchase = $request->id_barang;
+        $quantity = $request->total_buy;
+        $stokist_id = $request->stokist_id;
+        $modelSales = New Sales;
+        $modelMember = New Member;
+        $getData = $modelSales->getDetailPurchase($idPurchase);
+        return view('member.ajax.confirm_m_buy_barang')
+                        ->with('getData', $getData)
+                        ->with('stokist_id', $stokist_id)
+                        ->with('qty', $quantity);
     }
 
     

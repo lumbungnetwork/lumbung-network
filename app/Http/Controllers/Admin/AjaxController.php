@@ -12,6 +12,7 @@ use App\Model\Bank;
 use App\Model\Pengiriman;
 use App\Model\Transferwd;
 use App\Model\Bonus;
+use App\Model\Member;
 
 class AjaxController extends Controller {
 
@@ -158,6 +159,14 @@ class AjaxController extends Controller {
                 ->with('headerTitle', 'Detail Withdrawal')
                 ->with('getData', $getData)
                 ->with('dataUser', $dataUser);
+    }
+    
+    public function getCekRequestMemberStockist($id){
+        $modelMember = New Member;
+        $getData = $modelMember->getCekMemberReqSotckist($id);
+        return view('admin.ajax.cek_req_stockist')
+                ->with('headerTitle', 'Cek Request Stockist')
+                ->with('getData', $getData);
     }
     
     

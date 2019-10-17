@@ -19,6 +19,7 @@ use App\Model\Bonus;
 use App\Model\Bank;
 use App\Model\Pengiriman;
 use App\Model\Membership;
+use App\Model\Sales;
 
 class MemberController extends Controller {
     
@@ -56,8 +57,11 @@ class MemberController extends Controller {
                     ->with('message', 'Tidak bisa buat profil')
                     ->with('messageclass', 'danger');
         }
+        $modelMember = New Member;
+        $getProvince = $modelMember->getProvinsi();
         return view('member.profile.add-profile')
                 ->with('headerTitle', 'Profile')
+                ->with('provinsi', $getProvince)
                 ->with('dataUser', $dataUser);
     }
     
@@ -74,8 +78,11 @@ class MemberController extends Controller {
             'provinsi' => $request->provinsi,
             'kode_pos' => $request->kode_pos,
             'kota' => $request->kota,
+            'kecamatan' => $request->kecamatan,
+            'kelurahan' => $request->kelurahan,
             'is_profile' => 1,
-            'profile_created_at' => date('Y-m-d H:i:s')
+            'profile_created_at' => date('Y-m-d H:i:s'),
+            'kode_daerah' => $request->kode_daerah,
         );
         $modelMember = New Member;
         $modelMember->getUpdateUsers('id', $dataUser->id, $dataUpdate);
@@ -1217,6 +1224,280 @@ class MemberController extends Controller {
         return redirect()->route('m_myTron')
                     ->with('message', 'Data Tron berhasil dibuat')
                     ->with('messageclass', 'success');
+    }
+    
+    public function getRequestMemberStockist(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_profile == 0){
+            return redirect()->route('m_SearchStockist')
+                    ->with('message', 'Data profil anda belum lengkap')
+                    ->with('messageclass', 'danger');
+        }
+        return view('member.profile.add-stockist')
+                ->with('headerTitle', 'Aplikasi Pengajuan Stockist')
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postRequestMemberStockist(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_profile == 0){
+            return redirect()->route('m_SearchStockist')
+                    ->with('message', 'Data profil anda belum lengkap')
+                    ->with('messageclass', 'danger');
+        }
+        $modelMember = New Member;
+        $dataInsert = array(
+            'user_id' => $dataUser->id
+        );
+        $modelMember->getInsertStockist($dataInsert);
+        return redirect()->route('m_myProfile')
+                    ->with('message', 'Aplikasi Pengajuan Stockist berhasil dibuat')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function getSearchStockist(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_stockist == 1){
+            return redirect()->route('mainDashboard'); //lari ke menu stokist
+        }
+        $modelMember = New Member;
+        $getData = null;
+        if($dataUser->kode_daerah != null){
+            $dataDaerah = explode('.', $dataUser->kode_daerah);
+            $provKota = $dataDaerah[0].'.'.$dataDaerah[1];
+            $getData = $modelMember->getSearchUserByLocation($provKota);
+        }
+        return view('member.profile.m_shop')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postSearchStockist(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_stockist == 1){
+            return redirect()->route('mainDashboard'); 
+        }
+        if($dataUser->is_profile == 0){
+            return redirect()->route('m_SearchStockist')
+                    ->with('message', 'Data profil anda belum lengkap')
+                    ->with('messageclass', 'danger');
+        }
+        $modelMember = New Member;
+        $getData = $modelMember->getSearchUserStockist($request->user_name);
+        return view('member.profile.m_shop')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function getMemberShoping($stokist_id){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_stockist == 1){
+            return redirect()->route('m_MemberStockistShoping'); 
+        }
+        if($dataUser->is_profile == 0){
+            return redirect()->route('m_SearchStockist')
+                    ->with('message', 'Data profil anda belum lengkap')
+                    ->with('messageclass', 'danger');
+        }
+        $modelSales = New Sales;
+        $modelMember = New Member;
+        $getData = $modelSales->getAllPurchase();
+        return view('member.sales.m_shoping')
+                ->with('getData', $getData)
+                ->with('id', $stokist_id)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function getDetailPurchase($stokist_id, $id){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_stockist == 1){
+            return redirect()->route('m_MemberStockistShoping'); 
+        }
+        if($dataUser->is_profile == 0){
+            return redirect()->route('m_SearchStockist')
+                    ->with('message', 'Data profil anda belum lengkap')
+                    ->with('messageclass', 'danger');
+        }
+        $modelSales = New Sales;
+        $modelMember = New Member;
+        $getData = $modelSales->getDetailPurchase($id);
+        return view('member.sales.m_purchase_view')
+                ->with('getData', $getData)
+                ->with('stokist_id', $stokist_id)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postMemberShoping(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_stockist == 1){
+            return redirect()->route('m_MemberStockistShoping');
+        }
+        $modelSales = New Sales;
+        $modelMember = New Member;
+        $getData = $modelSales->getDetailPurchase($request->id_barang);
+        $dataInsert = array(
+            'user_id' => $dataUser->id,
+            'stockist_id' => $request->stockist_id,
+            'is_stockist' => $dataUser->is_stockist,
+            'purchase_id' => $request->id_barang,
+            'invoice' => uniqid(),
+            'amount' => $request->qty,
+            'sale_price' => $request->qty * $getData->member_price,
+            'sale_date' => date('Y-m-d'),
+        );
+        $insertSales = $modelSales->getInsertSales($dataInsert);
+        $dataInsertStock = array(
+            'purchase_id' => $request->id_barang,
+            'user_id' => $dataUser->id,
+            'type' => 2,
+            'amount' => $request->qty,
+            'sales_id' => $insertSales->lastID
+        );
+        $modelSales->getInsertStock($dataInsertStock);
+        return redirect()->route('m_SearchStockist')
+                    ->with('message', 'Berhasil member belanja')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function getMemberStockistShoping(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_stockist == 0){
+            return redirect()->route('m_SearchStockist');
+        }
+        $modelSales = New Sales;
+        $modelMember = New Member;
+        $getData = $modelSales->getAllPurchase();
+        return view('member.sales.m_stockist_shoping')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function getStockistDetailPurchase($id){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_stockist == 0){
+            return redirect()->route('m_SearchStockist');
+        }
+        $modelSales = New Sales;
+        $modelMember = New Member;
+        $getData = $modelSales->getDetailPurchase($id);
+        return view('member.sales.m_stockist_purchase_view')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postMemberStockistShoping(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_stockist == 0){
+            return redirect()->route('m_SearchStockist');
+        }
+        $modelSales = New Sales;
+        $modelMember = New Member;
+        $getData = $modelSales->getDetailPurchase($request->id_barang);
+        $dataInsert = array(
+            'user_id' => $dataUser->id,
+            'stockist_id' => $dataUser->id,
+            'is_stockist' => $dataUser->is_stockist,
+            'purchase_id' => $request->id_barang,
+            'invoice' => uniqid(),
+            'amount' => $request->qty,
+            'sale_price' => $request->qty * $getData->stockist_price,
+            'sale_date' => date('Y-m-d'),
+        );
+        $insertSales = $modelSales->getInsertSales($dataInsert);
+        $dataInsertStock = array(
+            'purchase_id' => $request->id_barang,
+            'user_id' => $dataUser->id,
+            'type' => 2,
+            'amount' => $request->qty,
+            'sales_id' => $insertSales->lastID
+        );
+        $modelSales->getInsertStock($dataInsertStock);
+        return redirect()->route('m_MemberStockistShoping')
+                    ->with('message', 'Berhasil member stockist belanja')
+                    ->with('messageclass', 'success');
+        
+    }
+    
+    public function getMemberStockistReport(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        return redirect()->route('mainDashboard');
     }
     
     

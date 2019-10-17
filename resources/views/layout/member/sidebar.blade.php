@@ -55,6 +55,26 @@
                         <li @if(Route::currentRouteName() == 'm_myPinHistory') class="active" @endif><a href="{{ URL::to('/') }}/m/pin/history">History</a></li>
                     </ul>
                 </li>
+                @if($dataUser->is_stockist == 1)
+                <li class="has_sub">
+                    <a class="waves-effect">
+                        <i class="zmdi zmdi-shopping-cart"></i> 
+                        <span> Stockist </span> <span class="menu-arrow"></span>
+                    </a>
+                    <ul class="list-unstyled">
+                        <li><a href="{{ URL::to('/') }}/m/stockist-shoping">Belanja</a></li>
+                        <li><a href="{{ URL::to('/') }}/m/stockist-report">Report</a></li>
+                    </ul>
+                </li>
+                @endif
+                @if($dataUser->is_stockist == 0)
+                <li class="has_sub">
+                    <a class="waves-effect" href="{{ URL::to('/') }}/m/search/stockist">
+                        <i class="zmdi zmdi-shopping-cart"></i> 
+                        <span> Belanja </span>
+                    </a>
+                </li>
+                @endif
                 <li class="has_sub">
                     <a class="waves-effect @if(Route::currentRouteName() == 'm_myBonusSummary' || Route::currentRouteName() == 'm_myBonusSponsor' || Route::currentRouteName() == 'm_myBonusBinary') active @endif">
                         <i class="zmdi zmdi-card-giftcard"></i> 

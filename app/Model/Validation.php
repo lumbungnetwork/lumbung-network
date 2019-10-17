@@ -75,12 +75,20 @@ class Validation extends Model {
             $canInsert = (object) array('can' => false, 'pesan' => 'Alamat harus diisi');
             return $canInsert;
         }
-        if($request->provinsi == null){
+        if($request->provinsi == 0){
             $canInsert = (object) array('can' => false, 'pesan' => 'Pilih Provinsi');
             return $canInsert;
         }
         if($request->kota == null){
             $canInsert = (object) array('can' => false, 'pesan' => 'Kota harus diisi');
+            return $canInsert;
+        }
+        if($request->kecamatan == null){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Kecamatan harus diisi');
+            return $canInsert;
+        }
+        if($request->kelurahan == null){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Kelurahan harus diisi');
             return $canInsert;
         }
         if($request->kode_pos == null){
@@ -209,6 +217,47 @@ class Validation extends Model {
 //        }
         if(($data->req_wd - $data->saldo) > 0){
             $canInsert = (object) array('can' => false, 'pesan' => 'Pengajuan withdrawal anda kurang dari sisa saldo');
+            return $canInsert;
+        }
+        return $canInsert;
+    }
+    
+    public function getCheckRequestStockist($data){
+        $canInsert = (object) array('can' => true, 'pesan' => '');
+        if($data->syarat1 == 0){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum menyetujui telah memiliki 3 Hak Usaha');
+            return $canInsert;
+        }
+        if($data->syarat2 == 0){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum menyanggupi modal belanja awal senilai minimal Rp2.000.000,00');
+            return $canInsert;
+        }
+        if($data->syarat3 == 0){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum menyatakan bahwa di RW/Lingkungan tempat tinggal saya BELUM ADA Stokis Lumbung Network.');
+            return $canInsert;
+        }
+        if($data->syarat4 == 0){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum Saya telah membaca dan menyetujui Peraturan dan Kode Etik Stokis Lumbung Network.');
+            return $canInsert;
+        }
+        if($data->total_sp < 3){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum memenuhi jumlah Hak Usaha sebanyak 3, atas nama sendiri');
+            return $canInsert;
+        }
+        if($data->hu1 == null){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Username pada Hak Usaha 1 Anda tidak ada');
+            return $canInsert;
+        }
+        if($data->hu2 == null){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Username pada Hak Usaha 3 Anda tidak ada');
+            return $canInsert;
+        }
+        if($data->hu3 == null){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Username pada Hak Usaha 3 Anda tidak ada');
+            return $canInsert;
+        }
+        if($data->hu1 == $data->hu2 || $data->hu1 == $data->hu3 || $data->hu2 == $data->hu3){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Username pada Hak Usaha tidak boleh ada yang sama');
             return $canInsert;
         }
         return $canInsert;

@@ -38,23 +38,39 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xl-4 col-xs-12">
-                                <fieldset class="form-group" disabled>
-                                    <label for="alamt_lengkap">Alamat Lengkap</label>
-                                    <textarea class="form-control" id="alamt_lengkap" rows="2">{{$dataUser->alamat}}</textarea>
-                                </fieldset>
+                            <div class="col-xl-6 col-xs-12">
+                                    <fieldset class="form-group" disabled>
+                                        <label for="province">Provinsi</label>
+                                        <input type="text" class="form-control" id="province" value="{{$dataUser->provinsi}}">
+                                    </fieldset>
                             </div>
-                            <div class="col-xl-3 col-xs-12">
+                            <div class="col-xl-6 col-xs-12">
                                     <fieldset class="form-group" disabled>
                                         <label for="city">Kota/Kabupaten</label>
                                         <input type="text" class="form-control" id="city" value="{{$dataUser->kota}}">
                                     </fieldset>
                             </div>
-                            <div class="col-xl-3 col-xs-12">
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-6 col-xs-12">
                                     <fieldset class="form-group" disabled>
-                                        <label for="province">Provinsi</label>
-                                        <input type="text" class="form-control" id="province" value="{{$dataUser->provinsi}}">
+                                        <label for="province">Kecamatan</label>
+                                        <input type="text" class="form-control" id="province" value="{{$dataUser->kecamatan}}">
                                     </fieldset>
+                            </div>
+                            <div class="col-xl-6 col-xs-12">
+                                    <fieldset class="form-group" disabled>
+                                        <label for="city">Kelurahan</label>
+                                        <input type="text" class="form-control" id="city" value="{{$dataUser->kelurahan}}">
+                                    </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-8 col-xs-12">
+                                <fieldset class="form-group" disabled>
+                                    <label for="alamt_lengkap">Alamat Lengkap</label>
+                                    <textarea class="form-control" id="alamt_lengkap" rows="2">{{$dataUser->alamat}}</textarea>
+                                </fieldset>
                             </div>
                             <div class="col-xl-2 col-xs-12">
                                     <fieldset class="form-group" disabled>

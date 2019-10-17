@@ -438,6 +438,164 @@ class Member extends Model {
         return $sql;
     }
     
+    public function getSearchUserStockist($data){
+        $sql = DB::table('users')
+                    ->where('user_code', '=', $data)
+                    ->where('user_type', '=', 10)
+                    ->where('is_active', '=', 1)
+                    ->where('is_stockist', '=', 1)
+                    ->orderBy('id', 'ASC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getSearchUserByLocation($data){
+        $sql = DB::table('users')
+                    ->where('kode_daerah', 'LIKE', $data.'%')
+                    ->where('user_type', '=', 10)
+                    ->where('is_active', '=', 1)
+                    ->where('is_stockist', '=', 1)
+                    ->orderBy('id', 'ASC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getCekHakUsaha($data, $user_code){
+        $sql = DB::table('users')
+                ->where('email', '=', $data->email)
+                ->where('hp', '=', $data->hp)
+                ->where('user_code', '=', $user_code)
+                ->where('user_type', '=', 10)
+                ->where('is_active', '=', 1)
+                ->first();
+        return $sql;
+    }
+    
+    public function getProvinsi(){
+        $sql = DB::table('daerah')
+                    ->where('kabupatenkota', '=', 0)
+                    ->where('kecamatan', '=', 0)
+                    ->where('kelurahan', '=', 0)
+                    ->orderBy('daerahID', 'ASC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getNamaByKode($kode){
+        $sql = DB::table('daerah')
+                    ->where('kode', '=', $kode)
+                    ->first();
+        return $sql;
+    }
+    
+    public function getProvinsiByID($id){
+        $sql = DB::table('daerah')
+                    ->where('propinsi', '=', $id)
+                    ->where('kabupatenkota', '=', 0)
+                    ->where('kecamatan', '=', 0)
+                    ->where('kelurahan', '=', 0)
+                    ->first();
+        return $sql;
+    }
+    
+    public function getKabupatenKotaByPropinsi($provinsi){
+        $sql = DB::table('daerah')
+                    ->where('propinsi', '=', $provinsi)
+                    ->where('kabupatenkota', '>', 0)
+                    ->where('kecamatan', '=', 0)
+                    ->where('kelurahan', '=', 0)
+                    ->orderBy('daerahID', 'ASC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getKecamatanByKabupatenKota($provinsi, $kota){
+        $sql = DB::table('daerah')
+                    ->where('propinsi', '=', $provinsi)
+                    ->where('kabupatenkota', '=', $kota)
+                    ->where('kecamatan', '>', 0)
+                    ->where('kelurahan', '=', 0)
+                    ->orderBy('nama', 'ASC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getKelurahanByKecamatan($provinsi, $kota, $kec){
+        $sql = DB::table('daerah')
+                    ->where('propinsi', '=', $provinsi)
+                    ->where('kabupatenkota', '=', $kota)
+                    ->where('kecamatan', '=', $kec)
+                    ->where('kelurahan', '>', 0)
+                    ->orderBy('nama', 'ASC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getInsertStockist($data){
+        try {
+            $lastInsertedID = DB::table('stockist_request')->insertGetId($data);
+            $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
+        }
+        return $result;
+    }
+    
+    public function getUpdateStockist($fieldName, $name, $data){
+        try {
+            DB::table('stockist_request')->where($fieldName, '=', $name)->update($data);
+            $result = (object) array('status' => true, 'message' => null);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message);
+        }
+        return $result;
+    }
+    
+    public function getCekMemberReqSotckist($id){
+        $sql = DB::table('stockist_request')
+                    ->join('users', 'users.id', '=', 'stockist_request.user_id')
+                    ->selectRaw('stockist_request.id, users.user_code, users.total_sponsor, users.id as id_user')
+                    ->where('stockist_request.id', '=', $id)
+                    ->where('stockist_request.status', '=', 0)
+                    ->first();
+        return $sql;
+    }
+    
+    public function getAllMemberReqSotckist(){
+        $sql = DB::table('stockist_request')
+                    ->join('users', 'users.id', '=', 'stockist_request.user_id')
+                    ->selectRaw('stockist_request.id, users.user_code, users.total_sponsor, stockist_request.created_at')
+                    ->where('stockist_request.status', '=', 0)
+                    ->get();
+        return $sql;
+    }
+    
     
     
 }
