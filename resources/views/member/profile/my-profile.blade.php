@@ -17,6 +17,19 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="card-box">
+                        @if ( Session::has('message') )
+                            <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible fade in" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                                {{  Session::get('message')    }} 
+                            </div>
+                        @endif
+                        <div class="row">
+                            <div class="col-xl-9 col-xs-12">
+                            <a href="{{ URL::to('/') }}/m/edit/address" class="btn btn-sm btn-custom waves-effect waves-light">Ubah Alamat</a>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-xl-9 col-xs-12">
                                     <fieldset class="form-group" disabled>

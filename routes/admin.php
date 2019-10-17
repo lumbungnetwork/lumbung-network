@@ -91,8 +91,9 @@ Route::prefix('/')->group(function () {
         Route::get('/m/profile', 'Admin\MemberController@getMyProfile')->name('m_myProfile')->middleware('auth');
         Route::get('/m/add/profile', 'Admin\MemberController@getAddMyProfile')->name('m_newProfile')->middleware('auth');
         Route::post('/m/add/profile', 'Admin\MemberController@postAddMyProfile')->middleware('auth');
+        Route::get('/m/edit/address', 'Admin\MemberController@getEditAddress')->name('m_editAddress')->middleware('auth');
+        Route::post('/m/edit/address', 'Admin\MemberController@postEditAddress')->middleware('auth');
         
-        //profile
         Route::get('/m/tron', 'Admin\MemberController@getMyTron')->name('m_myTron')->middleware('auth');
         Route::get('/m/add/tron', 'Admin\MemberController@getAddMyTron')->name('m_newTron')->middleware('auth');
         Route::post('/m/add/tron', 'Admin\MemberController@postAddMyTron')->middleware('auth');
@@ -190,6 +191,7 @@ Route::prefix('/')->group(function () {
         Route::get('/m/cek/req-stockist', 'Admin\AjaxmemberController@getCekRequestMemberStockist')->middleware('auth');
         Route::get('/m/stockist/cek/shoping', 'Admin\AjaxmemberController@getStockistCekSoping')->middleware('auth');
         Route::get('/m/cek/shoping', 'Admin\AjaxmemberController@getCekSoping')->middleware('auth');
+        Route::get('/m/cek/edit-address', 'Admin\AjaxmemberController@getCekEditAddress')->middleware('auth');
         
         Route::get('/m/search/{type}', 'Admin\AjaxmemberController@getSearchByType')->middleware('auth');
 });

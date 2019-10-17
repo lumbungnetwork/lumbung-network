@@ -102,6 +102,12 @@
                             <span class="sidebar-normal"> List Product </span>
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ URL::to('/') }}/adm/list/req-stockist">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> List Pengajuan Stockist </span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </li>

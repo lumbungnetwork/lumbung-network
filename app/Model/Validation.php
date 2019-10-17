@@ -98,6 +98,35 @@ class Validation extends Model {
         return $canInsert;
     }
     
+    public function getCheckEditAddress($request){
+        $canInsert = (object) array('can' => true, 'pesan' => '');
+        if($request->alamat == null){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Alamat harus diisi');
+            return $canInsert;
+        }
+        if($request->provinsi == 0){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Pilih Provinsi');
+            return $canInsert;
+        }
+        if($request->kota == null){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Kota harus diisi');
+            return $canInsert;
+        }
+        if($request->kecamatan == null){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Kecamatan harus diisi');
+            return $canInsert;
+        }
+        if($request->kelurahan == null){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Kelurahan harus diisi');
+            return $canInsert;
+        }
+        if($request->kode_pos == null){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Kode pos harus diisi');
+            return $canInsert;
+        }
+        return $canInsert;
+    }
+    
     public function getCheckAddPin($request, $data){
         $canInsert = (object) array('can' => true, 'pesan' => '');
         if(!is_numeric($request->total_pin)){

@@ -1500,6 +1500,45 @@ class MemberController extends Controller {
         return redirect()->route('mainDashboard');
     }
     
+    public function getEditAddress(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        $modelMember = New Member;
+        $getProvince = $modelMember->getProvinsi();
+        return view('member.profile.edit-address')
+                ->with('headerTitle', 'Alamat')
+                ->with('provinsi', $getProvince)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postEditAddress(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $dataUpdate = array(
+            'alamat' => $request->alamat,
+            'provinsi' => $request->provinsi,
+            'kode_pos' => $request->kode_pos,
+            'kota' => $request->kota,
+            'kecamatan' => $request->kecamatan,
+            'kelurahan' => $request->kelurahan,
+            'kode_daerah' => $request->kode_daerah,
+        );
+        $modelMember = New Member;
+        $modelMember->getUpdateUsers('id', $dataUser->id, $dataUpdate);
+        return redirect()->route('m_myProfile')
+                    ->with('message', 'Alamat profile berhasil ubah')
+                    ->with('messageclass', 'success');
+    }
+    
     
     
     
