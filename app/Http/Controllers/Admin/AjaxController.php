@@ -13,6 +13,7 @@ use App\Model\Pengiriman;
 use App\Model\Transferwd;
 use App\Model\Bonus;
 use App\Model\Member;
+use App\Model\Bonussetting;
 
 class AjaxController extends Controller {
 
@@ -167,6 +168,34 @@ class AjaxController extends Controller {
         return view('admin.ajax.cek_req_stockist')
                 ->with('headerTitle', 'Cek Request Stockist')
                 ->with('getData', $getData);
+    }
+    
+    public function getEditBonusReward($id){
+        $modelBonusSetting = new Bonussetting;
+        $getData = $modelBonusSetting->getActiveBonusRewardByID($id);
+        return view('admin.ajax.cek_reward')
+                ->with('headerTitle', 'Edit Bonus Reward')
+                ->with('getData', $getData);
+    }
+    
+    public function getCekRejectClaimReward($id){
+        $dataUser = Auth::user();
+        $modelBonus = new Bonus;
+        $getData = $modelBonus->getAdminRewardByID($id);
+        return view('admin.ajax.reject-claim-reward')
+                ->with('headerTitle', 'Reject Claim Reward')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function getCekDetailClaimReward($id){
+        $dataUser = Auth::user();
+        $modelBonus = new Bonus;
+        $getData = $modelBonus->getAdminDetailRewardByID($id);
+        return view('admin.ajax.detail-claim')
+                ->with('headerTitle', 'Detail Withdrawal')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
     }
     
     

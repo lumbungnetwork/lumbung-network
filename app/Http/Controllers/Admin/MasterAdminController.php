@@ -801,6 +801,141 @@ class MasterAdminController extends Controller {
                     ->with('messageclass', 'success');
     }
     
+    public function getNewBonusReward(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonusSetting = new Bonussetting;
+        $getData =$modelBonusSetting->getActiveBonusReward();
+        return view('admin.setting.add-bonus-reward')
+                ->with('headerTitle', 'New Bonus Reward')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postNewBonusReward(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonusSetting = new Bonussetting;
+        $dataInsert = array(
+            'name' => $request->name,
+            'reward_detail' => $request->reward_detail,
+            'image' => $request->image,
+            'qualified' => $request->qualified,
+            'member_type' => $request->member_type,
+            'type' => $request->type
+        );
+        $modelBonusSetting->getInsertReward($dataInsert);
+        return redirect()->route('adm_newReward')
+                    ->with('message', 'Reward berhasil ditambahkan')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function getBonusReward(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonusSetting = new Bonussetting;
+        $getData =$modelBonusSetting->getActiveBonusReward();
+        return view('admin.setting.bonus-reward')
+                ->with('headerTitle', 'Bonus Reward')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postBonusReward(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonusSetting = new Bonussetting;
+        $dataUpdate = array(
+            'name' => $request->name,
+            'reward_detail' => $request->reward_detail
+        );
+        $modelBonusSetting->getUpdateReward('id', $request->cekId, $dataUpdate);
+        return redirect()->route('adm_Rewards')
+                    ->with('message', 'Edit Setting bonus reward berhasil')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function getAllClaimReward(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = New Bonus;
+        $getData = $modelBonus->getAdminAllReward();
+        return view('admin.member.list-reward')
+                ->with('headerTitle', 'Claim Reward')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postCheckClaimReward(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = New Bonus;
+        $getRowID = $request->id;
+        foreach($getRowID as $getID){
+            $dataUpdate = array(
+                'status' => 1,
+                'transfer_at' => date('Y-m-d H:i:s')
+            );
+            $modelBonus->getUpdateClaimReward('id', $getID, $dataUpdate);
+        }
+        return redirect()->route('adm_listClaimReward')
+                    ->with('message', 'Konfirmasi Reward berhasil')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function postRejectClaimReward(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = New Bonus;
+        $getID = $request->cekId;
+        $alesan = $request->reason;
+        $getData = $modelBonus->getAdminRewardByID($getID);
+        $dataUpdate = array(
+            'status' => 2,
+            'reason' => $alesan,
+            'deleted_at' => date('Y-m-d H:i:s')
+        );
+        $modelBonus->getUpdateClaimReward('id', $getID, $dataUpdate);
+        return redirect()->route('adm_listClaimReward')
+                    ->with('message', 'Data Claim Reject berhasil')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function getHistoryClaimReward(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = New Bonus;
+        $getData = $modelBonus->getAdminHistoryReward();
+        return view('admin.member.history-reward')
+                ->with('headerTitle', 'History Claim Reward')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
     
 
 }

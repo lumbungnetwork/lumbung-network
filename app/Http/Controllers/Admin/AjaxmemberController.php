@@ -17,6 +17,7 @@ use App\Model\Transferwd;
 use App\Model\Bonus;
 use App\Model\Transaction;
 use App\Model\Sales;
+use App\Model\Bonussetting;
 
 class AjaxmemberController extends Controller {
 
@@ -433,13 +434,13 @@ class AjaxmemberController extends Controller {
                         ->with('dataRequest', null)
                         ->with('check', $canInsert);
         }
-        $cekTron = $modelMember->getCheckTron($request->tron);
-        if($cekTron != null){
-            $canInsert = (object) array('can' => false, 'pesan' => 'Gunakan alamat TRON yang lain');
-            return view('member.ajax.confirm_add_tron')
-                        ->with('dataRequest', null)
-                        ->with('check', $canInsert);
-        }
+//        $cekTron = $modelMember->getCheckTron($request->tron);
+//        if($cekTron != null){
+//            $canInsert = (object) array('can' => false, 'pesan' => 'Gunakan alamat TRON yang lain');
+//            return view('member.ajax.confirm_add_tron')
+//                        ->with('dataRequest', null)
+//                        ->with('check', $canInsert);
+//        }
         return view('member.ajax.confirm_add_tron')
                         ->with('dataRequest', $data)
                         ->with('check', $canInsert)
@@ -591,6 +592,20 @@ class AjaxmemberController extends Controller {
                         ->with('dataRequest', $data)
                         ->with('check', $canInsert)
                         ->with('dataUser', $dataUser);
+    }
+    
+    public function getCekConfirmClaimReward(Request $request){
+        $dataUser = Auth::user();
+        $modelValidasi = New Validation;
+        $modelBonusSetting = new Bonussetting;
+        $modelWD = new Transferwd;
+        $getData = $modelBonusSetting->getActiveBonusRewardByID($request->reward_id);
+        $dataAll = (object) array(
+            'reward_detail' => $getData->reward_detail,
+            'reward_id' => $getData->id
+        );
+         return view('member.ajax.confirm_reward_detail')
+                        ->with('data', $dataAll);
     }
 
     

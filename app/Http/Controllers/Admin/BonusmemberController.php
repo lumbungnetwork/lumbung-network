@@ -309,6 +309,72 @@ class BonusmemberController extends Controller {
                     ->with('messageclass', 'success');
     }
     
+    public function getRequestClaimReward(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = new Bonus;
+        $modelBonusSetting = new Bonussetting;
+        $modelMember = New Member;
+        $getMyTeam = $modelMember->getSponsorPeringkat($dataUser);
+        $getMyPeringkat = $modelBonusSetting->getPeringkatByType($dataUser->member_type);
+        
+        $image = '';
+        $name = 'Member Biasa';
+        $canClaim = false;
+        if($getMyPeringkat != null){
+            $isCanClaim = $modelBonus->getMemberRewardByUser($dataUser, $getMyPeringkat->id);
+            if($isCanClaim == null){
+                $canClaim = true;
+            }
+            $image = $getMyPeringkat->image;
+            $name = $getMyPeringkat->name;
+        }
+        $dataMy = (object) array(
+            'name' => $name,
+            'image' => $image
+        );
+        return view('member.bonus.req-claim-reward')
+                ->with('getMyTeam', $getMyTeam)
+                ->with('dataMy', $dataMy)
+                ->with('getMyPeringkat', $getMyPeringkat)
+                ->with('canClaim', $canClaim)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postRequestClaimReward(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = new Bonus;
+        $dataInsert = array(
+            'user_id' => $dataUser->id,
+            'reward_id' => $request->cekID,
+            'claim_date' => date('Y-m-d')
+        );
+        $modelBonus->getInsertClaimReward($dataInsert);
+        return redirect()->route('m_requestClaimReward')
+                    ->with('message', 'Claim Reward berhasil')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function getHistoryReward(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = new Bonus;
+        $getData = $modelBonus->getMemberRewardHistory($dataUser);
+        return view('member.bonus.history-reward')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
     
 }
 

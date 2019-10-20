@@ -433,6 +433,22 @@ class Member extends Model {
         return $return;
     }
     
+    public function getSponsorPeringkat($data){
+        $sql = DB::table('users')
+                    ->leftJoin('bonus_reward2', 'users.member_type', '=', 'bonus_reward2.type')
+                    ->selectRaw('users.user_code, users.member_type, bonus_reward2.name, users.total_sponsor, bonus_reward2.image')
+                    ->where('users.sponsor_id', '=', $data->id)
+                    ->where('users.user_type', '=', 10)
+                    ->where('users.is_active', '=', 1)
+                    ->orderBy('users.id', 'ASC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
     public function getCheckTron($tron){
         $sql = DB::table('users')->selectRaw('id')->where('tron', '=', $tron)->where('user_type', '=', 10)->first();
         return $sql;
@@ -594,6 +610,44 @@ class Member extends Model {
                     ->where('stockist_request.status', '=', 0)
                     ->get();
         return $sql;
+    }
+    
+    public function getAllMemberHasMoreSponsor($type, $totSp){
+        $sql = DB::table('users')
+                    ->where('is_active', '=', 1)
+                    ->where('user_type', '=', 10)
+                    ->where('total_sponsor', '>=', $totSp)
+                    ->where('member_type', '=', $type)
+                    ->orderBy('id', 'ASC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getCountMemberHasSponsorMemberType($sponsor_id, $type){
+        $sql = DB::table('users')
+                    ->selectRaw('id')
+                    ->where('sponsor_id', '=', $sponsor_id)
+                    ->where('is_active', '=', 1)
+                    ->where('user_type', '=', 10)
+                    ->where('member_type', '=', $type)
+                    ->orderBy('id', 'ASC')
+                    ->count();
+        return $sql;
+    }
+    
+    public function getInsertHistoryMembership($data){
+        try {
+            $lastInsertedID = DB::table('history_membership')->insertGetId($data);
+            $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
+        }
+        return $result;
     }
     
     

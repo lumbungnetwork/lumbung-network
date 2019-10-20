@@ -46,5 +46,55 @@ class Bonussetting extends Model {
         return $sql;
     }
     
+    //Bonus Start (Sponsor) 
+    public function getInsertReward($data){
+        try {
+            $lastInsertedID = DB::table('bonus_reward2')->insertGetId($data);
+            $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
+        }
+        return $result;
+    }
+    
+    public function getUpdateReward($fieldName, $name, $data){
+        try {
+            DB::table('bonus_reward2')->where($fieldName, '=', $name)->update($data);
+            $result = (object) array('status' => true, 'message' => null);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message);
+        }
+        return $result;
+    }
+    
+    public function getActiveBonusReward(){
+        $sql = DB::table('bonus_reward2')
+                    ->where('is_active', '=', 1)
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getActiveBonusRewardByID($id){
+        $sql = DB::table('bonus_reward2')
+                    ->where('is_active', '=', 1)
+                    ->where('id', '=', $id)
+                    ->first();
+        return $sql;
+    }
+    
+    public function getPeringkatByType($type){
+        $sql = DB::table('bonus_reward2')
+                    ->where('is_active', '=', 1)
+                    ->where('type', '=', $type)
+                    ->first();
+        return $sql;
+    }
+    
     
 }
