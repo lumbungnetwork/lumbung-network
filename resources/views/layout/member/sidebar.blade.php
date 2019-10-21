@@ -105,7 +105,7 @@
                         <li @if(Route::currentRouteName() == 'm_historyWD') class="active" @endif><a href="{{ URL::to('/') }}/m/history/wd">History WD</a></li>
                         <li @if(Route::currentRouteName() == 'm_requestWD') class="active" @endif><a href="{{ URL::to('/') }}/m/req/wd">Request WD</a></li>
                         <li @if(Route::currentRouteName() == 'm_requestWDRoyalti') class="active" @endif><a href="{{ URL::to('/') }}/m/req/wd-royalti">Request WD Royalti</a></li>
-                        <li @if(Route::currentRouteName() == 'm_requestClaimReward') class="active" @endif><a href="{{ URL::to('/') }}/m/req/claim-reward">Request WD Royalti</a></li>
+                        <li @if(Route::currentRouteName() == 'm_requestClaimReward') class="active" @endif><a href="{{ URL::to('/') }}/m/req/claim-reward">Request Claim Reward</a></li>
                     </ul>
                 </li>
                 
