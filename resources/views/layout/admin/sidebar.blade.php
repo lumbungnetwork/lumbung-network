@@ -52,6 +52,12 @@
                             <span class="sidebar-normal"> Request Konversi eIDR </span>
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ URL::to('/') }}/adm/list/claim-reward">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> Claim Reward </span>
+                            </a>
+                        </li>
                          <li>
                             <a href="{{ URL::to('/') }}/adm/history/wd">
                             <span class="sidebar-mini-icon">+</span>
@@ -62,6 +68,12 @@
                             <a href="{{ URL::to('/') }}/adm/history/wd-eidr">
                             <span class="sidebar-mini-icon">+</span>
                             <span class="sidebar-normal"> History Konversi eIDR </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ URL::to('/') }}/adm/history/claim-reward">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> History Claim Reward </span>
                             </a>
                         </li>
                     </ul>
