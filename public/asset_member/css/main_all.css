@@ -5176,6 +5176,7 @@ body.fixed-left .side-menu.left {
   left: 250px; }
 
 .content-page > .content {
+  min-height: 700px;
   margin-top: 70px;
   padding: 20px 8px 15px 8px; }
 
