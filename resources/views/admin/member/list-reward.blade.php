@@ -48,6 +48,7 @@
                                          <th><input type="checkbox" name="select_all" value="1" id="example-select-all"></th>
                                         <th>No</th>
                                         <th>UserID</th>
+                                        <th>Alamat Tron</th>
                                         <th>Tgl. Claim</th>
                                         <th>Reward Detail</th>
                                         <th>###</th>
@@ -63,6 +64,7 @@
                                                 <td><input type="checkbox" name="id[]" value="{{$row->id}}"></td>
                                                 <td>{{$no}}</td>
                                                 <td>{{$row->user_code}}</td>
+                                                <td>{{$row->tron}}</td>
                                                 <td>{{date('d M Y', strtotime($row->claim_date))}}</td>
                                                 <td>{{$row->reward_detail}}</td>
                                                 <td>

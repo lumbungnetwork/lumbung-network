@@ -193,7 +193,7 @@ class Bonus extends Model {
                     ->join('bonus_reward2', 'claim_reward.reward_id', '=', 'bonus_reward2.id')
                     ->join('users', 'claim_reward.user_id', '=', 'users.id')
                     ->selectRaw('claim_reward.id, bonus_reward2.reward_detail, claim_reward.claim_date, claim_reward.status, claim_reward.reason,'
-                            . 'users.user_code')
+                            . 'users.user_code, users.tron')
                     ->where('claim_reward.status', '=', 0)
                     ->get();
         $return = null;
