@@ -34,7 +34,7 @@ class CronPeringkat extends Command {
             $getData = $modelMember->getAllMemberHasMoreSponsor($memberType, $maxTotalSponsorHave);
             if($getData != null){
                 foreach($getData as $row){
-                    $getCounttype = $modelMember->getCountMemberHasSponsorMemberType($row->id, $memberType);
+                    $getCounttype = $modelMember->getCountMemberHasSponsorFirst($row->id);
                     if($getCounttype >= $maxTotalSponsorHave){
                         $getUpdate = array(
                             'member_type' => $upgradeMemberType,

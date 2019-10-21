@@ -142,6 +142,12 @@
                             <span class="sidebar-normal"> Bonus Start </span>
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ URL::to('/') }}/adm/bonus-reward">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> Bonus Reward </span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </li>

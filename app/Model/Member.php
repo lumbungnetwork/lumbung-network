@@ -633,7 +633,18 @@ class Member extends Model {
                     ->where('sponsor_id', '=', $sponsor_id)
                     ->where('is_active', '=', 1)
                     ->where('user_type', '=', 10)
-                    ->where('member_type', '=', $type)
+                    ->where('member_type', '>=', $type)
+                    ->orderBy('id', 'ASC')
+                    ->count();
+        return $sql;
+    }
+    
+    public function getCountMemberHasSponsorFirst($sponsor_id){
+        $sql = DB::table('users')
+                    ->selectRaw('id')
+                    ->where('sponsor_id', '=', $sponsor_id)
+                    ->where('is_active', '=', 1)
+                    ->where('user_type', '=', 10)
                     ->orderBy('id', 'ASC')
                     ->count();
         return $sql;

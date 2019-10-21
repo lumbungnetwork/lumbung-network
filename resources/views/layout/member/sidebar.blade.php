@@ -97,7 +97,7 @@
                     </ul>
                 </li>
                 <li class="has_sub">
-                    <a class="waves-effect @if(Route::currentRouteName() == 'm_requestWD' || Route::currentRouteName() == 'm_historyWD' || Route::currentRouteName() == 'm_requestWDRoyalti') active @endif">
+                    <a class="waves-effect @if(Route::currentRouteName() == 'm_requestWD' || Route::currentRouteName() == 'm_historyWD' || Route::currentRouteName() == 'm_requestWDRoyalti' || Route::currentRouteName() == 'm_requestClaimReward') active @endif">
                         <i class="zmdi zmdi-money"></i> 
                         <span> Withdrawal </span> <span class="menu-arrow"></span>
                     </a>
@@ -105,6 +105,7 @@
                         <li @if(Route::currentRouteName() == 'm_historyWD') class="active" @endif><a href="{{ URL::to('/') }}/m/history/wd">History WD</a></li>
                         <li @if(Route::currentRouteName() == 'm_requestWD') class="active" @endif><a href="{{ URL::to('/') }}/m/req/wd">Request WD</a></li>
                         <li @if(Route::currentRouteName() == 'm_requestWDRoyalti') class="active" @endif><a href="{{ URL::to('/') }}/m/req/wd-royalti">Request WD Royalti</a></li>
+                        <li @if(Route::currentRouteName() == 'm_requestClaimReward') class="active" @endif><a href="{{ URL::to('/') }}/m/req/claim-reward">Request WD Royalti</a></li>
                     </ul>
                 </li>
                 
