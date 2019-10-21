@@ -315,6 +315,16 @@ class BonusmemberController extends Controller {
         if(!in_array($dataUser->user_type, $onlyUser)){
             return redirect()->route('mainDashboard');
         }
+        if($dataUser->is_profile == 0){
+            return redirect()->route('m_newProfile')
+                    ->with('message', 'Profil data disri belum ada, silakan isi data profil anda')
+                    ->with('messageclass', 'danger');
+        }
+        if($dataUser->is_tron == 0){
+            return redirect()->route('m_newTron')
+                    ->with('message', 'Anda harus melengkapi alamat Tron anda untuk bisa menerima Reward')
+                    ->with('messageclass', 'danger');
+        }
         $modelBonus = new Bonus;
         $modelBonusSetting = new Bonussetting;
         $modelMember = New Member;

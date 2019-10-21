@@ -170,6 +170,7 @@ class Bonus extends Model {
                     ->selectRaw('claim_reward.id')
                     ->where('claim_reward.user_id', '=', $data->id)
                     ->where('claim_reward.reward_id', '=', $reward_id)
+                    ->where('claim_reward.status', '!=', 2)
                     ->first();
         return $sql;
     }
