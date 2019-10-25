@@ -70,5 +70,46 @@ class Sales extends Model {
         return $result;
     }
     
+    public function getMemberSales($id){
+        $start_day = date("Y-m-01");
+        $end_day = date("Y-m-t");
+        $sql = DB::table('sales')
+                    ->selectRaw('sum(sale_price) as jml_price')
+                    ->where('user_id', '=', $id)
+                    ->whereDate('sales.sale_date', '>=', $start_day)
+                    ->whereDate('sales.sale_date', '<=', $end_day)
+                    ->whereNull('deleted_at')
+                    ->first();
+        return $sql;
+    }
+    
+    public function getThisMonth(){
+        $start_day = date('Y-m-01');
+        $end_day = date('Y-m-t');
+        $text_month = date('F Y');
+        $data = (object) array(
+            'startDay' => $start_day,
+            'endDay' => $end_day,
+            'textMonth' => $text_month
+        );
+        return $data;
+    }
+    
+    public function getMemberSalesHistory($id, $date){
+        $sql = DB::table('sales')
+                    ->join('users', 'sales.stockist_id', '=', 'users.id')
+                    ->selectRaw('sales.sale_date, users.user_code, sales.sale_price')
+                    ->where('sales.user_id', '=', $id)
+                    ->whereDate('sales.sale_date', '>=', $date->startDay)
+                    ->whereDate('sales.sale_date', '<=', $date->endDay)
+                    ->whereNull('sales.deleted_at')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
 }
 

@@ -61,18 +61,18 @@
                     @endif
                     @endif
                     <div class="row">
-                        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
+                        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-4">
                             <div class="card-box widget-user">
-                                <a href="{{ URL::to('/') }}/m/add/repeat-order" class="btn btn-primary waves-effect waves-light">
-                                    <span class="btn-label">
-                                        <i class="fa fa-shopping-cart"></i>
-                                    </span>
-                                    Repeat Order
-                                </a>
                                 <div>
-                                    <img src="/asset_member/images/profile.jpg" class="img-responsive img-circle" alt="user">
+                                    @if($dataMy->image != null)
+                                        <img src="{{$dataMy->image}}" class="img-responsive img-circle" alt="{{$dataUser->user_code}}">
+                                    @endif
+                                    @if($dataMy->image == null)
+                                        <img src="/asset_member/images/profile.jpg" class="img-responsive img-circle" alt="{{$dataUser->user_code}}">
+                                    @endif
                                     <div class="wid-u-info">
-                                        <p class="text-muted m-b-0 font-13">{{$dataUser->user_code}}</p>
+                                        <h6> {{$dataUser->user_code}}</h6>
+                                        <p class="text-muted m-b-0 font-13">{{$dataMy->name}}</p>
                                         <div class="user-position">
                                             <span class="text-warning font-weight-bold">Aktif</span>
                                         </div>
@@ -80,6 +80,19 @@
                                 </div>
                             </div>
                         </div>
+
+<!--                        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-5">
+                            <div class="card-box tilebox-two">
+                                @if($dataMy->image != null)
+                                    <img src="{{$dataMy->image}}" class="img-responsive pull-xs-right text-muted" alt="{{$dataUser->user_code}}" style="height: 90px;">
+                                @endif
+                                @if($dataMy->image == null)
+                                    <img src="/asset_member/images/profile.jpg" class="img-responsive pull-xs-right text-muted" alt="{{$dataUser->user_code}}" style="height: 90px;">
+                                @endif
+                                <h6 class="text-muted text-uppercase m-b-15 m-t-10">Peringkat Anda</h6>
+                                <h2 class="m-b-10">{{$dataMy->name}}</h2>
+                            </div>
+                        </div>-->
 
                         <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
                             <div class="card-box tilebox-two">
@@ -90,7 +103,14 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-4">
+                        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-3">
+                            <div class="card-box tilebox-one">
+                                <i class="icon-basket-loaded pull-xs-right text-muted text-warning"></i>
+                                <h6 class="text-muted text-uppercase m-b-20">Akumulasi Belanja</h6>
+                                <h2 class="m-b-20">{{number_format($dataMy->sales, 0, ',', '.')}}</g2>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-3">
                             <div class="card-box tilebox-one">
                                 <i class="icon-trophy pull-xs-right text-muted text-warning"></i>
                                 <h6 class="text-muted text-uppercase m-b-20">Total Bonus (Rp.)</h6>
@@ -104,14 +124,14 @@
                             }
                             $total_wd = $dataAll->total_wd + $dataAll->fee_tuntas;
                         ?>
-                        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-4">
+                        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-3">
                             <div class="card-box tilebox-one">
                                 <i class="icon-rocket pull-xs-right text-muted text-warning"></i>
                                 <h6 class="text-muted text-uppercase m-b-20">Bonus Ditransfer (Rp.)</h6>
                                 <h2 class="m-b-20">{{number_format($total_wd, 0, ',', '.')}}</h2>
                             </div>
                         </div>
-                        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-4">
+                        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-3">
                             <div class="card-box tilebox-one">
                                 <i class="icon-lock pull-xs-right text-muted text-warning"></i>
                                 <h6 class="text-muted text-uppercase m-b-20">Saldo Bonus (Rp.)</h6>

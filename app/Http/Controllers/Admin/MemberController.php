@@ -1539,6 +1539,43 @@ class MemberController extends Controller {
                     ->with('messageclass', 'success');
     }
     
+    public function getHistoryShoping(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        $modelSales = New Sales;
+        $modelMember = New Member;
+        $getMonth = $modelSales->getThisMonth();
+        if($request->month != null && $request->year != null) {
+            $start_day = date('Y-m-01', strtotime($request->year.'-'.$request->month));
+            $end_day = date('Y-m-t', strtotime($request->year.'-'.$request->month));
+            $text_month = date('F Y', strtotime($request->year.'-'.$request->month));
+            $getMonth = (object) array(
+                'startDay' => $start_day,
+                'endDay' => $end_day,
+                'textMonth' => $text_month
+            );
+        }
+        $getData = $modelSales->getMemberSalesHistory($dataUser->id, $getMonth);
+        $sum = 0;
+        if($getData != null){
+            foreach($getData as $row){
+                $sum += $row->sale_price;
+            }
+        }
+        return view('member.sales.history_sales')
+                ->with('headerTitle', 'History Belanja')
+                ->with('getData', $getData)
+                ->with('sum', $sum)
+                ->with('getDate', $getMonth)
+                ->with('dataUser', $dataUser);
+    }
+    
     
     
     

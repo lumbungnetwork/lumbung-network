@@ -174,6 +174,7 @@ Route::prefix('/')->group(function () {
         Route::get('/m/shoping/{stokist_id}', 'Admin\MemberController@getMemberShoping')->name('m_MemberShoping')->middleware('auth');
         Route::get('/m/detail/purchase/{stokist_id}/{id}', 'Admin\MemberController@getDetailPurchase')->name('m_DetailPurchase')->middleware('auth');
         Route::post('/m/shoping', 'Admin\MemberController@postMemberShoping')->middleware('auth');
+        Route::get('/m/history/shoping', 'Admin\MemberController@getHistoryShoping')->name('m_historyShoping')->middleware('auth');
         
         Route::get('/m/stockist-shoping', 'Admin\MemberController@getMemberStockistShoping')->name('m_MemberStockistShoping')->middleware('auth');
         Route::get('/m/stockist/detail/purchase/{id}', 'Admin\MemberController@getStockistDetailPurchase')->name('m_StokistDetailPurchase')->middleware('auth');

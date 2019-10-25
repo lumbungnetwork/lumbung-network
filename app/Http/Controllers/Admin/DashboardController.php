@@ -11,6 +11,8 @@ use App\Model\Memberpackage;
 use App\Model\Bonus;
 use App\Model\Transferwd;
 use App\Model\Package;
+use App\Model\Bonussetting;
+use App\Model\Sales;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller {
@@ -44,8 +46,10 @@ class DashboardController extends Controller {
         $modelMemberPackage = New Memberpackage;
         $modelMember = new Member;
         $modelBonus = new Bonus;
+        $modelBonusSetting = new Bonussetting;
         $modelWD = new Transferwd;
         $modelPackage = New Package;
+        $modelSales = new Sales;
         $sponsor_id = $dataUser->sponsor_id;
         $dataSponsor = $modelMember->getUsers('id', $sponsor_id);
         if($dataUser->is_active == 0){
@@ -92,12 +96,35 @@ class DashboardController extends Controller {
             'member_tdk_aktif' => $total_tdkAktif,
             'paket_name' => $getMyPackage->name
         );
-        //cek upgrade 30 hari dari aktifasi, klo MS jg jgn munculin
+        
+        $getMyPeringkat = $modelBonusSetting->getPeringkatByType($dataUser->member_type);
+        $getSales = $modelSales->getMemberSales($dataUser->id);
+        $mySales = 0;
+        if($getSales != null){
+            $mySales = $getSales->jml_price;
+        }
+        $image = '';
+        $name = 'Member Biasa';
+        $canClaim = false;
+        if($getMyPeringkat != null){
+            $isCanClaim = $modelBonus->getMemberRewardByUser($dataUser, $getMyPeringkat->id);
+            if($isCanClaim == null){
+                $canClaim = true;
+            }
+            $image = $getMyPeringkat->image;
+            $name = $getMyPeringkat->name;
+        }
+        $dataMy = (object) array(
+            'name' => $name,
+            'image' => $image,
+            'sales' => $mySales
+        );
         return view('member.home.dashboard')
                     ->with('headerTitle', 'Dashboard')
                     ->with('dataOrder', $getCheckNewOrder)
                     ->with('dataAll', $dataDashboard)
                     ->with('dataSponsor', $dataSponsor)
+                    ->with('dataMy', $dataMy)
                     ->with('dataUser', $dataUser);
     }
     
