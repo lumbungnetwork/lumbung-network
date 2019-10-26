@@ -607,6 +607,47 @@ class AjaxmemberController extends Controller {
          return view('member.ajax.confirm_reward_detail')
                         ->with('data', $dataAll);
     }
+    
+    public function getCekMemberPembayaran(Request $request){
+        $dataUser = Auth::user();
+        $modelSales = New Sales;
+        $modelMember = New Member;
+        $modelBank = New Bank;
+        $tron = null;
+        $bank_name = null;
+        $account_no = null;
+        $account_name = null;
+        $getStockistBank = null;
+        $buy_metode = 0;
+        $getDataMaster = $modelSales->getMemberPembayaranMasterSales($request->sale_id);
+        $getStockist = $modelMember->getUsers('id', $getDataMaster->stockist_id);
+        if($request->buy_metode == 1){
+            $buy_metode = 1;
+        }
+        if($request->buy_metode == 2){
+            $buy_metode = 2;
+            $getStockistBank = $modelBank->getBankMemberActive($getStockist);
+            $bank_name = $getStockistBank->bank_name;
+            $account_no = $getStockistBank->account_no;
+            $account_name = $getStockistBank->account_name;
+        }
+        if($request->buy_metode == 3){
+            $buy_metode = 3;
+            $tron = $getStockist->tron;
+        }
+        $dataAll = (object) array(
+            'buy_metode' => $buy_metode,
+            'getDataMaster' => $getDataMaster,
+            'getStockist' => $getStockist,
+            'tron' => $tron,
+            'bank_name' => $bank_name,
+            'account_no' => $account_no,
+            'account_name' => $account_name,
+        );
+        return view('member.ajax.confirm_member_pembayaran')
+                        ->with('data', $dataAll);
+        
+    }
 
     
     

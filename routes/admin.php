@@ -175,13 +175,14 @@ Route::prefix('/')->group(function () {
         Route::get('/m/detail/purchase/{stokist_id}/{id}', 'Admin\MemberController@getDetailPurchase')->name('m_DetailPurchase')->middleware('auth');
         Route::post('/m/shoping', 'Admin\MemberController@postMemberShoping')->middleware('auth');
         Route::get('/m/history/shoping', 'Admin\MemberController@getHistoryShoping')->name('m_historyShoping')->middleware('auth');
+        Route::get('/m/pembayaran/{id}', 'Admin\MemberController@getMemberPembayaran')->name('m_MemberPembayaran')->middleware('auth');
+        Route::post('/m/pembayaran', 'Admin\MemberController@postMemberPembayaran')->middleware('auth');
         
         Route::get('/m/stockist-shoping', 'Admin\MemberController@getMemberStockistShoping')->name('m_MemberStockistShoping')->middleware('auth');
         Route::get('/m/stockist/detail/purchase/{id}', 'Admin\MemberController@getStockistDetailPurchase')->name('m_StokistDetailPurchase')->middleware('auth');
         Route::post('/m/stockist-shoping', 'Admin\MemberController@postMemberStockistShoping')->middleware('auth');
         Route::get('/m/stockist-report', 'Admin\MemberController@getMemberStockistReport')->name('m_MemberStockistReport')->middleware('auth');
-        
-        Route::get('/m/s/shoping', 'Admin\MemberController@getMemberStockistShoping')->name('m_MemberStockistShoping')->middleware('auth');
+        Route::get('/m/stockist-pembayaran/{id}', 'Admin\MemberController@getMemberStockistPembayaran')->name('m_MemberSockistPembayaran')->middleware('auth');
         
         //Ajax
         Route::get('/m/cek/add-sponsor', 'Admin\AjaxmemberController@postCekAddSponsor')->middleware('auth');
@@ -208,6 +209,7 @@ Route::prefix('/')->group(function () {
         Route::get('/m/cek/shoping', 'Admin\AjaxmemberController@getCekSoping')->middleware('auth');
         Route::get('/m/cek/edit-address', 'Admin\AjaxmemberController@getCekEditAddress')->middleware('auth');
         Route::get('/m/cek/confirm-claim-reward', 'Admin\AjaxmemberController@getCekConfirmClaimReward')->middleware('auth');
+        Route::get('/m/cek/member-pembayaran', 'Admin\AjaxmemberController@getCekMemberPembayaran')->middleware('auth');
         
         Route::get('/m/search/{type}', 'Admin\AjaxmemberController@getSearchByType')->middleware('auth');
 });

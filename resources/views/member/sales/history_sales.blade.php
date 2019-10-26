@@ -90,6 +90,7 @@
                                 <th>Tanggal</th>
                                 <th>Stockist</th>
                                 <th>Nominal Belanja (Rp.)</th>
+                                <th>Pembayaran</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -104,6 +105,14 @@
                                         <td>{{date('d-m-Y', strtotime($row->sale_date))}}</td>
                                         <td>{{$row->user_code}}</td>
                                         <td>{{number_format($row->sale_price, 0, ',', ',')}}</td>
+                                        <td>
+                                            @if($dataUser->is_stockist == 0)
+                                                <a class="label label-success" href="{{ URL::to('/') }}/m/pembayaran/{{$row->id}}">detail</a>
+                                            @endif
+                                            @if($dataUser->is_stockist == 1)
+                                                <a class="label label-success" href="{{ URL::to('/') }}/m/stockist-pembayaran/{{$row->id}}">detail</a>
+                                            @endif
+                                        </td>
                                     </tr>
                                 @endforeach
                             @endif

@@ -1382,28 +1382,49 @@ class MemberController extends Controller {
             return redirect()->route('m_MemberStockistShoping');
         }
         $modelSales = New Sales;
+        $arrayLog = json_decode($request->cart_list, true);
         $modelMember = New Member;
-        $getData = $modelSales->getDetailPurchase($request->id_barang);
-        $dataInsert = array(
-            'user_id' => $dataUser->id,
-            'stockist_id' => $request->stockist_id,
-            'is_stockist' => $dataUser->is_stockist,
-            'purchase_id' => $request->id_barang,
-            'invoice' => uniqid(),
-            'amount' => $request->qty,
-            'sale_price' => $request->qty * $getData->member_price,
-            'sale_date' => date('Y-m-d'),
+        $user_id = $dataUser->id;
+        $stockist_id = $request->stockist_id;
+        $is_stockist = 0;
+        $invoice = $modelSales->getCodeMasterSales($user_id);
+        $sale_date = date('Y-m-d');
+        $total_price = 0;
+        foreach($arrayLog as $rowTotPrice){
+            $total_price += $rowTotPrice['product_quantity'] * $rowTotPrice['product_price'];
+        }
+        $dataInsertMasterSales = array(
+            'user_id' => $user_id,
+            'stockist_id' => $stockist_id,
+            'is_stockist' => $is_stockist,
+            'invoice' => $invoice,
+            'total_price' => $total_price,
+            'sale_date' => $sale_date,
         );
-        $insertSales = $modelSales->getInsertSales($dataInsert);
-        $dataInsertStock = array(
-            'purchase_id' => $request->id_barang,
-            'user_id' => $dataUser->id,
-            'type' => 2,
-            'amount' => $request->qty,
-            'sales_id' => $insertSales->lastID
-        );
-        $modelSales->getInsertStock($dataInsertStock);
-        return redirect()->route('m_SearchStockist')
+        $insertMasterSales = $modelSales->getInsertMasterSales($dataInsertMasterSales);
+        foreach($arrayLog as $row){
+            $dataInsert = array(
+                'user_id' => $user_id,
+                'stockist_id' => $stockist_id,
+                'is_stockist' => $is_stockist,
+                'purchase_id' => $row['product_id'],
+                'invoice' => $invoice,
+                'amount' => $row['product_quantity'],
+                'sale_price' => $row['product_quantity'] * $row['product_price'],
+                'sale_date' => $sale_date,
+                'master_sales_id' => $insertMasterSales->lastID
+            );
+            $modelSales->getInsertSales($dataInsert);
+        }
+//        $dataInsertStock = array(
+//            'purchase_id' => $request->id_barang,
+//            'user_id' => $dataUser->id,
+//            'type' => 2,
+//            'amount' => $request->qty,
+//            'sales_id' => $insertSales->lastID
+//        );
+//        $modelSales->getInsertStock($dataInsertStock);
+        return redirect()->route('m_historyShoping')
                     ->with('message', 'Berhasil member belanja')
                     ->with('messageclass', 'success');
     }
@@ -1460,29 +1481,53 @@ class MemberController extends Controller {
         if($dataUser->is_stockist == 0){
             return redirect()->route('m_SearchStockist');
         }
+        $arrayLog = json_decode($request->cart_list, true);
+//        dd($arrayLog);
         $modelSales = New Sales;
         $modelMember = New Member;
-        $getData = $modelSales->getDetailPurchase($request->id_barang);
-        $dataInsert = array(
-            'user_id' => $dataUser->id,
-            'stockist_id' => $dataUser->id,
-            'is_stockist' => $dataUser->is_stockist,
-            'purchase_id' => $request->id_barang,
-            'invoice' => uniqid(),
-            'amount' => $request->qty,
-            'sale_price' => $request->qty * $getData->stockist_price,
-            'sale_date' => date('Y-m-d'),
+        $user_id = $dataUser->id;
+        $stockist_id = $dataUser->id;
+        $is_stockist = $dataUser->is_stockist;
+        $invoice = $modelSales->getCodeMasterSales($user_id);
+        $sale_date = date('Y-m-d');
+        $total_price = 0;
+        foreach($arrayLog as $rowTotPrice){
+            $total_price += $rowTotPrice['product_quantity'] * $rowTotPrice['product_price'];
+        }
+        $dataInsertMasterSales = array(
+            'user_id' => $user_id,
+            'stockist_id' => $stockist_id,
+            'is_stockist' => $is_stockist,
+            'invoice' => $invoice,
+            'total_price' => $total_price,
+            'sale_date' => $sale_date,
         );
-        $insertSales = $modelSales->getInsertSales($dataInsert);
-        $dataInsertStock = array(
-            'purchase_id' => $request->id_barang,
-            'user_id' => $dataUser->id,
-            'type' => 2,
-            'amount' => $request->qty,
-            'sales_id' => $insertSales->lastID
-        );
-        $modelSales->getInsertStock($dataInsertStock);
-        return redirect()->route('m_MemberStockistShoping')
+//        dd($dataInsertMasterSales);
+        $insertMasterSales = $modelSales->getInsertMasterSales($dataInsertMasterSales);
+        foreach($arrayLog as $row){
+            $dataInsert = array(
+                'user_id' => $user_id,
+                'stockist_id' => $stockist_id,
+                'is_stockist' => $is_stockist,
+                'purchase_id' => $row['product_id'],
+                'invoice' => $invoice,
+                'amount' => $row['product_quantity'],
+                'sale_price' => $row['product_quantity'] * $row['product_price'],
+                'sale_date' => $sale_date,
+                'master_sales_id' => $insertMasterSales->lastID
+            );
+            $modelSales->getInsertSales($dataInsert);
+        }
+        
+//        $dataInsertStock = array(
+//            'purchase_id' => $request->id_barang,
+//            'user_id' => $dataUser->id,
+//            'type' => 2,
+//            'amount' => $request->qty,
+//            'sales_id' => $insertSales->lastID
+//        );
+//        $modelSales->getInsertStock($dataInsertStock);
+        return redirect()->route('m_historyShoping')
                     ->with('message', 'Berhasil member stockist belanja')
                     ->with('messageclass', 'success');
         
@@ -1561,7 +1606,7 @@ class MemberController extends Controller {
                 'textMonth' => $text_month
             );
         }
-        $getData = $modelSales->getMemberSalesHistory($dataUser->id, $getMonth);
+        $getData = $modelSales->getMemberMasterSalesHistory($dataUser->id, $getMonth);
         $sum = 0;
         if($getData != null){
             foreach($getData as $row){
@@ -1575,6 +1620,130 @@ class MemberController extends Controller {
                 ->with('getDate', $getMonth)
                 ->with('dataUser', $dataUser);
     }
+    
+    public function getMemberPembayaran($id){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_stockist == 1){
+            return redirect()->route('m_MemberStockistShoping'); 
+        }
+        if($dataUser->is_profile == 0){
+            return redirect()->route('m_SearchStockist')
+                    ->with('message', 'Data profil anda belum lengkap')
+                    ->with('messageclass', 'danger');
+        }
+        $modelSales = New Sales;
+        $modelMember = New Member;
+        $modelBank = New Bank;
+        $getDataMaster = $modelSales->getMemberPembayaranMasterSales($id);
+        //klo kosong
+        $getDataSales = $modelSales->getMemberPembayaranSales($getDataMaster->id);
+        $getStockist = $modelMember->getUsers('id', $getDataMaster->stockist_id);
+        $getStockistBank = $modelBank->getBankMemberActive($getStockist);
+        return view('member.sales.m_pembayaran')
+                    ->with('headerTitle', 'Pembayaran')
+                    ->with('getDataSales', $getDataSales)
+                    ->with('getDataMaster', $getDataMaster)
+                    ->with('getStockist', $getStockist)
+                    ->with('getStockistBank', $getStockistBank)
+                    ->with('dataUser', $dataUser);
+    }
+    
+    public function postMemberPembayaran(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_stockist == 1){
+            return redirect()->route('m_MemberStockistShoping'); 
+        }
+        if($dataUser->is_profile == 0){
+            return redirect()->route('m_SearchStockist')
+                    ->with('message', 'Data profil anda belum lengkap')
+                    ->with('messageclass', 'danger');
+        }
+        $modelSales = New Sales;
+        $tron = null;
+        $tron_transfer = null;
+        $bank_name = null;
+        $account_no = null;
+        $account_name = null;
+        $getStockistBank = null;
+        $buy_metode = 0;
+        $getDataMaster = $modelSales->getMemberPembayaranMasterSales($request->master_sale_id);
+        if($request->buy_metode == 1){
+            $buy_metode = 1;
+        }
+        if($request->buy_metode == 2){
+            $buy_metode = 2;
+            $bank_name = $request->bank_name;
+            $account_no = $request->account_no;
+            $account_name = $request->account_name;
+        }
+        if($request->buy_metode == 3){
+            $buy_metode = 3;
+            $tron = $request->tron;
+            if($request->tron_tranfer == null){
+                return redirect()->route('m_MemberPembayaran', [$request->master_sale_id])
+                        ->with('message', 'Hash transaksi transfer dari Blockchain TRON belum diisi')
+                        ->with('messageclass', 'danger');
+            }
+            $tron_transfer = $request->tron_tranfer;
+        }
+        $dataUpdate = array(
+            'status' => 1,
+            'buy_metode' => $buy_metode,
+            'tron' => $tron,
+            'tron_transfer' => $tron_transfer,
+            'bank_name' => $bank_name,
+            'account_no' => $account_no,
+            'account_name' => $account_name,
+        );
+        $modelSales->getUpdateMasterSales('id', $request->master_sale_id, $dataUpdate);
+        return redirect()->route('m_historyShoping')
+                        ->with('message', 'Berhsil konfirmasi pembayaran')
+                        ->with('messageclass', 'success');
+    }
+    
+    public function getMemberStockistPembayaran($id){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_stockist == 0){
+            return redirect()->route('m_SearchStockist');
+        }
+        $modelSales = New Sales;
+        $modelMember = New Member;
+        $modelBank = New Bank;
+        $getDataMaster = $modelSales->getMemberPembayaranMasterSales($id);
+        //klo kosong
+        $getDataSales = $modelSales->getMemberPembayaranSales($getDataMaster->id);
+        $getStockistBank = $modelBank->getBankMemberActive($dataUser);
+        return view('member.sales.m_stockist_pembayaran')
+                    ->with('headerTitle', 'Pembayaran')
+                    ->with('getDataSales', $getDataSales)
+                    ->with('getDataMaster', $getDataMaster)
+                    ->with('getStockist', $dataUser)
+                    ->with('getStockistBank', $getStockistBank)
+                    ->with('dataUser', $dataUser);
+    }
+    
+    
     
     
     
