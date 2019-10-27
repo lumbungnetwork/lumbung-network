@@ -34,7 +34,9 @@ class CronBonusPasang extends Command {
         if($cekHistoryIndex != null){
             dd('index stop here');
         }
-        $totalActivateDate = $modelMember->getCountMemberByDate($date);
+        $totalActivateDateNew = $modelMember->getCountMemberByDate($date);
+        $totalActivateDateResubscribe = $modelMember->getCountMemberResubscribeByDate($date);
+        $totalActivateDate = $totalActivateDateNew + $totalActivateDateResubscribe;
         if($totalActivateDate == 0){
             dd('activated stop here');
         }

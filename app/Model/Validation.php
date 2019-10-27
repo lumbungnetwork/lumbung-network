@@ -203,7 +203,7 @@ class Validation extends Model {
         }
         $total = $sum_pin_masuk - $sum_pin_keluar;
         if($total < $request->total_pin){
-            $canInsert = (object) array('can' => false, 'pesan' => 'Pin yang anda masukan tidak cukup untuk melakukan repeat order');
+            $canInsert = (object) array('can' => false, 'pesan' => 'Pin yang anda masukan tidak cukup untuk melakukan Resubscribe. Silakan beli Pin');
             return $canInsert;
         }
         return $canInsert;

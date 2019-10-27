@@ -1019,10 +1019,32 @@ class MemberController extends Controller {
         $modelPin->getInsertMemberPin($memberPin);
         $getDay1_thisMonth = date('Y-m-01', strtotime(date('Y-m-d')));
         $getDay1_nextMonth = date('Y-m-01', strtotime('+1 Month'));
+        //update package id (sistemnya nambah)
+        $new_total_pin = $dataUser->pin_activate + $request->total_pin;
+        $dataUpdatePackageId = array(
+            'pin_activate' => $new_total_pin,
+            'pin_activate_at' => date('Y-m-d H:i:s'),
+        );
+        $modelMember->getUpdateUsers('id', $dataUser->id, $dataUpdatePackageId);
+        
+        //bonus sponsor disini
+        $getBonusStart =$modelBonusSetting->getActiveBonusStart();
+        $bonus_price = $getBonusStart->start_price * $request->total_pin;
+        $dataInsertBonusSponsor = array(
+            'user_id' => $dataUser->sponsor_id,
+            'from_user_id' => $dataUser->id,
+            'type' => 1,
+            'bonus_price' => $bonus_price,
+            'bonus_date' => date('Y-m-d'),
+            'poin_type' => 1,
+            'total_pin' => $request->total_pin
+        );
+        $modelBonus->getInsertBonusMember($dataInsertBonusSponsor);
+        
         $getMaxPin = $modelPin->getCheckMaxPinROByDate($dataUser->sponsor_id, $getDay1_thisMonth, $getDay1_nextMonth);
         if($getMaxPin >= 4){
             return redirect()->route('mainDashboard')
-                        ->with('message', 'Repeat Order member berhasil')
+                        ->with('message', 'Resubscribe member berhasil')
                         ->with('messageclass', 'success');
         }
         $getLevelSp = $modelMember->getLevelSponsoring($dataUser->id);
@@ -1123,7 +1145,7 @@ class MemberController extends Controller {
             $modelBonus->getInsertBonusMember($dataInsertBonusLvl7);
         }
         return redirect()->route('mainDashboard')
-                    ->with('message', 'Repeat Order member berhasil')
+                    ->with('message', 'Resubscribe member berhasil')
                     ->with('messageclass', 'success');
     }
     

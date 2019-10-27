@@ -20,13 +20,14 @@
                     </ul>
                 </li>
                 <li class="has_sub">
-                    <a class="waves-effect @if(Route::currentRouteName() == 'm_newSponsor' || Route::currentRouteName() == 'm_addPlacement' || Route::currentRouteName() == 'm_statusMember') active @endif">
+                    <a class="waves-effect @if(Route::currentRouteName() == 'm_newSponsor' || Route::currentRouteName() == 'm_addPlacement' || Route::currentRouteName() == 'm_statusMember' || Route::currentRouteName() == 'm_newRO') active @endif">
                         <i class="zmdi zmdi-accounts"></i> 
                         <span> Member </span> <span class="menu-arrow"></span>
                     </a>
                     <ul class="list-unstyled">
                         <li @if(Route::currentRouteName() == 'm_newSponsor') class="active" @endif><a href="{{ URL::to('/') }}/m/add/sponsor">Daftar</a></li>
                         <li @if(Route::currentRouteName() == 'm_addPlacement') class="active" @endif><a href="{{ URL::to('/') }}/m/add/placement">Placement</a></li>
+                        <li @if(Route::currentRouteName() == 'm_newRO') class="active" @endif><a href="{{ URL::to('/') }}/m/add/repeat-order">Subscription</a></li>
                         <li @if(Route::currentRouteName() == 'm_statusMember') class="active" @endif><a href="{{ URL::to('/') }}/m/status/member">Status</a></li>
                     </ul>
                 </li>

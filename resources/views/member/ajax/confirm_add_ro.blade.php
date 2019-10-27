@@ -10,7 +10,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label>Total Pin Repeat Order</label>
+                            <label>Total Pin Resubscribe</label>
                             <input type="number" class="form-control" readonly="" name="total_pin" value="{{$data->total_pin}}">
                         </div>
                     </div>

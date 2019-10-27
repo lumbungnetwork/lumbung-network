@@ -356,9 +356,20 @@ class Member extends Model {
         return $sql;
     }
     
+    public function getCountMemberResubscribeByDate($date){
+        $sql = DB::table('users')
+                    ->selectRaw('id')
+                    ->whereDate('pin_activate_at', '=', $date)
+                    ->where('is_active', '=', 1)
+                    ->where('user_type', '=', 10)
+                    ->orderBy('id', 'ASC')
+                    ->count();
+        return $sql;
+    }
+    
     public function getNewCountOuterDownlineByDate($downline, $date){
         $sql = DB::table('users')
-                    ->selectRaw('count(users.id) as total_downline')
+                    ->selectRaw('sum(users.pin_activate) as total_downline')
                     ->where('users.user_type', '=', 10)
                     ->where('is_active', '=', 1)
 //                    ->whereDate('placement_at', $date)
@@ -374,14 +385,18 @@ class Member extends Model {
     
     public function getNewCountInnerDownlineByDate($id, $date){
         $sql = DB::table('users')
-                    ->selectRaw('id')
+                    ->selectRaw('sum(users.pin_activate) as total_downline')
                     ->where('users.id', '=', $id)
                     ->where('users.user_type', '=', 10)
                     ->where('is_active', '=', 1)
 //                    ->whereDate('placement_at', '=', $date)
                     ->whereDate('active_at', '<=', $date)
-                    ->count();
-        return $sql;
+                    ->first();
+        $return = 0;
+        if($sql->total_downline != null){
+            $return = $sql->total_downline;
+        }
+        return $return;
     }
     
     public function getLevelSponsoring($id){
