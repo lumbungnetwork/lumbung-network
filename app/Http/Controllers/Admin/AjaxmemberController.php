@@ -505,7 +505,8 @@ class AjaxmemberController extends Controller {
             'hu1' => $cekHU1,
             'hu2' => $cekHU2,
             'hu3' => $cekHU3,
-            'total_sp' => $dataUser->total_sponsor
+            'total_sp' => $dataUser->total_sponsor,
+            'alamat' => $dataUser
         );
         $canInsert = $modelValidasi->getCheckRequestStockist($dataAll);
         return view('member.ajax.confirm_request_stockistr')

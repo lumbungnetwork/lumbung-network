@@ -253,6 +253,10 @@ class Validation extends Model {
     
     public function getCheckRequestStockist($data){
         $canInsert = (object) array('can' => true, 'pesan' => '');
+        if($data->alamat->provinsi == null || $data->alamat->kota == null || $data->alamat->kecamatan == null || $data->alamat->kelurahan == null){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Data Alamat Profil belum lengkap.');
+            return $canInsert;
+        }
         if($data->syarat1 == 0){
             $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum menyetujui telah memiliki 3 Hak Usaha');
             return $canInsert;

@@ -58,13 +58,21 @@
                 </li>
                 @if($dataUser->is_stockist == 1)
                 <li class="has_sub">
-                    <a class="waves-effect @if(Route::currentRouteName() == 'm_MemberStockistShoping' || Route::currentRouteName() == 'm_MemberStockistReport' || Route::currentRouteName() == 'm_historyShoping' ) active @endif">
-                        <i class="zmdi zmdi-shopping-cart"></i> 
+                    <a class="waves-effect @if(Route::currentRouteName() == 'm_MemberStockistReport') active @endif">
+                        <i class="zmdi zmdi-shopping-basket"></i> 
                         <span> Stockist </span> <span class="menu-arrow"></span>
                     </a>
                     <ul class="list-unstyled">
-                        <li @if(Route::currentRouteName() == 'm_MemberStockistShoping') class="active" @endif><a href="{{ URL::to('/') }}/m/stockist-shoping">Belanja</a></li>
                         <li @if(Route::currentRouteName() == 'm_MemberStockistReport') class="active" @endif><a href="{{ URL::to('/') }}/m/stockist-report">Report</a></li>
+                    </ul>
+                </li>
+                <li class="has_sub">
+                    <a class="waves-effect @if(Route::currentRouteName() == 'm_MemberStockistShoping' || Route::currentRouteName() == 'm_historyShoping') active @endif">    
+                        <i class="zmdi zmdi-shopping-cart"></i> 
+                        <span> Belanja </span><span class="menu-arrow"></span>
+                    </a>
+                    <ul class="list-unstyled">
+                        <li @if(Route::currentRouteName() == 'm_MemberStockistShoping') class="active" @endif><a href="{{ URL::to('/') }}/m/stockist-shoping">Belanja</a></li>
                         <li @if(Route::currentRouteName() == 'm_historyShoping') class="active" @endif><a href="{{ URL::to('/') }}/m/history/shoping">History</a></li>
                     </ul>
                 </li>
