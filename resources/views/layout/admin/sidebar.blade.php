@@ -120,6 +120,18 @@
                             <span class="sidebar-normal"> List Pengajuan Stockist </span>
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ URL::to('/') }}/adm/list/req-input-stock">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> List Stockist Input Stock </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ URL::to('/') }}/adm/list/verification-royalti">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> List Verifikasi Royslti </span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </li>

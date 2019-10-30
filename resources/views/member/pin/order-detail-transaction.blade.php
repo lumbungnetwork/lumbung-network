@@ -145,7 +145,7 @@
                                             ?>
                                             <div class="col-md-3 col-sm-6 col-xs-6 col-md-offset-3">
                                                 <p class="text-xs-right"><b>Sub-total:</b> Rp. {{number_format($getData->price, 0, ',', ',')}}</p>
-                                                <p class="text-xs-right"><b>Kode Unik:</b>: {{number_format($getData->unique_digit, 0, ',', ',')}}</p>
+                                                <p class="text-xs-right"><b>Kode Unik:</b> {{number_format($getData->unique_digit, 0, ',', ',')}}</p>
                                                 <hr>
                                                 <h3 class="text-xs-right">Rp. {{number_format($total, 0, ',', ',')}}</h3>
                                             </div>

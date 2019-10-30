@@ -9,7 +9,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="page-title-box">
-                        <h4 class="page-title">Belanja</h4>
+                        <h4 class="page-title">Input Stock</h4>
                         <div class="clearfix"></div>
                     </div>
                 </div>
@@ -34,20 +34,14 @@
                                     <div class="caption">
                                         <h5 data-name="product_name">{{$row->name}} </h5>
                                         <h6 data-name="product_desc">{{$row->ukuran}} </h6>
-                                        <h5 data-name="product_name"><b>Rp. {{number_format($row->member_price, 0, ',', ',')}}</b></h5>
-                                        <h6>Stok tersedia: <b>{{number_format($row->total_sisa, 0, ',', ',')}}</b> </h6>
+                                        <h5 data-name="product_name"><b>Rp. {{number_format($row->stockist_price, 0, ',', ',')}}</b></h5>
                                         <div>
                                             <div class="form-group2">
                                                 <input class="sc-cart-item-qty" name="product_quantity" min="1" value="1" type="number">
                                             </div>
-                                            <input name="product_price" value="{{number_format($row->member_price, 0, ',', '')}}" type="hidden" />
+                                            <input name="product_price" value="{{number_format($row->stockist_price, 0, ',', '')}}" type="hidden" />
                                             <input name="product_id" value="{{$row->id}}" type="hidden" />
-                                            @if($row->total_sisa > 0)
                                             <button class="sc-add-to-cart btn btn-success btn-sm m-t-10">Masuk ke keranjang</button>
-                                            @endif
-                                            @if($row->total_sisa <= 0)
-                                            <div class="btn btn-dark btn-sm m-t-10">Masuk ke keranjang</div>
-                                            @endif
                                         </div>
                                         <div class="clearfix"></div>
                                     </div>
@@ -60,9 +54,8 @@
 
                 <div class="col-xs-12 col-md-6 col-lg-6 col-xl-4">
                     <div class="card-box tilebox-one">
-                        <form action="/m/shoping" method="POST">
+                        <form action="/m/purchase/input-stock" method="POST">
                             {{ csrf_field() }}
-                            <input type="hidden" name="stockist_id" value="{{$id}}">
                             <div id="smartcart"></div>
                         </form>
                     </div>

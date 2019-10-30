@@ -90,7 +90,9 @@
                                 <th>Tanggal</th>
                                 <th>Stockist</th>
                                 <th>Nominal Belanja (Rp.)</th>
+                                <th>Status</th>
                                 <th>Pembayaran</th>
+                                <th>###</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -99,6 +101,30 @@
                                 @foreach($getData as $row)
                                     <?php
                                         $no++;
+                                        $status = 'belum konfirmasi';
+                                        $label = 'primary';
+                                        if($row->status == 1){
+                                            $status = 'konfirmasi';
+                                            $label = 'info';
+                                        }
+                                        if($row->status == 2){
+                                            $status = 'konfirmasi admin';
+                                            $label = 'success';
+                                        }
+                                        if($row->status == 3){
+                                            $status = 'batal';
+                                            $label = 'danger';
+                                        }
+                                        $buy = 'Belum';
+                                        if($row->buy_metode == 1){
+                                            $buy = 'COD';
+                                        }
+                                        if($row->buy_metode == 2){
+                                            $buy = 'Transfer Bank';
+                                        }
+                                        if($row->buy_metode == 3){
+                                            $buy = 'eIDR';
+                                        }
                                     ?>
                                     <tr>
                                         <td>{{$no}}</td>
@@ -106,12 +132,13 @@
                                         <td>{{$row->user_code}}</td>
                                         <td>{{number_format($row->sale_price, 0, ',', ',')}}</td>
                                         <td>
-                                            @if($dataUser->is_stockist == 0)
-                                                <a class="label label-success" href="{{ URL::to('/') }}/m/pembayaran/{{$row->id}}">detail</a>
-                                            @endif
-                                            @if($dataUser->is_stockist == 1)
-                                                <a class="label label-success" href="{{ URL::to('/') }}/m/stockist-pembayaran/{{$row->id}}">detail</a>
-                                            @endif
+                                                <span class="label label-{{$label}}">{{$status}}</span>
+                                        </td>
+                                        <td>
+                                                <span class="label label-info">{{$buy}}</span>
+                                        </td>
+                                        <td>
+                                            <a class="label label-success" href="{{ URL::to('/') }}/m/pembayaran/{{$row->id}}">detail</a>
                                         </td>
                                     </tr>
                                 @endforeach

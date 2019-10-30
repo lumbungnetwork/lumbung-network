@@ -14,6 +14,7 @@ use App\Model\Transferwd;
 use App\Model\Bonus;
 use App\Model\Member;
 use App\Model\Bonussetting;
+use App\Model\Sales;
 
 class AjaxController extends Controller {
 
@@ -196,6 +197,35 @@ class AjaxController extends Controller {
                 ->with('headerTitle', 'Detail Withdrawal')
                 ->with('getData', $getData)
                 ->with('dataUser', $dataUser);
+    }
+    
+    public function getCekRequestMemberInputStock($id, $user_id){
+        $modelSales = New Sales;
+        $modelMember = New Member;
+        $getData = $modelSales->getMemberReqInputStockistItem($id);
+        $getUser = $modelMember->getUsers('id', $user_id);
+        return view('admin.ajax.cek_req_input_stock')
+                ->with('headerTitle', 'Cek Request Input Stock')
+                ->with('getUser', $getUser)
+                ->with('master_item_id', $id)
+                ->with('getData', $getData);
+    }
+    
+    public function getCekConfirmBelanjaStockist($id){
+        $modelSales = New Sales;
+        $modelMember = New Member;
+        $getData = $modelSales->getAdminConfirmBelanjaID($id);
+        return view('admin.ajax.cek_confirm_belanja')
+                ->with('headerTitle', 'Detail Confirm Belanja')
+                ->with('getData', $getData);
+    }
+    
+    public function getCekVerificationRoyalti($id){
+        $modelSales = New Sales;
+        $getData = $modelSales->getAdminVerificationRoyaltiID($id);
+        return view('admin.ajax.cek_confirm_royalti')
+                ->with('headerTitle', 'Detail Verification Royalti')
+                ->with('getData', $getData);
     }
     
     

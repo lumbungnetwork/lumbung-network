@@ -936,6 +936,109 @@ class MasterAdminController extends Controller {
                 ->with('dataUser', $dataUser);
     }
     
+    public function getAllRequestMemberInputStock(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSales = New Sales;
+        $getData = $modelSales->getMemberReqInputStockist();
+        return view('admin.member.req-input-stock')
+                ->with('headerTitle', 'Member Request Input Stock')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postRequestMemberInputStock(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSales = New Sales;
+        $dataUpdate = array(
+            'status' => 2
+        );
+        $modelSales->getUpdateItemPurchaseMaster('id', $request->id, $dataUpdate);
+        return redirect()->route('adm_listReqInputStock')
+                    ->with('message', 'Konfirmasi Member request input stock berhasil')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function getAllConfirmBelanjaStockist(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSales = New Sales;
+        $getData = $modelSales->getAdminConfirmBelanja();
+        return view('admin.member.confirm-belanja')
+                ->with('headerTitle', 'Confirm Belanja')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postConfirmBelanjaStockist(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSales = New Sales;
+        $dataUpdate = array(
+            'status' => 2
+        );
+        $modelSales->getUpdateMasterSales('id', $request->id, $dataUpdate);
+        return redirect()->route('adm_listConfirmBelanjaStockist')
+                    ->with('message', 'Konfirmasi belanja stockist berhasil')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function getAllVerificationRoyalti(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSales = New Sales;
+        $getData = $modelSales->getAdminVerificationRoyalti();
+        return view('admin.member.confirm-royalti')
+                ->with('headerTitle', 'Verification Royalti')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postVerificationRoyalti(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSales = New Sales;
+        
+        $getAllSales = $modelSales->getAdminRoyaltiSales($request->id);
+        foreach($getAllSales as $row){
+            $dataInsertStock = array(
+                'purchase_id' => $row->purchase_id,
+                'user_id' => $row->user_id,
+                'type' => 2,
+                'amount' => $row->amount,
+                'sales_id' => $row->id,
+                'stockist_id' => $row->stockist_id,
+            );
+            $modelSales->getInsertStock($dataInsertStock);
+        }
+        $dataUpdate = array(
+            'status' => 4
+        );
+        $modelSales->getUpdateMasterSales('id', $request->id, $dataUpdate);
+        return redirect()->route('adm_listVerificationRoyalti')
+                    ->with('message', 'Verifikasi royalti berhasil')
+                    ->with('messageclass', 'success');
+    }
+    
     
 
 }

@@ -649,6 +649,60 @@ class AjaxmemberController extends Controller {
                         ->with('data', $dataAll);
         
     }
+    
+    public function postCekAddRequestStock(Request $request){
+        $dataUser = Auth::user();
+        $modelSales = New Sales;
+        $data = (object) array('id_master' => $request->id_master);
+        return view('member.ajax.confirm_add_stock')
+                            ->with('data', $data);
+    }
+    
+    public function postCekRejectRequestStock(Request $request){
+        $data = (object) array('id_master' => $request->id_master);
+        return view('member.ajax.confirm_reject_stock')
+                        ->with('data', $data);
+    }
+    
+    public function postCekAddRoyalti(Request $request){
+        $dataUser = Auth::user();
+        $modelSales = New Sales;
+        $canInsert = (object) array('can' => true, 'pesan' => '');
+        $id_master = $request->id_master;
+        $royalti_metode = $request->metode;
+        if($royalti_metode == 'undefined'){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Metode transfer royalti belum diipih');
+            return view('member.ajax.confirm_add_royalti')
+                            ->with('dataRequest', null)
+                            ->with('check', $canInsert)
+                            ->with('dataUser', $dataUser);
+        }
+        $getDataSales = $modelSales->getMemberReportSalesStockistDetail($id_master, $dataUser->id);
+        $royalti_tron = null;
+        $royalti_bank_name = null;
+        $royalti_account_no = null;
+        $royalti_account_name = null;
+        if($royalti_metode == 1){
+            $royalti_bank_name = 'BRI';
+            $royalti_account_no = '033601001795562';
+            $royalti_account_name = 'PT LUMBUNG MOMENTUM BANGSA';
+        }
+        if($royalti_metode == 2){
+            $royalti_tron = 'TZHYx9bVa4vQz8VpVvZtjwMb4AHqkUChiQ';
+        }
+        $data = (object) array(
+            'id_master' => $id_master,
+            'royalti_metode' => $royalti_metode,
+            'royalti_bank_name' => $royalti_bank_name,
+            'royalti_account_no' => $royalti_account_no,
+            'royalti_account_name' => $royalti_account_name,
+            'royalti_tron' => $royalti_tron
+        );
+        return view('member.ajax.confirm_add_royalti')
+                        ->with('getDataSales', $getDataSales)
+                        ->with('check', $canInsert)
+                        ->with('data', $data);
+    }
 
     
     
