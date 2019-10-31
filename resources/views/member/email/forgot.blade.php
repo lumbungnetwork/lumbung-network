@@ -117,7 +117,7 @@ Reset Password
                                                                             <table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:separate;" align="center" border="0">
                                                                                 <tbody>
                                                                                     <tr>
-                                                                                        <td style="border:none;border-radius:3px;color:white;cursor:auto;padding:10px 25px;" align="center" valign="middle" bgcolor="#269af1"><a href="{{ URL::to('/') }}/{{$dataLink}}?email={{$email}}" style="text-decoration:none;background:#269af1;color:white;font-family:Open Sans, Proxima Nova, Arial, Arial, Helvetica, sans-serif;font-size:14px;font-weight:400;line-height:120%;text-transform:none;margin:0px;" target="_blank">Reset Password</a></td>
+                                                                                        <td style="border:none;border-radius:3px;color:white;cursor:auto;padding:10px 25px;" align="center" valign="middle" bgcolor="#269af1"><a href="{{ URL::to('/') }}/{{$dataLink}}/{{$email}}" style="text-decoration:none;background:#269af1;color:white;font-family:Open Sans, Proxima Nova, Arial, Arial, Helvetica, sans-serif;font-size:14px;font-weight:400;line-height:120%;text-transform:none;margin:0px;" target="_blank">Reset Password</a></td>
                                                                                     </tr>
                                                                                 </tbody>
                                                                             </table>
