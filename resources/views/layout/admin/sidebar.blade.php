@@ -127,9 +127,15 @@
                             </a>
                         </li>
                         <li>
+                            <a href="{{ URL::to('/') }}/adm/list/confirm-belanja">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> List Konfirmasi Belanja </span>
+                            </a>
+                        </li>
+                        <li>
                             <a href="{{ URL::to('/') }}/adm/list/verification-royalti">
                             <span class="sidebar-mini-icon">+</span>
-                            <span class="sidebar-normal"> List Verifikasi Royslti </span>
+                            <span class="sidebar-normal"> List Verifikasi Royalti </span>
                             </a>
                         </li>
                     </ul>

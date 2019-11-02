@@ -653,8 +653,36 @@ class AjaxmemberController extends Controller {
     public function postCekAddRequestStock(Request $request){
         $dataUser = Auth::user();
         $modelSales = New Sales;
-        $data = (object) array('id_master' => $request->id_master);
+        $canInsert =  (object) array('can' => true, 'pesan' => '');
+        if($request->metode == 'undefined'){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum memilih metode pembayaran');
+            return view('member.ajax.confirm_add_stock')
+                            ->with('check', $canInsert)
+                            ->with('dataUser', $dataUser);
+        }
+        $tron = null;
+        $bank_name = null;
+        $account_no = null;
+        $account_name = null;
+        if($request->metode == 2){
+            $bank_name = 'BRI';
+            $account_no = '033601001795562';
+            $account_name = 'PT LUMBUNG MOMENTUM BANGSA';
+        }
+        if($request->metode == 3){
+            $tron = 'TWJtGQHBS88PfZTXvWAYhQEMrx36eX2F9Pc';
+        }
+        $data = (object) array(
+            'id_master' => $request->id_master,
+            'royalti' => $request->royalti,
+            'buy_metode' => $request->metode,
+            'bank_name' => $bank_name,
+            'account_no' => $account_no,
+            'account_name' => $account_name,
+            'tron' => $tron
+        );
         return view('member.ajax.confirm_add_stock')
+                            ->with('check', $canInsert)
                             ->with('data', $data);
     }
     
@@ -699,6 +727,21 @@ class AjaxmemberController extends Controller {
             'royalti_tron' => $royalti_tron
         );
         return view('member.ajax.confirm_add_royalti')
+                        ->with('getDataSales', $getDataSales)
+                        ->with('check', $canInsert)
+                        ->with('data', $data);
+    }
+    
+    public function postCekConfirmPembelian(Request $request){
+        $dataUser = Auth::user();
+        $modelSales = New Sales;
+        $canInsert = (object) array('can' => true, 'pesan' => '');
+        $id_master = $request->id_master;
+        $getDataSales = $modelSales->getMemberReportSalesStockistDetail($id_master, $dataUser->id);
+        $data = (object) array(
+            'id_master' => $id_master
+        );
+        return view('member.ajax.confirm_confirm_pembelian')
                         ->with('getDataSales', $getDataSales)
                         ->with('check', $canInsert)
                         ->with('data', $data);

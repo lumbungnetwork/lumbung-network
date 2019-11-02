@@ -988,7 +988,7 @@ class MasterAdminController extends Controller {
         }
         $modelSales = New Sales;
         $dataUpdate = array(
-            'status' => 2
+            'status' => 3
         );
         $modelSales->getUpdateMasterSales('id', $request->id, $dataUpdate);
         return redirect()->route('adm_listConfirmBelanjaStockist')
@@ -1031,7 +1031,7 @@ class MasterAdminController extends Controller {
             $modelSales->getInsertStock($dataInsertStock);
         }
         $dataUpdate = array(
-            'status' => 4
+            'status' => 5
         );
         $modelSales->getUpdateMasterSales('id', $request->id, $dataUpdate);
         return redirect()->route('adm_listVerificationRoyalti')

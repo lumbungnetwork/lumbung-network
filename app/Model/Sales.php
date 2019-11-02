@@ -262,7 +262,9 @@ class Sales extends Model {
         $sql = DB::table('item_purchase_master')
                     ->join('users', 'item_purchase_master.stockist_id', '=', 'users.id')
                     ->selectRaw('users.user_code, users.hp,  item_purchase_master.stockist_id, '
-                            . 'item_purchase_master.id, item_purchase_master.price, item_purchase_master.created_at')
+                            . 'item_purchase_master.id, item_purchase_master.price, item_purchase_master.created_at,'
+                            . 'item_purchase_master.buy_metode, item_purchase_master.tron, item_purchase_master.tron_transfer,'
+                            . 'item_purchase_master.bank_name, item_purchase_master.account_no, item_purchase_master.account_name')
                     ->where('item_purchase_master.status', '=', 1)
                     ->get();
         $return = null;
@@ -349,10 +351,11 @@ class Sales extends Model {
                     ->selectRaw('master_sales.sale_date, users.user_code, master_sales.total_price as sale_price, '
                             . 'master_sales.id, master_sales.status, master_sales.buy_metode, '
                             . 'master_sales.royalti_metode, master_sales.royalti_tron, master_sales.royalti_tron_transfer,'
+                            . 'master_sales.tron, master_sales.tron_transfer, master_sales.bank_name, master_sales.account_name, master_sales.account_no, '
                             . 'master_sales.royalti_bank_name, master_sales.royalti_account_no, master_sales.royalti_account_name')
                     ->where('master_sales.id', '=', $id)
                     ->where('master_sales.stockist_id', '=', $stockist_id)
-                    ->where('master_sales.status', '=', 2)
+                    ->whereIn('master_sales.status', array(1, 3))
                     ->whereNull('master_sales.deleted_at')
                     ->first();
         return $sql;
@@ -364,7 +367,7 @@ class Sales extends Model {
                     ->selectRaw('master_sales.sale_date, users.user_code, master_sales.total_price as sale_price, '
                             . 'master_sales.id, master_sales.status, master_sales.buy_metode,'
                             . 'master_sales.royalti_metode')
-                    ->where('master_sales.status', '=', 1)
+                    ->where('master_sales.status', '=', 2)
                     ->whereNull('master_sales.deleted_at')
                     ->get();
         $return = null;
@@ -381,7 +384,7 @@ class Sales extends Model {
                             . 'master_sales.id, master_sales.status, master_sales.buy_metode,'
                             . 'master_sales.royalti_metode, master_sales.royalti_tron, master_sales.royalti_tron_transfer,'
                             . 'master_sales.royalti_bank_name, master_sales.royalti_account_no, master_sales.royalti_account_name')
-                    ->where('master_sales.status', '=', 3)
+                    ->where('master_sales.status', '=', 4)
                     ->whereNull('master_sales.deleted_at')
                     ->get();
         $return = null;
@@ -398,7 +401,7 @@ class Sales extends Model {
                             . 'master_sales.id, master_sales.status, master_sales.buy_metode,'
                             . 'master_sales.royalti_metode')
                     ->where('master_sales.id', '=', $id)
-                    ->where('master_sales.status', '=', 1)
+                    ->where('master_sales.status', '=', 2)
                     ->whereNull('master_sales.deleted_at')
                     ->first();
         return $sql;
@@ -411,7 +414,7 @@ class Sales extends Model {
                             . 'master_sales.id, master_sales.status, master_sales.buy_metode,'
                             . 'master_sales.royalti_metode, master_sales.royalti_tron, master_sales.royalti_tron_transfer,'
                             . 'master_sales.royalti_bank_name, master_sales.royalti_account_no, master_sales.royalti_account_name')
-                    ->where('master_sales.status', '=', 3)
+                    ->where('master_sales.status', '=', 4)
                     ->where('master_sales.id', '=', $id)
                     ->whereNull('master_sales.deleted_at')
                     ->first();
@@ -425,6 +428,23 @@ class Sales extends Model {
                             . 'purchase.name, purchase.ukuran, purchase.code, sales.purchase_id, sales.id, sales.user_id, sales.stockist_id')
                     ->where('sales.master_sales_id', '=', $id)
                     ->whereNull('sales.deleted_at')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getMemberSalesBuy($id){
+        $sql = DB::table('master_sales')
+                    ->join('users', 'master_sales.user_id', '=', 'users.id')
+                    ->selectRaw('master_sales.sale_date, users.user_code, master_sales.total_price as sale_price, '
+                            . 'master_sales.id, master_sales.status, master_sales.buy_metode,'
+                            . 'master_sales.royalti_metode')
+                    ->where('master_sales.stockist_id', '=', $id)
+                    ->where('master_sales.status', '=', 1)
+                    ->whereNull('master_sales.deleted_at')
                     ->get();
         $return = null;
         if(count($sql) > 0){

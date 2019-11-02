@@ -13,7 +13,7 @@
                 </div>
             </div>
         </div>
-        <hr>
+        <hr style="margin: 2px 0;">
         @if($getData != null)
             @foreach($getData as $row)
                 <div class="row">
@@ -30,7 +30,7 @@
                         </div>
                     </div>
                 </div>
-            <hr>
+            <hr style="margin: 2px 0;">
             @endforeach
         @endif
         

@@ -8,7 +8,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="page-title-box">
-                        <h4 class="page-title">List Transaksi</h4>
+                        <h4 class="page-title">List Stock</h4>
                         <div class="clearfix"></div>
                     </div>
                 </div>
@@ -33,11 +33,9 @@
                             <thead>
                                 <tr>
                                     <th>No.</th>
-                                    <th>Tgl</th>
-                                    <th>Jml. Harga</th>
-                                    <th>Detail</th>
-                                    <th>Status</th>
-                                    <th>###</th>
+                                    <th>Nama Produk</th>
+                                    <th>Qty Produk</th>
+                                    <th>Stok Tersedia</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -46,37 +44,12 @@
                                 @foreach($getData as $row)
                                 <?php
                                     $no++;
-                                    $status = 'batal';
-                                    $label = 'danger';
-                                    if($row->status == 0){
-                                        $status = 'konfirmasi';
-                                        $label = 'info';
-                                    }
-                                    if($row->status == 1){
-                                        $status = 'proses admin';
-                                        $label = 'info';
-                                    }
-                                    if($row->status == 2){
-                                        $status = 'confirmed';
-                                        $label = 'success';
-                                    }
-                                    ?>
+                                ?>
                                 <tr>
                                     <td>{{$no}}</td>
-                                    <td>{{date('d M Y', strtotime($row->created_at))}}</td>
-                                    <td>{{number_format($row->price, 0, ',', ',')}}</td>
-                                    <td>
-                                        @foreach($row->detail_all as $rowAll)
-                                            <p style="margin: 0;">{{$rowAll->ukuran}} {{$rowAll->name}}</p>
-                                            <?php $harga = $rowAll->qty * $rowAll->price ?>
-                                            <p style="margin: 0;">{{number_format($rowAll->qty, 0, ',', '')}}x @ {{number_format($rowAll->price, 0, ',', ',')}} </p>
-                                            <p style="margin-bottom: 5px;"><b>Rp. {{number_format($harga, 0, ',', ',')}}</b></p>
-                                        @endforeach
-                                    </td>
-                                    <td><label class="label label-{{$label}}">{{$status}}</label></td>
-                                    <td>
-                                        <a rel="tooltip" title="View" class="text-primary" href="{{ URL::to('/') }}/m/purchase/detail-stock/{{$row->id}}">detail</a>
-                                    </td>
+                                    <td>{{$row->ukuran}} {{$row->name}}</td>
+                                    <td>{{number_format($row->total_qty, 0, ',', ',')}}</td>
+                                    <td>{{number_format($row->total_sisa, 0, ',', ',')}}</td>
                                 </tr>
                                 @endforeach
                                 @endif

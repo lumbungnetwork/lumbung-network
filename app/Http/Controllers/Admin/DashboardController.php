@@ -119,12 +119,14 @@ class DashboardController extends Controller {
             'image' => $image,
             'sales' => $mySales
         );
+        $getDataMemberBuy = $modelSales->getMemberSalesBuy($dataUser->id);
         return view('member.home.dashboard')
                     ->with('headerTitle', 'Dashboard')
                     ->with('dataOrder', $getCheckNewOrder)
                     ->with('dataAll', $dataDashboard)
                     ->with('dataSponsor', $dataSponsor)
                     ->with('dataMy', $dataMy)
+                    ->with('getDataMemberBuy', $getDataMemberBuy)
                     ->with('dataUser', $dataUser);
     }
     

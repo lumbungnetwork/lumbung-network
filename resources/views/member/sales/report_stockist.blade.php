@@ -44,18 +44,22 @@
                                         $status = 'proses admin';
                                         $label = 'primary';
                                         if($row->status == 1){
-                                            $status = 'konfirmasi admin';
+                                            $status = 'konfirmasi stockist';
                                             $label = 'info';
                                         }
                                         if($row->status == 2){
-                                            $status = 'proses transfer';
+                                            $status = 'konfirmasi admin';
                                             $label = 'info';
                                         }
                                         if($row->status == 3){
-                                            $status = 'verifikasi admin';
+                                            $status = 'proses transfer';
                                             $label = 'info';
                                         }
                                         if($row->status == 4){
+                                            $status = 'verifikasi admin';
+                                            $label = 'info';
+                                        }
+                                        if($row->status == 5){
                                             $status = 'tuntas';
                                             $label = 'success';
                                         }
@@ -82,7 +86,10 @@
                                                 <span class="label label-{{$label}}">{{$status}}</span>
                                         </td>
                                         <td>
-                                            @if($row->status == 2)
+                                            @if($row->status == 1)
+                                            <a class="label label-success" href="{{ URL::to('/') }}/m/detail/stockist-report/{{$row->id}}">detail</a>
+                                            @endif
+                                            @if($row->status == 3)
                                             <a class="label label-success" href="{{ URL::to('/') }}/m/detail/stockist-report/{{$row->id}}">detail</a>
                                             @endif
                                         </td>

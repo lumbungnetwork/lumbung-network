@@ -44,6 +44,8 @@
                                         <th>UserID</th>
                                         <th>HP</th>
                                         <th>Tanggal</th>
+                                        <th>Metode Pembayaran</th>
+                                        <th>Royalti</th>
                                         <th>###</th>
                                     </tr>
                                 </thead>
@@ -56,12 +58,25 @@
                                         @foreach($getData as $row)
                                         <?php 
                                             $no++;
+                                            $metode = 'eIDR';
+                                            $detail = 'eIDR <br>TWJtGQHBS88PfZTXvWAYhQEMrx36eX2F9Pc';
+                                            if($row->buy_metode == 2){
+                                                $metode = 'Transfer Bank';
+                                                $detail = 'BRI 
+                                                    <br>
+                                                    a/n <b>PT LUMBUNG MOMENTUM BANGSA</b>
+                                                    <br>
+                                                    033601001795562';
+                                            }
+                                            $royalti = 4/100 * $row->price;
                                         ?>
                                             <tr>
                                                 <td>{{$no}}</td>
                                                 <td>{{$row->user_code}}</td>
                                                 <td>{{$row->hp}}</td>
                                                 <td>{{date('d F Y', strtotime($row->created_at))}}</td>
+                                                <td>{{$metode}} <br> <?php echo $detail ?></td>
+                                                <td>Rp. {{number_format($royalti, 0, ',', ',')}}</td>
                                                 <td>
                                                     <a rel="tooltip"  data-toggle="modal" data-target="#popUp" class="text-info" href="{{ URL::to('/') }}/ajax/adm/cek/req-input-stock/{{$row->id}}/{{$row->stockist_id}}">confirm</a>
                                                 </td>

@@ -1324,9 +1324,6 @@ class MemberController extends Controller {
         if($dataUser->package_id == null){
             return redirect()->route('m_newPackage');
         }
-        if($dataUser->is_stockist == 1){
-            return redirect()->route('mainDashboard'); 
-        }
         if($dataUser->is_profile == 0){
             return redirect()->route('m_SearchStockist')
                     ->with('message', 'Data profil anda belum lengkap')
@@ -1575,7 +1572,9 @@ class MemberController extends Controller {
         $sum = 0;
         if($getData != null){
             foreach($getData as $row){
-                $sum += $row->sale_price;
+                if($row->status >= 2){
+                    $sum += $row->sale_price;
+                }
             }
         }
         return view('member.sales.history_sales')
@@ -1731,8 +1730,8 @@ class MemberController extends Controller {
             );
             $modelSales->getInsertStock($dataInsertStock);
         }
-        return redirect()->route('m_StockistListPruchase')
-                        ->with('message', 'request Tambah stock oleh stockist berhasil, Tunggu konfirmasi dari admin')
+        return redirect()->route('m_StockistDetailPruchase', [$masterStock->lastID])
+                        ->with('message', 'request Tambah stock oleh stockist berhasil, Silakan lakukan konfirmasi')
                         ->with('messageclass', 'success');
     }
     
@@ -1750,8 +1749,19 @@ class MemberController extends Controller {
         }
         $modelSales = New Sales;
         $getData = $modelSales->getMemberMasterPurchaseStockist($dataUser->id);
+        $dataAll = array();
+        foreach($getData as $row){
+            $detailAll = $modelSales->getMemberItemPurchaseStockist($row->id, $dataUser->id);
+            $dataAll[] = (object) array(
+                'status' => $row->status,
+                'created_at' => $row->created_at,
+                'price' => $row->price,
+                'id' => $row->id,
+                'detail_all' => $detailAll
+            );
+        }
         return view('member.sales.stockist_purchase')
-                ->with('getData', $getData)
+                ->with('getData', $dataAll)
                 ->with('dataUser', $dataUser);
     }
     
@@ -1789,11 +1799,38 @@ class MemberController extends Controller {
             return redirect()->route('m_SearchStockist');
         }
         $modelSales = New Sales;
-        $id_master = $request->id_master;
+        $tron = null;
+        $tron_transfer = null;
+        $bank_name = null;
+        $account_no = null;
+        $account_name = null;
+        $buy_metode = 0;
+        if($request->metode == 2){
+            $buy_metode = 2;
+            $bank_name = $request->bank_name;
+            $account_no = $request->account_no;
+            $account_name = $request->account_name;
+        }
+        if($request->metode == 3){
+            $buy_metode = 3;
+            $tron = $request->tron;
+            if($request->tron_tranfer == null){
+                return redirect()->route('m_StockistDetailPruchase', [$request->id_master])
+                        ->with('message', 'Hash transaksi transfer dari Blockchain TRON belum diisi')
+                        ->with('messageclass', 'danger');
+            }
+            $tron_transfer = $request->tron_tranfer;
+        }
         $dataUpdate = array(
-            'status' => 1
+            'status' => 1,
+            'buy_metode' => $buy_metode,
+            'tron' => $tron,
+            'tron_transfer' => $tron_transfer,
+            'bank_name' => $bank_name,
+            'account_no' => $account_no,
+            'account_name' => $account_name,
         );
-        $modelSales->getUpdateItemPurchaseMaster('id', $id_master, $dataUpdate);
+        $modelSales->getUpdateItemPurchaseMaster('id', $request->id_master, $dataUpdate);
         return redirect()->route('m_StockistListPruchase')
                     ->with('message', 'Konfirmasi request Input Stock berhasil')
                     ->with('messageclass', 'success');
@@ -1865,13 +1902,79 @@ class MemberController extends Controller {
             $royalti_tron_transfer = $request->royalti_tron_transfer;
         }
         $dataUpdate = array(
-            'status' => 3,
+            'status' => 4,
             'royalti_metode' => $royalti_metode,
             'royalti_tron' => $royalti_tron,
             'royalti_tron_transfer' => $royalti_tron_transfer,
             'royalti_bank_name' => $royalti_bank_name,
             'royalti_account_no' => $royalti_account_no,
             'royalti_account_name' => $royalti_account_name
+        );
+        $modelSales->getUpdateMasterSales('id', $id_master, $dataUpdate);
+        return redirect()->route('m_MemberStockistReport')
+                            ->with('message', 'Berhasil konfirmasi transfer royalti')
+                            ->with('messageclass', 'success');
+    }
+    
+    public function getStockistMyStockPurchaseSisa(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_profile == 0){
+            return redirect()->route('m_SearchStockist')
+                    ->with('message', 'Data profil anda belum lengkap')
+                    ->with('messageclass', 'danger');
+        }
+        if($dataUser->is_stockist == 0){
+            return redirect()->route('m_SearchStockist');
+        }
+        $modelSales = New Sales;
+        $data = $modelSales->getMemberPurchaseShoping($dataUser->id);
+        $getData = array();
+        if($data != null){
+            foreach($data as $row){
+                $jml_keluar = $modelSales->getSumStock($dataUser->id, $row->id);
+                $getData[] = (object) array(
+                    'total_qty' => $row->total_qty,
+                    'name' => $row->name,
+                    'code' => $row->code,
+                    'ukuran' => $row->ukuran,
+                    'image' => $row->image,
+                    'member_price' => $row->member_price,
+                    'stockist_price' => $row->stockist_price,
+                    'id' => $row->id,
+                    'jml_keluar' => $jml_keluar,
+                    'total_sisa' => ($row->total_qty - $jml_keluar)
+                );
+            }
+        }
+        return view('member.sales.stockist_my_stock_sisa')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postAddConfirmPembelian(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_stockist == 0){
+            return redirect()->route('m_SearchStockist');
+        }
+        $modelSales = New Sales;
+        $id_master = $request->master_id;
+        
+        $dataUpdate = array(
+            'status' => 2
         );
         $modelSales->getUpdateMasterSales('id', $id_master, $dataUpdate);
         return redirect()->route('m_MemberStockistReport')
