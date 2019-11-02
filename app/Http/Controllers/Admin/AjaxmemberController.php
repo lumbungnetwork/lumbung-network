@@ -746,6 +746,14 @@ class AjaxmemberController extends Controller {
                         ->with('check', $canInsert)
                         ->with('data', $data);
     }
+    
+    public function getCekConfirmBelanjaReward(Request $request){
+        $dataUser = Auth::user();
+        $modelSales = New Sales;
+        $getData = $modelSales->getMemberMasterSalesMonthYear($dataUser->id, $request->m, $request->y);
+         return view('member.ajax.confirm_reward_belanja')
+                        ->with('data', $getData);
+    }
 
     
     

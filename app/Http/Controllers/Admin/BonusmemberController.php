@@ -14,6 +14,7 @@ use App\Model\Pin;
 use App\Model\Bonussetting;
 use App\Model\Transferwd;
 use App\Model\Bonus;
+use App\Model\Sales;
 
 class BonusmemberController extends Controller {
     
@@ -383,6 +384,60 @@ class BonusmemberController extends Controller {
         return view('member.bonus.history-reward')
                 ->with('getData', $getData)
                 ->with('dataUser', $dataUser);
+    }
+    
+    public function getBelanjaReward(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSales = New Sales;
+        $modelBonus = new Bonus;
+        $getData = $modelSales->getMemberMasterSalesMonthly($dataUser->id);
+        $getTotalBonus = $modelBonus->getTotalBelanjaReward($dataUser->id);
+        $dataClaim = array();
+        foreach($getData as $row){
+            $cekCanClaim = $modelBonus->getBelanjaRewardByMonthYear($dataUser->id, $row->month, $row->year);
+            $can = 1;
+            if($cekCanClaim != null){
+                $can = 0;
+            }
+            $dataClaim[] = (object) array(
+                'month_sale_price' => $row->month_sale_price,
+                'monthly' => $row->monthly,
+                'month' => $row->month,
+                'year' => $row->year,
+                'canClaim' => $can
+            );
+        }
+        return view('member.bonus.req-belanja-reward')
+                ->with('getData', $dataClaim)
+                ->with('getTotal', $getTotalBonus)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postRequestBelanjaReward(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSales = New Sales;
+        $modelBonus = new Bonus;
+        $getData = $modelSales->getMemberMasterSalesMonthYear($dataUser->id, $request->month, $request->year);
+        $dataInsert = array(
+            'user_id' => $dataUser->id,
+            'reward' => $request->reward,
+            'month' => $request->month,
+            'year' => $request->year,
+            'belanja_date' => $request->year.'-'.$request->month.'-01',
+            'total_belanja' => $getData->month_sale_price
+        );
+        $modelBonus->getInsertBelanjaReward($dataInsert);
+        return redirect()->route('m_RewardReward')
+                    ->with('message', 'Claim Reward Belanja berhasil')
+                    ->with('messageclass', 'success');
     }
     
     

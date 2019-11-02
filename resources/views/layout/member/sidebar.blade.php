@@ -71,13 +71,14 @@
                 </li>
                 @endif
                 <li class="has_sub">
-                    <a class="waves-effect @if(Route::currentRouteName() == 'm_SearchStockist' || Route::currentRouteName() == 'm_historyShoping' || Route::currentRouteName() == 'm_historyShoping' ) active @endif">    
+                    <a class="waves-effect @if(Route::currentRouteName() == 'm_SearchStockist' || Route::currentRouteName() == 'm_RewardReward' || Route::currentRouteName() == 'm_historyShoping' ) active @endif">    
                         <i class="zmdi zmdi-shopping-cart"></i> 
                         <span> Belanja </span><span class="menu-arrow"></span>
                     </a>
                     <ul class="list-unstyled">
                         <li @if(Route::currentRouteName() == 'm_SearchStockist') class="active" @endif><a href="{{ URL::to('/') }}/m/search/stockist">Stockist</a></li>
                         <li @if(Route::currentRouteName() == 'm_historyShoping') class="active" @endif><a href="{{ URL::to('/') }}/m/history/shoping">History</a></li>
+                        <li @if(Route::currentRouteName() == 'm_RewardReward') class="active" @endif><a href="{{ URL::to('/') }}/m/belanja-reward">Reward Belanja</a></li>
                     </ul>
                 </li>
                 <li class="has_sub">

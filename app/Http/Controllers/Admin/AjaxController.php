@@ -228,6 +228,26 @@ class AjaxController extends Controller {
                 ->with('getData', $getData);
     }
     
+    public function getCekRejectBelanjaReward($id){
+        $dataUser = Auth::user();
+        $modelBonus = new Bonus;
+        $getData = $modelBonus->getAdminAllBelanjaRewardByID($id);
+        return view('admin.ajax.reject-belanja-reward')
+                ->with('headerTitle', 'Reject Belanja Reward')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function getCekDetailBelanjaReward($id){
+        $dataUser = Auth::user();
+        $modelBonus = new Bonus;
+        $getData = $modelBonus->getAdminDetailBelanjaReward($id);
+        return view('admin.ajax.detail-belanja')
+                ->with('headerTitle', 'Detail Belanja Reward')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
     
       
     

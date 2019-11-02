@@ -1039,6 +1039,74 @@ class MasterAdminController extends Controller {
                     ->with('messageclass', 'success');
     }
     
+    public function getAllBelanjaReward(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = New Bonus;
+        $getData = $modelBonus->getAdminAllBelanjaReward();
+        return view('admin.member.belanja-reward')
+                ->with('headerTitle', 'Claim Reward')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postCheckBelanjaReward(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = New Bonus;
+        $getRowID = $request->id;
+        foreach($getRowID as $getID){
+            $dataUpdate = array(
+                'status' => 1,
+                'tuntas_at' => date('Y-m-d H:i:s')
+            );
+            $modelBonus->getUpdateBelanjaReward('id', $getID, $dataUpdate);
+        }
+        return redirect()->route('adm_listBelanjaReward')
+                    ->with('message', 'Konfirmasi Reward Belanja berhasil')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function postRejectBelanjaReward(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = New Bonus;
+        $getID = $request->cekId;
+        $alesan = $request->reason;
+        $dataUpdate = array(
+            'status' => 2,
+            'reason' => $alesan,
+            'deleted_at' => date('Y-m-d H:i:s')
+        );
+        $modelBonus->getUpdateBelanjaReward('id', $getID, $dataUpdate);
+        return redirect()->route('adm_listBelanjaReward')
+                    ->with('message', 'Data Reward Belanja berhasil direject')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function getHistoryBelanjaReward(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = New Bonus;
+        $getData = $modelBonus->getAdminHistoryBelanjaReward();
+        return view('admin.member.history-reward-belanja')
+                ->with('headerTitle', 'History Reward Belanja')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
     
 
 }
