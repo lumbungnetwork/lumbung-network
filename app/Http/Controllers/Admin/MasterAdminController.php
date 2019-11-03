@@ -1107,6 +1107,107 @@ class MasterAdminController extends Controller {
                 ->with('dataUser', $dataUser);
     }
     
+    public function getEditPurchase($id){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSales = New Sales;
+        $modelMember = New Member;
+        $getData = $modelSales->getDetailPurchase($id);
+        $getProvince = $modelMember->getProvinsi();
+        return view('admin.sales.edit_purchase')
+                ->with('headerTitle', 'Edit Products')
+                ->with('provinsi', $getProvince)
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postEditPurchase(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSales = New Sales;
+        $modelMember = New Member;
+        if($request->provinsi == 0){
+            return redirect()->route('adm_editPurchase', [$request->id])
+                    ->with('message', 'Provinsi harus dipilih')
+                    ->with('messageclass', 'danger');
+        }
+        $provinsiSearch = $modelMember->getProvinsiByID($request->provinsi);
+        $provinsiName = $provinsiSearch->nama;
+        $kota = 0;
+        $kotaName = '';
+        if($request->kota != null){
+            if($request->kota != 0){
+                $kotaSearch = $modelMember->getNamaByKode($request->kota);
+                $kota = $kotaSearch->kabupatenkota;
+                $kotaName = ' - '.$kotaSearch->nama;
+            }
+        }
+        $kecamatan = 0;
+        $kecamatanName = '';
+        if($request->kecamatan != null){
+            if($request->kecamatan != 0){
+                $kecamatanSearch = $modelMember->getNamaByKode($request->kecamatan);
+                $kecamatan = $kecamatanSearch->kecamatan;
+                $kecamatanName = ' - '.$kecamatanSearch->nama;
+            }
+        }
+        $kelurahan = 0;
+        $kelurahanName = '';
+        if($request->kelurahan != null){
+            if($request->kelurahan != 0){
+                $kelurahanSearch = $modelMember->getNamaByKode($request->kelurahan);
+                $kelurahan = $kelurahanSearch->kelurahan;
+                $kelurahanName = ' - '.$kelurahanSearch->nama;
+            }
+            
+        }
+        $dataUpdate = array(
+            'name' => $request->name,
+            'ukuran' => $request->ukuran,
+            'stockist_price' => $request->stockist_price,
+            'member_price' => $request->member_price,
+            'code' => $request->code,
+            'image' => $request->image,
+            'provinsi' => $request->provinsi,
+            'kota' => $kota,
+            'kecamatan' => $kecamatan,
+            'kelurahan' => $kelurahan,
+            'qty' => $request->qty,
+            'area' => $provinsiName.' '.$kotaName.' '.$kecamatanName.' '.$kelurahanName
+        );
+        $modelSales->getUpdatePurchase('id', $request->id, $dataUpdate);
+        $getStock = $modelSales->getStockID($request->id);
+        $dataUpdateStock = array(
+            'amount' => $request->qty
+        );
+        $modelSales->getUpdateStock('id', $getStock->id, $dataUpdateStock);
+        return redirect()->route('adm_listPurchases')
+                    ->with('message', 'Produk berhasil diedit')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function postRemovePurchase(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSales = New Sales;
+        $dataUpdate = array(
+            'deleted_at' => date('Y-m-d H:i:s')
+        );
+        $modelSales->getUpdatePurchase('id', $request->id, $dataUpdate);
+        return redirect()->route('adm_listPurchases')
+                    ->with('message', 'Produk berhasil dihapus')
+                    ->with('messageclass', 'success');
+    }
+    
     
 
 }

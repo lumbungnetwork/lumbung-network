@@ -248,6 +248,14 @@ class AjaxController extends Controller {
                 ->with('dataUser', $dataUser);
     }
     
+    public function getRemovePurchaseId($id){
+        $modelSales = New Sales;
+        $getData = $modelSales->getDetailPurchase($id);
+        return view('admin.ajax.cek_rm_product')
+                ->with('headerTitle', 'Hapus Produk')
+                ->with('getData', $getData);
+    }
+    
     
       
     

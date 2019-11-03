@@ -49,7 +49,7 @@
                                         <th>Kode Produk</th>
                                         <th>Area</th>
                                         <th>Stock</th>
-                                        <!--<th>###</th>-->
+                                        <th>###</th>
                                     </tr>
                                 </thead>
                                 
@@ -71,14 +71,21 @@
                                                 <td>{{$row->code}}</td>
                                                 <td>{{$row->area}}</td>
                                                 <td>{{number_format($row->qty, 0, ',', '')}}</td>
-<!--                                                <td>
-                                                    <a class="text-info" href="#">edit</a>
-                                                </td>-->
+                                                <td>
+                                                    <a class="text-info" href="{{ URL::to('/') }}/adm/edit/purchase/{{$row->id}}">edit</a>
+                                                    &nbsp;&nbsp;
+                                                     <a rel="tooltip"  data-toggle="modal" data-target="#rmThis" class="text-danger" href="{{ URL::to('/') }}/ajax/rm/purchase/{{$row->id}}">hapus</a>
+                                                </td>
                                             </tr>
                                         @endforeach
                                     @endif
                                 </tbody>
                             </table>
+                             <div class="modal fade" id="rmThis" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -91,17 +98,13 @@
 
 @section('styles')
 <link rel="stylesheet" href="{{ asset('css/jquery.dataTables.min.css') }}">
-<!--<link rel="stylesheet" href="{{ asset('css/buttons.dataTables.min.css') }}">-->
 @stop
 
 @section('javascript')
 <script type="text/javascript" language="javascript" src="{{ asset('js/jquery.dataTables.min.js') }}"></script>
-<!--<script type="text/javascript" language="javascript" src="{{ asset('js/dataTables.buttons.min.js') }}"></script>
-<script type="text/javascript" language="javascript" src="{{ asset('js/jszip.min.js') }}"></script>
-<script type="text/javascript" language="javascript" src="{{ asset('js/buttons.html5.min.js') }}"></script>-->
 
 <script type="text/javascript">
-    $("#popUp").on("show.bs.modal", function(e) {
+    $("#rmThis").on("show.bs.modal", function(e) {
         var link = $(e.relatedTarget);
         $(this).find(".modal-content").load(link.attr("href"));
     });
@@ -112,12 +115,6 @@
                 columnDefs: [
                     { orderable: false, targets: -1 }
                  ],
-//                buttons: [
-//                    {
-//                        extend: 'excelHtml5',
-//                        title: 'export_xls' ,
-//                   }
-//                ],
                 searching: false,
                  pagingType: "full_numbers",
                  "paging":   true,

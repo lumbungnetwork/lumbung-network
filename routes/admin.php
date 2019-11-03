@@ -78,6 +78,9 @@ Route::prefix('/')->group(function () {
         Route::post('/adm/check/belanja-reward', 'Admin\MasterAdminController@postCheckBelanjaReward')->middleware('auth');
         Route::post('/adm/reject/belanja-reward', 'Admin\MasterAdminController@postRejectBelanjaReward')->middleware('auth');
         Route::get('/adm/history/belanja-reward', 'Admin\MasterAdminController@getHistoryBelanjaReward')->name('adm_historyBelanjaReward')->middleware('auth');
+        Route::get('/adm/edit/purchase/{id}', 'Admin\MasterAdminController@getEditPurchase')->name('adm_editPurchase')->middleware('auth');
+        Route::post('/adm/edit/purchase', 'Admin\MasterAdminController@postEditPurchase')->middleware('auth');
+        Route::post('/adm/rm/purchase', 'Admin\MasterAdminController@postRemovePurchase')->middleware('auth');
         
 
         //Ajax
@@ -102,6 +105,7 @@ Route::prefix('/')->group(function () {
         Route::get('/ajax/adm/cek/verivication-royalti/{id}', 'Admin\AjaxController@getCekVerificationRoyalti')->middleware('auth');
         Route::get('/ajax/adm/cek/reject-belanja-reward/{id}', 'Admin\AjaxController@getCekRejectBelanjaReward')->middleware('auth');
         Route::get('/ajax/adm/cek/detail-belanja-reward/{id}', 'Admin\AjaxController@getCekDetailBelanjaReward')->middleware('auth');
+        Route::get('/ajax/rm/purchase/{id}', 'Admin\AjaxController@getRemovePurchaseId')->middleware('auth');
         
 //        Route::get('/adm/daerah', 'Admin\MasterAdminController@getAllDaerah')->middleware('auth');
         ////////////////////////////////////////////////////////////////////////

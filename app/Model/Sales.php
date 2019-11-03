@@ -59,6 +59,26 @@ class Sales extends Model {
         return $result;
     }
     
+    public function getUpdateStock($fieldName, $name, $data){
+        try {
+            DB::table('stock')->where($fieldName, '=', $name)->update($data);
+            $result = (object) array('status' => true, 'message' => null);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message);
+        }
+        return $result;
+    }
+    
+    public function getStockID($purchase_id){
+        $sql = DB::table('stock')
+                    ->where('purchase_id', '=', $purchase_id)
+                    ->where('type', '=', 1)
+                    ->orderBy('id', 'DESC')
+                    ->first();
+        return $sql;
+    }
+    
     public function getInsertSales($data){
         try {
             $lastInsertedID = DB::table('sales')->insertGetId($data);
