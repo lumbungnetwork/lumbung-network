@@ -286,7 +286,7 @@ class Bonus extends Model {
                     ->join('users', 'belanja_reward.user_id', '=', 'users.id')
                     ->selectRaw('belanja_reward.id, belanja_reward.reward, belanja_reward.month, belanja_reward.year, '
                             . 'belanja_reward.belanja_date, belanja_reward.total_belanja, DATE_FORMAT(belanja_reward.belanja_date, "%M - %Y") as monthly, '
-                            . 'belanja_reward.created_at, users.user_code, users.tron')
+                            . 'belanja_reward.created_at, users.user_code, users.tron, users.is_tron')
                     ->where('belanja_reward.status', '=', 0)
                     ->get();
         $return = null;

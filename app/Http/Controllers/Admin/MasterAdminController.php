@@ -945,7 +945,7 @@ class MasterAdminController extends Controller {
         $modelSales = New Sales;
         $getData = $modelSales->getMemberReqInputStockist();
         return view('admin.member.req-input-stock')
-                ->with('headerTitle', 'Member Request Input Stock')
+                ->with('headerTitle', 'Input Stock & Royalti')
                 ->with('getData', $getData)
                 ->with('dataUser', $dataUser);
     }
@@ -962,7 +962,7 @@ class MasterAdminController extends Controller {
         );
         $modelSales->getUpdateItemPurchaseMaster('id', $request->id, $dataUpdate);
         return redirect()->route('adm_listReqInputStock')
-                    ->with('message', 'Konfirmasi Member request input stock berhasil')
+                    ->with('message', 'Konfirmasi Member request input stock & royalti berhasil')
                     ->with('messageclass', 'success');
     }
     
@@ -1048,7 +1048,7 @@ class MasterAdminController extends Controller {
         $modelBonus = New Bonus;
         $getData = $modelBonus->getAdminAllBelanjaReward();
         return view('admin.member.belanja-reward')
-                ->with('headerTitle', 'Claim Reward')
+                ->with('headerTitle', 'Claim Reward Belanja')
                 ->with('getData', $getData)
                 ->with('dataUser', $dataUser);
     }

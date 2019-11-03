@@ -138,6 +138,8 @@
                             <span class="sidebar-normal"> List Stockist Input Stock </span>
                             </a>
                         </li>
+                        <?php
+                        /*
                         <li>
                             <a href="{{ URL::to('/') }}/adm/list/confirm-belanja">
                             <span class="sidebar-mini-icon">+</span>
@@ -150,6 +152,8 @@
                             <span class="sidebar-normal"> List Verifikasi Royalti </span>
                             </a>
                         </li>
+                         */
+                        ?>
                     </ul>
                 </div>
             </li>

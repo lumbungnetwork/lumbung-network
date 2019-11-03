@@ -41,27 +41,19 @@
                                 @foreach($getData as $row)
                                     <?php
                                         $no++;
-                                        $status = 'proses admin';
-                                        $label = 'primary';
+                                        $status = 'proses member';
+                                        $label = 'info';
                                         if($row->status == 1){
-                                            $status = 'konfirmasi stockist';
+                                            $status = 'proses stockist';
                                             $label = 'info';
                                         }
                                         if($row->status == 2){
-                                            $status = 'konfirmasi admin';
-                                            $label = 'info';
-                                        }
-                                        if($row->status == 3){
-                                            $status = 'proses transfer';
-                                            $label = 'info';
-                                        }
-                                        if($row->status == 4){
-                                            $status = 'verifikasi admin';
-                                            $label = 'info';
-                                        }
-                                        if($row->status == 5){
                                             $status = 'tuntas';
                                             $label = 'success';
+                                        }
+                                        if($row->status == 10){
+                                            $status = 'batal';
+                                            $label = 'danger';
                                         }
                                         $buy = 'Belum';
                                         if($row->buy_metode == 1){
@@ -86,12 +78,7 @@
                                                 <span class="label label-{{$label}}">{{$status}}</span>
                                         </td>
                                         <td>
-                                            @if($row->status == 1)
-                                            <a class="label label-success" href="{{ URL::to('/') }}/m/detail/stockist-report/{{$row->id}}">detail</a>
-                                            @endif
-                                            @if($row->status == 3)
-                                            <a class="label label-success" href="{{ URL::to('/') }}/m/detail/stockist-report/{{$row->id}}">detail</a>
-                                            @endif
+                                            <a class="label label-primary" href="{{ URL::to('/') }}/m/detail/stockist-report/{{$row->id}}">detail</a>
                                         </td>
                                     </tr>
                                 @endforeach

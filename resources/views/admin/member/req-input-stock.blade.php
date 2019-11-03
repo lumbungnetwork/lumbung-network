@@ -59,7 +59,7 @@
                                         <?php 
                                             $no++;
                                             $metode = 'eIDR';
-                                            $detail = 'eIDR <br>TWJtGQHBS88PfZTXvWAYhQEMrx36eX2F9Pc';
+                                            $detail = 'TWJtGQHBS88PfZTXvWAYhQEMrx36eX2F9Pc';
                                             if($row->buy_metode == 2){
                                                 $metode = 'Transfer Bank';
                                                 $detail = 'BRI 

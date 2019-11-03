@@ -2,10 +2,10 @@
 
 <div class="modal-content">
     <div class="modal-header">
-        <h5 class="modal-title" id="modalLabel">Konfirmasi Pembayaran</h5>
+        <h5 class="modal-title" id="modalLabel">Reject Pembayaran</h5>
     </div>
     <div class="modal-body"  style="overflow-y: auto;max-height: 330px;">
-        <form id="form-add" method="POST" action="/m/add/confirm-pembelian">
+        <form id="form-add" method="POST" action="/m/add/reject-pembelian">
             {{ csrf_field() }}
             @if($getDataSales->buy_metode == 1)
             <div class="row">
@@ -64,6 +64,14 @@
                     <div class="form-group">
                         <label>Total Transfer</label>
                         <input type="text" class="form-control" readonly="" value="Rp. {{number_format($getDataSales->sale_price, 0, ',', ',')}}">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Alasan</label>
+                        <textarea class="form-control" id="reason" rows="2" name="reason" autocomplete="off"></textarea>
                     </div>
                 </div>
             </div>

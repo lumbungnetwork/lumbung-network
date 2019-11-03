@@ -152,7 +152,8 @@ class Sales extends Model {
         $sql = DB::table('sales')
                     ->join('purchase', 'purchase.id', '=', 'sales.purchase_id')
                     ->selectRaw('sales.sale_price, sales.amount, sales.invoice, sales.sale_date, '
-                            . 'purchase.name, purchase.ukuran, purchase.code')
+                            . 'purchase.name, purchase.ukuran, purchase.code, sales.purchase_id, sales.stockist_id, sales.user_id,'
+                            . 'sales.id')
                     ->where('sales.master_sales_id', '=', $id)
                     ->whereNull('sales.deleted_at')
                     ->get();
@@ -274,6 +275,19 @@ class Sales extends Model {
         return $return;
     }
     
+    public function getMemberReqInputStockistID($id){
+        $sql = DB::table('item_purchase_master')
+                    ->join('users', 'item_purchase_master.stockist_id', '=', 'users.id')
+                    ->selectRaw('users.user_code, users.hp,  item_purchase_master.stockist_id, '
+                            . 'item_purchase_master.id, item_purchase_master.price, item_purchase_master.created_at,'
+                            . 'item_purchase_master.buy_metode, item_purchase_master.tron, item_purchase_master.tron_transfer,'
+                            . 'item_purchase_master.bank_name, item_purchase_master.account_no, item_purchase_master.account_name')
+                    ->where('item_purchase_master.id', '=', $id)
+                    ->where('item_purchase_master.status', '=', 1)
+                    ->first();
+        return $sql;
+    }
+    
     public function getMemberReqInputStockistItem($id){
         $sql = DB::table('item_purchase')
                     ->join('purchase', 'purchase.id', '=', 'item_purchase.purchase_id')
@@ -355,7 +369,7 @@ class Sales extends Model {
                             . 'master_sales.royalti_bank_name, master_sales.royalti_account_no, master_sales.royalti_account_name')
                     ->where('master_sales.id', '=', $id)
                     ->where('master_sales.stockist_id', '=', $stockist_id)
-                    ->whereIn('master_sales.status', array(1, 3))
+//                    ->where('master_sales.status', '=', 1)
                     ->whereNull('master_sales.deleted_at')
                     ->first();
         return $sql;
@@ -463,6 +477,8 @@ class Sales extends Model {
                     ->whereNull('master_sales.deleted_at')
                     ->groupBy('year', 'month')
                     ->groupBy('monthly')
+                    ->orderBy('month', 'DESC')
+                    ->orderBy('year', 'DESC')
                     ->get();
         $return = null;
         if(count($sql) > 0){

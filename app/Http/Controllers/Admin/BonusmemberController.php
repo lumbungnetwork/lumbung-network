@@ -397,19 +397,27 @@ class BonusmemberController extends Controller {
         $getData = $modelSales->getMemberMasterSalesMonthly($dataUser->id);
         $getTotalBonus = $modelBonus->getTotalBelanjaReward($dataUser->id);
         $dataClaim = array();
-        foreach($getData as $row){
-            $cekCanClaim = $modelBonus->getBelanjaRewardByMonthYear($dataUser->id, $row->month, $row->year);
-            $can = 1;
-            if($cekCanClaim != null){
-                $can = 0;
+        $month = date('m');
+        $year = date('Y');
+        if($getData != null){
+            foreach($getData as $row){
+                $can = 1;
+                if($month == $row->month && $year == $row->year){
+                    $can = 0;
+                } else {
+                    $cekCanClaim = $modelBonus->getBelanjaRewardByMonthYear($dataUser->id, $row->month, $row->year);
+                    if($cekCanClaim != null){
+                        $can = 0;
+                    }
+                }
+                $dataClaim[] = (object) array(
+                    'month_sale_price' => $row->month_sale_price,
+                    'monthly' => $row->monthly,
+                    'month' => $row->month,
+                    'year' => $row->year,
+                    'canClaim' => $can
+                );
             }
-            $dataClaim[] = (object) array(
-                'month_sale_price' => $row->month_sale_price,
-                'monthly' => $row->monthly,
-                'month' => $row->month,
-                'year' => $row->year,
-                'canClaim' => $can
-            );
         }
         return view('member.bonus.req-belanja-reward')
                 ->with('getData', $dataClaim)

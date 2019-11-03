@@ -1052,7 +1052,7 @@ class MemberController extends Controller {
         $getActivePinSetting = $modelSettingPin->getActivePinSetting();
         $price_pin = $getActivePinSetting->price * $request->total_pin;
         $royalti_statik = 1;
-        $bonus_royalti = $royalti_statik/100 * $price_pin;
+        $bonus_royalti = ($royalti_statik/100 * $price_pin)/2;
         if($getLevelSp->id_lvl1 != null){
             $dataInsertBonusLvl1 = array(
                 'user_id' => $getLevelSp->id_lvl1,
@@ -1499,7 +1499,6 @@ class MemberController extends Controller {
         $modelSales = New Sales;
         $getDataSales = $modelSales->getMemberReportSalesStockistDetail($id, $dataUser->id);
         $getDataItem = $modelSales->getMemberPembayaranSales($id);
-//        dd($getDataSales);
         return view('member.sales.m_stockist_transfer')
                     ->with('headerTitle', 'Stockist Transfer')
                     ->with('getDataSales', $getDataSales)
@@ -1556,7 +1555,6 @@ class MemberController extends Controller {
             return redirect()->route('m_newPackage');
         }
         $modelSales = New Sales;
-        $modelMember = New Member;
         $getMonth = $modelSales->getThisMonth();
         if($request->month != null && $request->year != null) {
             $start_day = date('Y-m-01', strtotime($request->year.'-'.$request->month));
@@ -1572,7 +1570,7 @@ class MemberController extends Controller {
         $sum = 0;
         if($getData != null){
             foreach($getData as $row){
-                if($row->status >= 2){
+                if($row->status == 2){
                     $sum += $row->sale_price;
                 }
             }
@@ -1664,8 +1662,8 @@ class MemberController extends Controller {
             'account_name' => $account_name,
         );
         $modelSales->getUpdateMasterSales('id', $request->master_sale_id, $dataUpdate);
-        return redirect()->route('m_MemberPembayaran', [$request->master_sale_id])
-                        ->with('message', 'Berhsil konfirmasi pembayaran')
+        return redirect()->route('m_historyShoping')
+                        ->with('message', 'Konfirmasi pembayaran berhasil.')
                         ->with('messageclass', 'success');
     }
     
@@ -1814,12 +1812,12 @@ class MemberController extends Controller {
         if($request->metode == 3){
             $buy_metode = 3;
             $tron = $request->tron;
-            if($request->tron_tranfer == null){
+            if($request->transfer == null){
                 return redirect()->route('m_StockistDetailPruchase', [$request->id_master])
                         ->with('message', 'Hash transaksi transfer dari Blockchain TRON belum diisi')
                         ->with('messageclass', 'danger');
             }
-            $tron_transfer = $request->tron_tranfer;
+            $tron_transfer = $request->transfer;
         }
         $dataUpdate = array(
             'status' => 1,
@@ -1829,6 +1827,7 @@ class MemberController extends Controller {
             'bank_name' => $bank_name,
             'account_no' => $account_no,
             'account_name' => $account_name,
+            'metode_at' => date('Y-m-d H:i:s')
         );
         $modelSales->getUpdateItemPurchaseMaster('id', $request->id_master, $dataUpdate);
         return redirect()->route('m_StockistListPruchase')
@@ -1972,13 +1971,48 @@ class MemberController extends Controller {
         }
         $modelSales = New Sales;
         $id_master = $request->master_id;
-        
+        $getSales = $modelSales->getMemberPembayaranSales($id_master);
+        foreach($getSales as $row){
+            $dataInsertStock = array(
+                'purchase_id' => $row->purchase_id,
+                'user_id' => $row->user_id,
+                'type' => 2,
+                'amount' => $row->amount,
+                'sales_id' => $row->id,
+                'stockist_id' => $row->stockist_id,
+            );
+            $modelSales->getInsertStock($dataInsertStock);
+        }
         $dataUpdate = array(
             'status' => 2
         );
         $modelSales->getUpdateMasterSales('id', $id_master, $dataUpdate);
         return redirect()->route('m_MemberStockistReport')
-                            ->with('message', 'Berhasil konfirmasi transfer royalti')
+                            ->with('message', 'Berhasil konfirmasi pembayaran member')
+                            ->with('messageclass', 'success');
+    }
+    
+    public function postAddRejectPembelian(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_stockist == 0){
+            return redirect()->route('m_SearchStockist');
+        }
+        $modelSales = New Sales;
+        $id_master = $request->master_id;
+        $dataUpdate = array(
+            'status' => 10,
+            'reason' => $request->reason
+        );
+        $modelSales->getUpdateMasterSales('id', $id_master, $dataUpdate);
+        return redirect()->route('m_MemberStockistReport')
+                            ->with('message', 'Berhasil reject pembayaran member')
                             ->with('messageclass', 'success');
     }
     

@@ -747,12 +747,35 @@ class AjaxmemberController extends Controller {
                         ->with('data', $data);
     }
     
+    public function postCekRejectPembelian(Request $request){
+        $dataUser = Auth::user();
+        $modelSales = New Sales;
+        $canInsert = (object) array('can' => true, 'pesan' => '');
+        $id_master = $request->id_master;
+        $getDataSales = $modelSales->getMemberReportSalesStockistDetail($id_master, $dataUser->id);
+        $data = (object) array(
+            'id_master' => $id_master
+        );
+        return view('member.ajax.reject_pembelian')
+                        ->with('getDataSales', $getDataSales)
+                        ->with('check', $canInsert)
+                        ->with('data', $data);
+    }
+    
     public function getCekConfirmBelanjaReward(Request $request){
         $dataUser = Auth::user();
+        $canInsert = (object) array('can' => true, 'pesan' => '');
+        if($dataUser->is_tron == 0){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum mengisi data alamat tron');
+            return view('member.ajax.confirm_reward_belanja')
+                        ->with('data', null)
+                        ->with('check', $canInsert);
+        }
         $modelSales = New Sales;
         $getData = $modelSales->getMemberMasterSalesMonthYear($dataUser->id, $request->m, $request->y);
          return view('member.ajax.confirm_reward_belanja')
-                        ->with('data', $getData);
+                        ->with('data', $getData)
+                        ->with('check', $canInsert);
     }
 
     

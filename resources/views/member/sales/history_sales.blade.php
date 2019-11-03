@@ -101,17 +101,17 @@
                                 @foreach($getData as $row)
                                     <?php
                                         $no++;
-                                        $status = 'belum konfirmasi';
-                                        $label = 'primary';
+                                        $status = 'konfirmasi pembayaran';
+                                        $label = 'info';
                                         if($row->status == 1){
-                                            $status = 'konfirmasi';
+                                            $status = 'proses stockist';
                                             $label = 'info';
                                         }
                                         if($row->status == 2){
-                                            $status = 'konfirmasi admin';
+                                            $status = 'tuntas';
                                             $label = 'success';
                                         }
-                                        if($row->status == 3){
+                                        if($row->status == 10){
                                             $status = 'batal';
                                             $label = 'danger';
                                         }
@@ -138,7 +138,7 @@
                                                 <span class="label label-info">{{$buy}}</span>
                                         </td>
                                         <td>
-                                            <a class="label label-success" href="{{ URL::to('/') }}/m/pembayaran/{{$row->id}}">detail</a>
+                                            <a class="label label-primary" href="{{ URL::to('/') }}/m/pembayaran/{{$row->id}}">detail</a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -154,14 +154,10 @@
 @stop
 @section('styles')
 <link href="{{ asset('asset_member/plugins/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
-<!--<link href="{{ asset('asset_member/plugins/datatables/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />-->
-<!--<link href="{{ asset('asset_member/plugins/switchery/switchery.min.css') }}" rel="stylesheet" type="text/css" />-->
 @stop
 @section('javascript')
 <script src="/asset_member/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="/asset_member/plugins/datatables/dataTables.bootstrap4.min.js"></script>
-<!--<script src="/asset_member/plugins/datatables/dataTables.responsive.min.js"></script>-->
-<!--<script src="/asset_member/plugins/datatables/responsive.bootstrap4.min.js"></script>-->
 <script type="text/javascript">
     $(document).ready(function() {
         $('#datatable').DataTable();

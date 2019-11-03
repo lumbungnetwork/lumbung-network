@@ -201,13 +201,13 @@ class AjaxController extends Controller {
     
     public function getCekRequestMemberInputStock($id, $user_id){
         $modelSales = New Sales;
-        $modelMember = New Member;
         $getData = $modelSales->getMemberReqInputStockistItem($id);
-        $getUser = $modelMember->getUsers('id', $user_id);
+        $getDataMaster = $modelSales->getMemberReqInputStockistID($id);
         return view('admin.ajax.cek_req_input_stock')
-                ->with('headerTitle', 'Cek Request Input Stock')
-                ->with('getUser', $getUser)
+                ->with('headerTitle', 'Konfirmasi Input Stock & Royalti')
+                ->with('getDataMaster', $getDataMaster)
                 ->with('master_item_id', $id)
+                ->with('user_id', $user_id)
                 ->with('getData', $getData);
     }
     

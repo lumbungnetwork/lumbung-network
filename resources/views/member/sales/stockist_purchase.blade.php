@@ -23,12 +23,6 @@
                                 {{  Session::get('message')    }} 
                             </div>
                         @endif
-                        <div class="m-b-20">
-                            <a href="{{ URL::to('/') }}/m/purchase/input-stock" class="btn btn-sm btn-custom waves-effect waves-light">
-                                Pengajuan Input Stock
-                            </a>
-                        </div>
-                        
                         <table id="datatable" class="table table-striped table-bordered">
                             <thead>
                                 <tr>

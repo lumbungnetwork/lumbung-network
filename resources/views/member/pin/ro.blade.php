@@ -33,7 +33,7 @@
                     <div class="card-box tilebox-one">
                         <a href="{{ URL::to('/') }}/m/add/pin" class="btn btn-sm btn-custom waves-effect waves-light pull-xs-right">Beli Pin</a>
                         <h6 class="text-muted text-uppercase m-b-20">Jumlah PIN tersedia</h6>
-                        <h3 class="m-b-20" data-plugin="counterup">{{$total}}</h3>
+                        <h3 class="m-b-20">{{$total}}</h3>
                     </div>
                 </div>
                 <div class="col-xs-12 col-md-6 col-lg-6 col-xl-3">
@@ -87,9 +87,6 @@
     </div>
 </div>
 @include('layout.member.footer')
-@stop
-@section('styles')
-<link href="{{ asset('asset_member/plugins/switchery/switchery.min.css') }}" rel="stylesheet" type="text/css" />
 @stop
 @section('javascript')
 <script>

@@ -38,7 +38,7 @@
                                         <h6>Stok tersedia: <b>{{number_format($row->total_sisa, 0, ',', ',')}}</b> </h6>
                                         <div>
                                             <div class="form-group2">
-                                                <input class="sc-cart-item-qty" name="product_quantity" min="1" value="1" type="number">
+                                                <input class="sc-cart-item-qty" name="product_quantity" min="1" max="{{number_format($row->total_sisa, 0, ',', '')}}" value="1" type="number">
                                             </div>
                                             <input name="product_price" value="{{number_format($row->member_price, 0, ',', '')}}" type="hidden" />
                                             <input name="product_id" value="{{$row->id}}" type="hidden" />
