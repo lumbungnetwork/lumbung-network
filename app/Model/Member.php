@@ -501,8 +501,7 @@ class Member extends Model {
     
     public function getCekHakUsaha($data, $user_code){
         $sql = DB::table('users')
-                ->where('email', '=', $data->email)
-                ->where('hp', '=', $data->hp)
+                ->where('sponsor_id', '=', $data->id)
                 ->where('user_code', '=', $user_code)
                 ->where('user_type', '=', 10)
                 ->where('is_active', '=', 1)
@@ -624,6 +623,14 @@ class Member extends Model {
                     ->selectRaw('stockist_request.id, users.user_code, users.total_sponsor, stockist_request.created_at')
                     ->where('stockist_request.status', '=', 0)
                     ->get();
+        return $sql;
+    }
+    
+    public function getCekRequestSotckist($id){
+        $sql = DB::table('stockist_request')
+                    ->selectRaw('id')
+                    ->where('user_id', '=', $id)
+                    ->first();
         return $sql;
     }
     

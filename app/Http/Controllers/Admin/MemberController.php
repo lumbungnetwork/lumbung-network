@@ -1262,6 +1262,13 @@ class MemberController extends Controller {
                     ->with('message', 'Data profil anda belum lengkap')
                     ->with('messageclass', 'danger');
         }
+        $modelMember = New Member;
+        $cekRequestStockist = $modelMember->getCekRequestSotckist($dataUser->id);
+        if($cekRequestStockist != null){
+            return redirect()->route('m_SearchStockist')
+                        ->with('message', 'Anda sudah pernah mengajukan menjadi stockist')
+                        ->with('messageclass', 'danger');
+        }
         return view('member.profile.add-stockist')
                 ->with('headerTitle', 'Aplikasi Pengajuan Stockist')
                 ->with('dataUser', $dataUser);
@@ -1286,7 +1293,7 @@ class MemberController extends Controller {
             'user_id' => $dataUser->id
         );
         $modelMember->getInsertStockist($dataInsert);
-        return redirect()->route('m_myProfile')
+        return redirect()->route('m_SearchStockist')
                     ->with('message', 'Aplikasi Pengajuan Stockist berhasil dibuat')
                     ->with('messageclass', 'success');
     }
@@ -1300,9 +1307,6 @@ class MemberController extends Controller {
         if($dataUser->package_id == null){
             return redirect()->route('m_newPackage');
         }
-//        if($dataUser->is_stockist == 1){
-//            return redirect()->route('mainDashboard'); //lari ke menu stokist
-//        }
         $modelMember = New Member;
         $getData = null;
         if($dataUser->kode_daerah != null){
@@ -1310,8 +1314,10 @@ class MemberController extends Controller {
             $provKota = $dataDaerah[0].'.'.$dataDaerah[1];
             $getData = $modelMember->getSearchUserByLocation($provKota);
         }
+        $cekRequestStockist = $modelMember->getCekRequestSotckist($dataUser->id);
         return view('member.profile.m_shop')
                 ->with('getData', $getData)
+                ->with('cekRequest', $cekRequestStockist)
                 ->with('dataUser', $dataUser);
     }
     
@@ -1331,8 +1337,10 @@ class MemberController extends Controller {
         }
         $modelMember = New Member;
         $getData = $modelMember->getSearchUserStockist($request->user_name);
+        $cekRequestStockist = $modelMember->getCekRequestSotckist($dataUser->id);
         return view('member.profile.m_shop')
                 ->with('getData', $getData)
+                ->with('cekRequest', $cekRequestStockist)
                 ->with('dataUser', $dataUser);
     }
     

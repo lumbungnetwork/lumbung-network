@@ -14,7 +14,13 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-6">
+                <?php
+                    $col = 6;
+                    if($cekRequest != null){
+                        $col = 12;
+                    }
+                ?>
+                <div class="col-sm-{{$col}}">
                     <div class="card-box">
                         @if ( Session::has('message') )
                             <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible fade in" role="alert">
@@ -42,6 +48,7 @@
                         </form>
                     </div>
                 </div>
+                @if($cekRequest == null)
                 <div class="col-sm-6">
                     <div class="card card-block">
                         <p class="card-text">
@@ -53,6 +60,7 @@
                         <a href="{{ URL::to('/') }}/m/req/stockist" class="btn btn-info">Apply</a>
                     </div>
                 </div>
+                @endif
             </div>
             @if($getData != null)
             <div class="row">
