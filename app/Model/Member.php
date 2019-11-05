@@ -501,7 +501,7 @@ class Member extends Model {
     
     public function getCekHakUsaha($data, $user_code){
         $sql = DB::table('users')
-                ->where('sponsor_id', '=', $data->id)
+//                ->where('sponsor_id', '=', $data->id)
                 ->where('user_code', '=', $user_code)
                 ->where('user_type', '=', 10)
                 ->where('is_active', '=', 1)

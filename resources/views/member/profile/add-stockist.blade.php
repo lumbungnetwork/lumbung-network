@@ -8,7 +8,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="page-title-box">
-                        <h4 class="page-title">Sponsor Baru</h4>
+                        <h4 class="page-title">Request Stockist Baru</h4>
                         <div class="clearfix"></div>
                     </div>
                 </div>
