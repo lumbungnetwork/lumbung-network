@@ -273,10 +273,10 @@ class Validation extends Model {
             $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum Saya telah membaca dan menyetujui Peraturan dan Kode Etik Stokis Lumbung Network.');
             return $canInsert;
         }
-        if($data->total_sp < 3){
-            $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum memenuhi jumlah Hak Usaha sebanyak 3, atas nama sendiri');
-            return $canInsert;
-        }
+//        if($data->total_sp < 3){
+//            $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum memenuhi jumlah Hak Usaha sebanyak 3, atas nama sendiri');
+//            return $canInsert;
+//        }
         if($data->hu1 == null){
             $canInsert = (object) array('can' => false, 'pesan' => 'Username pada Hak Usaha 1 Anda tidak ada');
             return $canInsert;
