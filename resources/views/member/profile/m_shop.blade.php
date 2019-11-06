@@ -20,7 +20,7 @@
                         $col = 12;
                     }
                 ?>
-                <div class="col-sm-{{$col}}">
+                <div class="col-sm-{{$col}} col-xs-12">
                     <div class="card-box">
                         @if ( Session::has('message') )
                             <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible fade in" role="alert">
@@ -49,7 +49,7 @@
                     </div>
                 </div>
                 @if($cekRequest == null)
-                <div class="col-sm-6">
+                <div class="col-sm-6 col-xs-12">
                     <div class="card card-block">
                         <p class="card-text">
                             Ingin menjadi Stokis di Area Anda?
@@ -64,34 +64,30 @@
             </div>
             @if($getData != null)
             <div class="row">
-                <div class="col-sm-12 col-xs-12 col-md-12 col-lg-12">
-                    <div class="card-box">
+                <div class="col-sm-12 card-box table-responsive">
                     <h4 class="header-title m-t-0">Stockist terdekat di Area anda</h4>
-                    <div class="p-20">
-                        <table class="table">
-                            <thead>
+                    <table class="table">
+                        <thead>
                             <tr>
                                 <th>Nama</th>
                                 <th>Alamat</th>
                                 <th>HP</th>
                                 <th>Action</th>
                             </tr>
-                            </thead>
-                            <tbody>
+                        </thead>
+                        <tbody>
                             @foreach($getData as $row)    
-                            <tr>
-                                <td>{{$row->full_name}}</td>
-                                <td>{{$row->alamat}} {{$row->kelurahan}} {{$row->kecamatan}} {{$row->kota}}</td>
-                                <td>{{$row->hp}}</td>
-                                <td>
-                                    <a class="btn btn-warning btn-sm waves-effect waves-light" href="{{ URL::to('/') }}/m/shoping/{{$row->id}}"> <i class="fa fa-rocket m-r-5"></i> <span>Shop</span> </a>
-                                </td>
-                            </tr>
+                                <tr>
+                                    <td>{{$row->full_name}}</td>
+                                    <td>{{$row->alamat}} {{$row->kelurahan}} {{$row->kecamatan}} {{$row->kota}}</td>
+                                    <td>{{$row->hp}}</td>
+                                    <td>
+                                        <a class="btn btn-warning btn-sm waves-effect waves-light" href="{{ URL::to('/') }}/m/shoping/{{$row->id}}"> <i class="fa fa-rocket m-r-5"></i> <span>Shop</span> </a>
+                                    </td>
+                                </tr>
                             @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                    </div>
+                        </tbody>
+                    </table>
                 </div>
             </div>
             @endif

@@ -130,11 +130,6 @@ class MemberController extends Controller {
             'sponsor_id' => $sponsor_id
         );
         $modelMember->getInsertUsers($dataInsertNewMember);
-//        $total_sponsor = $dataUser->total_sponsor + 1;
-//        $dataUpdateSponsor = array(
-//            'total_sponsor' => $total_sponsor,
-//        );
-//        $modelMember->getUpdateUsers('id', $sponsor_id, $dataUpdateSponsor);
         $dataEmail = array(
             'email' => $request->email,
             'password' => $request->password,
@@ -355,9 +350,6 @@ class MemberController extends Controller {
             return redirect()->route('mainDashboard');
         }
         $disc = 0;
-//        if($request->total_pin >= 100){
-//            $disc = 3;
-//        }
         $modelSettingPin = New Pinsetting;
         $modelSettingTrans = New Transaction;
         $getActivePinSetting = $modelSettingPin->getActivePinSetting();

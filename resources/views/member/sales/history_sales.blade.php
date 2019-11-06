@@ -14,7 +14,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-6 col-xs-12">
                     <div class="card card-block">
                         <?php
                             $text = '*Anda belum memenuhi Belanja Wajib';
