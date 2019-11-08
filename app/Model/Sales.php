@@ -494,7 +494,7 @@ class Sales extends Model {
                             . 'DATE_FORMAT(master_sales.sale_date, "%M-%Y") as monthly, YEAR(master_sales.sale_date) as year, '
                             . 'MONTH(master_sales.sale_date) as month')
                     ->where('master_sales.user_id', '=', $id)
-                    ->where('master_sales.status', '>=', 2)
+                    ->where('master_sales.status', '=', 2)
                     ->whereNull('master_sales.deleted_at')
                     ->groupBy('year', 'month')
                     ->groupBy('monthly')
@@ -514,7 +514,7 @@ class Sales extends Model {
                             . 'DATE_FORMAT(master_sales.sale_date, "%M-%Y") as monthly, YEAR(master_sales.sale_date) as year, '
                             . 'MONTH(master_sales.sale_date) as month')
                     ->where('master_sales.user_id', '=', $id)
-                    ->where('master_sales.status', '>=', 2)
+                    ->where('master_sales.status', '=', 2)
                     ->whereMonth('master_sales.sale_date', '=', $month)
                     ->whereYear('master_sales.sale_date', '=', $year)
                     ->whereNull('master_sales.deleted_at')

@@ -98,10 +98,12 @@ class DashboardController extends Controller {
         );
         
         $getMyPeringkat = $modelBonusSetting->getPeringkatByType($dataUser->member_type);
-        $getSales = $modelSales->getMemberSales($dataUser->id);
+//        $getSales = $modelSales->getMemberSales($dataUser->id);
+        $getSales = $modelSales->getMemberMasterSalesMonthYear($dataUser->id, date('m'), date('Y'));
         $mySales = 0;
         if($getSales != null){
-            $mySales = $getSales->jml_price;
+//            $mySales = $getSales->jml_price;
+            $mySales = $getSales->month_sale_price;
         }
         $image = '';
         $name = 'Member Biasa';
