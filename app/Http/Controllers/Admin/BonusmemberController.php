@@ -394,6 +394,7 @@ class BonusmemberController extends Controller {
         }
         $modelSales = New Sales;
         $modelBonus = new Bonus;
+//        $getData = $modelSales->getMemberMasterSalesMonthlyTerbaru($dataUser->id);
         $getData = $modelSales->getMemberMasterSalesMonthly($dataUser->id);
         $getTotalBonus = $modelBonus->getTotalBelanjaReward($dataUser->id);
         $dataClaim = array();

@@ -489,18 +489,50 @@ class Sales extends Model {
     }
     
     public function getMemberMasterSalesMonthly($id){
+        $start_day = date("Y-m-01");
         $sql = DB::table('master_sales')
                     ->selectRaw('sum(master_sales.total_price) as month_sale_price, '
                             . 'DATE_FORMAT(master_sales.sale_date, "%M-%Y") as monthly, YEAR(master_sales.sale_date) as year, '
                             . 'MONTH(master_sales.sale_date) as month')
                     ->where('master_sales.user_id', '=', $id)
                     ->where('master_sales.status', '=', 2)
+                    ->whereDate('master_sales.sale_date', '<', $start_day)
                     ->whereNull('master_sales.deleted_at')
                     ->groupBy('year', 'month')
                     ->groupBy('monthly')
                     ->orderBy('month', 'DESC')
                     ->orderBy('year', 'DESC')
                     ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getMemberMasterSalesMonthlyTerbaru($id){
+        $start_day = date("Y-m-01");
+        $query = " 
+            SELECT data_monthly.user_id, data_monthly.month_sale_price, data_monthly.monthly,
+		data_monthly.year_nya, data_monthly.month_nya,
+		belanja_reward.id, belanja_reward.status, belanja_reward.type
+            FROM (
+            SELECT 
+                    master_sales.user_id, sum(master_sales.total_price) as month_sale_price,
+                    DATE_FORMAT(master_sales.sale_date, '%M-%Y') as monthly, YEAR(master_sales.sale_date) as year_nya, 
+            MONTH(master_sales.sale_date) as month_nya
+            FROM lumbung.master_sales
+            Where master_sales.user_id = $id
+            AND master_sales.status = 2 
+            AND master_sales.sale_date < '$start_day'
+            AND master_sales.deleted_at IS NULL
+            GROUP BY year_nya, month_nya, monthly, master_sales.user_id
+            ORDER BY month_nya DESC, year_nya DESC
+            ) as data_monthly
+            LEFT JOIN lumbung.belanja_reward ON belanja_reward.user_id = data_monthly.user_id 
+                    AND belanja_reward.month = data_monthly.month_nya 
+                    AND belanja_reward.year = data_monthly.year_nya ";
+        $sql = DB::select($query);
         $return = null;
         if(count($sql) > 0){
             $return = $sql;
