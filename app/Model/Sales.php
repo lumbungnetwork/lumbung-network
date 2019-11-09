@@ -524,5 +524,41 @@ class Sales extends Model {
         return $sql;
     }
     
+    public function getStockistPenjualanMonthly($id){
+        $sql = DB::table('master_sales')
+                    ->selectRaw('sum(master_sales.total_price) as month_sale_price, '
+                            . 'DATE_FORMAT(master_sales.sale_date, "%M-%Y") as monthly, YEAR(master_sales.sale_date) as year, '
+                            . 'MONTH(master_sales.sale_date) as month')
+                    ->where('master_sales.stockist_id', '=', $id)
+                    ->where('master_sales.status', '=', 2)
+                    ->whereNull('master_sales.deleted_at')
+                    ->groupBy('year', 'month')
+                    ->groupBy('monthly')
+                    ->orderBy('month', 'DESC')
+                    ->orderBy('year', 'DESC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getStockistPenjualanMonthYear($id, $month, $year){
+        $sql = DB::table('master_sales')
+                    ->selectRaw('sum(master_sales.total_price) as month_sale_price, '
+                            . 'DATE_FORMAT(master_sales.sale_date, "%M-%Y") as monthly, YEAR(master_sales.sale_date) as year, '
+                            . 'MONTH(master_sales.sale_date) as month')
+                    ->where('master_sales.stockist_id', '=', $id)
+                    ->where('master_sales.status', '=', 2)
+                    ->whereMonth('master_sales.sale_date', '=', $month)
+                    ->whereYear('master_sales.sale_date', '=', $year)
+                    ->whereNull('master_sales.deleted_at')
+                    ->groupBy('year', 'month')
+                    ->groupBy('monthly')
+                    ->first();
+        return $sql;
+    }
+    
 }
 

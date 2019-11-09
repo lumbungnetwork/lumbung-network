@@ -37,58 +37,53 @@
                             </div>
                         @endif
                          <div class="table-responsive">
-                             <form method="post" name="emailCompose" id="emailCompose" action="/adm/check/wd">
-                                 {{ csrf_field() }}
-                             <p class="form-group">
-                                <button type="submit" class="btn btn-primary" id="formCheck">Submit Transfer</button>
-                             </p>
                             <table class="table table-striped nowrap" id="myTable">
                                 <thead class=" text-primary">
                                     <tr>
-                                         <th><input type="checkbox" name="select_all" value="1" id="example-select-all"></th>
                                         <th>No</th>
                                         <th>UserID</th>
-                                        <th>Bank</th>
-                                        <th>No. Rek</th>
-                                        <th>Nama. Rek</th>
-                                        <th>Tgl. WD</th>
-                                        <th>Jml. WD (Rp.)</th>
-                                        <th>Admin Fee (Rp.)</th>
-                                        <th>Jml. Transfer (Rp.)</th>
+                                        <th>Periode</th>
+                                        <th>Tgl. Claim</th>
+                                        <th>Reward</th>
+                                        <th>Status</th>
                                         <th>###</th>
                                     </tr>
                                 </thead>
                                 
                                 <tbody>
                                     @if($getData != null)
-                                        <?php 
-                                        $no = 0; 
-                                        ?>
+                                        <?php $no = 0; ?>
                                         @foreach($getData as $row)
                                         <?php 
-                                            $no++;
-                                            $jmlWD = $row->wd_total + $row->admin_fee;
+                                            $no++; 
+                                            $status = 'Proses Transfer';
+                                            $label = 'info';
+                                            if($row->status == 1){
+                                                $status = 'Tuntas';
+                                                $label = 'success';
+                                            }
+                                            if($row->status == 2){
+                                                $status = 'Reject';
+                                                $label = 'danger';
+                                            }
                                         ?>
                                             <tr>
-                                                <td><input type="checkbox" name="id[]" value="{{$row->id}}"></td>
                                                 <td>{{$no}}</td>
                                                 <td>{{$row->user_code}}</td>
-                                                <td>{{$row->bank_name}}</td>
-                                                <td>{{$row->account_no}}</td>
-                                                <td>{{$row->account_name}}</td>
-                                                <td>{{date('d M Y', strtotime($row->wd_date))}}</td>
-                                                <td>{{number_format($jmlWD, 0, ',', ',')}}</td>
-                                                <td>{{number_format($row->admin_fee, 0, ',', ',')}}</td>
-                                                <td>{{number_format($row->wd_total, 0, ',', ',')}}</td>
+                                                <td>{{$row->monthly}}</td>
+                                                <td>{{date('d M Y', strtotime($row->created_at))}}</td>
+                                                <td>{{$row->reward}}</td>
                                                 <td>
-                                                    <a rel="tooltip"  data-toggle="modal" data-target="#popUp" class="text-danger" href="{{ URL::to('/') }}/ajax/adm/cek/reject-wd/{{$row->id}}">reject</a>
+                                                    <span class="badge badge-pill badge-{{$label}}">{{$status}}</span>
+                                                </td>
+                                                <td>
+                                                    <a rel="tooltip"  data-toggle="modal" data-target="#popUp" class="text-danger" href="{{ URL::to('/') }}/ajax/adm/cek/detail-penjualan-reward/{{$row->id}}">detail</a>
                                                 </td>
                                             </tr>
                                         @endforeach
                                     @endif
                                 </tbody>
                             </table>
-                             </form>
                              <div class="modal fade" id="popUp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content"></div>
@@ -145,21 +140,6 @@
                  "info":     false,
                  "ordering": true,
         } );
-        $('#myTable #example-select-all').change(function() {
-                var checked = $(this).is(":checked");
-                $("input", myTableRow.rows({search:'applied'}).nodes()).each(function(){
-                        if(checked){
-                                $(this).attr("checked", true);
-                        }
-                        else {
-                                $(this).attr("checked", false);
-                        }
-                });
-        });
-        $("form").submit(function() {
-                $(myTableRow.rows({search:'applied'}).nodes()).find('input[type="checkbox"]:checked');
-        });
-        
     } );
     
 </script>

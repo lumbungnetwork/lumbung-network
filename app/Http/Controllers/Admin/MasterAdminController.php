@@ -1208,6 +1208,79 @@ class MasterAdminController extends Controller {
                     ->with('messageclass', 'success');
     }
     
+    public function getAllPenjualanReward(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = New Bonus;
+        $getData = $modelBonus->getAdminAllPenjualanReward();
+        return view('admin.member.penjualan-reward')
+                ->with('headerTitle', 'Claim Reward Penjualan')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postCheckPenjualanReward(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = New Bonus;
+        $getRowID = $request->id;
+        if($getRowID == null){
+            return redirect()->route('adm_listPenjualanReward')
+                        ->with('message', 'Gagal, tidak ada yang di centang')
+                        ->with('messageclass', 'danger');
+        }
+        foreach($getRowID as $getID){
+            $dataUpdate = array(
+                'status' => 1,
+                'tuntas_at' => date('Y-m-d H:i:s')
+            );
+            $modelBonus->getUpdateBelanjaReward('id', $getID, $dataUpdate);
+        }
+        return redirect()->route('adm_listPenjualanReward')
+                    ->with('message', 'Konfirmasi Reward Penjualan berhasil')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function postRejectPenjualanReward(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = New Bonus;
+        $getID = $request->cekId;
+        $alesan = $request->reason;
+        $dataUpdate = array(
+            'status' => 2,
+            'reason' => $alesan,
+            'deleted_at' => date('Y-m-d H:i:s')
+        );
+        $modelBonus->getUpdateBelanjaReward('id', $getID, $dataUpdate);
+        return redirect()->route('adm_listPenjualanReward')
+                    ->with('message', 'Data Reward Penjualan berhasil direject')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function getHistoryPenjualanReward(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = New Bonus;
+        $getData = $modelBonus->getAdminHistoryPenjualanReward();
+        return view('admin.member.history-reward-penjualan')
+                ->with('headerTitle', 'History Reward Penjualan')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
     
 
 }

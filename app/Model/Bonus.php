@@ -266,6 +266,7 @@ class Bonus extends Model {
         $sql = DB::table('belanja_reward')
                     ->where('belanja_reward.user_id', '=', $id)
                     ->where('belanja_reward.status', '=', 1)
+                    ->where('belanja_reward.type', '=', 1)
                     ->sum('belanja_reward.reward');
         return $sql;
     }
@@ -277,6 +278,7 @@ class Bonus extends Model {
                     ->where('month', '=', $month)
                     ->where('year', '=', $year)
                     ->where('status', '!=', 2)
+                    ->where('type', '=', 1)
                     ->first();
         return $sql;
     }
@@ -288,6 +290,7 @@ class Bonus extends Model {
                             . 'belanja_reward.belanja_date, belanja_reward.total_belanja, DATE_FORMAT(belanja_reward.belanja_date, "%M - %Y") as monthly, '
                             . 'belanja_reward.created_at, users.user_code, users.tron, users.is_tron')
                     ->where('belanja_reward.status', '=', 0)
+                    ->where('belanja_reward.type', '=', 1)
                     ->get();
         $return = null;
         if(count($sql) > 0){
@@ -304,6 +307,7 @@ class Bonus extends Model {
                             . 'belanja_reward.created_at, users.user_code, users.tron')
                     ->where('belanja_reward.id', '=', $id)
                     ->where('belanja_reward.status', '=', 0)
+                    ->where('belanja_reward.type', '=', 1)
                     ->first();
         return $sql;
     }
@@ -314,6 +318,7 @@ class Bonus extends Model {
                     ->selectRaw('belanja_reward.id, belanja_reward.reward, belanja_reward.month, belanja_reward.year, '
                             . 'belanja_reward.belanja_date, belanja_reward.total_belanja, DATE_FORMAT(belanja_reward.belanja_date, "%M - %Y") as monthly, '
                             . 'belanja_reward.created_at, users.user_code, users.tron, belanja_reward.status')
+                    ->where('belanja_reward.type', '=', 1)
                     ->get();
         $return = null;
         if(count($sql) > 0){
@@ -329,8 +334,86 @@ class Bonus extends Model {
                             . 'belanja_reward.belanja_date, belanja_reward.total_belanja, DATE_FORMAT(belanja_reward.belanja_date, "%M - %Y") as monthly, '
                             . 'belanja_reward.created_at, users.user_code, users.tron, belanja_reward.status, belanja_reward.reason')
                     ->where('belanja_reward.id', '=', $id)
+                    ->where('belanja_reward.type', '=', 1)
                     ->first();
         return $sql;
+    }
+    
+    public function getTotalPenjualanReward($id){
+        $sql = DB::table('belanja_reward')
+                    ->where('belanja_reward.user_id', '=', $id)
+                    ->where('belanja_reward.status', '=', 1)
+                    ->where('belanja_reward.type', '=', 2)
+                    ->sum('belanja_reward.reward');
+        return $sql;
+    }
+    
+    public function getPenjualanRewardByMonthYear($id, $month, $year){
+        $sql = DB::table('belanja_reward')
+                    ->selectRaw('id')
+                    ->where('user_id', '=', $id)
+                    ->where('month', '=', $month)
+                    ->where('year', '=', $year)
+                    ->where('status', '!=', 2)
+                    ->where('type', '=', 2)
+                    ->first();
+        return $sql;
+    }
+    
+    public function getAdminAllPenjualanReward(){
+        $sql = DB::table('belanja_reward')
+                    ->join('users', 'belanja_reward.user_id', '=', 'users.id')
+                    ->selectRaw('belanja_reward.id, belanja_reward.reward, belanja_reward.month, belanja_reward.year, '
+                            . 'belanja_reward.belanja_date, belanja_reward.total_belanja, DATE_FORMAT(belanja_reward.belanja_date, "%M - %Y") as monthly, '
+                            . 'belanja_reward.created_at, users.user_code, users.tron, users.is_tron')
+                    ->where('belanja_reward.status', '=', 0)
+                    ->where('belanja_reward.type', '=', 2)
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getAdminAllPenjualanRewardByID($id){
+        $sql = DB::table('belanja_reward')
+                    ->join('users', 'belanja_reward.user_id', '=', 'users.id')
+                    ->selectRaw('belanja_reward.id, belanja_reward.reward, belanja_reward.month, belanja_reward.year, '
+                            . 'belanja_reward.belanja_date, belanja_reward.total_belanja, DATE_FORMAT(belanja_reward.belanja_date, "%M - %Y") as monthly, '
+                            . 'belanja_reward.created_at, users.user_code, users.tron')
+                    ->where('belanja_reward.id', '=', $id)
+                    ->where('belanja_reward.status', '=', 0)
+                    ->where('belanja_reward.type', '=', 2)
+                    ->first();
+        return $sql;
+    }
+    
+    public function getAdminDetailPenjualanReward($id){
+        $sql = DB::table('belanja_reward')
+                    ->join('users', 'belanja_reward.user_id', '=', 'users.id')
+                    ->selectRaw('belanja_reward.id, belanja_reward.reward, belanja_reward.month, belanja_reward.year, '
+                            . 'belanja_reward.belanja_date, belanja_reward.total_belanja, DATE_FORMAT(belanja_reward.belanja_date, "%M - %Y") as monthly, '
+                            . 'belanja_reward.created_at, users.user_code, users.tron, belanja_reward.status, belanja_reward.reason')
+                    ->where('belanja_reward.id', '=', $id)
+                    ->where('belanja_reward.type', '=', 2)
+                    ->first();
+        return $sql;
+    }
+    
+    public function getAdminHistoryPenjualanReward(){
+        $sql = DB::table('belanja_reward')
+                    ->join('users', 'belanja_reward.user_id', '=', 'users.id')
+                    ->selectRaw('belanja_reward.id, belanja_reward.reward, belanja_reward.month, belanja_reward.year, '
+                            . 'belanja_reward.belanja_date, belanja_reward.total_belanja, DATE_FORMAT(belanja_reward.belanja_date, "%M - %Y") as monthly, '
+                            . 'belanja_reward.created_at, users.user_code, users.tron, belanja_reward.status')
+                    ->where('belanja_reward.type', '=', 2)
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
     }
    
     

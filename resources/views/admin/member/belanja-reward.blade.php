@@ -146,7 +146,7 @@
                 });
         });
         $("form").submit(function() {
-                $(myTableRow.rows({search:'applied'}).nodes()).find('input[type="checkbox"]:checked').appendTo('#emailCompose');
+                $(myTableRow.rows({search:'applied'}).nodes()).find('input[type="checkbox"]:checked');
         });
         
     } );

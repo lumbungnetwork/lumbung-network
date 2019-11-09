@@ -81,6 +81,10 @@ Route::prefix('/')->group(function () {
         Route::get('/adm/edit/purchase/{id}', 'Admin\MasterAdminController@getEditPurchase')->name('adm_editPurchase')->middleware('auth');
         Route::post('/adm/edit/purchase', 'Admin\MasterAdminController@postEditPurchase')->middleware('auth');
         Route::post('/adm/rm/purchase', 'Admin\MasterAdminController@postRemovePurchase')->middleware('auth');
+        Route::get('/adm/list/penjualan-reward', 'Admin\MasterAdminController@getAllPenjualanReward')->name('adm_listPenjualanReward')->middleware('auth');
+        Route::post('/adm/check/penjualan-reward', 'Admin\MasterAdminController@postCheckPenjualanReward')->middleware('auth');
+        Route::post('/adm/reject/penjualan-reward', 'Admin\MasterAdminController@postRejectPenjualanReward')->middleware('auth');
+        Route::get('/adm/history/penjualan-reward', 'Admin\MasterAdminController@getHistoryPenjualanReward')->name('adm_historyPenjualanReward')->middleware('auth');
         
 
         //Ajax
@@ -106,6 +110,8 @@ Route::prefix('/')->group(function () {
         Route::get('/ajax/adm/cek/reject-belanja-reward/{id}', 'Admin\AjaxController@getCekRejectBelanjaReward')->middleware('auth');
         Route::get('/ajax/adm/cek/detail-belanja-reward/{id}', 'Admin\AjaxController@getCekDetailBelanjaReward')->middleware('auth');
         Route::get('/ajax/rm/purchase/{id}', 'Admin\AjaxController@getRemovePurchaseId')->middleware('auth');
+        Route::get('/ajax/adm/cek/reject-penjualan-reward/{id}', 'Admin\AjaxController@getCekRejectPenjualanReward')->middleware('auth');
+        Route::get('/ajax/adm/cek/detail-penjualan-reward/{id}', 'Admin\AjaxController@getCekDetailPenjualanReward')->middleware('auth');
         
 //        Route::get('/adm/daerah', 'Admin\MasterAdminController@getAllDaerah')->middleware('auth');
         ////////////////////////////////////////////////////////////////////////
@@ -184,8 +190,10 @@ Route::prefix('/')->group(function () {
         Route::get('/m/req/claim-reward', 'Admin\BonusmemberController@getRequestClaimReward')->name('m_requestClaimReward')->middleware('auth');
         Route::post('/m/request/claim-reward', 'Admin\BonusmemberController@postRequestClaimReward')->middleware('auth');
         Route::get('/m/history/reward', 'Admin\BonusmemberController@getHistoryReward')->name('m_historyReward')->middleware('auth');
-        Route::get('/m/belanja-reward', 'Admin\BonusmemberController@getBelanjaReward')->name('m_RewardReward')->middleware('auth');
+        Route::get('/m/belanja-reward', 'Admin\BonusmemberController@getBelanjaReward')->name('m_BelanjaReward')->middleware('auth');
         Route::post('/m/request/belanja-reward', 'Admin\BonusmemberController@postRequestBelanjaReward')->middleware('auth');
+        Route::get('/m/stockist/penjualan-reward', 'Admin\BonusmemberController@getPenjualanReward')->name('m_PenjualanReward')->middleware('auth');
+        Route::post('/m/request/penjualan-reward', 'Admin\BonusmemberController@postRequestPenjualanReward')->middleware('auth');
         
         //Belanja
         Route::get('/m/req/stockist', 'Admin\MemberController@getRequestMemberStockist')->name('m_reqMemberStockist')->middleware('auth');
@@ -244,6 +252,7 @@ Route::prefix('/')->group(function () {
         Route::get('/m/cek/confirm-pembelian', 'Admin\AjaxmemberController@postCekConfirmPembelian')->middleware('auth');
         Route::get('/m/cek/reject-pembelian', 'Admin\AjaxmemberController@postCekRejectPembelian')->middleware('auth');
         Route::get('/m/cek/confirm-belanja-reward', 'Admin\AjaxmemberController@getCekConfirmBelanjaReward')->middleware('auth');
+        Route::get('/m/cek/confirm-penjualan-reward', 'Admin\AjaxmemberController@getCekConfirmPenjualanReward')->middleware('auth');
         
         Route::get('/m/search/{type}', 'Admin\AjaxmemberController@getSearchByType')->middleware('auth');
 });

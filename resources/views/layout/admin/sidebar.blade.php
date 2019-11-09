@@ -64,6 +64,12 @@
                             <span class="sidebar-normal"> Claim Belanja Reward </span>
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ URL::to('/') }}/adm/list/penjualan-reward">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> Claim Penjualan Reward </span>
+                            </a>
+                        </li>
                          <li>
                             <a href="{{ URL::to('/') }}/adm/history/wd">
                             <span class="sidebar-mini-icon">+</span>
@@ -86,6 +92,12 @@
                             <a href="{{ URL::to('/') }}/adm/history/belanja-reward">
                             <span class="sidebar-mini-icon">+</span>
                             <span class="sidebar-normal"> History Belanja Reward </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ URL::to('/') }}/adm/history/penjualan-reward">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> History Penjualan Reward </span>
                             </a>
                         </li>
                     </ul>

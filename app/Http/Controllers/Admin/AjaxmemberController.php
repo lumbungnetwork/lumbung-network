@@ -777,6 +777,22 @@ class AjaxmemberController extends Controller {
                         ->with('data', $getData)
                         ->with('check', $canInsert);
     }
+    
+    public function getCekConfirmPenjualanReward(Request $request){
+        $dataUser = Auth::user();
+        $canInsert = (object) array('can' => true, 'pesan' => '');
+        if($dataUser->is_tron == 0){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum mengisi data alamat tron');
+            return view('member.ajax.confirm_reward_penjualan')
+                        ->with('data', null)
+                        ->with('check', $canInsert);
+        }
+        $modelSales = New Sales;
+        $getData = $modelSales->getStockistPenjualanMonthYear($dataUser->id, $request->m, $request->y);
+         return view('member.ajax.confirm_reward_penjualan')
+                        ->with('data', $getData)
+                        ->with('check', $canInsert);
+    }
 
     
     

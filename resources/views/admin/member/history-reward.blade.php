@@ -138,21 +138,6 @@
                  "info":     false,
                  "ordering": true,
         } );
-        $('#myTable #example-select-all').change(function() {
-                var checked = $(this).is(":checked");
-                $("input", myTableRow.rows({search:'applied'}).nodes()).each(function(){
-                        if(checked){
-                                $(this).attr("checked", true);
-                        }
-                        else {
-                                $(this).attr("checked", false);
-                        }
-                });
-        });
-        $("form").submit(function() {
-                $(myTableRow.rows({search:'applied'}).nodes()).find('input[type="checkbox"]:checked').appendTo('#emailCompose');
-        });
-        
     } );
     
 </script>
