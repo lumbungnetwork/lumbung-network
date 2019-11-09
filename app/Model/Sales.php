@@ -192,7 +192,6 @@ class Sales extends Model {
                     ->where('master_sales.user_id', '=', $id)
                     ->whereDate('master_sales.sale_date', '>=', $date->startDay)
                     ->whereDate('master_sales.sale_date', '<=', $date->endDay)
-                    ->where('master_sales.status', '=', 2)
                     ->whereNull('master_sales.deleted_at')
                     ->get();
         $return = null;

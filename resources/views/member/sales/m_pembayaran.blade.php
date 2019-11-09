@@ -68,6 +68,7 @@
                                             COD
                                         </label>
                                     </div>
+                                    @if($getStockistBank != null)
                                     <div class="radio radio-primary">
                                         <input type="radio" name="radio" id="radio2" value="2">
                                         <label for="radio2">
@@ -75,6 +76,7 @@
                                         </label>
                                         <input class="form-control" type="text" placeholder="{{$getStockistBank->bank_name}} {{$getStockistBank->account_no}} a/n {{$getStockistBank->account_name}}" disabled="">
                                     </div>
+                                    @endif
                                     @if($getStockist->is_tron != null)
                                     <div class="radio radio-primary">
                                         <input type="radio" name="radio" id="radio3" value="3">
