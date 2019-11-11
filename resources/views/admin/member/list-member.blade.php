@@ -23,6 +23,31 @@
     <div class="content">
         <div class="row">
             <div class="col-md-12">
+                <div class="card card-user">
+                    <div class="card-header">
+                    </div>
+                    <div class="card-body" style="min-height: auto;">
+                        <form class="login100-form validate-form" method="post" action="/adm/search-list/member">
+                            {{ csrf_field() }}
+                            <div id="addPenjualan">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Search username</label>
+                                            <input type="text" class="form-control" name="name" placeholder="Minimal 3 karakter">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label>&nbsp;</label>
+                                             <button type="submit" class="form-control btn btn-sm btn-info " title="cari" style="margin: 0;">Cari</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>    
+                        </form>
+                    </div>
+                </div>
                 <div class="card">
                     <div class="card-header">
                         <h5 class="card-title">List</h5>

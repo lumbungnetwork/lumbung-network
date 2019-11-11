@@ -1354,6 +1354,29 @@ class MasterAdminController extends Controller {
                     ->with('messageclass', 'success');
     }
     
+    public function postSearchMember(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $cekLenght = strlen($request->name);
+        if($cekLenght < 3){
+            return redirect()->route('adm_listMember')
+                    ->with('message', 'Minimal pencarian harus 3 karakter (huruf).')
+                    ->with('messageclass', 'danger');
+        }
+        $modelMember = New Member;
+        $data = $modelMember->getSearchAllMemberByAdmin($request->name);
+        $getData = $data->data;
+        $getCountData = $data->total;
+        return view('admin.member.list-member')
+                ->with('headerTitle', 'Search Member')
+                ->with('getData', $getData)
+                ->with('getTotal', $getCountData)
+                ->with('dataUser', $dataUser);
+    }
+    
     
 
 }

@@ -88,6 +88,7 @@ Route::prefix('/')->group(function () {
         Route::post('/adm/change/data/member', 'Admin\MasterAdminController@postAdminChangeDataMember')->middleware('auth');
         Route::post('/adm/change/passwd/member', 'Admin\MasterAdminController@postAdminChangePasswordMember')->middleware('auth');
         Route::post('/adm/change/block/member', 'Admin\MasterAdminController@postAdminChangeBlockMember')->middleware('auth');
+        Route::post('/adm/search-list/member', 'Admin\MasterAdminController@postSearchMember')->middleware('auth');
         
 
         //Ajax
