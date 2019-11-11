@@ -1281,6 +1281,79 @@ class MasterAdminController extends Controller {
                 ->with('dataUser', $dataUser);
     }
     
+    public function postAdminChangeDataMember(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelMember = New Member;
+        $getCheck = $modelMember->getCheckUsercodeNotHim($request->user_code, $request->cekId);
+        if($getCheck->cekCode == 1){
+            return redirect()->route('adm_listMember')
+                    ->with('message', 'Username sudah terpakai')
+                    ->with('messageclass', 'danger');
+        }
+        $getData = $modelMember->getUsers('id', $request->cekId);
+        $full_name = null;
+        if($getData->full_name != null){
+            $full_name = $request->full_name;
+        }
+        $dataUpdate = array(
+            'name' => $request->user_code,
+            'user_code' => $request->user_code,
+            'email' => $request->email,
+            'hp' => $request->hp,
+            'full_name' => $full_name
+        );
+        $modelMember->getUpdateUsers('id', $request->cekId, $dataUpdate);
+        return redirect()->route('adm_listMember')
+                    ->with('message', 'Berhasil')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function postAdminChangePasswordMember(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($request->password != $request->repassword){
+            return redirect()->route('adm_listMember')
+                    ->with('message', 'Password dn ktik ulang password tidak sama')
+                    ->with('messageclass', 'danger');
+        }
+        if(strlen($request->password) < 6){
+            return redirect()->route('adm_listMember')
+                    ->with('message', 'Password terlalu pendek, minimal 6 karakter')
+                    ->with('messageclass', 'danger');
+        }
+        $modelMember = New Member;
+        $dataUpdatePass = array(
+            'password' => bcrypt($request->password),
+        );
+        $modelMember->getUpdateUsers('id', $request->cekId, $dataUpdatePass);
+        return redirect()->route('adm_listMember')
+                    ->with('message', 'Berhasil')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function postAdminChangeBlockMember(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelMember = New Member;
+        $dataUpdate = array(
+            'is_login' => 0,
+        );
+        $modelMember->getUpdateUsers('id', $request->cekId, $dataUpdate);
+        return redirect()->route('adm_listMember')
+                    ->with('message', 'Berhasil Blokir Member')
+                    ->with('messageclass', 'success');
+    }
+    
     
 
 }

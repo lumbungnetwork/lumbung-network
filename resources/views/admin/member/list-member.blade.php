@@ -47,6 +47,7 @@
                                         <th>Status</th>
                                         <th>Tgl. Aktif</th>
                                         <th>Tgl. Expired</th>
+                                        <th>###</th>
                                     </tr>
                                 </thead>
                                 
@@ -81,12 +82,31 @@
                                                 <td><span class="badge badge-pill badge-{{$label}}">{{$active}}</span></td>
                                                 <td>{{date('d F Y', strtotime($row->active_at))}}</td>
                                                 <td>{{date('d F Y', strtotime('+365 days', strtotime($row->active_at)))}}</td>
+                                                <td class="td-actions text-left" >
+                                                    <div class="table-icons">
+                                                        <a rel="tooltip"  data-toggle="modal" data-target="#popUp"  href="{{ URL::to('/') }}/ajax/adm/change-passwd/member/{{$row->id}}" class="text-warning">passwd</a>
+                                                        &nbsp;&nbsp;
+                                                        <a rel="tooltip"  data-toggle="modal" data-target="#popUp1"  href="{{ URL::to('/') }}/ajax/adm/change-data/member/{{$row->id}}" class="text-primary">data</a>
+<!--                                                        &nbsp;&nbsp;
+                                                        <a rel="tooltip"  data-toggle="modal" data-target="#popUp2"  href="{{ URL::to('/') }}/ajax/adm/change-block/member/{{$row->id}}" class="text-danger">blokir</a>-->
+                                                    </div>
+                                                </td>
                                             </tr>
                                         @endforeach
                                     @endif
                                 </tbody>
                             </table>
                              <div class="modal fade" id="popUp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content"></div>
+                                </div>
+                            </div>
+                             <div class="modal fade" id="popUp1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content"></div>
+                                </div>
+                            </div>
+                             <div class="modal fade" id="popUp2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content"></div>
                                 </div>
@@ -114,6 +134,14 @@
 
 <script type="text/javascript">
     $("#popUp").on("show.bs.modal", function(e) {
+        var link = $(e.relatedTarget);
+        $(this).find(".modal-content").load(link.attr("href"));
+    });
+    $("#popUp1").on("show.bs.modal", function(e) {
+        var link = $(e.relatedTarget);
+        $(this).find(".modal-content").load(link.attr("href"));
+    });
+    $("#popUp2").on("show.bs.modal", function(e) {
         var link = $(e.relatedTarget);
         $(this).find(".modal-content").load(link.attr("href"));
     });

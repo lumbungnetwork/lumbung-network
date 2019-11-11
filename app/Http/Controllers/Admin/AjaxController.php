@@ -276,6 +276,36 @@ class AjaxController extends Controller {
                 ->with('dataUser', $dataUser);
     }
     
+    public function getAdminChangeDataMember($id){
+        $dataUser = Auth::user();
+        $modelMember = New Member;
+        $getData = $modelMember->getUsers('id', $id);
+        return view('admin.ajax.change-data')
+                ->with('headerTitle', 'Ubah Data Member')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function getAdminChangePasswordMember($id){
+        $dataUser = Auth::user();
+        $modelMember = New Member;
+        $getData = $modelMember->getUsers('id', $id);
+        return view('admin.ajax.change-passwd')
+                ->with('headerTitle', 'Ubah Password Member')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function getAdminChangeBlockMember($id){
+        $dataUser = Auth::user();
+        $modelMember = New Member;
+        $getData = $modelMember->getUsers('id', $id);
+        return view('admin.ajax.change-block')
+                ->with('headerTitle', 'Blokir Data Member')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
     
       
     

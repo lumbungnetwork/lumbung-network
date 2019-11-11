@@ -72,6 +72,19 @@ class Member extends Model {
         return $data;
     }
     
+    public function getCheckUsercodeNotHim($usercode, $id){
+        $sqlCode = DB::table('users')
+                ->selectRaw('id')
+                ->where('user_code', '=', $usercode)
+                ->where('id', '!=', $id)
+                ->where('user_type', '=', 10)
+                ->count();
+        $data = (object) array(
+            'cekCode' => $sqlCode
+        );
+        return $data;
+    }
+    
     public function getCountLastMember(){
         $getCount = DB::table('users')
                     ->selectRaw('id')
