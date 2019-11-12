@@ -40,6 +40,19 @@ class Sales extends Model {
         return $return;
     }
     
+    public function getAllPurchaseByRegion($prov, $kota){
+        $sql = DB::table('purchase')
+                    ->where('provinsi', '=', $prov)
+                    ->where('kota', '=', $kota)
+                    ->whereNull('deleted_at')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return =$sql;
+        }
+        return $return;
+    }
+    
     public function getDetailPurchase($id){
         $sql = DB::table('purchase')
                     ->where('id', '=', $id)

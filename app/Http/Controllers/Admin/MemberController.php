@@ -1681,7 +1681,11 @@ class MemberController extends Controller {
             return redirect()->route('m_SearchStockist');
         }
         $modelSales = New Sales;
-        $getData = $modelSales->getAllPurchase();
+        $getData = null;
+        if($dataUser->kode_daerah != null){
+            $dataDaerah = explode('.', $dataUser->kode_daerah);
+            $getData = $modelSales->getAllPurchaseByRegion($dataDaerah[0], $dataDaerah[1]);
+        }
         return view('member.sales.stockist_input_stock')
                 ->with('getData', $getData)
                 ->with('dataUser', $dataUser);

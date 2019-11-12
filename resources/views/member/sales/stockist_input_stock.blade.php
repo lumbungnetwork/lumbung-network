@@ -15,7 +15,7 @@
                 </div>
             </div>
             <div class="row">
-                
+                @if($getData != null)
                 <div class="col-xs-12 col-md-6 col-lg-6 col-xl-8">
                     <div class="card-box tilebox-one">
                         @if ( Session::has('message') )
@@ -26,6 +26,7 @@
                                 {{  Session::get('message')    }} 
                             </div>
                         @endif
+                        
                         <div class="row">
                             @foreach($getData as $row)
                             <div class="col-md-4 col-sm-6" style="margin-bottom: 20px;text-align: center;">
@@ -51,7 +52,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="col-xs-12 col-md-6 col-lg-6 col-xl-4">
                     <div class="card-box tilebox-one">
                         <form action="/m/purchase/input-stock" method="POST">
@@ -60,7 +60,16 @@
                         </form>
                     </div>
                 </div>
-                
+                @endif
+                @if($getData == null)
+                <div class="col-xs-12 col-md-6 col-lg-6 col-xl-12">
+                    <div class="card-box tilebox-one">
+                            <div class="alert alert-warning alert-dismissible fade in" role="alert">
+                                Tidak ada data stock
+                            </div>
+                    </div>
+                </div>
+                @endif
             </div>
         </div>
     </div>
