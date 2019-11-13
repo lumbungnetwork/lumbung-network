@@ -201,15 +201,3 @@
     </div>
 @include('layout.member.footer')
 @stop
-
-@section('styles')
-<!--<link href="{{ asset('asset_member/plugins/switchery/switchery.min.css') }}" rel="stylesheet" type="text/css" />-->
-<!--<link rel="stylesheet" href="{{ asset('asset_member/plugins/morris/morris.css') }}">-->
-@stop
-@section('javascript')
-<!--<script src="{{ asset('asset_member/plugins/morris/morris.min.js') }}"></script>-->
-<!--<script src="{{ asset('asset_member/plugins/raphael/raphael-min.js') }}"></script>-->
-<!--<script src="{{ asset('asset_member/plugins/waypoints/lib/jquery.waypoints.js') }}"></script>-->
-<!--<script src="{{ asset('asset_member/plugins/counterup/jquery.counterup.min.js') }}"></script>-->
-<!--<script src="{{ asset('asset_member/pages/jquery.dashboard.js') }}"></script>-->
-@stop

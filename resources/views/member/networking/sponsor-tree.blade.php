@@ -110,7 +110,6 @@
 @include('layout.member.footer')
 @stop
 @section('styles')
-<!--<link href="{{ asset('asset_member/css/binary.css') }}" rel="stylesheet" type="text/css" />-->
 <link href="{{ asset('asset_member/css/tree-style.css') }}" rel="stylesheet" type="text/css" />
 <link href="{{ asset('asset_member/css/developer.css') }}" rel="stylesheet" type="text/css" />
 @stop

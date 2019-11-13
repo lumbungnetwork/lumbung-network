@@ -79,16 +79,14 @@
 </div>
 @include('layout.member.footer')
 @stop
+
 @section('styles')
 <link href="{{ asset('asset_member/plugins/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
-<!--<link href="{{ asset('asset_member/plugins/datatables/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
-<link href="{{ asset('asset_member/plugins/switchery/switchery.min.css') }}" rel="stylesheet" type="text/css" />-->
 @stop
+
 @section('javascript')
 <script src="/asset_member/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="/asset_member/plugins/datatables/dataTables.bootstrap4.min.js"></script>
-<!--<script src="/asset_member/plugins/datatables/dataTables.responsive.min.js"></script>
-<script src="/asset_member/plugins/datatables/responsive.bootstrap4.min.js"></script>-->
 <script>
     function inputSubmit(){
         var total_pin = $("#input_jml_pin").val();
