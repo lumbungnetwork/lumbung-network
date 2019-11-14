@@ -20,9 +20,10 @@
                     <h5><b>({{$getData->pin}} PIN)</b></h5>
                 </div>
                 <ul class="pricing-features">
-                    <li><span class="keywords">{{$getData->short_desc}}</span></li>
-                    <li>Bonus Sponsor Rp. 20.000 / PIN</li>
-                    <li>Link Referal</li>
+                    <li><span class="keywords">Iuran Keanggotaan Tahunan</span></li>
+                    <li>Bonus LMB dari Akumulasi Belanja</li>
+                    <li>1 Hak Usaha</li>
+                    <li>Bonus Insentif dan Rewards</li>
                 </ul>
             </div>
         </div>

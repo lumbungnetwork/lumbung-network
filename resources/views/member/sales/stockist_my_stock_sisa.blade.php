@@ -34,7 +34,7 @@
                                 <tr>
                                     <th>No.</th>
                                     <th>Nama Produk</th>
-                                    <th>Qty Produk</th>
+                                    <th>Kode Produk</th>
                                     <th>Stok Tersedia</th>
                                 </tr>
                             </thead>
@@ -48,7 +48,7 @@
                                 <tr>
                                     <td>{{$no}}</td>
                                     <td>{{$row->ukuran}} {{$row->name}}</td>
-                                    <td>{{number_format($row->total_qty, 0, ',', ',')}}</td>
+                                    <td>{{$row->code}}</td>
                                     <td>{{number_format($row->total_sisa, 0, ',', ',')}}</td>
                                 </tr>
                                 @endforeach

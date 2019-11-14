@@ -29,8 +29,8 @@
                         
                         <div class="row">
                             @foreach($getData as $row)
-                            <div class="col-md-4 col-sm-6" style="margin-bottom: 20px;text-align: center;">
-                                <div class="sc-product-item thumbnail">
+                            <div class="col-md-4 col-sm-6 col-xs-12" style="margin-bottom: 20px;text-align: center;">
+                                <div class="sc-product-item thumbnail card card-block">
                                     <img data-name="product_image" src="{{$row->image}}" alt="..." style="width: 150px;">
                                     <div class="caption">
                                         <h5 data-name="product_name">{{$row->name}} </h5>

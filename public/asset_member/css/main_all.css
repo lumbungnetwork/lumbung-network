@@ -4956,7 +4956,7 @@ File: Menu
   top: 0px;
   z-index: 999; }
   .topbar .topbar-left {
-    /*background: #ffffff; */
+    background: #ffffff; 
     float: left;
     text-align: center;
     height: 70px;

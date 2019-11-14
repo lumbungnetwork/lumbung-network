@@ -261,6 +261,7 @@ class Sales extends Model {
     public function getMemberMasterPurchaseStockist($id){
         $sql = DB::table('item_purchase_master')
                     ->where('stockist_id', '=', $id)
+                    ->orderBy('id', 'DESC')
                     ->get();
         $return = null;
         if(count($sql) > 0){
@@ -384,6 +385,7 @@ class Sales extends Model {
                     ->where('master_sales.stockist_id', '=', $id)
                     ->where('master_sales.status', '>=', 1)
                     ->whereNull('master_sales.deleted_at')
+                    ->orderBy('master_sales.sale_date', 'DESC')
                     ->get();
         $return = null;
         if(count($sql) > 0){

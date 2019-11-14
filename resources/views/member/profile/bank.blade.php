@@ -49,6 +49,7 @@
                                         <option value="BRI">BRI</option>
                                         <option value="BNI">BNI</option>
                                         <option value="BTN">BTN</option>
+                                        <option value="BTPN Jenius">BTPN Jenius</option>
                                     </select>
                                 </fieldset>
                             </div>
@@ -70,8 +71,8 @@
                                 <tr>
                                     <th>No.</th>
                                     <th>Nama</th>
-                                    <th>Email</th>
-                                    <th>No. HP</th>
+                                    <th>No. Rekening</th>
+                                    <th>Nama Bank</th>
                                     <th>Status</th>
                                     <th>###</th>
                                 </tr>

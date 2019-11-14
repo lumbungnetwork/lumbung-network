@@ -526,7 +526,7 @@ class Member extends Model {
                     ->where('user_type', '=', 10)
                     ->where('is_active', '=', 1)
                     ->where('is_stockist', '=', 1)
-                    ->orderBy('id', 'ASC')
+                    ->orderBy('kelurahan', 'ASC')
                     ->get();
         $return = null;
         if(count($sql) > 0){

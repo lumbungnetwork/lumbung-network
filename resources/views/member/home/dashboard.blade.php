@@ -66,7 +66,7 @@
                     @endif
                     @endif
                     <div class="row">
-                        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-4">
+                        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-5">
                             <div class="card-box widget-user">
                                 <div>
                                     @if($dataMy->image != null)
@@ -99,11 +99,31 @@
                             </div>
                         </div>-->
 
-                        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
+<!--                        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
                             <div class="card-box tilebox-two">
                                 <a href="{{ URL::to('/') }}/ref/{{$dataUser->user_code}}" class="btn btn-sm btn-custom waves-effect waves-light pull-xs-right" target="_blank">View</a>
                                 <h6 class="text-muted text-uppercase m-b-15">Referral Link</h6>
                                 <i class="icon-share"></i>
+                            </div>
+                        </div>-->
+                        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-7">
+                            <div class="card-box tilebox-two">
+                                <i class="icon-share pull-xs-right text-muted"></i>
+                                <h6 class="text-muted text-uppercase">Referral Link</h6>
+                                <h6 class="m-b-10">
+                                    <a href="whatsapp://send?text={{ URL::to('/') }}/ref/{{$dataUser->user_code}}" target="_blank" style="color:#3b5998">
+                                        <i class="zmdi zmdi-whatsapp" style="margin-top: 0;"></i>
+                                    </a>
+                                    &nbsp;&nbsp;
+                                        <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ URL::to('/') }}/ref/{{$dataUser->user_code}}" class="fb-xfbml-parse-ignore fb-share-button">
+                                            <i class="zmdi zmdi-facebook-box" style="margin-top: 0;"></i>
+                                        </a>
+                                </h6>
+                                    <div class="form-group pull-xs-left">
+                                        <input type="text" id="myInput" readonly="" class="form-control" value="{{ URL::to('/') }}/ref/{{$dataUser->user_code}}">
+                                    </div>
+                                    &nbsp;
+                                    <button onclick="myFunction()" class="btn btn-sm btn-custom waves-effect waves-light ">Copy</button>
                             </div>
                         </div>
                     </div>
@@ -200,4 +220,17 @@
         </div>
     </div>
 @include('layout.member.footer')
+@stop
+
+@section('javascript')
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v5.0"></script>
+<script>
+    function myFunction() {
+        var copyText = document.getElementById("myInput");
+        copyText.select();
+        copyText.setSelectionRange(0, 99999)
+        document.execCommand("copy");
+      }
+</script>    
 @stop
