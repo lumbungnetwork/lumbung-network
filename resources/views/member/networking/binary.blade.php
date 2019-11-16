@@ -44,20 +44,17 @@
                         </form>
                     </div>
                     <div class="card-box">
-                        @if ( Session::has('message') )
-                            <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible fade in" role="alert">
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">×</span>
-                                </button>
-                                {{  Session::get('message')    }} 
-                            </div>
-                        @endif
                         @if($back == true)
                         <div class="row">
                             <div class="col-xs-12">
                                 <a href="{{ URL::to('/') }}/m/my/binary" class="btn btn-dark btn-sm">
                                     Back
                                 </a>
+                                @if($dataUser->id != $sessionUser->id)
+                                <a href="{{ URL::to('/') }}/m/my/binary?get_id={{$dataUser->upline_id}}" class="btn btn-purple btn-sm">
+                                    One Level Up
+                                </a>
+                                @endif
                             </div>
                         </div>
                         @endif

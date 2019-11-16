@@ -638,6 +638,7 @@ class MemberController extends Controller {
     
     public function getMyBinary(Request $request){
         $dataUser = Auth::user();
+        $sessionUser = Auth::user();
         $onlyUser  = array(10);
         if(!in_array($dataUser->user_type, $onlyUser)){
             return redirect()->route('mainDashboard');
@@ -672,7 +673,8 @@ class MemberController extends Controller {
         return view('member.networking.binary')
                         ->with('getData', $getBinary)
                         ->with('back', $back)
-                        ->with('dataUser', $dataUser);
+                        ->with('dataUser', $dataUser)
+                        ->with('sessionUser', $sessionUser);
     }
     
     //Bank
@@ -1143,6 +1145,7 @@ class MemberController extends Controller {
     
     public function getMySponsorTree(Request $request){
         $dataUser = Auth::user();
+        $sessionUser = Auth::user();
         $onlyUser  = array(10);
         if(!in_array($dataUser->user_type, $onlyUser)){
             return redirect()->route('mainDashboard');
@@ -1165,19 +1168,23 @@ class MemberController extends Controller {
             $downline = '['.$dataUser->id.']';
         }
         if($request->get_id != null){
+            if($request->get_id < $sessionUser->id){
+                return redirect()->route('mainDashboard');
+            }
             if($request->get_id != $dataUser->id){
                 $back = true;
-                $dataUser = $modelMember->getCekIdDownlineSponsor($request->get_id, $dataUser->id);
+                $dataUser = $modelMember->getUsers('id', $request->get_id);
             }
         }
         if($dataUser == null){
-            return redirect()->route('mainDashboard');
+            return redirect()->route('m_mySponsorTree');
         }
         $getBinary = $modelMember->getStructureSponsor($dataUser);
         return view('member.networking.sponsor-tree')
                         ->with('getData', $getBinary)
                         ->with('back', $back)
-                        ->with('dataUser', $dataUser);
+                        ->with('dataUser', $dataUser)
+                        ->with('sessionUser', $sessionUser);
     }
     
     public function getMyTron(){

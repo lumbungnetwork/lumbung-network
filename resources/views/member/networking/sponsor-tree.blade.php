@@ -44,6 +44,20 @@
                         </form>
                     </div>
                     <div class="card-box">
+                        @if($back == true)
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <a href="{{ URL::to('/') }}/m/my/sponsor-tree" class="btn btn-dark btn-sm">
+                                    Back
+                                </a>
+                                @if($dataUser->id != $sessionUser->id)
+                                <a href="{{ URL::to('/') }}/m/my/sponsor-tree?get_id={{$dataUser->sponsor_id}}" class="btn btn-purple btn-sm">
+                                    One Level Up
+                                </a>
+                                @endif
+                            </div>
+                        </div>
+                        @endif
                         <div class="row">
                             <div class="col-xs-12">
                                 <div class="region region-content">
@@ -56,7 +70,9 @@
                                                             <div class="eps-nc" nid="12">
                                                                 <div class="user-pic">
                                                                     <div class="images_wrapper text-primary" style="font-size: 40px;margin: 10px 0;">
-                                                                        <i class="icon-user"></i>
+                                                                        <a href="{{ URL::to('/') }}/m/my/sponsor-tree?get_id={{$dataUser->id}}">
+                                                                            <i class="icon-user"></i>
+                                                                        </a>
                                                                     </div>
                                                                 </div>
                                                                 <div class="user-name">
@@ -73,7 +89,9 @@
                                                                         <div class="eps-nc" nid="13">
                                                                             <div class="user-pic">
                                                                                 <div class="images_wrapper text-success" style="font-size: 40px;margin: 10px 0;">
-                                                                                    <i class="icon-user"></i>
+                                                                                    <a href="{{ URL::to('/') }}/m/my/sponsor-tree?get_id={{$row->id}}">
+                                                                                        <i class="icon-user"></i>
+                                                                                    </a>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="user-name">
