@@ -26,7 +26,7 @@
                         @endif
                         {{ csrf_field() }}
                         <div class="row">
-                            <div class="col-xl-4 col-xs-12">
+                            <div class="col-xl-5 col-xs-12">
                                     <fieldset class="form-group">
                                         <label for="provinsi">Provinsi</label>
                                         <select class="form-control" name="provinsi" id="provinsi" onChange="getSearchKota(this.value);">
@@ -39,7 +39,7 @@
                                         </select>
                                     </fieldset>
                             </div>
-                            <div class="col-xl-6 col-xs-12">
+                            <div class="col-xl-7 col-xs-12">
                                     <fieldset class="form-group">
                                         <label for="kota">Kota/Kabupaten</label>
                                         <select class="form-control" name="kota" id="kota" onChange="getSearchKecamatan(this.value);">
@@ -48,14 +48,14 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xl-5 col-xs-12">
+                            <div class="col-xl-6 col-xs-12">
                                 <fieldset class="form-group">
                                     <label for="kecamatan">Kecamatan</label>
                                     <select class="form-control" name="kecamatan" id="kecamatan" onChange="getSearchKelurahan(this.value);">
                                     </select>
                                 </fieldset>
                             </div>
-                            <div class="col-xl-5 col-xs-12">
+                            <div class="col-xl-6 col-xs-12">
                                 <fieldset class="form-group">
                                     <label for="kelurahan">Kelurahan</label>
                                     <select class="form-control" name="kelurahan" id="kelurahan">
@@ -64,17 +64,11 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xl-8 col-xs-12">
+                            <div class="col-xl-12 col-xs-12">
                                 <fieldset class="form-group">
                                     <label for="alamat">Alamat Lengkap</label>
                                     <textarea class="form-control" id="alamat" rows="2" name="alamat" autocomplete="off"></textarea>
                                 </fieldset>
-                            </div>
-                            <div class="col-xl-2 col-xs-12">
-                                    <fieldset class="form-group">
-                                        <label for="kode_pos">Kode Pos</label>
-                                        <input type="text" class="form-control allownumericwithoutdecimal" id="kode_pos" name="kode_pos" autocomplete="off">
-                                    </fieldset>
                             </div>
                         </div>
                         <div class="row">

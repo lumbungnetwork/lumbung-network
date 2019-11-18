@@ -79,17 +79,11 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xl-8 col-xs-12">
+                            <div class="col-xl-12 col-xs-12">
                                 <fieldset class="form-group" disabled>
                                     <label for="alamt_lengkap">Alamat Lengkap</label>
                                     <textarea class="form-control" id="alamt_lengkap" rows="2">{{$dataUser->alamat}}</textarea>
                                 </fieldset>
-                            </div>
-                            <div class="col-xl-2 col-xs-12">
-                                    <fieldset class="form-group" disabled>
-                                        <label for="kode_pos">Kode Pos</label>
-                                        <input type="text" class="form-control" id="kode_pos" value="{{$dataUser->kode_pos}}">
-                                    </fieldset>
                             </div>
                         </div>
                     </div>

@@ -57,16 +57,10 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-9 col-xs-12">
+                <div class="col-md-12 col-xs-12">
                     <div class="form-group">
                         <label>Alamat</label>
                         <input type="text" class="form-control" readonly="" name="alamat" value="{{$dataRequest->alamat}}">
-                    </div>
-                </div>
-                <div class="col-md-3 col-xs-12">
-                    <div class="form-group">
-                        <label>Kode Pos</label>
-                        <input type="text" class="form-control" readonly="" name="kode_pos"  value="{{$dataRequest->kode_pos}}">
                     </div>
                 </div>
             </div>

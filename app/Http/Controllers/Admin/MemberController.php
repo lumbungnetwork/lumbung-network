@@ -76,7 +76,6 @@ class MemberController extends Controller {
             'gender' => $request->gender,
             'alamat' => $request->alamat,
             'provinsi' => $request->provinsi,
-            'kode_pos' => $request->kode_pos,
             'kota' => $request->kota,
             'kecamatan' => $request->kecamatan,
             'kelurahan' => $request->kelurahan,
@@ -1548,7 +1547,6 @@ class MemberController extends Controller {
         $dataUpdate = array(
             'alamat' => $request->alamat,
             'provinsi' => $request->provinsi,
-            'kode_pos' => $request->kode_pos,
             'kota' => $request->kota,
             'kecamatan' => $request->kecamatan,
             'kelurahan' => $request->kelurahan,
