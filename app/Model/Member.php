@@ -719,6 +719,55 @@ class Member extends Model {
         return $result;
     }
     
+    public function getSearchUserByKelurahan($data, $kecamatan){
+        $sql = DB::table('users')
+                    ->where('kelurahan', '=', $data)
+                    ->where('kecamatan', '=', $kecamatan)
+                    ->where('user_type', '=', 10)
+                    ->where('is_active', '=', 1)
+                    ->where('is_stockist', '=', 1)
+                    ->orderBy('user_code', 'ASC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getSearchUserByKecamatan($kecamatan, $kelurahan){
+        $sql = DB::table('users')
+                    ->where('kecamatan', '=', $kecamatan)
+                    ->where('kelurahan', '!=', $kelurahan)
+                    ->where('user_type', '=', 10)
+                    ->where('is_active', '=', 1)
+                    ->where('is_stockist', '=', 1)
+                    ->orderBy('user_code', 'ASC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getSearchUserByKota($data, $kecamatan, $kelurahan){
+        $sql = DB::table('users')
+                    ->where('kota', '=', $data)
+                    ->where('kecamatan', '!=', $kecamatan)
+                    ->where('kelurahan', '!=', $kelurahan)
+                    ->where('user_type', '=', 10)
+                    ->where('is_active', '=', 1)
+                    ->where('is_stockist', '=', 1)
+                    ->orderBy('user_code', 'ASC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
     
     
 }

@@ -1046,7 +1046,7 @@ class MemberController extends Controller {
         $getActivePinSetting = $modelSettingPin->getActivePinSetting();
         $price_pin = $getActivePinSetting->price * $request->total_pin;
         $royalti_statik = 1;
-        $bonus_royalti = ($royalti_statik/100 * $price_pin)/2;
+        $bonus_royalti = 500; //($royalti_statik/100 * $price_pin)/2; //500
         if($getLevelSp->id_lvl1 != null){
             $dataInsertBonusLvl1 = array(
                 'user_id' => $getLevelSp->id_lvl1,
@@ -1307,15 +1307,24 @@ class MemberController extends Controller {
             return redirect()->route('m_newPackage');
         }
         $modelMember = New Member;
-        $getData = null;
+        $getDataKelurahan = null;
+        $getDataKecamatan = null;
+        $getDataKota = null;
         if($dataUser->kode_daerah != null){
             $dataDaerah = explode('.', $dataUser->kode_daerah);
             $provKota = $dataDaerah[0].'.'.$dataDaerah[1];
-            $getData = $modelMember->getSearchUserByLocation($provKota);
+            $kelurahan = $dataUser->kelurahan;
+            $kecamatan = $dataUser->kecamatan;
+            $kota = $dataUser->kota;
+            $getDataKelurahan = $modelMember->getSearchUserByKelurahan($kelurahan, $kecamatan);
+            $getDataKecamatan = $modelMember->getSearchUserByKecamatan($kecamatan, $kelurahan);
+            $getDataKota = $modelMember->getSearchUserByKota($kota, $kecamatan, $kelurahan);
         }
         $cekRequestStockist = $modelMember->getCekRequestSotckist($dataUser->id);
         return view('member.profile.m_shop')
-                ->with('getData', $getData)
+                ->with('getDataKelurahan', $getDataKelurahan)
+                ->with('getDataKecamatan', $getDataKecamatan)
+                ->with('getDataKota', $getDataKota)
                 ->with('cekRequest', $cekRequestStockist)
                 ->with('dataUser', $dataUser);
     }
