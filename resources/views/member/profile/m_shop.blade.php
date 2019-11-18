@@ -62,7 +62,23 @@
                 </div>
                 @endif
             </div>
-            @if($getDataKota != null)
+            
+            <?php
+                $totKota = 0;
+                if($getDataKota != null){
+                    $totKota = count($getDataKota);
+                }
+                $totKec = 0;
+                if($getDataKecamatan != null){
+                    $totKec = count($getDataKecamatan);
+                }
+                $totKel = 0;
+                if($getDataKelurahan != null){
+                    $totKel = count($getDataKelurahan);
+                }
+                $totalData = $totKota + $totKec + $totKel;
+            ?>
+            @if($totalData > 0)
             <div class="row">
                 <div class="col-sm-12 card-box table-responsive">
                     <h4 class="header-title m-t-0">Stockist terdekat di Area anda</h4>
@@ -76,36 +92,44 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($getDataKelurahan as $row)    
-                                <tr>
-                                    <td>{{$row->full_name}}</td>
-                                    <td>{{$row->alamat}} {{$row->kelurahan}} {{$row->kecamatan}} {{$row->kota}}</td>
-                                    <td>{{$row->hp}}</td>
-                                    <td>
-                                        <a class="btn btn-warning btn-sm waves-effect waves-light" href="{{ URL::to('/') }}/m/shoping/{{$row->id}}"> <i class="fa fa-rocket m-r-5"></i> <span>Shop</span> </a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                            @foreach($getDataKecamatan as $row)    
-                                <tr>
-                                    <td>{{$row->full_name}}</td>
-                                    <td>{{$row->alamat}} {{$row->kelurahan}} {{$row->kecamatan}} {{$row->kota}}</td>
-                                    <td>{{$row->hp}}</td>
-                                    <td>
-                                        <a class="btn btn-warning btn-sm waves-effect waves-light" href="{{ URL::to('/') }}/m/shoping/{{$row->id}}"> <i class="fa fa-rocket m-r-5"></i> <span>Shop</span> </a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                            @foreach($getDataKota as $row)    
-                                <tr>
-                                    <td>{{$row->full_name}}</td>
-                                    <td>{{$row->alamat}} {{$row->kelurahan}} {{$row->kecamatan}} {{$row->kota}}</td>
-                                    <td>{{$row->hp}}</td>
-                                    <td>
-                                        <a class="btn btn-warning btn-sm waves-effect waves-light" href="{{ URL::to('/') }}/m/shoping/{{$row->id}}"> <i class="fa fa-rocket m-r-5"></i> <span>Shop</span> </a>
-                                    </td>
-                                </tr>
-                            @endforeach
+                            @if($getDataKelurahan != null)
+                                @foreach($getDataKelurahan as $row)    
+                                    <tr>
+                                        <td>{{$row->full_name}}</td>
+                                        <td>{{$row->alamat}} {{$row->kelurahan}} {{$row->kecamatan}} {{$row->kota}}</td>
+                                        <td>{{$row->hp}}</td>
+                                        <td>
+                                            <a class="btn btn-warning btn-sm waves-effect waves-light" href="{{ URL::to('/') }}/m/shoping/{{$row->id}}"> <i class="fa fa-rocket m-r-5"></i> <span>Shop</span> </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
+                            
+                            @if($getDataKecamatan != null)
+                                @foreach($getDataKecamatan as $row)    
+                                    <tr>
+                                        <td>{{$row->full_name}}</td>
+                                        <td>{{$row->alamat}} {{$row->kelurahan}} {{$row->kecamatan}} {{$row->kota}}</td>
+                                        <td>{{$row->hp}}</td>
+                                        <td>
+                                            <a class="btn btn-warning btn-sm waves-effect waves-light" href="{{ URL::to('/') }}/m/shoping/{{$row->id}}"> <i class="fa fa-rocket m-r-5"></i> <span>Shop</span> </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
+                            
+                            @if($getDataKota != null)
+                                @foreach($getDataKota as $row)    
+                                    <tr>
+                                        <td>{{$row->full_name}}</td>
+                                        <td>{{$row->alamat}} {{$row->kelurahan}} {{$row->kecamatan}} {{$row->kota}}</td>
+                                        <td>{{$row->hp}}</td>
+                                        <td>
+                                            <a class="btn btn-warning btn-sm waves-effect waves-light" href="{{ URL::to('/') }}/m/shoping/{{$row->id}}"> <i class="fa fa-rocket m-r-5"></i> <span>Shop</span> </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
                         </tbody>
                     </table>
                 </div>
