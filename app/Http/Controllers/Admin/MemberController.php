@@ -1309,6 +1309,7 @@ class MemberController extends Controller {
         $getDataKelurahan = null;
         $getDataKecamatan = null;
         $getDataKota = null;
+        $getData = null;
         if($dataUser->kode_daerah != null){
             $dataDaerah = explode('.', $dataUser->kode_daerah);
             $provKota = $dataDaerah[0].'.'.$dataDaerah[1];
@@ -1325,6 +1326,7 @@ class MemberController extends Controller {
                 ->with('getDataKecamatan', $getDataKecamatan)
                 ->with('getDataKota', $getDataKota)
                 ->with('cekRequest', $cekRequestStockist)
+                ->with('getData', $getData)
                 ->with('dataUser', $dataUser);
     }
     
@@ -1343,10 +1345,16 @@ class MemberController extends Controller {
                     ->with('messageclass', 'danger');
         }
         $modelMember = New Member;
+        $getDataKelurahan = null;
+        $getDataKecamatan = null;
+        $getDataKota = null;
         $getData = $modelMember->getSearchUserStockist($request->user_name);
         $cekRequestStockist = $modelMember->getCekRequestSotckist($dataUser->id);
         return view('member.profile.m_shop')
                 ->with('getData', $getData)
+                ->with('getDataKelurahan', $getDataKelurahan)
+                ->with('getDataKecamatan', $getDataKecamatan)
+                ->with('getDataKota', $getDataKota)
                 ->with('cekRequest', $cekRequestStockist)
                 ->with('dataUser', $dataUser);
     }

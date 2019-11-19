@@ -33,7 +33,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>Search username</label>
+                                            <label>Relevant Search</label>
                                             <input type="text" class="form-control" name="name" placeholder="Minimal 3 karakter">
                                         </div>
                                     </div>

@@ -64,7 +64,7 @@
                                                 <label for="radio2">
                                                     eIDR
                                                     <br>
-                                                    <b>TWJtGQHBS88PfZTXvWAYhQEMrx36eX2F9Pc</b>
+                                                    <b>TZHYx9bVa4vQz8VpVvZtjwMb4AHqkUChiQ</b>
                                                 </label>
                                             </div>
                                             @endif

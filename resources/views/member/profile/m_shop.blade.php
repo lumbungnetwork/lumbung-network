@@ -135,6 +135,35 @@
                 </div>
             </div>
             @endif
+            @if($getData != null)
+            <div class="row">
+                <div class="col-sm-12 card-box table-responsive">
+                    <h4 class="header-title m-t-0">Stockist terdekat di Area anda</h4>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Nama</th>
+                                <th>Alamat</th>
+                                <th>HP</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                @foreach($getData as $row)    
+                                    <tr>
+                                        <td>{{$row->full_name}}</td>
+                                        <td>{{$row->alamat}} {{$row->kelurahan}} {{$row->kecamatan}} {{$row->kota}}</td>
+                                        <td>{{$row->hp}}</td>
+                                        <td>
+                                            <a class="btn btn-warning btn-sm waves-effect waves-light" href="{{ URL::to('/') }}/m/shoping/{{$row->id}}"> <i class="fa fa-rocket m-r-5"></i> <span>Shop</span> </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            @endif
         </div>
     </div>
 </div>
