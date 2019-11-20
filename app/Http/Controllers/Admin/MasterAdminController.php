@@ -773,6 +773,7 @@ class MasterAdminController extends Controller {
             }
             
         }
+        $qty = 200000;
         $dataInsert = array(
             'name' => $request->name,
             'ukuran' => $request->ukuran,
@@ -784,7 +785,7 @@ class MasterAdminController extends Controller {
             'kota' => $kota,
             'kecamatan' => $kecamatan,
             'kelurahan' => $kelurahan,
-            'qty' => $request->qty,
+            'qty' => $qty,
             'area' => $provinsiName.' '.$kotaName.' '.$kecamatanName.' '.$kelurahanName
         );
         $getInsertPurchase = $modelSales->getInsertPurchase($dataInsert);
@@ -793,7 +794,7 @@ class MasterAdminController extends Controller {
             'purchase_id' => $getInsertPurchase->lastID,
             'user_id' => $dataUser->id,
             'type' => 1,
-            'amount' => $request->qty
+            'amount' => $qty
         );
         $modelSales->getInsertStock($dataInsertStock);
         return redirect()->route('adm_listPurchases')
@@ -1117,10 +1118,18 @@ class MasterAdminController extends Controller {
         $modelMember = New Member;
         $getData = $modelSales->getDetailPurchase($id);
         $getProvince = $modelMember->getProvinsi();
+        $geCodeProvince = $getData->provinsi.'.00.00.0000';
+        $getCodeKota = $getData->provinsi.'.'.$getData->kota.'.00.0000';
+        $getDetailProvinsi = $modelMember->getNamaByKode($geCodeProvince);
+        $getDetailKota = $modelMember->getNamaByKode($getCodeKota);
+        $getAllKotaFromProvince = $modelMember->getKabupatenKotaByPropinsi($getData->provinsi);
         return view('admin.sales.edit_purchase')
                 ->with('headerTitle', 'Edit Products')
                 ->with('provinsi', $getProvince)
                 ->with('getData', $getData)
+                ->with('detailProvinsi', $getDetailProvinsi)
+                ->with('detailKota', $getDetailKota)
+                ->with('allKota', $getAllKotaFromProvince)
                 ->with('dataUser', $dataUser);
     }
     
@@ -1178,15 +1187,9 @@ class MasterAdminController extends Controller {
             'kota' => $kota,
             'kecamatan' => $kecamatan,
             'kelurahan' => $kelurahan,
-            'qty' => $request->qty,
             'area' => $provinsiName.' '.$kotaName.' '.$kecamatanName.' '.$kelurahanName
         );
         $modelSales->getUpdatePurchase('id', $request->id, $dataUpdate);
-        $getStock = $modelSales->getStockID($request->id);
-        $dataUpdateStock = array(
-            'amount' => $request->qty
-        );
-        $modelSales->getUpdateStock('id', $getStock->id, $dataUpdateStock);
         return redirect()->route('adm_listPurchases')
                     ->with('message', 'Produk berhasil diedit')
                     ->with('messageclass', 'success');

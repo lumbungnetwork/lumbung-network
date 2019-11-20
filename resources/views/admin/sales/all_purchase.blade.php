@@ -48,7 +48,6 @@
                                         <th>Harga Member</th>
                                         <th>Kode Produk</th>
                                         <th>Area</th>
-                                        <th>Stock</th>
                                         <th>###</th>
                                     </tr>
                                 </thead>
@@ -70,7 +69,6 @@
                                                 <td>{{number_format($row->member_price, 0, ',', ',')}}</td>
                                                 <td>{{$row->code}}</td>
                                                 <td>{{$row->area}}</td>
-                                                <td>{{number_format($row->qty, 0, ',', '')}}</td>
                                                 <td>
                                                     <a class="text-info" href="{{ URL::to('/') }}/adm/edit/purchase/{{$row->id}}">edit</a>
                                                     &nbsp;&nbsp;

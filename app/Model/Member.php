@@ -520,6 +520,21 @@ class Member extends Model {
         return $return;
     }
     
+    public function getMyDownlineUsernameStockist($username){
+        $sql = DB::table('users')
+                    ->where('user_type', '=', 10)
+                    ->where('is_active', '=', 1)
+                    ->where('user_code', 'LIKE', '%'.$username.'%')
+                    ->where('is_stockist', '=', 1)
+                    ->orderBy('id', 'ASC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
     public function getSearchUserByLocation($data){
         $sql = DB::table('users')
                     ->where('kode_daerah', 'LIKE', $data.'%')

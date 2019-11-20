@@ -36,7 +36,9 @@
                             <div class="col-xl-12 col-xs-12">
                                     <fieldset class="form-group">
                                         <label for="user_name">Masukkan Username Stokis Tujuan Belanja Anda:</label>
-                                        <input type="text" class="form-control" id="user_name" name="user_name" autocomplete="off">
+                                        <input type="text" class="form-control" id="get_id" name="user_name" autocomplete="off">
+                                        <input type="hidden" name="get_id" id="id_get_id">
+                                    <ul class="typeahead dropdown-menu form-control" style="max-height: 120px; overflow: auto;border: 1px solid #ddd;width: 98%;margin-left: 11px;" id="get_id-box"></ul>
                                     </fieldset>
                             </div>
                         </div>
@@ -168,4 +170,27 @@
     </div>
 </div>
 @include('layout.member.footer')
+@stop
+
+@section('javascript')
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#get_id").keyup(function(){
+            $.ajax({
+                type: "GET",
+                url: "{{ URL::to('/') }}/m/cek/usercode-stockist" + "?name=" + $(this).val() ,
+                success: function(data){
+                    $("#get_id-box").show();
+                    $("#get_id-box").html(data);
+                }
+            });
+        });
+    });
+    function selectUsername(val) {
+        var valNew = val.split("____");
+        $("#get_id").val(valNew[1]);
+        $("#id_get_id").val(valNew[0]);
+        $("#get_id-box").hide();
+    }
+</script>
 @stop

@@ -73,14 +73,6 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <label class="col-md-2 col-form-label">Quantity (Stock)</label>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <input type="text" class="form-control allownumericwithoutdecimal"  name="qty" required="true" autocomplete="off">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
                                 <label class="col-md-2 col-form-label">Area</label>
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -99,25 +91,7 @@
                                 <label class="col-md-2 col-form-label">&nbsp;</label>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <select class="form-control" name="kota" id="kota" onChange="getSearchKecamatan(this.value);">
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <label class="col-md-2 col-form-label">&nbsp;</label>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <select class="form-control" name="kecamatan" id="kecamatan" onChange="getSearchKelurahan(this.value);">
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <label class="col-md-2 col-form-label">&nbsp;</label>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <select class="form-control" name="kelurahan" id="kelurahan">
+                                        <select class="form-control" name="kota" id="kota">
                                         </select>
                                     </div>
                                 </div>

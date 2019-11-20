@@ -793,6 +793,18 @@ class AjaxmemberController extends Controller {
                         ->with('data', $getData)
                         ->with('check', $canInsert);
     }
+    
+    public function getSearchUserCodeStockist(Request $request){
+        $dataUser=  Auth::user();
+        $modelMember = New Member;
+        $getDownlineUsername = null;
+        if($request->name != null){
+            $getDownlineUsername = $modelMember->getMyDownlineUsernameStockist($request->name);
+        }
+        return view('member.ajax.get_name_autocomplete')
+                        ->with('getData', $getDownlineUsername)
+                        ->with('dataUser', $dataUser);
+    }
 
     
     

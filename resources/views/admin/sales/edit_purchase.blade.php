@@ -81,14 +81,6 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <label class="col-md-2 col-form-label">Quantity (Stock)</label>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <input type="text" class="form-control allownumericwithoutdecimal"  name="qty" required="true" autocomplete="off" value="{{number_format($getData->qty, 0, ',', '')}}">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
                                 <label class="col-md-2 col-form-label">Area</label>
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -96,7 +88,7 @@
                                                 <option value="0">- Pilih Provinsi -</option>
                                                 @if($provinsi != null) 
                                                     @foreach($provinsi as $row)
-                                                        <option value="{{$row->propinsi}}">{{$row->nama}}</option>
+                                                        <option value="{{$row->propinsi}}" @if($detailProvinsi->propinsi == $row->propinsi) selected @endif>{{$row->nama}}</option>
                                                     @endforeach
                                                 @endif
                                         </select>
@@ -107,29 +99,18 @@
                                 <label class="col-md-2 col-form-label">&nbsp;</label>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <select class="form-control" name="kota" id="kota" onChange="getSearchKecamatan(this.value);">
+                                        <select class="form-control" name="kota" id="kota">
+                                            @if($allKota != null) 
+                                                @foreach($allKota as $row)
+                                                    <option value="{{$row->kode}}" @if($detailKota->kode == $row->kode) selected @endif>{{$row->nama}}</option>
+                                                @endforeach
+                                            @endif
                                         </select>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <label class="col-md-2 col-form-label">&nbsp;</label>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <select class="form-control" name="kecamatan" id="kecamatan" onChange="getSearchKelurahan(this.value);">
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <label class="col-md-2 col-form-label">&nbsp;</label>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <select class="form-control" name="kelurahan" id="kelurahan">
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
+                            
+                            
                             <div class="row">
                                 <label class="col-md-2 col-form-label">Gambar (URL)</label>
                                 <div class="col-md-6">

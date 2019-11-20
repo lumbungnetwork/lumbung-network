@@ -32,6 +32,7 @@ class Sales extends Model {
     public function getAllPurchase(){
         $sql = DB::table('purchase')
                     ->whereNull('deleted_at')
+                    ->orderBy('id', 'DESC')
                     ->get();
         $return = null;
         if(count($sql) > 0){

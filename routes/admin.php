@@ -260,6 +260,7 @@ Route::prefix('/')->group(function () {
         Route::get('/m/cek/reject-pembelian', 'Admin\AjaxmemberController@postCekRejectPembelian')->middleware('auth');
         Route::get('/m/cek/confirm-belanja-reward', 'Admin\AjaxmemberController@getCekConfirmBelanjaReward')->middleware('auth');
         Route::get('/m/cek/confirm-penjualan-reward', 'Admin\AjaxmemberController@getCekConfirmPenjualanReward')->middleware('auth');
+        Route::get('/m/cek/usercode-stockist', 'Admin\AjaxmemberController@getSearchUserCodeStockist')->middleware('auth');
         
         Route::get('/m/search/{type}', 'Admin\AjaxmemberController@getSearchByType')->middleware('auth');
 });
