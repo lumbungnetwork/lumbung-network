@@ -1380,6 +1380,83 @@ class MasterAdminController extends Controller {
                 ->with('dataUser', $dataUser);
     }
     
+    public function getAllWDRoyalti(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelWD = new Transferwd;
+        $getData = $modelWD->getAllRequestWDRoyalti();
+        return view('admin.member.list-wd-royalti')
+                ->with('headerTitle', 'Request Withdrawal Royalti')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postCheckWDRoyalti(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelWD = new Transferwd;
+        if($request->id == null){
+            return redirect()->route('adm_listWDRoyalti')
+                        ->with('message', 'tidak ada data yang dipilih')
+                        ->with('messageclass', 'danger');
+        }
+        $getRowID = $request->id;
+        foreach($getRowID as $getID){
+            $dataUpdate = array(
+                'status' => 1,
+                'transfer_at' => date('Y-m-d H:i:s')
+            );
+            $modelWD->getUpdateWD('id', $getID, $dataUpdate);
+        }
+        return redirect()->route('adm_listWDRoyalti')
+                    ->with('message', 'Konfirmasi Transfer WD Royalti berhasil')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function postRejectWDRoyalti(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = New Bonus;
+        $modelWD = new Transferwd;
+        $getID = $request->cekId;
+        $alesan = $request->reason;
+        $getData = $modelWD->getIDRequestWDReject($getID);
+        $dataUpdate = array(
+            'status' => 2,
+            'reason' => $alesan,
+            'deleted_at' => date('Y-m-d H:i:s')
+        );
+        $modelWD->getUpdateWD('id', $getID, $dataUpdate);
+        $redirect = 'adm_listWDRoyalti';
+        $wd = 'WD Royalti';
+        return redirect()->route($redirect)
+                    ->with('message', 'Data '.$wd.' '.$getData->full_name.' senilai Rp. '.number_format($getData->wd_total + $getData->admin_fee, 0, ',', '.').' direject')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function getAllHistoryWDRoyalti(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelWD = new Transferwd;
+        $getData = $modelWD->getAllHistoryWDRoyalti();
+        return view('admin.member.history-wd-royalti')
+                ->with('headerTitle', 'History Withdrawal Royalti')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
     
 
 }

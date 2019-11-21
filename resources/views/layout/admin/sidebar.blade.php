@@ -70,6 +70,12 @@
                             <span class="sidebar-normal"> Claim Penjualan Reward </span>
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ URL::to('/') }}/adm/list/wd-royalti">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> Request Withdrawal Royalti </span>
+                            </a>
+                         </li>
                          <li>
                             <a href="{{ URL::to('/') }}/adm/history/wd">
                             <span class="sidebar-mini-icon">+</span>
@@ -98,6 +104,12 @@
                             <a href="{{ URL::to('/') }}/adm/history/penjualan-reward">
                             <span class="sidebar-mini-icon">+</span>
                             <span class="sidebar-normal"> History Penjualan Reward </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ URL::to('/') }}/adm/history/wd-royalti">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> History Withdrawal Royalti</span>
                             </a>
                         </li>
                     </ul>

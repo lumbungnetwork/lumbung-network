@@ -190,6 +190,7 @@ class Transferwd extends Model {
                             . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee')
                     ->where('transfer_wd.status', '=', 0)
                     ->where('transfer_wd.is_tron', '=', 0)
+                    ->where('transfer_wd.type', '=', 1)
                     ->orderBy('transfer_wd.id', 'DESC')
                     ->get();
         $return = null;
@@ -206,6 +207,24 @@ class Transferwd extends Model {
                             . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee')
                     ->where('transfer_wd.status', '=', 0)
                     ->where('transfer_wd.is_tron', '=', 1)
+                    ->orderBy('transfer_wd.id', 'DESC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getAllRequestWDRoyalti(){
+        $sql = DB::table('transfer_wd')
+                    ->join('users', 'transfer_wd.user_id', '=', 'users.id')
+                    ->join('bank', 'transfer_wd.user_bank', '=', 'bank.id')
+                    ->selectRaw('transfer_wd.id, users.user_code, users.hp, bank.bank_name, bank.account_no, bank.account_name,'
+                            . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee')
+                    ->where('transfer_wd.status', '=', 0)
+                    ->where('transfer_wd.is_tron', '=', 0)
+                    ->where('transfer_wd.type', '=', 3)
                     ->orderBy('transfer_wd.id', 'DESC')
                     ->get();
         $return = null;
@@ -239,6 +258,7 @@ class Transferwd extends Model {
                             . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee, users.full_name,'
                             . 'transfer_wd.reason, transfer_wd.status')
                     ->where('transfer_wd.id', '=', $id)
+                    ->where('transfer_wd.type', '=', 1)
                     ->orderBy('transfer_wd.id', 'DESC')
                     ->first();
         return $sql;
@@ -269,6 +289,33 @@ class Transferwd extends Model {
         return $sql;
     }
     
+    public function getIDRequestWDRoyalti($id){
+        $sql = DB::table('transfer_wd')
+                    ->join('users', 'transfer_wd.user_id', '=', 'users.id')
+                    ->join('bank', 'transfer_wd.user_bank', '=', 'bank.id')
+                    ->selectRaw('transfer_wd.id, users.user_code, users.hp, bank.bank_name, bank.account_no, bank.account_name,'
+                            . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee, users.full_name,'
+                            . 'transfer_wd.reason, transfer_wd.status')
+                    ->where('transfer_wd.id', '=', $id)
+                    ->where('transfer_wd.type', '=', 3)
+                    ->orderBy('transfer_wd.id', 'DESC')
+                    ->first();
+        return $sql;
+    }
+    
+    public function getIDRequestWDRejectRoyalti($id){
+        $sql = DB::table('transfer_wd')
+                    ->join('users', 'transfer_wd.user_id', '=', 'users.id')
+                    ->selectRaw('transfer_wd.id, users.user_code, users.hp,'
+                            . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee, users.full_name,'
+                            . 'transfer_wd.reason, transfer_wd.status, transfer_wd.is_tron')
+                    ->where('transfer_wd.id', '=', $id)
+                    ->where('transfer_wd.type', '=', 3)
+                    ->orderBy('transfer_wd.id', 'DESC')
+                    ->first();
+        return $sql;
+    }
+    
     public function getAllHistoryWD(){
         $sql = DB::table('transfer_wd')
                     ->join('users', 'transfer_wd.user_id', '=', 'users.id')
@@ -276,6 +323,7 @@ class Transferwd extends Model {
                     ->selectRaw('transfer_wd.id, users.user_code, users.hp, bank.bank_name, bank.account_no, bank.account_name,'
                             . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee, transfer_wd.status,  '
                             . 'transfer_wd.reason')
+                    ->where('transfer_wd.type', '=', 1)
                     ->orderBy('transfer_wd.id', 'DESC')
                     ->get();
         $return = null;
@@ -293,6 +341,23 @@ class Transferwd extends Model {
                             . 'transfer_wd.reason')
                     ->orderBy('transfer_wd.id', 'DESC')
                     ->where('transfer_wd.is_tron', '=', 1)
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getAllHistoryWDRoyalti(){
+        $sql = DB::table('transfer_wd')
+                    ->join('users', 'transfer_wd.user_id', '=', 'users.id')
+                    ->join('bank', 'transfer_wd.user_bank', '=', 'bank.id')
+                    ->selectRaw('transfer_wd.id, users.user_code, users.hp, bank.bank_name, bank.account_no, bank.account_name,'
+                            . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee, transfer_wd.status,  '
+                            . 'transfer_wd.reason')
+                    ->where('transfer_wd.type', '=', 3)
+                    ->orderBy('transfer_wd.id', 'DESC')
                     ->get();
         $return = null;
         if(count($sql) > 0){

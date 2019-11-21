@@ -54,11 +54,15 @@ Route::prefix('/')->group(function () {
         Route::get('/adm/list/bonus-sp', 'Admin\MasterAdminController@getAllBonusSponsor')->name('adm_listBonusSP')->middleware('auth');
         Route::get('/adm/list/wd', 'Admin\MasterAdminController@getAllWD')->name('adm_listWD')->middleware('auth');
         Route::get('/adm/list/wd-eidr', 'Admin\MasterAdminController@getAllWDeIDR')->name('adm_listWDeIDR')->middleware('auth');
+        Route::get('/adm/list/wd-royalti', 'Admin\MasterAdminController@getAllWDRoyalti')->name('adm_listWDRoyalti')->middleware('auth');
         Route::post('/adm/check/wd', 'Admin\MasterAdminController@postCheckWD')->middleware('auth');
         Route::post('/adm/check/wd-eidr', 'Admin\MasterAdminController@postCheckWDeIDR')->middleware('auth');
+        Route::post('/adm/check/wd-royalti', 'Admin\MasterAdminController@postCheckWDRoyalti')->middleware('auth');
         Route::post('/adm/reject/wd', 'Admin\MasterAdminController@postRejectWD')->middleware('auth');
+        Route::post('/adm/reject/wd-royalti', 'Admin\MasterAdminController@postRejectWDRoyalti')->middleware('auth');
         Route::get('/adm/history/wd', 'Admin\MasterAdminController@getAllHistoryWD')->name('adm_listHistoryWD')->middleware('auth');
         Route::get('/adm/history/wd-eidr', 'Admin\MasterAdminController@getAllHistoryWDeIDR')->name('adm_listHistoryWDeIDR')->middleware('auth');
+        Route::get('/adm/history/wd-royalti', 'Admin\MasterAdminController@getAllHistoryWDRoyalti')->name('adm_listHistoryWDRoyalti')->middleware('auth');
         Route::get('/adm/list/req-stockist', 'Admin\MasterAdminController@getAllRequestMemberStockist')->name('adm_listReqStockist')->middleware('auth');
         Route::post('/adm/req-stockist', 'Admin\MasterAdminController@postRequestMemberStockist')->middleware('auth');
         Route::get('/adm/list/purchases', 'Admin\MasterAdminController@getAllPurchase')->name('adm_listPurchases')->middleware('auth');
@@ -104,6 +108,8 @@ Route::prefix('/')->group(function () {
         Route::get('/ajax/adm/cek/detail-wd/{id}', 'Admin\AjaxController@getCekDetailWD')->middleware('auth');
         Route::get('/ajax/adm/cek/reject-wd-eidr/{id}', 'Admin\AjaxController@getCekRejectWDeIDR')->middleware('auth');
         Route::get('/ajax/adm/cek/detail-wd-eidr/{id}', 'Admin\AjaxController@getCekDetailWDeIDR')->middleware('auth');
+        Route::get('/ajax/adm/cek/reject-wd-royalti/{id}', 'Admin\AjaxController@getCekRejectWDRoyalti')->middleware('auth');
+        Route::get('/ajax/adm/cek/detail-wd-royalti/{id}', 'Admin\AjaxController@getCekDetailWDRoyalti')->middleware('auth');
         Route::get('/ajax/adm/cek/req-stockist/{id}', 'Admin\AjaxController@getCekRequestMemberStockist')->middleware('auth');
         Route::get('/ajax/adm/edit/bonus-reward/{id}', 'Admin\AjaxController@getEditBonusReward')->middleware('auth');
         Route::get('/ajax/adm/cek/reject-claim-reward/{id}', 'Admin\AjaxController@getCekRejectClaimReward')->middleware('auth');

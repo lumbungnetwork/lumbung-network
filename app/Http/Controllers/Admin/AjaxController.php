@@ -163,6 +163,26 @@ class AjaxController extends Controller {
                 ->with('dataUser', $dataUser);
     }
     
+    public function getCekRejectWDRoyalti($id){
+        $dataUser = Auth::user();
+        $modelWD = new Transferwd;
+        $getData = $modelWD->getIDRequestWDRoyalti($id);
+        return view('admin.ajax.reject-wd-royalti')
+                ->with('headerTitle', 'Reject Withdrawal')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function getCekDetailWDRoyalti($id){
+        $dataUser = Auth::user();
+        $modelWD = new Transferwd;
+        $getData = $modelWD->getIDRequestWDRoyalti($id);
+        return view('admin.ajax.detail-wd-royalti')
+                ->with('headerTitle', 'Detail Withdrawal')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
     public function getCekRequestMemberStockist($id){
         $modelMember = New Member;
         $getData = $modelMember->getCekMemberReqSotckist($id);
