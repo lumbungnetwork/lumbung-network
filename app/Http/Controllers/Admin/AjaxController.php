@@ -66,7 +66,7 @@ class AjaxController extends Controller {
     
     public function getRejectTransactionById($id, $user_id, $is_tron){
         $modelSettingTrans = New Transaction;
-        $getData = $modelSettingTrans->getDetailTransactionsAdminNew($id, $user_id, $is_tron);
+        $getData = $modelSettingTrans->getDetailRejectTransactionsAdmin($id, $user_id, $is_tron);
         return view('admin.ajax.reject-transaction')
                 ->with('headerTitle', 'Reject Transaksi')
                 ->with('getData', $getData);

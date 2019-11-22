@@ -94,6 +94,18 @@ class Transaction extends Model {
         return $sql;
     }
     
+    public function getDetailRejectTransactionsAdminByID($id, $user_id){
+        $sql = DB::table('transaction')
+                        ->join('users', 'transaction.user_id', '=', 'users.id')
+                        ->selectRaw('users.name, users.hp, users.user_code, '
+                                . 'transaction.transaction_code, transaction.type, transaction.total_pin, transaction.price, transaction.status,'
+                                . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id, transaction.is_tron')
+                        ->where('transaction.id', '=', $id)
+                        ->where('transaction.user_id', '=', $user_id)
+                        ->first();
+        return $sql;
+    }
+    
     public function getDetailTransactionsAdminNew($id, $user_id, $is_tron){
         if($is_tron == 0){
             $sql = DB::table('transaction')
@@ -124,6 +136,32 @@ class Transaction extends Model {
         return $sql;
     }
     
+    public function getDetailRejectTransactionsAdmin($id, $user_id, $is_tron){
+        if($is_tron == 0){
+            $sql = DB::table('transaction')
+                        ->join('users', 'transaction.user_id', '=', 'users.id')
+                        ->selectRaw('users.name, users.hp, users.user_code, '
+                                . 'transaction.transaction_code, transaction.type, transaction.total_pin, transaction.price, transaction.status,'
+                                . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id, transaction.is_tron ')
+                        ->where('transaction.id', '=', $id)
+                        ->where('transaction.user_id', '=', $user_id)
+                        ->first();
+        } else {
+            $sql = DB::table('transaction')
+                        ->join('users', 'transaction.user_id', '=', 'users.id')
+                        ->join('tron', 'transaction.bank_perusahaan_id', '=', 'tron.id')
+                        ->selectRaw('users.name, users.hp, users.user_code, '
+                                . 'transaction.transaction_code, transaction.type, transaction.total_pin, transaction.price, transaction.status,'
+                                . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id, transaction.is_tron, '
+                                . 'tron.tron_name, tron.tron')
+                        ->where('transaction.id', '=', $id)
+                        ->where('transaction.user_id', '=', $user_id)
+                        ->first();
+        }
+        
+        return $sql;
+    }
+    
     public function getTransactionsByAdmin($status){
         if($status == null){
             $sql = DB::table('transaction')
@@ -132,6 +170,8 @@ class Transaction extends Model {
                                 . 'transaction.transaction_code, transaction.type, transaction.total_pin, transaction.price, transaction.status,'
                                 . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id, transaction.is_tron')
                         ->where('transaction.status', '<', 2)
+                        ->orderBy('transaction.status', 'DESC')
+                        ->orderBy('transaction.id', 'DESC')
                         ->get();
         } else {
             $sql = DB::table('transaction')
@@ -142,6 +182,22 @@ class Transaction extends Model {
                         ->where('transaction.status', '=', $status)
                         ->get();
         }
+        $cek = null;
+        if(count($sql) > 0){
+            $cek = $sql;
+        }
+        return $cek;
+    }
+    
+    public function getAdminHistoryTransactions(){
+        $sql = DB::table('transaction')
+                    ->join('users', 'transaction.user_id', '=', 'users.id')
+                    ->join('users as u', 'transaction.submit_by', '=', 'u.id')
+                    ->selectRaw('users.user_code, users.hp, users.user_code, '
+                            . 'transaction.transaction_code, transaction.type, transaction.total_pin, transaction.price, transaction.status,'
+                            . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id, transaction.is_tron, transaction.submit_by, u.name')
+                    ->where('transaction.status', '>', 1)
+                    ->get();
         $cek = null;
         if(count($sql) > 0){
             $cek = $sql;

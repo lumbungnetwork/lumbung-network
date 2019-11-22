@@ -225,7 +225,9 @@ class MasterAdminController extends Controller {
         
         $dataUpdate = array(
             'status' => 2,
-            'tuntas_at' => date('Y-m-d H:i:s')
+            'tuntas_at' => date('Y-m-d H:i:s'),
+            'submit_by' => $dataUser->id,
+            'submit_at' => date('Y-m-d H:i:s'),
         );
         $modelSettingTrans->getUpdateTransaction('id', $id, $dataUpdate);
         $dataInsertMasterPin = array(
@@ -249,7 +251,7 @@ class MasterAdminController extends Controller {
         $id = $request->cekId;
         $user_id = $request->cekMemberId;
         $modelSettingTrans = New Transaction;
-        $getData = $modelSettingTrans->getDetailTransactionsAdmin($id, $user_id);
+        $getData = $modelSettingTrans->getDetailRejectTransactionsAdminByID($id, $user_id);
         if($getData == null){
             return redirect()->route('adm_listTransaction')
                 ->with('message', 'Data tidak ditemukan')
@@ -258,12 +260,28 @@ class MasterAdminController extends Controller {
         $dataUpdate = array(
             'status' => 3,
             'deleted_at' => date('Y-m-d H:i:s'),
-            'reason' => $request->reason
+            'reason' => $request->reason,
+            'submit_by' => $dataUser->id,
+            'submit_at' => date('Y-m-d H:i:s'),
         );
         $modelSettingTrans->getUpdateTransaction('id', $id, $dataUpdate);
         return redirect()->route('adm_listTransaction')
                     ->with('message', 'Transaksi dibatalkan')
                     ->with('messageclass', 'success');
+    }
+    
+    public function getListHistoryTransactions(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSettingTrans = New Transaction;
+        $getAllTransaction = $modelSettingTrans->getAdminHistoryTransactions();
+        return view('admin.pin.history-transaction')
+                ->with('headerTitle', 'History Transaksi')
+                ->with('getData', $getAllTransaction)
+                ->with('dataUser', $dataUser);
     }
     
     public function getBankPerusahaan(){
@@ -544,7 +562,9 @@ class MasterAdminController extends Controller {
         foreach($getRowID as $getID){
             $dataUpdate = array(
                 'status' => 1,
-                'transfer_at' => date('Y-m-d H:i:s')
+                'transfer_at' => date('Y-m-d H:i:s'),
+                'submit_by' => $dataUser->id,
+                'submit_at' => date('Y-m-d H:i:s'),
             );
             $modelWD->getUpdateWD('id', $getID, $dataUpdate);
         }
@@ -565,7 +585,9 @@ class MasterAdminController extends Controller {
         foreach($getRowID as $getID){
             $dataUpdate = array(
                 'status' => 1,
-                'transfer_at' => date('Y-m-d H:i:s')
+                'transfer_at' => date('Y-m-d H:i:s'),
+                'submit_by' => $dataUser->id,
+                'submit_at' => date('Y-m-d H:i:s'),
             );
             $modelWD->getUpdateWD('id', $getID, $dataUpdate);
         }
@@ -588,7 +610,9 @@ class MasterAdminController extends Controller {
         $dataUpdate = array(
             'status' => 2,
             'reason' => $alesan,
-            'deleted_at' => date('Y-m-d H:i:s')
+            'deleted_at' => date('Y-m-d H:i:s'),
+            'submit_by' => $dataUser->id,
+            'submit_at' => date('Y-m-d H:i:s'),
         );
         $modelWD->getUpdateWD('id', $getID, $dataUpdate);
         $redirect = 'adm_listWD';
@@ -893,7 +917,9 @@ class MasterAdminController extends Controller {
         foreach($getRowID as $getID){
             $dataUpdate = array(
                 'status' => 1,
-                'transfer_at' => date('Y-m-d H:i:s')
+                'transfer_at' => date('Y-m-d H:i:s'),
+                'submit_by' => $dataUser->id,
+                'submit_at' => date('Y-m-d H:i:s'),
             );
             $modelBonus->getUpdateClaimReward('id', $getID, $dataUpdate);
         }
@@ -915,7 +941,9 @@ class MasterAdminController extends Controller {
         $dataUpdate = array(
             'status' => 2,
             'reason' => $alesan,
-            'deleted_at' => date('Y-m-d H:i:s')
+            'deleted_at' => date('Y-m-d H:i:s'),
+            'submit_by' => $dataUser->id,
+            'submit_at' => date('Y-m-d H:i:s'),
         );
         $modelBonus->getUpdateClaimReward('id', $getID, $dataUpdate);
         return redirect()->route('adm_listClaimReward')
@@ -1241,7 +1269,9 @@ class MasterAdminController extends Controller {
         foreach($getRowID as $getID){
             $dataUpdate = array(
                 'status' => 1,
-                'tuntas_at' => date('Y-m-d H:i:s')
+                'tuntas_at' => date('Y-m-d H:i:s'),
+                'submit_by' => $dataUser->id,
+                'submit_at' => date('Y-m-d H:i:s'),
             );
             $modelBonus->getUpdateBelanjaReward('id', $getID, $dataUpdate);
         }
@@ -1262,7 +1292,9 @@ class MasterAdminController extends Controller {
         $dataUpdate = array(
             'status' => 2,
             'reason' => $alesan,
-            'deleted_at' => date('Y-m-d H:i:s')
+            'deleted_at' => date('Y-m-d H:i:s'),
+            'submit_by' => $dataUser->id,
+            'submit_at' => date('Y-m-d H:i:s'),
         );
         $modelBonus->getUpdateBelanjaReward('id', $getID, $dataUpdate);
         return redirect()->route('adm_listPenjualanReward')
@@ -1410,7 +1442,9 @@ class MasterAdminController extends Controller {
         foreach($getRowID as $getID){
             $dataUpdate = array(
                 'status' => 1,
-                'transfer_at' => date('Y-m-d H:i:s')
+                'transfer_at' => date('Y-m-d H:i:s'),
+                'submit_by' => $dataUser->id,
+                'submit_at' => date('Y-m-d H:i:s'),
             );
             $modelWD->getUpdateWD('id', $getID, $dataUpdate);
         }
@@ -1433,7 +1467,9 @@ class MasterAdminController extends Controller {
         $dataUpdate = array(
             'status' => 2,
             'reason' => $alesan,
-            'deleted_at' => date('Y-m-d H:i:s')
+            'deleted_at' => date('Y-m-d H:i:s'),
+            'submit_by' => $dataUser->id,
+            'submit_at' => date('Y-m-d H:i:s'),
         );
         $modelWD->getUpdateWD('id', $getID, $dataUpdate);
         $redirect = 'adm_listWDRoyalti';

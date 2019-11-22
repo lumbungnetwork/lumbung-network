@@ -48,7 +48,7 @@
                                         <th>Total Pin</th>
                                         <th>Total Harga</th>
                                         <th>Status</th>
-                                        <th>###</th>
+                                        <th>Admin</th>
                                     </tr>
                                 </thead>
                                 
@@ -75,6 +75,10 @@
                                                 $status = 'Reject';
                                                 $label = 'danger';
                                             }
+                                            $name = $row->name;
+                                            if($row->submit_by == 1){
+                                                $name = 'Master Admin';
+                                            }
                                         ?>
                                             <tr>
                                                 <td>{{$no}}</td>
@@ -85,14 +89,8 @@
                                                 <td>{{number_format($row->total_pin, 0, ',', ',')}}</td>
                                                 <td>{{number_format($price, 0, ',', ',')}}</td>
                                                 <td><span class="text-{{$label}}">{{$status}}</span></td>
-                                                <td>
-                                                    @if($row->status == 1)
-                                                    <a rel="tooltip"  data-toggle="modal" data-target="#popUp" class="text-info" href="{{ URL::to('/') }}/ajax/adm/cek/transaction/{{$row->id}}/{{$row->user_id}}/{{$row->is_tron}}">confirm</a>
-                                                    &nbsp;&nbsp;
-                                                    @endif
-                                                    <a rel="tooltip"  data-toggle="modal" data-target="#popUpReject" class="text-danger" href="{{ URL::to('/') }}/ajax/adm/reject/transaction/{{$row->id}}/{{$row->user_id}}/{{$row->is_tron}}">reject</a>
-                                                </td>
-                                            </tr>
+                                                <td>{{$name}}</td>
+                                             </tr>
                                         @endforeach
                                     @endif
                                 </tbody>
@@ -116,16 +114,41 @@
 </div>
 @stop
 
+@section('styles')
+<link rel="stylesheet" href="{{ asset('css/jquery.dataTables.min.css') }}">
+<link rel="stylesheet" href="{{ asset('css/buttons.dataTables.min.css') }}">
+@stop
+
 @section('javascript')
+<script type="text/javascript" language="javascript" src="{{ asset('js/jquery.dataTables.min.js') }}"></script>
+<script type="text/javascript" language="javascript" src="{{ asset('js/dataTables.buttons.min.js') }}"></script>
+<script type="text/javascript" language="javascript" src="{{ asset('js/jszip.min.js') }}"></script>
+<script type="text/javascript" language="javascript" src="{{ asset('js/buttons.html5.min.js') }}"></script>
+
 <script type="text/javascript">
     $("#popUp").on("show.bs.modal", function(e) {
         var link = $(e.relatedTarget);
         $(this).find(".modal-content").load(link.attr("href"));
     });
-    
-    $("#popUpReject").on("show.bs.modal", function(e) {
-        var link = $(e.relatedTarget);
-        $(this).find(".modal-content").load(link.attr("href"));
-    });
+    $(document).ready(function() {
+        $('#myTable').DataTable( {
+                dom: 'Bfrtip',
+                "deferRender": true,
+                columnDefs: [
+                    { orderable: false, targets: -1 }
+                 ],
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'export_history_transaction_xls' ,
+                   }
+                ],
+                searching: false,
+                 pagingType: "full_numbers",
+                 "paging":   true,
+                 "info":     false,
+                 "ordering": true
+        } );
+    } );
 </script>
 @stop

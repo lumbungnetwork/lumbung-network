@@ -1045,7 +1045,7 @@ class MemberController extends Controller {
         $getActivePinSetting = $modelSettingPin->getActivePinSetting();
         $price_pin = $getActivePinSetting->price * $request->total_pin;
         $royalti_statik = 1;
-        $bonus_royalti = 500; //($royalti_statik/100 * $price_pin)/2; //500
+        $bonus_royalti = ($royalti_statik/100 * $price_pin)/2; //500
         if($getLevelSp->id_lvl1 != null){
             $dataInsertBonusLvl1 = array(
                 'user_id' => $getLevelSp->id_lvl1,

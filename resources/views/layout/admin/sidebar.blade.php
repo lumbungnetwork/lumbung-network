@@ -128,6 +128,12 @@
                             <span class="sidebar-normal"> Data Order Pin </span>
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ URL::to('/') }}/adm/history/transactions">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> History Order Pin </span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </li>

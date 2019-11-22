@@ -48,6 +48,7 @@ Route::prefix('/')->group(function () {
         Route::get('/adm/list/kirim-paket', 'Admin\MasterAdminController@getListKirimPaket')->name('adm_listKirimPaket')->middleware('auth');
         Route::get('/adm/kirim-paket/{id}/{user_id}', 'Admin\MasterAdminController@getKirimPaketByID')->name('adm_KirimPaketID')->middleware('auth');
         Route::post('/adm/kirim-paket', 'Admin\MasterAdminController@postConfirmKirimPaket')->middleware('auth');
+        Route::get('/adm/history/transactions', 'Admin\MasterAdminController@getListHistoryTransactions')->name('adm_listHistoryTransaction')->middleware('auth');
         
         //Member
         Route::get('/adm/list/member', 'Admin\MasterAdminController@getAllMember')->name('adm_listMember')->middleware('auth');
