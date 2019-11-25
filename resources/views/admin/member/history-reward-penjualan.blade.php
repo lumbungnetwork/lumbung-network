@@ -46,6 +46,7 @@
                                         <th>Tgl. Claim</th>
                                         <th>Reward</th>
                                         <th>Status</th>
+                                        <th>Admin</th>
                                         <th>###</th>
                                     </tr>
                                 </thead>
@@ -66,6 +67,10 @@
                                                 $status = 'Reject';
                                                 $label = 'danger';
                                             }
+                                            $name = $row->name;
+                                            if($row->submit_by == 1){
+                                                $name = 'Master Admin';
+                                            }
                                         ?>
                                             <tr>
                                                 <td>{{$no}}</td>
@@ -76,6 +81,7 @@
                                                 <td>
                                                     <span class="badge badge-pill badge-{{$label}}">{{$status}}</span>
                                                 </td>
+                                                <td>{{$name}}</td>
                                                 <td>
                                                     <a rel="tooltip"  data-toggle="modal" data-target="#popUp" class="text-danger" href="{{ URL::to('/') }}/ajax/adm/cek/detail-penjualan-reward/{{$row->id}}">detail</a>
                                                 </td>

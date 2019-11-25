@@ -65,7 +65,9 @@ Route::prefix('/')->group(function () {
         Route::get('/adm/history/wd-eidr', 'Admin\MasterAdminController@getAllHistoryWDeIDR')->name('adm_listHistoryWDeIDR')->middleware('auth');
         Route::get('/adm/history/wd-royalti', 'Admin\MasterAdminController@getAllHistoryWDRoyalti')->name('adm_listHistoryWDRoyalti')->middleware('auth');
         Route::get('/adm/list/req-stockist', 'Admin\MasterAdminController@getAllRequestMemberStockist')->name('adm_listReqStockist')->middleware('auth');
+        Route::get('/adm/list/stockist', 'Admin\MasterAdminController@getAllMemberStockists')->name('adm_listMemberStockist')->middleware('auth');
         Route::post('/adm/req-stockist', 'Admin\MasterAdminController@postRequestMemberStockist')->middleware('auth');
+        Route::post('/adm/reject-stockist', 'Admin\MasterAdminController@postRejectMemberStockist')->middleware('auth');
         Route::get('/adm/list/purchases', 'Admin\MasterAdminController@getAllPurchase')->name('adm_listPurchases')->middleware('auth');
         Route::get('/adm/add/purchase', 'Admin\MasterAdminController@getAddPurchase')->name('adm_addPurchase')->middleware('auth');
         Route::post('/adm/add/purchase', 'Admin\MasterAdminController@postAddPurchase')->middleware('auth');
@@ -75,6 +77,7 @@ Route::prefix('/')->group(function () {
         Route::get('/adm/history/claim-reward', 'Admin\MasterAdminController@getHistoryClaimReward')->name('adm_historyClaimReward')->middleware('auth');
         Route::get('/adm/list/req-input-stock', 'Admin\MasterAdminController@getAllRequestMemberInputStock')->name('adm_listReqInputStock')->middleware('auth');
         Route::post('/adm/req-input-stock', 'Admin\MasterAdminController@postRequestMemberInputStock')->middleware('auth');
+        Route::post('/adm/reject-input-stock', 'Admin\MasterAdminController@postRejectMemberInputStock')->middleware('auth');
         Route::get('/adm/list/confirm-belanja', 'Admin\MasterAdminController@getAllConfirmBelanjaStockist')->name('adm_listConfirmBelanjaStockist')->middleware('auth');
         Route::post('/adm/confirm-belanja', 'Admin\MasterAdminController@postConfirmBelanjaStockist')->middleware('auth');
         Route::get('/adm/list/verification-royalti', 'Admin\MasterAdminController@getAllVerificationRoyalti')->name('adm_listVerificationRoyalti')->middleware('auth');
@@ -94,6 +97,8 @@ Route::prefix('/')->group(function () {
         Route::post('/adm/change/passwd/member', 'Admin\MasterAdminController@postAdminChangePasswordMember')->middleware('auth');
         Route::post('/adm/change/block/member', 'Admin\MasterAdminController@postAdminChangeBlockMember')->middleware('auth');
         Route::post('/adm/search-list/member', 'Admin\MasterAdminController@postSearchMember')->middleware('auth');
+        Route::post('/adm/change/tron/member', 'Admin\MasterAdminController@postAdminChangeTronMember')->middleware('auth');
+        Route::post('/adm/search-list/member-stockist', 'Admin\MasterAdminController@postSearchMemberStockist')->middleware('auth');
         
 
         //Ajax
@@ -112,10 +117,12 @@ Route::prefix('/')->group(function () {
         Route::get('/ajax/adm/cek/reject-wd-royalti/{id}', 'Admin\AjaxController@getCekRejectWDRoyalti')->middleware('auth');
         Route::get('/ajax/adm/cek/detail-wd-royalti/{id}', 'Admin\AjaxController@getCekDetailWDRoyalti')->middleware('auth');
         Route::get('/ajax/adm/cek/req-stockist/{id}', 'Admin\AjaxController@getCekRequestMemberStockist')->middleware('auth');
+        Route::get('/ajax/adm/reject/req-stockist/{id}', 'Admin\AjaxController@getCekRejectMemberStockist')->middleware('auth');
         Route::get('/ajax/adm/edit/bonus-reward/{id}', 'Admin\AjaxController@getEditBonusReward')->middleware('auth');
         Route::get('/ajax/adm/cek/reject-claim-reward/{id}', 'Admin\AjaxController@getCekRejectClaimReward')->middleware('auth');
         Route::get('/ajax/adm/cek/detail-claim-reward/{id}', 'Admin\AjaxController@getCekDetailClaimReward')->middleware('auth');
         Route::get('/ajax/adm/cek/req-input-stock/{id}/{user_id}', 'Admin\AjaxController@getCekRequestMemberInputStock')->middleware('auth');
+        Route::get('/ajax/adm/reject/req-input-stock/{id}/{user_id}', 'Admin\AjaxController@getCekRejectMemberInputStock')->middleware('auth');
         Route::get('/ajax/adm/cek/confirm-belanja/{id}', 'Admin\AjaxController@getCekConfirmBelanjaStockist')->middleware('auth');
         Route::get('/ajax/adm/cek/verivication-royalti/{id}', 'Admin\AjaxController@getCekVerificationRoyalti')->middleware('auth');
         Route::get('/ajax/adm/cek/reject-belanja-reward/{id}', 'Admin\AjaxController@getCekRejectBelanjaReward')->middleware('auth');
@@ -126,6 +133,7 @@ Route::prefix('/')->group(function () {
         Route::get('/ajax/adm/change-data/member/{id}', 'Admin\AjaxController@getAdminChangeDataMember')->middleware('auth');
         Route::get('/ajax/adm/change-passwd/member/{id}', 'Admin\AjaxController@getAdminChangePasswordMember')->middleware('auth');
         Route::get('/ajax/adm/change-block/member/{id}', 'Admin\AjaxController@getAdminChangeBlockMember')->middleware('auth');
+        Route::get('/ajax/adm/change-tron/member/{id}', 'Admin\AjaxController@getAdminChangeTronMember')->middleware('auth');
         
 //        Route::get('/adm/daerah', 'Admin\MasterAdminController@getAllDaerah')->middleware('auth');
         ////////////////////////////////////////////////////////////////////////

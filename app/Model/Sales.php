@@ -639,5 +639,23 @@ class Sales extends Model {
         return $sql;
     }
     
+    public function getMemberReqInputStockistYesterday(){
+        $yesterday = date('Y-m-d',strtotime("-1 days"));
+        $sql = DB::table('item_purchase_master')
+                    ->join('users', 'item_purchase_master.stockist_id', '=', 'users.id')
+                    ->selectRaw('users.user_code, users.hp,  item_purchase_master.stockist_id, '
+                            . 'item_purchase_master.id, item_purchase_master.price, item_purchase_master.created_at,'
+                            . 'item_purchase_master.buy_metode, item_purchase_master.tron, item_purchase_master.tron_transfer,'
+                            . 'item_purchase_master.bank_name, item_purchase_master.account_no, item_purchase_master.account_name')
+                    ->where('item_purchase_master.status', '=', 1)
+                    ->whereDate('item_purchase_master.created_at', '=', $yesterday)
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
 }
 

@@ -320,9 +320,10 @@ class Transferwd extends Model {
         $sql = DB::table('transfer_wd')
                     ->join('users', 'transfer_wd.user_id', '=', 'users.id')
                     ->join('bank', 'transfer_wd.user_bank', '=', 'bank.id')
+                    ->join('users as u', 'transfer_wd.submit_by', '=', 'u.id')
                     ->selectRaw('transfer_wd.id, users.user_code, users.hp, bank.bank_name, bank.account_no, bank.account_name,'
                             . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee, transfer_wd.status,  '
-                            . 'transfer_wd.reason')
+                            . 'transfer_wd.reason, transfer_wd.submit_by, u.name')
                     ->where('transfer_wd.type', '=', 1)
                     ->orderBy('transfer_wd.id', 'DESC')
                     ->get();
@@ -336,9 +337,10 @@ class Transferwd extends Model {
     public function getAllHistoryWDeIDR(){
         $sql = DB::table('transfer_wd')
                     ->join('users', 'transfer_wd.user_id', '=', 'users.id')
+                    ->join('users as u', 'transfer_wd.submit_by', '=', 'u.id')
                     ->selectRaw('transfer_wd.id, users.user_code, users.hp, users.tron, '
                             . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee, transfer_wd.status,  '
-                            . 'transfer_wd.reason')
+                            . 'transfer_wd.reason, transfer_wd.submit_by, u.name')
                     ->orderBy('transfer_wd.id', 'DESC')
                     ->where('transfer_wd.is_tron', '=', 1)
                     ->get();
@@ -353,9 +355,10 @@ class Transferwd extends Model {
         $sql = DB::table('transfer_wd')
                     ->join('users', 'transfer_wd.user_id', '=', 'users.id')
                     ->join('bank', 'transfer_wd.user_bank', '=', 'bank.id')
+                    ->join('users as u', 'transfer_wd.submit_by', '=', 'u.id')
                     ->selectRaw('transfer_wd.id, users.user_code, users.hp, bank.bank_name, bank.account_no, bank.account_name,'
                             . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee, transfer_wd.status,  '
-                            . 'transfer_wd.reason')
+                            . 'transfer_wd.reason, transfer_wd.submit_by, u.name')
                     ->where('transfer_wd.type', '=', 3)
                     ->orderBy('transfer_wd.id', 'DESC')
                     ->get();
@@ -374,6 +377,44 @@ class Transferwd extends Model {
                     ->selectRaw('transfer_wd.id, users.user_code, users.hp, bank.bank_name, bank.account_no, bank.account_name,'
                             . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee')
                     ->where('transfer_wd.status', '=', 0)
+                    ->whereDate('transfer_wd.wd_date', '=', $yesterday)
+                    ->where('transfer_wd.type', '=', 1)
+                    ->orderBy('transfer_wd.id', 'DESC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getAllRequestWDeIDRYesterday(){
+        $yesterday = date('Y-m-d',strtotime("-1 days"));
+        $sql = DB::table('transfer_wd')
+                    ->join('users', 'transfer_wd.user_id', '=', 'users.id')
+                    ->selectRaw('transfer_wd.id, users.user_code, users.hp, users.tron, '
+                            . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee')
+                    ->where('transfer_wd.status', '=', 0)
+                    ->where('transfer_wd.is_tron', '=', 1)
+                    ->whereDate('transfer_wd.wd_date', '=', $yesterday)
+                    ->orderBy('transfer_wd.id', 'DESC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getAllRequestWDRoyaltiYesterday(){
+        $yesterday = date('Y-m-d',strtotime("-1 days"));
+        $sql = DB::table('transfer_wd')
+                    ->join('users', 'transfer_wd.user_id', '=', 'users.id')
+                    ->join('bank', 'transfer_wd.user_bank', '=', 'bank.id')
+                    ->selectRaw('transfer_wd.id, users.user_code, users.hp, bank.bank_name, bank.account_no, bank.account_name,'
+                            . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee')
+                    ->where('transfer_wd.status', '=', 0)
+                    ->where('transfer_wd.type', '=', 3)
                     ->whereDate('transfer_wd.wd_date', '=', $yesterday)
                     ->orderBy('transfer_wd.id', 'DESC')
                     ->get();

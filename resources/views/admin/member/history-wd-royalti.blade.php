@@ -47,6 +47,7 @@
                                         <th>Tgl. WD</th>
                                         <th>Jml. WD (Rp.)</th>
                                         <th>Status</th>
+                                        <th>Admin</th>
                                         <th>###</th>
                                     </tr>
                                 </thead>
@@ -70,6 +71,10 @@
                                                 $status = 'Reject';
                                                 $label = 'danger';
                                             }
+                                            $name = $row->name;
+                                            if($row->submit_by == 1){
+                                                $name = 'Master Admin';
+                                            }
                                         ?>
                                             <tr>
                                                 <td>{{$no}}</td>
@@ -81,6 +86,7 @@
                                                 <td>
                                                     <span class="badge badge-pill badge-{{$label}}">{{$status}}</span>
                                                 </td>
+                                                <td>{{$name}}</td>
                                                 <td>
                                                     <a rel="tooltip"  data-toggle="modal" data-target="#popUp" class="text-info" href="{{ URL::to('/') }}/ajax/adm/cek/detail-wd/{{$row->id}}">detail</a>
                                                 </td>

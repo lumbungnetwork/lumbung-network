@@ -497,11 +497,9 @@ class MasterAdminController extends Controller {
         }
         $modelMember = New Member;
         $getData = $modelMember->getAllMemberByAdmin();
-        $getCountData = $modelMember->getAllMember();
         return view('admin.member.list-member')
                 ->with('headerTitle', 'Member')
                 ->with('getData', $getData)
-                ->with('getTotal', $getCountData)
                 ->with('dataUser', $dataUser);
     }
     
@@ -702,6 +700,20 @@ class MasterAdminController extends Controller {
                 ->with('dataUser', $dataUser);
     }
     
+    public function getAllMemberStockists(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelMember = New Member;
+        $getData = $modelMember->getAdminAllStockist();
+        return view('admin.member.all-stockists')
+                ->with('headerTitle', 'List Stockist')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
     public function postRequestMemberStockist(Request $request){
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
@@ -722,6 +734,24 @@ class MasterAdminController extends Controller {
         $modelMember->getUpdateUsers('id', $request->id_user, $dataUpdateUser);
         return redirect()->route('adm_listReqStockist')
                     ->with('message', 'Member berhasil menjadi stockist')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function postRejectMemberStockist(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelMember = New Member;
+        $date =  date('Y-m-d H:i:s');
+        $dataUpdate = array(
+            'status' => 2,
+            'deleted_at' => $date
+        );
+        $modelMember->getUpdateStockist('id', $request->id, $dataUpdate);
+        return redirect()->route('adm_listReqStockist')
+                    ->with('message', 'Member request stockist direject')
                     ->with('messageclass', 'success');
     }
     
@@ -995,6 +1025,26 @@ class MasterAdminController extends Controller {
                     ->with('messageclass', 'success');
     }
     
+    public function postRejectMemberInputStock(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSales = New Sales;
+        $dataUpdate = array(
+            'status' => 10,
+            'deleted_at' => date('Y-m-d H:i:s'),
+            'submit_by' => $dataUser->id,
+            'submit_at' => date('Y-m-d H:i:s'),
+            'reason' => $request->reason
+        );
+        $modelSales->getUpdateItemPurchaseMaster('id', $request->id, $dataUpdate);
+        return redirect()->route('adm_listReqInputStock')
+                    ->with('message', 'Reject Member request input stock & royalti berhasil')
+                    ->with('messageclass', 'success');
+    }
+    
     public function getAllConfirmBelanjaStockist(){
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
@@ -1147,7 +1197,12 @@ class MasterAdminController extends Controller {
         $getData = $modelSales->getDetailPurchase($id);
         $getProvince = $modelMember->getProvinsi();
         $geCodeProvince = $getData->provinsi.'.00.00.0000';
-        $getCodeKota = $getData->provinsi.'.'.$getData->kota.'.00.0000';
+         $cekLenght = strlen($getData->kota);
+         $kota = $getData->kota;
+         if($cekLenght == 1){
+             $kota = '0'.$getData->kota;
+         }
+        $getCodeKota = $getData->provinsi.'.'.$kota.'.00.0000';
         $getDetailProvinsi = $modelMember->getNamaByKode($geCodeProvince);
         $getDetailKota = $modelMember->getNamaByKode($getCodeKota);
         $getAllKotaFromProvince = $modelMember->getKabupatenKotaByPropinsi($getData->provinsi);
@@ -1389,6 +1444,22 @@ class MasterAdminController extends Controller {
                     ->with('messageclass', 'success');
     }
     
+    public function postAdminChangeTronMember(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelMember = New Member;
+        $dataUpdate = array(
+            'tron' => $request->tron,
+        );
+        $modelMember->getUpdateUsers('id', $request->cekId, $dataUpdate);
+        return redirect()->route('adm_listMember')
+                    ->with('message', 'Berhasil ubah tron Member')
+                    ->with('messageclass', 'success');
+    }
+    
     public function postSearchMember(Request $request){
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
@@ -1407,6 +1478,29 @@ class MasterAdminController extends Controller {
         $getCountData = $data->total;
         return view('admin.member.list-member')
                 ->with('headerTitle', 'Search Member')
+                ->with('getData', $getData)
+                ->with('getTotal', $getCountData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postSearchMemberStockist(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $cekLenght = strlen($request->name);
+        if($cekLenght < 3){
+            return redirect()->route('adm_listMemberStockist')
+                    ->with('message', 'Minimal pencarian harus 3 karakter (huruf).')
+                    ->with('messageclass', 'danger');
+        }
+        $modelMember = New Member;
+        $data = $modelMember->getSearchAllMemberStockistByAdmin($request->name);
+        $getData = $data->data;
+        $getCountData = $data->total;
+        return view('admin.member.all-stockists')
+                ->with('headerTitle', 'Search Member Stockist')
                 ->with('getData', $getData)
                 ->with('getTotal', $getCountData)
                 ->with('dataUser', $dataUser);

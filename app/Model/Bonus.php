@@ -230,8 +230,9 @@ class Bonus extends Model {
         $sql = DB::table('claim_reward')
                     ->join('bonus_reward2', 'claim_reward.reward_id', '=', 'bonus_reward2.id')
                     ->join('users', 'claim_reward.user_id', '=', 'users.id')
+                    ->join('users as u', 'claim_reward.submit_by', '=', 'u.id')
                     ->selectRaw('claim_reward.id, bonus_reward2.reward_detail, claim_reward.claim_date, claim_reward.status, claim_reward.reason,'
-                            . 'users.user_code')
+                            . 'users.user_code, claim_reward.submit_by, u.name')
                     ->get();
         $return = null;
         if(count($sql) > 0){
@@ -315,9 +316,10 @@ class Bonus extends Model {
     public function getAdminHistoryBelanjaReward(){
         $sql = DB::table('belanja_reward')
                     ->join('users', 'belanja_reward.user_id', '=', 'users.id')
+                    ->join('users as u', 'belanja_reward.submit_by', '=', 'u.id')
                     ->selectRaw('belanja_reward.id, belanja_reward.reward, belanja_reward.month, belanja_reward.year, '
                             . 'belanja_reward.belanja_date, belanja_reward.total_belanja, DATE_FORMAT(belanja_reward.belanja_date, "%M - %Y") as monthly, '
-                            . 'belanja_reward.created_at, users.user_code, users.tron, belanja_reward.status')
+                            . 'belanja_reward.created_at, users.user_code, users.tron, belanja_reward.status, belanja_reward.submit_by, u.name')
                     ->where('belanja_reward.type', '=', 1)
                     ->get();
         $return = null;
@@ -404,10 +406,64 @@ class Bonus extends Model {
     public function getAdminHistoryPenjualanReward(){
         $sql = DB::table('belanja_reward')
                     ->join('users', 'belanja_reward.user_id', '=', 'users.id')
+                    ->join('users as u', 'belanja_reward.submit_by', '=', 'u.id')
                     ->selectRaw('belanja_reward.id, belanja_reward.reward, belanja_reward.month, belanja_reward.year, '
                             . 'belanja_reward.belanja_date, belanja_reward.total_belanja, DATE_FORMAT(belanja_reward.belanja_date, "%M - %Y") as monthly, '
-                            . 'belanja_reward.created_at, users.user_code, users.tron, belanja_reward.status')
+                            . 'belanja_reward.created_at, users.user_code, users.tron, belanja_reward.status, belanja_reward.submit_by, u.name')
                     ->where('belanja_reward.type', '=', 2)
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getAdminAllBelanjaRewardYesterday(){
+        $yesterday = date('Y-m-d',strtotime("-1 days"));
+        $sql = DB::table('belanja_reward')
+                    ->join('users', 'belanja_reward.user_id', '=', 'users.id')
+                    ->selectRaw('belanja_reward.id, belanja_reward.reward, belanja_reward.month, belanja_reward.year, '
+                            . 'belanja_reward.belanja_date, belanja_reward.total_belanja, DATE_FORMAT(belanja_reward.belanja_date, "%M - %Y") as monthly, '
+                            . 'belanja_reward.created_at, users.user_code, users.hp, users.tron, users.is_tron')
+                    ->where('belanja_reward.status', '=', 0)
+                    ->where('belanja_reward.type', '=', 1)
+                    ->whereDate('belanja_reward.belanja_date', '=', $yesterday)
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getAdminAllPenjualanRewardYesterday(){
+        $yesterday = date('Y-m-d',strtotime("-1 days"));
+        $sql = DB::table('belanja_reward')
+                    ->join('users', 'belanja_reward.user_id', '=', 'users.id')
+                    ->selectRaw('belanja_reward.id, belanja_reward.reward, belanja_reward.month, belanja_reward.year, '
+                            . 'belanja_reward.belanja_date, belanja_reward.total_belanja, DATE_FORMAT(belanja_reward.belanja_date, "%M - %Y") as monthly, '
+                            . 'belanja_reward.created_at, users.user_code, users.hp, users.tron, users.is_tron')
+                    ->where('belanja_reward.status', '=', 0)
+                    ->where('belanja_reward.type', '=', 2)
+                    ->whereDate('belanja_reward.belanja_date', '=', $yesterday)
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getAdminAllRewardYesterday(){
+        $yesterday = date('Y-m-d',strtotime("-1 days"));
+        $sql = DB::table('claim_reward')
+                    ->join('bonus_reward2', 'claim_reward.reward_id', '=', 'bonus_reward2.id')
+                    ->join('users', 'claim_reward.user_id', '=', 'users.id')
+                    ->selectRaw('claim_reward.id, bonus_reward2.reward_detail, claim_reward.claim_date, claim_reward.status, claim_reward.reason,'
+                            . 'users.user_code, users.hp, users.tron')
+                    ->where('claim_reward.status', '=', 0)
+                    ->whereDate('claim_reward.claim_date', '=', $yesterday)
                     ->get();
         $return = null;
         if(count($sql) > 0){

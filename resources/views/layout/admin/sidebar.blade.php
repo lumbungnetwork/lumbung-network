@@ -19,7 +19,7 @@
             
             <li>
                 <a data-toggle="collapse" href="#pageLaporanBonus" class="collapsed" aria-expanded="false">
-                    <i class="nc-icon nc-money-coins"></i>
+                    <i class="nc-icon nc-book-bookmark"></i>
                     <p>Laporan Bonus  <b class="caret"></b></p>
                 </a>
                 <div class="collapse" id="pageLaporanBonus" style="">
@@ -150,16 +150,26 @@
                             <span class="sidebar-normal"> List Member </span>
                             </a>
                         </li>
-                        <li>
-                            <a href="{{ URL::to('/') }}/adm/list/purchases">
-                            <span class="sidebar-mini-icon">+</span>
-                            <span class="sidebar-normal"> List Product </span>
-                            </a>
-                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <a data-toggle="collapse" href="#pageStockist" class="collapsed" aria-expanded="false">
+                    <i class="nc-icon nc-cart-simple"></i>
+                    <p>Stockist  <b class="caret"></b></p>
+                </a>
+                <div class="collapse" id="pageStockist" style="">
+                    <ul class="nav">
                         <li>
                             <a href="{{ URL::to('/') }}/adm/list/req-stockist">
                             <span class="sidebar-mini-icon">+</span>
                             <span class="sidebar-normal"> List Pengajuan Stockist </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ URL::to('/') }}/adm/list/stockist">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> List Member Stockist </span>
                             </a>
                         </li>
                         <li>
@@ -168,22 +178,22 @@
                             <span class="sidebar-normal"> List Stockist Input Stock </span>
                             </a>
                         </li>
-                        <?php
-                        /*
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <a data-toggle="collapse" href="#pageProduct" class="collapsed" aria-expanded="false">
+                    <i class="nc-icon nc-basket"></i>
+                    <p>Product  <b class="caret"></b></p>
+                </a>
+                <div class="collapse" id="pageProduct" style="">
+                    <ul class="nav">
                         <li>
-                            <a href="{{ URL::to('/') }}/adm/list/confirm-belanja">
+                            <a href="{{ URL::to('/') }}/adm/list/purchases">
                             <span class="sidebar-mini-icon">+</span>
-                            <span class="sidebar-normal"> List Konfirmasi Belanja </span>
+                            <span class="sidebar-normal"> List Product </span>
                             </a>
                         </li>
-                        <li>
-                            <a href="{{ URL::to('/') }}/adm/list/verification-royalti">
-                            <span class="sidebar-mini-icon">+</span>
-                            <span class="sidebar-normal"> List Verifikasi Royalti </span>
-                            </a>
-                        </li>
-                         */
-                        ?>
                     </ul>
                 </div>
             </li>

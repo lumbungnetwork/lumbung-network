@@ -72,6 +72,7 @@
                                         <th>Status</th>
                                         <th>Tgl. Aktif</th>
                                         <th>Tgl. Expired</th>
+                                        <th>Tron</th>
                                         <th>###</th>
                                     </tr>
                                 </thead>
@@ -98,6 +99,10 @@
                                                     $label = 'danger';
                                                 }
                                             }
+                                            $tron = '';
+                                            if($row->is_tron == 1){
+                                                $tron = $row->tron;
+                                            }
                                         ?>
                                             <tr>
                                                 <td>{{$no}}</td>
@@ -107,11 +112,16 @@
                                                 <td><span class="badge badge-pill badge-{{$label}}">{{$active}}</span></td>
                                                 <td>{{date('d F Y', strtotime($row->active_at))}}</td>
                                                 <td>{{date('d F Y', strtotime('+365 days', strtotime($row->active_at)))}}</td>
+                                                <td>{{$tron}}</td>
                                                 <td class="td-actions text-left" >
                                                     <div class="table-icons">
                                                         <a rel="tooltip"  data-toggle="modal" data-target="#popUp"  href="{{ URL::to('/') }}/ajax/adm/change-passwd/member/{{$row->id}}" class="text-warning">passwd</a>
                                                         &nbsp;&nbsp;
                                                         <a rel="tooltip"  data-toggle="modal" data-target="#popUp1"  href="{{ URL::to('/') }}/ajax/adm/change-data/member/{{$row->id}}" class="text-primary">data</a>
+                                                        @if($row->is_tron == 1)
+                                                        &nbsp;&nbsp;
+                                                        <a rel="tooltip"  data-toggle="modal" data-target="#popUp2"  href="{{ URL::to('/') }}/ajax/adm/change-tron/member/{{$row->id}}" class="text-help">tron</a>
+                                                        @endif
 <!--                                                        &nbsp;&nbsp;
                                                         <a rel="tooltip"  data-toggle="modal" data-target="#popUp2"  href="{{ URL::to('/') }}/ajax/adm/change-block/member/{{$row->id}}" class="text-danger">blokir</a>-->
                                                     </div>

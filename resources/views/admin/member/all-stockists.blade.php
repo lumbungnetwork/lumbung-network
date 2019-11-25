@@ -23,6 +23,31 @@
     <div class="content">
         <div class="row">
             <div class="col-md-12">
+                <div class="card card-user">
+                    <div class="card-header">
+                    </div>
+                    <div class="card-body" style="min-height: auto;">
+                        <form class="login100-form validate-form" method="post" action="/adm/search-list/member-stockist">
+                            {{ csrf_field() }}
+                            <div id="addPenjualan">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Relevant Search</label>
+                                            <input type="text" class="form-control" name="name" placeholder="Minimal 3 karakter">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label>&nbsp;</label>
+                                             <button type="submit" class="form-control btn btn-sm btn-info " title="cari" style="margin: 0;">Cari</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>    
+                        </form>
+                    </div>
+                </div>
                 <div class="card">
                     <div class="card-header">
                         <h5 class="card-title">List</h5>
@@ -42,10 +67,9 @@
                                     <tr>
                                         <th>No</th>
                                         <th>UserID</th>
-                                        <th>HP</th>
-                                        <th>Tanggal</th>
-                                        <th>Metode Pembayaran</th>
-                                        <th>Royalti</th>
+                                        <th>No HP</th>
+                                        <th>Alamat</th>
+                                        <th>Tgl Stockist</th>
                                         <th>###</th>
                                     </tr>
                                 </thead>
@@ -58,30 +82,20 @@
                                         @foreach($getData as $row)
                                         <?php 
                                             $no++;
-                                            $metode = 'eIDR';
-                                            $detail = 'TWJtGQHBS88PfZTXvWAYhQEMrx36eX2F9Pc';
-                                            if($row->buy_metode == 2){
-                                                $metode = 'Transfer Bank';
-                                                $detail = 'BRI 
-                                                    <br>
-                                                    a/n <b>PT LUMBUNG MOMENTUM BANGSA</b>
-                                                    <br>
-                                                    033601001795562';
-                                            }
-                                            $royalti = 4/100 * $row->price;
                                         ?>
                                             <tr>
                                                 <td>{{$no}}</td>
                                                 <td>{{$row->user_code}}</td>
                                                 <td>{{$row->hp}}</td>
-                                                <td>{{date('d F Y', strtotime($row->created_at))}}</td>
-                                                <td>{{$metode}} <br> <?php echo $detail ?></td>
-                                                <td>Rp. {{number_format($royalti, 0, ',', ',')}}</td>
                                                 <td>
-                                                    <a rel="tooltip"  data-toggle="modal" data-target="#popUp" class="text-info" href="{{ URL::to('/') }}/ajax/adm/cek/req-input-stock/{{$row->id}}/{{$row->stockist_id}}">confirm</a>
-                                                    &nbsp;&nbsp;
-                                                    <a rel="tooltip"  data-toggle="modal" data-target="#popUp1" class="text-danger" href="{{ URL::to('/') }}/ajax/adm/reject/req-input-stock/{{$row->id}}/{{$row->stockist_id}}">reject</a>
+                                                    {{$row->alamat}} 
+                                                    <br>
+                                                    {{$row->kelurahan}}, {{$row->kecamatan}} 
+                                                    <br>
+                                                    {{$row->kota}}, {{$row->provinsi}}
                                                 </td>
+                                                <td>{{date('d F Y', strtotime($row->stockist_at))}}</td>
+                                                <td>&nbsp;</td>
                                             </tr>
                                         @endforeach
                                     @endif
@@ -93,6 +107,11 @@
                                 </div>
                             </div>
                              <div class="modal fade" id="popUp1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content"></div>
+                                </div>
+                            </div>
+                             <div class="modal fade" id="popUp2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content"></div>
                                 </div>
@@ -109,10 +128,14 @@
 
 @section('styles')
 <link rel="stylesheet" href="{{ asset('css/jquery.dataTables.min.css') }}">
+<link rel="stylesheet" href="{{ asset('css/buttons.dataTables.min.css') }}">
 @stop
 
 @section('javascript')
 <script type="text/javascript" language="javascript" src="{{ asset('js/jquery.dataTables.min.js') }}"></script>
+<script type="text/javascript" language="javascript" src="{{ asset('js/dataTables.buttons.min.js') }}"></script>
+<script type="text/javascript" language="javascript" src="{{ asset('js/jszip.min.js') }}"></script>
+<script type="text/javascript" language="javascript" src="{{ asset('js/buttons.html5.min.js') }}"></script>
 
 <script type="text/javascript">
     $("#popUp").on("show.bs.modal", function(e) {
@@ -123,6 +146,10 @@
         var link = $(e.relatedTarget);
         $(this).find(".modal-content").load(link.attr("href"));
     });
+    $("#popUp2").on("show.bs.modal", function(e) {
+        var link = $(e.relatedTarget);
+        $(this).find(".modal-content").load(link.attr("href"));
+    });
     $(document).ready(function() {
         $('#myTable').DataTable( {
                 dom: 'Bfrtip',
@@ -130,6 +157,12 @@
                 columnDefs: [
                     { orderable: false, targets: -1 }
                  ],
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'export_xls' ,
+                   }
+                ],
                 searching: false,
                  pagingType: "full_numbers",
                  "paging":   true,

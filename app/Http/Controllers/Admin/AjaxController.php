@@ -191,6 +191,14 @@ class AjaxController extends Controller {
                 ->with('getData', $getData);
     }
     
+    public function getCekRejectMemberStockist($id){
+        $modelMember = New Member;
+        $getData = $modelMember->getCekMemberReqSotckist($id);
+        return view('admin.ajax.cek_reject_stockist')
+                ->with('headerTitle', 'Reject Request Stockist')
+                ->with('getData', $getData);
+    }
+    
     public function getEditBonusReward($id){
         $modelBonusSetting = new Bonussetting;
         $getData = $modelBonusSetting->getActiveBonusRewardByID($id);
@@ -225,6 +233,18 @@ class AjaxController extends Controller {
         $getDataMaster = $modelSales->getMemberReqInputStockistID($id);
         return view('admin.ajax.cek_req_input_stock')
                 ->with('headerTitle', 'Konfirmasi Input Stock & Royalti')
+                ->with('getDataMaster', $getDataMaster)
+                ->with('master_item_id', $id)
+                ->with('user_id', $user_id)
+                ->with('getData', $getData);
+    }
+    
+    public function getCekRejectMemberInputStock($id, $user_id){
+        $modelSales = New Sales;
+        $getData = $modelSales->getMemberReqInputStockistItem($id);
+        $getDataMaster = $modelSales->getMemberReqInputStockistID($id);
+        return view('admin.ajax.cek_reject_input_stock')
+                ->with('headerTitle', 'Reject Input Stock & Royalti')
                 ->with('getDataMaster', $getDataMaster)
                 ->with('master_item_id', $id)
                 ->with('user_id', $user_id)
@@ -301,7 +321,7 @@ class AjaxController extends Controller {
         $modelMember = New Member;
         $getData = $modelMember->getUsers('id', $id);
         return view('admin.ajax.change-data')
-                ->with('headerTitle', 'Ubah Data Member')
+                ->with('headerTitle', 'Change Data Member')
                 ->with('getData', $getData)
                 ->with('dataUser', $dataUser);
     }
@@ -311,7 +331,7 @@ class AjaxController extends Controller {
         $modelMember = New Member;
         $getData = $modelMember->getUsers('id', $id);
         return view('admin.ajax.change-passwd')
-                ->with('headerTitle', 'Ubah Password Member')
+                ->with('headerTitle', 'Change Password Member')
                 ->with('getData', $getData)
                 ->with('dataUser', $dataUser);
     }
@@ -322,6 +342,16 @@ class AjaxController extends Controller {
         $getData = $modelMember->getUsers('id', $id);
         return view('admin.ajax.change-block')
                 ->with('headerTitle', 'Blokir Data Member')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function getAdminChangeTronMember($id){
+        $dataUser = Auth::user();
+        $modelMember = New Member;
+        $getData = $modelMember->getUsers('id', $id);
+        return view('admin.ajax.change-tron')
+                ->with('headerTitle', 'Change Tron Member')
                 ->with('getData', $getData)
                 ->with('dataUser', $dataUser);
     }

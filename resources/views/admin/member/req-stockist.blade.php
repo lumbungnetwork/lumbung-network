@@ -64,6 +64,8 @@
                                                 <td>{{date('d F Y', strtotime($row->created_at))}}</td>
                                                 <td>
                                                     <a rel="tooltip"  data-toggle="modal" data-target="#popUp" class="text-info" href="{{ URL::to('/') }}/ajax/adm/cek/req-stockist/{{$row->id}}">confirm</a>
+                                                    &nbsp;&nbsp;
+                                                    <a rel="tooltip"  data-toggle="modal" data-target="#popUp1" class="text-danger" href="{{ URL::to('/') }}/ajax/adm/reject/req-stockist/{{$row->id}}">reject</a>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -71,6 +73,11 @@
                                 </tbody>
                             </table>
                              <div class="modal fade" id="popUp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content"></div>
+                                </div>
+                            </div>
+                             <div class="modal fade" id="popUp1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content"></div>
                                 </div>
@@ -94,6 +101,10 @@
 
 <script type="text/javascript">
     $("#popUp").on("show.bs.modal", function(e) {
+        var link = $(e.relatedTarget);
+        $(this).find(".modal-content").load(link.attr("href"));
+    });
+    $("#popUp1").on("show.bs.modal", function(e) {
         var link = $(e.relatedTarget);
         $(this).find(".modal-content").load(link.attr("href"));
     });
