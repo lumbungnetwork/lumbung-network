@@ -52,7 +52,7 @@ class Member extends Model {
     public function getSearchAllMemberByAdmin($search){
         $sql = DB::table('users')
                     ->selectRaw('users.id, users.name, users.email, users.hp, users.is_active, users.active_at, u1.user_code as sp_name, '
-                            . 'users.user_code')
+                            . 'users.user_code, users.is_tron, users.tron')
                     ->leftJoin('users as u1', 'users.sponsor_id', '=', 'u1.id')
                     ->where('users.is_active', '=', 1)
                     ->where('users.user_type', '=', 10)
