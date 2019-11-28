@@ -71,5 +71,16 @@ class Admin extends Model {
         return $result;
     }
     
+    public function getInsertLogHistory($data){
+        try {
+            DB::table('log_history')->insert($data);
+            $result = (object) array('status' => true, 'message' => null);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message);
+        }
+        return $result;
+    }
+    
 }
 

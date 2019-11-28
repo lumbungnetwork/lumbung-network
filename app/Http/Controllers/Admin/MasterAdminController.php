@@ -35,6 +35,11 @@ class MasterAdminController extends Controller {
         }
         $modelAdmin = New Admin;
         $getAllAdmin = $modelAdmin->getAllUserAdmin($dataUser);
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => 'GET /adm/add-admin'
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return view('admin.user.create-user')
                 ->with('headerTitle', 'Admin')
                 ->with('getAllAdmin', $getAllAdmin)
@@ -47,7 +52,7 @@ class MasterAdminController extends Controller {
         if(!in_array($dataUser->user_type, $onlyUser)){
             return redirect()->route('mainDashboard');
         }
-        if($request->email == null || $request->password == null || $request->repassword == null || $request->f_name == null){
+        if($request->email == null || $request->password == null || $request->repassword == null || $request->f_name == null || $request->role == null){
             return redirect()->route('addCrew')
                 ->with('message', 'The field is required.')
                 ->with('messageclass', 'danger');
@@ -57,6 +62,7 @@ class MasterAdminController extends Controller {
                 ->with('message', 'Password didn\'t match')
                 ->with('messageclass', 'danger');
         }
+        $permission = implode( ",", $request->role);
          $modelAdmin = New Admin;
          $cekUsername = $modelAdmin->getCekNewUsername($request->email);
          if($cekUsername != null){
@@ -65,15 +71,21 @@ class MasterAdminController extends Controller {
                 ->with('messageclass', 'danger');
         }
         $dataInsert = array(
-            'email' => $request->email,
+            'user_code' => $request->email,
             'password' => bcrypt($request->password),
             'name' => $request->f_name,
+            'email' => $request->email,
             'is_active' => 1,
-            'user_type' => $request->user_type,
+            'user_type' => 3,
             'id_type' => 0,
-            'is_verification' => 1
+            'permission' => $permission
         );
         $modelAdmin->getInsertUser($dataInsert);
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => 'POST /adm/new-admin user_code = '.$request->email
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('addCrew')
                 ->with('message', 'Create New Admin Success')
                 ->with('messageclass', 'success');
@@ -88,6 +100,12 @@ class MasterAdminController extends Controller {
         }
         $modelSettingPin = New Pinsetting;
         $getPinSetting = $modelSettingPin->getActivePinSetting();
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => 'GET /adm/list/bonus-sp'
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return view('admin.pin.pin-setting')
                 ->with('headerTitle', 'Pin')
                 ->with('data', $getPinSetting)
@@ -114,6 +132,12 @@ class MasterAdminController extends Controller {
             'active_at' => date('Y-m-d H:i:s')
         );
         $modelSettingPin->getInsertPinSetting($dataInsert);
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => 'POST /adm/add/pin-setting'
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('addSettingPin')
                 ->with('message', 'Create Pin Setting Success')
                 ->with('messageclass', 'success');
@@ -129,6 +153,12 @@ class MasterAdminController extends Controller {
         $modelPackage = New Package;
         $getActivePinSetting = $modelSettingPin->getActivePinSetting();
         $getAllPackage = $modelPackage->getAllPackage();
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => 'GET /adm/packages'
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return view('admin.package.package-list')
                 ->with('headerTitle', 'Package')
                 ->with('pinSetting', $getActivePinSetting)
@@ -151,6 +181,12 @@ class MasterAdminController extends Controller {
             'discount' => $request->discount
         );
         $modelPackage->getUpdatePackage($request->cekId, $dataUpdate);
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => 'POST /adm/packages'
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('allPackage')
                 ->with('message', 'Update Package Success')
                 ->with('messageclass', 'success');
@@ -286,13 +322,19 @@ class MasterAdminController extends Controller {
     
     public function getBankPerusahaan(){
         $dataUser = Auth::user();
-        $onlyUser  = array(1, 2);
+        $onlyUser  = array(1, 2, 3);
         if(!in_array($dataUser->user_type, $onlyUser)){
             return redirect()->route('mainDashboard');
         }
         $modelBank = new Bank;
         $getPerusahaanBank = $modelBank->getBankPerusahaan();
         $getPerusahaanTron = $modelBank->getTronPerusahaan();
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => 'GET /adm/bank'
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return view('admin.bank.list-bank')
                 ->with('headerTitle', 'Bank Perusahaan')
                 ->with('getData', $getPerusahaanBank)
@@ -302,7 +344,7 @@ class MasterAdminController extends Controller {
     
     public function postBankPerusahaan(Request $request){
         $dataUser = Auth::user();
-        $onlyUser  = array(1, 2);
+        $onlyUser  = array(1, 2, 3);
         if(!in_array($dataUser->user_type, $onlyUser)){
             return redirect()->route('mainDashboard');
         }
@@ -314,6 +356,12 @@ class MasterAdminController extends Controller {
             'account_name' => $request->account_name,
         );
         $modelBank->getUpdateBank('id', $request->id, $dataUpdate);
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => 'POST /adm/bank'
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_bankPerusahaan')
                 ->with('message', 'Berhasil update bank perusahaan')
                 ->with('messageclass', 'success');
@@ -321,7 +369,7 @@ class MasterAdminController extends Controller {
     
     public function getAddBankPerusahaan(){
         $dataUser = Auth::user();
-        $onlyUser  = array(1, 2);
+        $onlyUser  = array(1, 2, 3);
         if(!in_array($dataUser->user_type, $onlyUser)){
             return redirect()->route('mainDashboard');
         }
@@ -332,7 +380,7 @@ class MasterAdminController extends Controller {
     
     public function postAddBankPerusahaan(Request $request){
         $dataUser = Auth::user();
-        $onlyUser  = array(1, 2);
+        $onlyUser  = array(1, 2, 3);
         if(!in_array($dataUser->user_type, $onlyUser)){
             return redirect()->route('mainDashboard');
         }
@@ -353,7 +401,7 @@ class MasterAdminController extends Controller {
     
     public function postTronPerusahaan(Request $request){
         $dataUser = Auth::user();
-        $onlyUser  = array(1, 2);
+        $onlyUser  = array(1, 2, 3);
         if(!in_array($dataUser->user_type, $onlyUser)){
             return redirect()->route('mainDashboard');
         }
@@ -371,7 +419,7 @@ class MasterAdminController extends Controller {
     
     public function getAddTronPerusahaan(){
         $dataUser = Auth::user();
-        $onlyUser  = array(1, 2);
+        $onlyUser  = array(1, 2, 3);
         if(!in_array($dataUser->user_type, $onlyUser)){
             return redirect()->route('mainDashboard');
         }
@@ -382,7 +430,7 @@ class MasterAdminController extends Controller {
     
     public function postAddTronPerusahaan(Request $request){
         $dataUser = Auth::user();
-        $onlyUser  = array(1, 2);
+        $onlyUser  = array(1, 2, 3);
         if(!in_array($dataUser->user_type, $onlyUser)){
             return redirect()->route('mainDashboard');
         }
@@ -455,12 +503,18 @@ class MasterAdminController extends Controller {
     
     public function getBonusStart(){
         $dataUser = Auth::user();
-        $onlyUser  = array(1, 2);
+        $onlyUser  = array(1, 2, 3);
         if(!in_array($dataUser->user_type, $onlyUser)){
             return redirect()->route('mainDashboard');
         }
         $modelBonusSetting = new Bonussetting;
         $getBonusStart =$modelBonusSetting->getActiveBonusStart();
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => 'GET /adm/bonus-start'
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return view('admin.setting.bonus-start')
                 ->with('headerTitle', 'Setting Bonus Sponsor')
                 ->with('getData', $getBonusStart)
@@ -469,7 +523,7 @@ class MasterAdminController extends Controller {
     
     public function postBonusStart(Request $request){
         $dataUser = Auth::user();
-        $onlyUser  = array(1, 2);
+        $onlyUser  = array(1, 2, 3);
         if(!in_array($dataUser->user_type, $onlyUser)){
             return redirect()->route('mainDashboard');
         }
@@ -484,6 +538,12 @@ class MasterAdminController extends Controller {
             'created_by' => $dataUser->id
         );
         $modelBonusSetting->getInsertBonusStart($dataInsert);
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => 'POST /adm/bonus-start'
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_bonusStart')
                     ->with('message', 'Edit Setting bonus start berhasil')
                     ->with('messageclass', 'success');
@@ -497,6 +557,12 @@ class MasterAdminController extends Controller {
         }
         $modelMember = New Member;
         $getData = $modelMember->getAllMemberByAdmin();
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => 'GET /adm/list/member'
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return view('admin.member.list-member')
                 ->with('headerTitle', 'Member')
                 ->with('getData', $getData)
@@ -512,6 +578,12 @@ class MasterAdminController extends Controller {
         $modelMember = New Member;
         $modelBonus = New Bonus;
         $getData = $modelBonus->getBonusSponsorByAdmin();
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => 'GET /adm/list/bonus-sp'
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return view('admin.bonus.bonus-sponsor')
                 ->with('headerTitle', 'Bonus Sponsor')
                 ->with('getData', $getData)
@@ -858,7 +930,7 @@ class MasterAdminController extends Controller {
     
     public function getNewBonusReward(){
         $dataUser = Auth::user();
-        $onlyUser  = array(1, 2);
+        $onlyUser  = array(1, 2, 3);
         if(!in_array($dataUser->user_type, $onlyUser)){
             return redirect()->route('mainDashboard');
         }
@@ -872,7 +944,7 @@ class MasterAdminController extends Controller {
     
     public function postNewBonusReward(Request $request){
         $dataUser = Auth::user();
-        $onlyUser  = array(1, 2);
+        $onlyUser  = array(1, 2, 3);
         if(!in_array($dataUser->user_type, $onlyUser)){
             return redirect()->route('mainDashboard');
         }
@@ -893,12 +965,18 @@ class MasterAdminController extends Controller {
     
     public function getBonusReward(){
         $dataUser = Auth::user();
-        $onlyUser  = array(1, 2);
+        $onlyUser  = array(1, 2, 3);
         if(!in_array($dataUser->user_type, $onlyUser)){
             return redirect()->route('mainDashboard');
         }
         $modelBonusSetting = new Bonussetting;
         $getData =$modelBonusSetting->getActiveBonusReward();
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => 'GET /adm/bonus-reward'
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return view('admin.setting.bonus-reward')
                 ->with('headerTitle', 'Bonus Reward')
                 ->with('getData', $getData)
@@ -907,7 +985,7 @@ class MasterAdminController extends Controller {
     
     public function postBonusReward(Request $request){
         $dataUser = Auth::user();
-        $onlyUser  = array(1, 2);
+        $onlyUser  = array(1, 2, 3);
         if(!in_array($dataUser->user_type, $onlyUser)){
             return redirect()->route('mainDashboard');
         }
@@ -917,6 +995,12 @@ class MasterAdminController extends Controller {
             'reward_detail' => $request->reward_detail
         );
         $modelBonusSetting->getUpdateReward('id', $request->cekId, $dataUpdate);
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => 'POST /adm/bonus-reward'
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_Rewards')
                     ->with('message', 'Edit Setting bonus reward berhasil')
                     ->with('messageclass', 'success');
@@ -1397,6 +1481,12 @@ class MasterAdminController extends Controller {
             'full_name' => $full_name
         );
         $modelMember->getUpdateUsers('id', $request->cekId, $dataUpdate);
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => 'POST /adm/change/data/member user_id '.$request->cekId
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listMember')
                     ->with('message', 'Berhasil')
                     ->with('messageclass', 'success');
@@ -1423,6 +1513,12 @@ class MasterAdminController extends Controller {
             'password' => bcrypt($request->password),
         );
         $modelMember->getUpdateUsers('id', $request->cekId, $dataUpdatePass);
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => 'POST /adm/change/passwd/member user_id '.$request->cekId
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listMember')
                     ->with('message', 'Berhasil')
                     ->with('messageclass', 'success');
@@ -1439,6 +1535,12 @@ class MasterAdminController extends Controller {
             'is_login' => 0,
         );
         $modelMember->getUpdateUsers('id', $request->cekId, $dataUpdate);
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => 'POST /adm/change/block/member user_id '.$request->cekId
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listMember')
                     ->with('message', 'Berhasil Blokir Member')
                     ->with('messageclass', 'success');
@@ -1455,6 +1557,12 @@ class MasterAdminController extends Controller {
             'tron' => $request->tron,
         );
         $modelMember->getUpdateUsers('id', $request->cekId, $dataUpdate);
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => 'POST /adm/change/tron/member user_id '.$request->cekId
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listMember')
                     ->with('message', 'Berhasil ubah tron Member')
                     ->with('messageclass', 'success');

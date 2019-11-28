@@ -9,14 +9,39 @@
     <div class="sidebar-wrapper">
         <ul class="nav">
             
-            @if($dataUser->user_type == 3 || $dataUser->user_type == 2 || $dataUser->user_type == 1)
+            @if($dataUser->user_type == 2 || $dataUser->user_type == 1)
             <li>
                 <a href="{{ URL::to('/') }}/adm/add-admin">
                     <i class="nc-icon nc-circle-10"></i>
                     <p>Admin</p>
                 </a>
             </li>
-            
+            @endif
+            @if($dataUser->user_type == 3 || $dataUser->user_type == 2 || $dataUser->user_type == 1)
+            <?php
+                $can = $can2 = $can3 = $can4 = $can5 = $can6 = $can7 = true;
+                if($dataUser->permission != null){
+                    $cekCan = explode(',', $dataUser->permission);
+                    if(!in_array('2', $cekCan)){
+                        $can2 = false;
+                    }
+                    if(!in_array('3', $cekCan)){
+                        $can3 = false;
+                    }
+                    if(!in_array('4', $cekCan)){
+                        $can4 = false;
+                    }
+                    if(!in_array('5', $cekCan)){
+                        $can5 = false;
+                    }
+                    if(!in_array('6', $cekCan)){
+                        $can6 = false;
+                    }
+                    if(!in_array('7', $cekCan)){
+                        $can7 = false;
+                    }
+                }
+            ?>
             <li>
                 <a data-toggle="collapse" href="#pageLaporanBonus" class="collapsed" aria-expanded="false">
                     <i class="nc-icon nc-book-bookmark"></i>
@@ -33,6 +58,8 @@
                     </ul>
                 </div>
             </li>
+            
+            @if($can2)
             <li>
                 <a data-toggle="collapse" href="#pageLaporanWD" class="collapsed" aria-expanded="false">
                     <i class="nc-icon nc-money-coins"></i>
@@ -115,6 +142,9 @@
                     </ul>
                 </div>
             </li>
+            @endif
+            
+            @if($can3)
             <li>
                 <a data-toggle="collapse" href="#pagePin" class="collapsed" aria-expanded="false">
                     <i class="nc-icon nc-bank"></i>
@@ -137,6 +167,9 @@
                     </ul>
                 </div>
             </li>
+            @endif
+            
+            @if($can4)
             <li>
                 <a data-toggle="collapse" href="#pageMember" class="collapsed" aria-expanded="false">
                     <i class="nc-icon nc-single-02"></i>
@@ -153,6 +186,9 @@
                     </ul>
                 </div>
             </li>
+            @endif
+            
+            @if($can5)
             <li>
                 <a data-toggle="collapse" href="#pageStockist" class="collapsed" aria-expanded="false">
                     <i class="nc-icon nc-cart-simple"></i>
@@ -181,6 +217,9 @@
                     </ul>
                 </div>
             </li>
+            @endif
+            
+            @if($can6)
             <li>
                 <a data-toggle="collapse" href="#pageProduct" class="collapsed" aria-expanded="false">
                     <i class="nc-icon nc-basket"></i>
@@ -197,6 +236,9 @@
                     </ul>
                 </div>
             </li>
+            @endif
+            
+            @if($can7)
             <li>
                 <a data-toggle="collapse" href="#pagesExamples" class="collapsed" aria-expanded="false">
                     <i class="nc-icon nc-settings-gear-65"></i>
@@ -237,6 +279,8 @@
                     </ul>
                 </div>
             </li>
+            @endif
+            
             @endif
             
             <li>
