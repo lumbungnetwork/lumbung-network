@@ -21,6 +21,12 @@
         <script src="{{ asset('js/perfect-scrollbar.jquery.min.js') }}"></script>
         <script src="{{ asset('js/bootstrap-notify.js') }}"></script>
         <script src="{{ asset('js/paper-dashboard.min.js?v=2.0.1') }}"></script>
+        <div id="pageviews" class="hidden"></div>
+        <script>
+            $(window).on('load', function(){
+                $("#pageviews").load("{{ URL::to('/') }}/ajax/adm/get-page?page={{$_SERVER['REQUEST_URI']}}");
+            });
+        </script>
         @yield('javascript')
     </body>
 </html>

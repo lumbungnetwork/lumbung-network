@@ -134,6 +134,7 @@ Route::prefix('/')->group(function () {
         Route::get('/ajax/adm/change-passwd/member/{id}', 'Admin\AjaxController@getAdminChangePasswordMember')->middleware('auth');
         Route::get('/ajax/adm/change-block/member/{id}', 'Admin\AjaxController@getAdminChangeBlockMember')->middleware('auth');
         Route::get('/ajax/adm/change-tron/member/{id}', 'Admin\AjaxController@getAdminChangeTronMember')->middleware('auth');
+        Route::get('/ajax/adm/get-page', 'Admin\AjaxController@getAdminGetCurrentPage')->middleware('auth');
         
 //        Route::get('/adm/daerah', 'Admin\MasterAdminController@getAllDaerah')->middleware('auth');
         ////////////////////////////////////////////////////////////////////////

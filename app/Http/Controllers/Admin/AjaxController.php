@@ -356,6 +356,16 @@ class AjaxController extends Controller {
                 ->with('dataUser', $dataUser);
     }
     
+    public function getAdminGetCurrentPage(Request $request){
+        $dataUser = Auth::user();
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => 'GET '.$request->page
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
+    }
+    
     
       
     

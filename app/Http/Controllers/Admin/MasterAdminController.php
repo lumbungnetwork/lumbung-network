@@ -35,11 +35,6 @@ class MasterAdminController extends Controller {
         }
         $modelAdmin = New Admin;
         $getAllAdmin = $modelAdmin->getAllUserAdmin($dataUser);
-        $logHistory = array(
-            'user_id' => $dataUser->id,
-            'detail_log' => 'GET /adm/add-admin'
-        );
-        $modelAdmin->getInsertLogHistory($logHistory);
         return view('admin.user.create-user')
                 ->with('headerTitle', 'Admin')
                 ->with('getAllAdmin', $getAllAdmin)
@@ -101,11 +96,6 @@ class MasterAdminController extends Controller {
         $modelSettingPin = New Pinsetting;
         $getPinSetting = $modelSettingPin->getActivePinSetting();
         $modelAdmin = New Admin;
-        $logHistory = array(
-            'user_id' => $dataUser->id,
-            'detail_log' => 'GET /adm/list/bonus-sp'
-        );
-        $modelAdmin->getInsertLogHistory($logHistory);
         return view('admin.pin.pin-setting')
                 ->with('headerTitle', 'Pin')
                 ->with('data', $getPinSetting)
@@ -154,11 +144,6 @@ class MasterAdminController extends Controller {
         $getActivePinSetting = $modelSettingPin->getActivePinSetting();
         $getAllPackage = $modelPackage->getAllPackage();
         $modelAdmin = New Admin;
-        $logHistory = array(
-            'user_id' => $dataUser->id,
-            'detail_log' => 'GET /adm/packages'
-        );
-        $modelAdmin->getInsertLogHistory($logHistory);
         return view('admin.package.package-list')
                 ->with('headerTitle', 'Package')
                 ->with('pinSetting', $getActivePinSetting)
@@ -330,11 +315,6 @@ class MasterAdminController extends Controller {
         $getPerusahaanBank = $modelBank->getBankPerusahaan();
         $getPerusahaanTron = $modelBank->getTronPerusahaan();
         $modelAdmin = New Admin;
-        $logHistory = array(
-            'user_id' => $dataUser->id,
-            'detail_log' => 'GET /adm/bank'
-        );
-        $modelAdmin->getInsertLogHistory($logHistory);
         return view('admin.bank.list-bank')
                 ->with('headerTitle', 'Bank Perusahaan')
                 ->with('getData', $getPerusahaanBank)
@@ -510,11 +490,6 @@ class MasterAdminController extends Controller {
         $modelBonusSetting = new Bonussetting;
         $getBonusStart =$modelBonusSetting->getActiveBonusStart();
         $modelAdmin = New Admin;
-        $logHistory = array(
-            'user_id' => $dataUser->id,
-            'detail_log' => 'GET /adm/bonus-start'
-        );
-        $modelAdmin->getInsertLogHistory($logHistory);
         return view('admin.setting.bonus-start')
                 ->with('headerTitle', 'Setting Bonus Sponsor')
                 ->with('getData', $getBonusStart)
@@ -558,11 +533,6 @@ class MasterAdminController extends Controller {
         $modelMember = New Member;
         $getData = $modelMember->getAllMemberByAdmin();
         $modelAdmin = New Admin;
-        $logHistory = array(
-            'user_id' => $dataUser->id,
-            'detail_log' => 'GET /adm/list/member'
-        );
-        $modelAdmin->getInsertLogHistory($logHistory);
         return view('admin.member.list-member')
                 ->with('headerTitle', 'Member')
                 ->with('getData', $getData)
@@ -579,11 +549,6 @@ class MasterAdminController extends Controller {
         $modelBonus = New Bonus;
         $getData = $modelBonus->getBonusSponsorByAdmin();
         $modelAdmin = New Admin;
-        $logHistory = array(
-            'user_id' => $dataUser->id,
-            'detail_log' => 'GET /adm/list/bonus-sp'
-        );
-        $modelAdmin->getInsertLogHistory($logHistory);
         return view('admin.bonus.bonus-sponsor')
                 ->with('headerTitle', 'Bonus Sponsor')
                 ->with('getData', $getData)
@@ -972,11 +937,6 @@ class MasterAdminController extends Controller {
         $modelBonusSetting = new Bonussetting;
         $getData =$modelBonusSetting->getActiveBonusReward();
         $modelAdmin = New Admin;
-        $logHistory = array(
-            'user_id' => $dataUser->id,
-            'detail_log' => 'GET /adm/bonus-reward'
-        );
-        $modelAdmin->getInsertLogHistory($logHistory);
         return view('admin.setting.bonus-reward')
                 ->with('headerTitle', 'Bonus Reward')
                 ->with('getData', $getData)
