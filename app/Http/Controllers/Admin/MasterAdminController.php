@@ -169,7 +169,7 @@ class MasterAdminController extends Controller {
         $modelAdmin = New Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => 'POST /adm/packages'
+            'detail_log' => $request->method().' '.$request->path()
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('allPackage')
@@ -258,6 +258,12 @@ class MasterAdminController extends Controller {
             'reason' => $reason
         );
         $modelMasterPin->getInsertMasterPin($dataInsertMasterPin);
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => $request->method().' '.$request->path()
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listTransaction')
                 ->with('message', 'Berhasil konfirmasi transfer pin')
                 ->with('messageclass', 'success');
@@ -286,6 +292,12 @@ class MasterAdminController extends Controller {
             'submit_at' => date('Y-m-d H:i:s'),
         );
         $modelSettingTrans->getUpdateTransaction('id', $id, $dataUpdate);
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => $request->method().' '.$request->path()
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listTransaction')
                     ->with('message', 'Transaksi dibatalkan')
                     ->with('messageclass', 'success');
@@ -392,6 +404,12 @@ class MasterAdminController extends Controller {
             'updated_at' => date('Y-m-d H:i:s')
         );
         $modelBank->getUpdateTron('id', $request->id, $dataUpdate);
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => $request->method().' '.$request->path()
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_bankPerusahaan')
                 ->with('message', 'Berhasil update tron perusahaan')
                 ->with('messageclass', 'success');
@@ -603,6 +621,12 @@ class MasterAdminController extends Controller {
             );
             $modelWD->getUpdateWD('id', $getID, $dataUpdate);
         }
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => $request->method().' '.$request->path()
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listWD')
                     ->with('message', 'Konfirmasi Transfer WD berhasil')
                     ->with('messageclass', 'success');
@@ -626,6 +650,12 @@ class MasterAdminController extends Controller {
             );
             $modelWD->getUpdateWD('id', $getID, $dataUpdate);
         }
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => $request->method().' '.$request->path()
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listWDeIDR')
                     ->with('message', 'Konfirmasi Transfer WD berhasil')
                     ->with('messageclass', 'success');
@@ -656,6 +686,12 @@ class MasterAdminController extends Controller {
             $redirect = 'adm_listWDeIDR';
             $wd = 'Konversi';
         }
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => $request->method().' '.$request->path()
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route($redirect)
                     ->with('message', 'Data '.$wd.' '.$getData->full_name.' senilai Rp. '.number_format($getData->wd_total + $getData->admin_fee, 0, ',', '.').' direject')
                     ->with('messageclass', 'success');
@@ -888,6 +924,12 @@ class MasterAdminController extends Controller {
             'amount' => $qty
         );
         $modelSales->getInsertStock($dataInsertStock);
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => $request->method().' '.$request->path()
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listPurchases')
                     ->with('message', 'Produk berhasil ditambahkan')
                     ->with('messageclass', 'success');
@@ -997,6 +1039,12 @@ class MasterAdminController extends Controller {
             );
             $modelBonus->getUpdateClaimReward('id', $getID, $dataUpdate);
         }
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => $request->method().' '.$request->path()
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listClaimReward')
                     ->with('message', 'Konfirmasi Reward berhasil')
                     ->with('messageclass', 'success');
@@ -1020,6 +1068,12 @@ class MasterAdminController extends Controller {
             'submit_at' => date('Y-m-d H:i:s'),
         );
         $modelBonus->getUpdateClaimReward('id', $getID, $dataUpdate);
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => $request->method().' '.$request->path()
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listClaimReward')
                     ->with('message', 'Data Claim Reject berhasil')
                     ->with('messageclass', 'success');
@@ -1114,6 +1168,12 @@ class MasterAdminController extends Controller {
             'status' => 3
         );
         $modelSales->getUpdateMasterSales('id', $request->id, $dataUpdate);
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => $request->method().' '.$request->path()
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listConfirmBelanjaStockist')
                     ->with('message', 'Konfirmasi belanja stockist berhasil')
                     ->with('messageclass', 'success');
@@ -1211,6 +1271,12 @@ class MasterAdminController extends Controller {
             'deleted_at' => date('Y-m-d H:i:s')
         );
         $modelBonus->getUpdateBelanjaReward('id', $getID, $dataUpdate);
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => $request->method().' '.$request->path()
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listBelanjaReward')
                     ->with('message', 'Data Reward Belanja berhasil direject')
                     ->with('messageclass', 'success');
@@ -1317,6 +1383,12 @@ class MasterAdminController extends Controller {
             'area' => $provinsiName.' '.$kotaName.' '.$kecamatanName.' '.$kelurahanName
         );
         $modelSales->getUpdatePurchase('id', $request->id, $dataUpdate);
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => $request->method().' '.$request->path()
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listPurchases')
                     ->with('message', 'Produk berhasil diedit')
                     ->with('messageclass', 'success');
@@ -1328,11 +1400,18 @@ class MasterAdminController extends Controller {
         if(!in_array($dataUser->user_type, $onlyUser)){
             return redirect()->route('mainDashboard');
         }
+        dd($request->path());
         $modelSales = New Sales;
         $dataUpdate = array(
             'deleted_at' => date('Y-m-d H:i:s')
         );
         $modelSales->getUpdatePurchase('id', $request->id, $dataUpdate);
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => $request->method().' '.$request->path()
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listPurchases')
                     ->with('message', 'Produk berhasil dihapus')
                     ->with('messageclass', 'success');
@@ -1374,6 +1453,12 @@ class MasterAdminController extends Controller {
             );
             $modelBonus->getUpdateBelanjaReward('id', $getID, $dataUpdate);
         }
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => $request->method().' '.$request->path()
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listPenjualanReward')
                     ->with('message', 'Konfirmasi Reward Penjualan berhasil')
                     ->with('messageclass', 'success');
@@ -1396,6 +1481,12 @@ class MasterAdminController extends Controller {
             'submit_at' => date('Y-m-d H:i:s'),
         );
         $modelBonus->getUpdateBelanjaReward('id', $getID, $dataUpdate);
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => $request->method().' '.$request->path()
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listPenjualanReward')
                     ->with('message', 'Data Reward Penjualan berhasil direject')
                     ->with('messageclass', 'success');
@@ -1610,6 +1701,12 @@ class MasterAdminController extends Controller {
             );
             $modelWD->getUpdateWD('id', $getID, $dataUpdate);
         }
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => $request->method().' '.$request->path()
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listWDRoyalti')
                     ->with('message', 'Konfirmasi Transfer WD Royalti berhasil')
                     ->with('messageclass', 'success');
@@ -1636,6 +1733,12 @@ class MasterAdminController extends Controller {
         $modelWD->getUpdateWD('id', $getID, $dataUpdate);
         $redirect = 'adm_listWDRoyalti';
         $wd = 'WD Royalti';
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => $request->method().' '.$request->path()
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route($redirect)
                     ->with('message', 'Data '.$wd.' '.$getData->full_name.' senilai Rp. '.number_format($getData->wd_total + $getData->admin_fee, 0, ',', '.').' direject')
                     ->with('messageclass', 'success');
