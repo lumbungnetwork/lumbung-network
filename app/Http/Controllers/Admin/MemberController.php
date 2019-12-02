@@ -1040,103 +1040,103 @@ class MemberController extends Controller {
                         ->with('message', 'Resubscribe member berhasil')
                         ->with('messageclass', 'success');
         }
-        $getLevelSp = $modelMember->getLevelSponsoring($dataUser->id);
+//        $getLevelSp = $modelMember->getLevelSponsoring($dataUser->id);
         $modelSettingPin = New Pinsetting;
         $getActivePinSetting = $modelSettingPin->getActivePinSetting();
         $price_pin = $getActivePinSetting->price * $request->total_pin;
         $royalti_statik = 1;
         $bonus_royalti = ($royalti_statik/100 * $price_pin)/2; //500
-        if($getLevelSp->id_lvl1 != null){
-            $dataInsertBonusLvl1 = array(
-                'user_id' => $getLevelSp->id_lvl1,
-                'from_user_id' => $dataUser->id,
-                'type' => 3,
-                'bonus_price' => $bonus_royalti,
-                'bonus_date' => date('Y-m-d'),
-                'poin_type' => 1,
-                'level_id' => 1,
-                'total_pin' => $request->total_pin
-            );
-            $modelBonus->getInsertBonusMember($dataInsertBonusLvl1);
-        }
-        if($getLevelSp->id_lvl2 != null){
-            $dataInsertBonusLvl2 = array(
-                'user_id' => $getLevelSp->id_lvl2,
-                'from_user_id' => $dataUser->id,
-                'type' => 3,
-                'bonus_price' => $bonus_royalti,
-                'bonus_date' => date('Y-m-d'),
-                'poin_type' => 1,
-                'level_id' => 2,
-                'total_pin' => $request->total_pin
-            );
-            $modelBonus->getInsertBonusMember($dataInsertBonusLvl2);
-        }
-        if($getLevelSp->id_lvl3 != null){
-            $dataInsertBonusLvl3 = array(
-                'user_id' => $getLevelSp->id_lvl3,
-                'from_user_id' => $dataUser->id,
-                'type' => 3,
-                'bonus_price' => $bonus_royalti,
-                'bonus_date' => date('Y-m-d'),
-                'poin_type' => 1,
-                'level_id' => 3,
-                'total_pin' => $request->total_pin
-            );
-            $modelBonus->getInsertBonusMember($dataInsertBonusLvl3);
-        }
-        if($getLevelSp->id_lvl4 != null){
-            $dataInsertBonusLvl4 = array(
-                'user_id' => $getLevelSp->id_lvl4,
-                'from_user_id' => $dataUser->id,
-                'type' => 3,
-                'bonus_price' => $bonus_royalti,
-                'bonus_date' => date('Y-m-d'),
-                'poin_type' => 1,
-                'level_id' => 4,
-                'total_pin' => $request->total_pin
-            );
-            $modelBonus->getInsertBonusMember($dataInsertBonusLvl4);
-        }
-        if($getLevelSp->id_lvl5 != null){
-            $dataInsertBonusLvl5 = array(
-                'user_id' => $getLevelSp->id_lvl5,
-                'from_user_id' => $dataUser->id,
-                'type' => 3,
-                'bonus_price' => $bonus_royalti,
-                'bonus_date' => date('Y-m-d'),
-                'poin_type' => 1,
-                'level_id' => 5,
-                'total_pin' => $request->total_pin
-            );
-            $modelBonus->getInsertBonusMember($dataInsertBonusLvl5);
-        }
-        if($getLevelSp->id_lvl6 != null){
-            $dataInsertBonusLvl6 = array(
-                'user_id' => $getLevelSp->id_lvl6,
-                'from_user_id' => $dataUser->id,
-                'type' => 3,
-                'bonus_price' => $bonus_royalti,
-                'bonus_date' => date('Y-m-d'),
-                'poin_type' => 1,
-                'level_id' => 6,
-                'total_pin' => $request->total_pin
-            );
-            $modelBonus->getInsertBonusMember($dataInsertBonusLvl6);
-        }
-        if($getLevelSp->id_lvl7 != null){
-            $dataInsertBonusLvl7 = array(
-                'user_id' => $getLevelSp->id_lvl7,
-                'from_user_id' => $dataUser->id,
-                'type' => 3,
-                'bonus_price' => $bonus_royalti,
-                'bonus_date' => date('Y-m-d'),
-                'poin_type' => 1,
-                'level_id' => 7,
-                'total_pin' => $request->total_pin
-            );
-            $modelBonus->getInsertBonusMember($dataInsertBonusLvl7);
-        }
+//        if($getLevelSp->id_lvl1 != null){
+//            $dataInsertBonusLvl1 = array(
+//                'user_id' => $getLevelSp->id_lvl1,
+//                'from_user_id' => $dataUser->id,
+//                'type' => 3,
+//                'bonus_price' => $bonus_royalti,
+//                'bonus_date' => date('Y-m-d'),
+//                'poin_type' => 1,
+//                'level_id' => 1,
+//                'total_pin' => $request->total_pin
+//            );
+//            $modelBonus->getInsertBonusMember($dataInsertBonusLvl1);
+//        }
+//        if($getLevelSp->id_lvl2 != null){
+//            $dataInsertBonusLvl2 = array(
+//                'user_id' => $getLevelSp->id_lvl2,
+//                'from_user_id' => $dataUser->id,
+//                'type' => 3,
+//                'bonus_price' => $bonus_royalti,
+//                'bonus_date' => date('Y-m-d'),
+//                'poin_type' => 1,
+//                'level_id' => 2,
+//                'total_pin' => $request->total_pin
+//            );
+//            $modelBonus->getInsertBonusMember($dataInsertBonusLvl2);
+//        }
+//        if($getLevelSp->id_lvl3 != null){
+//            $dataInsertBonusLvl3 = array(
+//                'user_id' => $getLevelSp->id_lvl3,
+//                'from_user_id' => $dataUser->id,
+//                'type' => 3,
+//                'bonus_price' => $bonus_royalti,
+//                'bonus_date' => date('Y-m-d'),
+//                'poin_type' => 1,
+//                'level_id' => 3,
+//                'total_pin' => $request->total_pin
+//            );
+//            $modelBonus->getInsertBonusMember($dataInsertBonusLvl3);
+//        }
+//        if($getLevelSp->id_lvl4 != null){
+//            $dataInsertBonusLvl4 = array(
+//                'user_id' => $getLevelSp->id_lvl4,
+//                'from_user_id' => $dataUser->id,
+//                'type' => 3,
+//                'bonus_price' => $bonus_royalti,
+//                'bonus_date' => date('Y-m-d'),
+//                'poin_type' => 1,
+//                'level_id' => 4,
+//                'total_pin' => $request->total_pin
+//            );
+//            $modelBonus->getInsertBonusMember($dataInsertBonusLvl4);
+//        }
+//        if($getLevelSp->id_lvl5 != null){
+//            $dataInsertBonusLvl5 = array(
+//                'user_id' => $getLevelSp->id_lvl5,
+//                'from_user_id' => $dataUser->id,
+//                'type' => 3,
+//                'bonus_price' => $bonus_royalti,
+//                'bonus_date' => date('Y-m-d'),
+//                'poin_type' => 1,
+//                'level_id' => 5,
+//                'total_pin' => $request->total_pin
+//            );
+//            $modelBonus->getInsertBonusMember($dataInsertBonusLvl5);
+//        }
+//        if($getLevelSp->id_lvl6 != null){
+//            $dataInsertBonusLvl6 = array(
+//                'user_id' => $getLevelSp->id_lvl6,
+//                'from_user_id' => $dataUser->id,
+//                'type' => 3,
+//                'bonus_price' => $bonus_royalti,
+//                'bonus_date' => date('Y-m-d'),
+//                'poin_type' => 1,
+//                'level_id' => 6,
+//                'total_pin' => $request->total_pin
+//            );
+//            $modelBonus->getInsertBonusMember($dataInsertBonusLvl6);
+//        }
+//        if($getLevelSp->id_lvl7 != null){
+//            $dataInsertBonusLvl7 = array(
+//                'user_id' => $getLevelSp->id_lvl7,
+//                'from_user_id' => $dataUser->id,
+//                'type' => 3,
+//                'bonus_price' => $bonus_royalti,
+//                'bonus_date' => date('Y-m-d'),
+//                'poin_type' => 1,
+//                'level_id' => 7,
+//                'total_pin' => $request->total_pin
+//            );
+//            $modelBonus->getInsertBonusMember($dataInsertBonusLvl7);
+//        }
         return redirect()->route('mainDashboard')
                     ->with('message', 'Resubscribe member berhasil')
                     ->with('messageclass', 'success');

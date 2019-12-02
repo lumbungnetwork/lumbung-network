@@ -215,6 +215,23 @@ class Sales extends Model {
         return $return;
     }
     
+    public function getCronrSalesHistoryMonth($date){
+        $sql = DB::table('master_sales')
+                    ->join('users', 'master_sales.stockist_id', '=', 'users.id')
+                    ->selectRaw('users.id, sum(master_sales.total_price) as month_sale_price')
+                    ->where('master_sales.status', '=', 2)
+                    ->whereDate('master_sales.sale_date', '>=', $date->startDay)
+                    ->whereDate('master_sales.sale_date', '<=', $date->endDay)
+                    ->whereNull('master_sales.deleted_at')
+                    ->groupBy('users.id')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
     public function getInsertItemPurchase($data){
         try {
             $lastInsertedID = DB::table('item_purchase')->insertGetId($data);
