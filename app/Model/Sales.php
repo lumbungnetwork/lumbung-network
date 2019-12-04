@@ -217,13 +217,12 @@ class Sales extends Model {
     
     public function getCronrSalesHistoryMonth($date){
         $sql = DB::table('master_sales')
-                    ->join('users', 'master_sales.stockist_id', '=', 'users.id')
-                    ->selectRaw('users.id, sum(master_sales.total_price) as month_sale_price')
+                    ->selectRaw('master_sales.user_id as id, sum(master_sales.total_price) as month_sale_price')
                     ->where('master_sales.status', '>', 0)
                     ->whereDate('master_sales.sale_date', '>=', $date->startDay)
                     ->whereDate('master_sales.sale_date', '<=', $date->endDay)
                     ->whereNull('master_sales.deleted_at')
-                    ->groupBy('users.id')
+                    ->groupBy('master_sales.user_id')
                     ->get();
         $return = null;
         if(count($sql) > 0){
@@ -232,11 +231,10 @@ class Sales extends Model {
         return $return;
     }
     
-    public function getCekSalesHistoryMemberMonth($id, $date){
+    public function getCekSalesHistoryMemberMonth($id, $date, $min_belanja){
         $return = true;
         if($id > 11){
             $sql = DB::table('master_sales')
-                        ->join('users', 'master_sales.stockist_id', '=', 'users.id')
                         ->selectRaw('sum(master_sales.total_price) as cek_month_belanja')
                         ->where('master_sales.status', '=', 2)
                         ->where('master_sales.user_id', '=', $id)
@@ -248,7 +246,7 @@ class Sales extends Model {
                 $return = false;
             }
             if($sql->cek_month_belanja != null){
-                if($sql->cek_month_belanja < 1000000){
+                if($sql->cek_month_belanja < $min_belanja){
                     $return = false;
                 }
             }

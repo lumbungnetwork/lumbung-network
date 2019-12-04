@@ -32,16 +32,15 @@ class CronBonusRoyalti extends Command {
             'textMonth' => date("F Y", strtotime("first day of previous month"))
         );
         $getData = $modelSales->getCronrSalesHistoryMonth($getPreviousMonth);
-        $royalti = 1000/2;
+        $bonus_royalti = 1000/2; //500
         $maxGetBonus = 4;
+        $min_belanja = 100000;
         if($getData != null){
             foreach($getData as $row){
-                if($row->month_sale_price > 100000){
-                    $bonus_royalti = 500; //(floor($row->month_sale_price/100000)) * $royalti;
+                if($row->month_sale_price > $min_belanja){
                     $getLevelSp = $modelMember->getLevelSponsoring($row->id);
-                    
                     if($getLevelSp->id_lvl1 != null){
-                        $getCekBelanja1 = $modelSales->getCekSalesHistoryMemberMonth($getLevelSp->id_lvl1, $getPreviousMonth);
+                        $getCekBelanja1 = $modelSales->getCekSalesHistoryMemberMonth($getLevelSp->id_lvl1, $getPreviousMonth, $min_belanja);
                         if($getCekBelanja1 == true){
                             $cekMax1 = $modelBonus->getCekBonusRoyaltiMax($getLevelSp->id_lvl1, 1, $maxGetBonus);
                             if($cekMax1 == true){
@@ -60,7 +59,7 @@ class CronBonusRoyalti extends Command {
                     }
                     
                     if($getLevelSp->id_lvl2 != null){
-                        $getCekBelanja2 = $modelSales->getCekSalesHistoryMemberMonth($getLevelSp->id_lvl2, $getPreviousMonth);
+                        $getCekBelanja2 = $modelSales->getCekSalesHistoryMemberMonth($getLevelSp->id_lvl2, $getPreviousMonth, $min_belanja);
                         if($getCekBelanja2 == true){
                             $cekMax2 = $modelBonus->getCekBonusRoyaltiMax($getLevelSp->id_lvl2, 2, $maxGetBonus);
                             if($cekMax2 == true){
@@ -79,7 +78,7 @@ class CronBonusRoyalti extends Command {
                     }
                     
                     if($getLevelSp->id_lvl3 != null){
-                        $getCekBelanja3 = $modelSales->getCekSalesHistoryMemberMonth($getLevelSp->id_lvl3, $getPreviousMonth);
+                        $getCekBelanja3 = $modelSales->getCekSalesHistoryMemberMonth($getLevelSp->id_lvl3, $getPreviousMonth, $min_belanja);
                         if($getCekBelanja3 == true){
                             $cekMax3 = $modelBonus->getCekBonusRoyaltiMax($getLevelSp->id_lvl3, 3, $maxGetBonus);
                             if($cekMax3 == true){
@@ -98,7 +97,7 @@ class CronBonusRoyalti extends Command {
                     }
                     
                     if($getLevelSp->id_lvl4 != null){
-                        $getCekBelanja4 = $modelSales->getCekSalesHistoryMemberMonth($getLevelSp->id_lvl4, $getPreviousMonth);
+                        $getCekBelanja4 = $modelSales->getCekSalesHistoryMemberMonth($getLevelSp->id_lvl4, $getPreviousMonth, $min_belanja);
                         if($getCekBelanja4 == true){
                             $cekMax4 = $modelBonus->getCekBonusRoyaltiMax($getLevelSp->id_lvl4, 4, $maxGetBonus);
                             if($cekMax4 == true){
@@ -117,7 +116,7 @@ class CronBonusRoyalti extends Command {
                     }
                     
                     if($getLevelSp->id_lvl5 != null){
-                        $getCekBelanja5 = $modelSales->getCekSalesHistoryMemberMonth($getLevelSp->id_lvl5, $getPreviousMonth);
+                        $getCekBelanja5 = $modelSales->getCekSalesHistoryMemberMonth($getLevelSp->id_lvl5, $getPreviousMonth, $min_belanja);
                         if($getCekBelanja5 == true){
                             $cekMax5 = $modelBonus->getCekBonusRoyaltiMax($getLevelSp->id_lvl5, 5, $maxGetBonus);
                             if($cekMax5 == true){
@@ -136,7 +135,7 @@ class CronBonusRoyalti extends Command {
                     }
                     
                     if($getLevelSp->id_lvl6 != null){
-                        $getCekBelanja6 = $modelSales->getCekSalesHistoryMemberMonth($getLevelSp->id_lvl6, $getPreviousMonth);
+                        $getCekBelanja6 = $modelSales->getCekSalesHistoryMemberMonth($getLevelSp->id_lvl6, $getPreviousMonth, $min_belanja);
                         if($getCekBelanja6 == true){
                             $cekMax6 = $modelBonus->getCekBonusRoyaltiMax($getLevelSp->id_lvl6, 6, $maxGetBonus);
                             if($cekMax6 == true){
@@ -155,7 +154,7 @@ class CronBonusRoyalti extends Command {
                     }
                     
                     if($getLevelSp->id_lvl7 != null){
-                        $getCekBelanja7 = $modelSales->getCekSalesHistoryMemberMonth($getLevelSp->id_lvl7, $getPreviousMonth);
+                        $getCekBelanja7 = $modelSales->getCekSalesHistoryMemberMonth($getLevelSp->id_lvl7, $getPreviousMonth, $min_belanja);
                         if($getCekBelanja7 == true){
                             $cekMax7 = $modelBonus->getCekBonusRoyaltiMax($getLevelSp->id_lvl7, 7, $maxGetBonus);
                             if($cekMax7 == true){
