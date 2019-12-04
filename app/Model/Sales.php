@@ -232,6 +232,30 @@ class Sales extends Model {
         return $return;
     }
     
+    public function getCekSalesHistoryMemberMonth($id, $date){
+        $return = true;
+        if($id > 11){
+            $sql = DB::table('master_sales')
+                        ->join('users', 'master_sales.stockist_id', '=', 'users.id')
+                        ->selectRaw('sum(master_sales.total_price) as cek_month_belanja')
+                        ->where('master_sales.status', '=', 2)
+                        ->where('master_sales.user_id', '=', $id)
+                        ->whereDate('master_sales.sale_date', '>=', $date->startDay)
+                        ->whereDate('master_sales.sale_date', '<=', $date->endDay)
+                        ->whereNull('master_sales.deleted_at')
+                        ->first();
+            if($sql->cek_month_belanja == null){
+                $return = false;
+            }
+            if($sql->cek_month_belanja != null){
+                if($sql->cek_month_belanja < 1000000){
+                    $return = false;
+                }
+            }
+        }
+        return $return;
+    }
+    
     public function getInsertItemPurchase($data){
         try {
             $lastInsertedID = DB::table('item_purchase')->insertGetId($data);

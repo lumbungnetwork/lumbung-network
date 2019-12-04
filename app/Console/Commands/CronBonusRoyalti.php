@@ -33,98 +33,149 @@ class CronBonusRoyalti extends Command {
         );
         $getData = $modelSales->getCronrSalesHistoryMonth($getPreviousMonth);
         $royalti = 1000/2;
+        $maxGetBonus = 4;
         if($getData != null){
             foreach($getData as $row){
                 if($row->month_sale_price > 100000){
                     $bonus_royalti = 500; //(floor($row->month_sale_price/100000)) * $royalti;
                     $getLevelSp = $modelMember->getLevelSponsoring($row->id);
+                    
                     if($getLevelSp->id_lvl1 != null){
-                        $dataInsertBonusLvl1 = array(
-                            'user_id' => $getLevelSp->id_lvl1,
-                            'from_user_id' => $row->id,
-                            'type' => 3,
-                            'bonus_price' => $bonus_royalti,
-                            'bonus_date' => date('Y-m-d'),
-                            'poin_type' => 1,
-                            'level_id' => 1,
-                        );
-                        $modelBonus->getInsertBonusMember($dataInsertBonusLvl1);
+                        $getCekBelanja1 = $modelSales->getCekSalesHistoryMemberMonth($getLevelSp->id_lvl1, $getPreviousMonth);
+                        if($getCekBelanja1 == true){
+                            $cekMax1 = $modelBonus->getCekBonusRoyaltiMax($getLevelSp->id_lvl1, 1, $maxGetBonus);
+                            if($cekMax1 == true){
+                                $dataInsertBonusLvl1 = array(
+                                    'user_id' => $getLevelSp->id_lvl1,
+                                    'from_user_id' => $row->id,
+                                    'type' => 3,
+                                    'bonus_price' => $bonus_royalti,
+                                    'bonus_date' => date('Y-m-d'),
+                                    'poin_type' => 1,
+                                    'level_id' => 1,
+                                );
+                                $modelBonus->getInsertBonusMember($dataInsertBonusLvl1);
+                            }
+                        }
                     }
+                    
                     if($getLevelSp->id_lvl2 != null){
-                        $dataInsertBonusLvl2 = array(
-                            'user_id' => $getLevelSp->id_lvl2,
-                            'from_user_id' => $row->id,
-                            'type' => 3,
-                            'bonus_price' => $bonus_royalti,
-                            'bonus_date' => date('Y-m-d'),
-                            'poin_type' => 1,
-                            'level_id' => 2,
-                        );
-                        $modelBonus->getInsertBonusMember($dataInsertBonusLvl2);
+                        $getCekBelanja2 = $modelSales->getCekSalesHistoryMemberMonth($getLevelSp->id_lvl2, $getPreviousMonth);
+                        if($getCekBelanja2 == true){
+                            $cekMax2 = $modelBonus->getCekBonusRoyaltiMax($getLevelSp->id_lvl2, 2, $maxGetBonus);
+                            if($cekMax2 == true){
+                                $dataInsertBonusLvl2 = array(
+                                    'user_id' => $getLevelSp->id_lvl2,
+                                    'from_user_id' => $row->id,
+                                    'type' => 3,
+                                    'bonus_price' => $bonus_royalti,
+                                    'bonus_date' => date('Y-m-d'),
+                                    'poin_type' => 1,
+                                    'level_id' => 2,
+                                );
+                                $modelBonus->getInsertBonusMember($dataInsertBonusLvl2);
+                            }
+                        }
                     }
+                    
                     if($getLevelSp->id_lvl3 != null){
-                        $dataInsertBonusLvl3 = array(
-                            'user_id' => $getLevelSp->id_lvl3,
-                            'from_user_id' => $row->id,
-                            'type' => 3,
-                            'bonus_price' => $bonus_royalti,
-                            'bonus_date' => date('Y-m-d'),
-                            'poin_type' => 1,
-                            'level_id' => 3,
-                        );
-                        $modelBonus->getInsertBonusMember($dataInsertBonusLvl3);
+                        $getCekBelanja3 = $modelSales->getCekSalesHistoryMemberMonth($getLevelSp->id_lvl3, $getPreviousMonth);
+                        if($getCekBelanja3 == true){
+                            $cekMax3 = $modelBonus->getCekBonusRoyaltiMax($getLevelSp->id_lvl3, 3, $maxGetBonus);
+                            if($cekMax3 == true){
+                                $dataInsertBonusLvl3 = array(
+                                    'user_id' => $getLevelSp->id_lvl3,
+                                    'from_user_id' => $row->id,
+                                    'type' => 3,
+                                    'bonus_price' => $bonus_royalti,
+                                    'bonus_date' => date('Y-m-d'),
+                                    'poin_type' => 1,
+                                    'level_id' => 3,
+                                );
+                                $modelBonus->getInsertBonusMember($dataInsertBonusLvl3);
+                            }
+                        }
                     }
+                    
                     if($getLevelSp->id_lvl4 != null){
-                        $dataInsertBonusLvl4 = array(
-                            'user_id' => $getLevelSp->id_lvl4,
-                            'from_user_id' => $row->id,
-                            'type' => 3,
-                            'bonus_price' => $bonus_royalti,
-                            'bonus_date' => date('Y-m-d'),
-                            'poin_type' => 1,
-                            'level_id' => 4,
-                        );
-                        $modelBonus->getInsertBonusMember($dataInsertBonusLvl4);
+                        $getCekBelanja4 = $modelSales->getCekSalesHistoryMemberMonth($getLevelSp->id_lvl4, $getPreviousMonth);
+                        if($getCekBelanja4 == true){
+                            $cekMax4 = $modelBonus->getCekBonusRoyaltiMax($getLevelSp->id_lvl4, 4, $maxGetBonus);
+                            if($cekMax4 == true){
+                                $dataInsertBonusLvl4 = array(
+                                    'user_id' => $getLevelSp->id_lvl4,
+                                    'from_user_id' => $row->id,
+                                    'type' => 3,
+                                    'bonus_price' => $bonus_royalti,
+                                    'bonus_date' => date('Y-m-d'),
+                                    'poin_type' => 1,
+                                    'level_id' => 4,
+                                );
+                                $modelBonus->getInsertBonusMember($dataInsertBonusLvl4);
+                            }
+                        }
                     }
+                    
                     if($getLevelSp->id_lvl5 != null){
-                        $dataInsertBonusLvl5 = array(
-                            'user_id' => $getLevelSp->id_lvl5,
-                            'from_user_id' => $row->id,
-                            'type' => 3,
-                            'bonus_price' => $bonus_royalti,
-                            'bonus_date' => date('Y-m-d'),
-                            'poin_type' => 1,
-                            'level_id' => 5,
-                        );
-                        $modelBonus->getInsertBonusMember($dataInsertBonusLvl5);
+                        $getCekBelanja5 = $modelSales->getCekSalesHistoryMemberMonth($getLevelSp->id_lvl5, $getPreviousMonth);
+                        if($getCekBelanja5 == true){
+                            $cekMax5 = $modelBonus->getCekBonusRoyaltiMax($getLevelSp->id_lvl5, 5, $maxGetBonus);
+                            if($cekMax5 == true){
+                                $dataInsertBonusLvl5 = array(
+                                    'user_id' => $getLevelSp->id_lvl5,
+                                    'from_user_id' => $row->id,
+                                    'type' => 3,
+                                    'bonus_price' => $bonus_royalti,
+                                    'bonus_date' => date('Y-m-d'),
+                                    'poin_type' => 1,
+                                    'level_id' => 5,
+                                );
+                                $modelBonus->getInsertBonusMember($dataInsertBonusLvl5);
+                            }
+                        }
                     }
+                    
                     if($getLevelSp->id_lvl6 != null){
-                        $dataInsertBonusLvl6 = array(
-                            'user_id' => $getLevelSp->id_lvl6,
-                            'from_user_id' => $row->id,
-                            'type' => 3,
-                            'bonus_price' => $bonus_royalti,
-                            'bonus_date' => date('Y-m-d'),
-                            'poin_type' => 1,
-                            'level_id' => 6,
-                        );
-                        $modelBonus->getInsertBonusMember($dataInsertBonusLvl6);
+                        $getCekBelanja6 = $modelSales->getCekSalesHistoryMemberMonth($getLevelSp->id_lvl6, $getPreviousMonth);
+                        if($getCekBelanja6 == true){
+                            $cekMax6 = $modelBonus->getCekBonusRoyaltiMax($getLevelSp->id_lvl6, 6, $maxGetBonus);
+                            if($cekMax6 == true){
+                                $dataInsertBonusLvl6 = array(
+                                    'user_id' => $getLevelSp->id_lvl6,
+                                    'from_user_id' => $row->id,
+                                    'type' => 3,
+                                    'bonus_price' => $bonus_royalti,
+                                    'bonus_date' => date('Y-m-d'),
+                                    'poin_type' => 1,
+                                    'level_id' => 6,
+                                );
+                                $modelBonus->getInsertBonusMember($dataInsertBonusLvl6);
+                            }
+                        }
                     }
+                    
                     if($getLevelSp->id_lvl7 != null){
-                        $dataInsertBonusLvl7 = array(
-                            'user_id' => $getLevelSp->id_lvl7,
-                            'from_user_id' => $row->id,
-                            'type' => 3,
-                            'bonus_price' => $bonus_royalti,
-                            'bonus_date' => date('Y-m-d'),
-                            'poin_type' => 1,
-                            'level_id' => 7,
-                        );
-                        $modelBonus->getInsertBonusMember($dataInsertBonusLvl7);
+                        $getCekBelanja7 = $modelSales->getCekSalesHistoryMemberMonth($getLevelSp->id_lvl7, $getPreviousMonth);
+                        if($getCekBelanja7 == true){
+                            $cekMax7 = $modelBonus->getCekBonusRoyaltiMax($getLevelSp->id_lvl7, 7, $maxGetBonus);
+                            if($cekMax7 == true){
+                                $dataInsertBonusLvl7 = array(
+                                    'user_id' => $getLevelSp->id_lvl7,
+                                    'from_user_id' => $row->id,
+                                    'type' => 3,
+                                    'bonus_price' => $bonus_royalti,
+                                    'bonus_date' => date('Y-m-d'),
+                                    'poin_type' => 1,
+                                    'level_id' => 7,
+                                );
+                                $modelBonus->getInsertBonusMember($dataInsertBonusLvl7);
+                            }
+                        }
                     }
+                    
                 }
             }
-            dd('Done Bonus Royalti Manthly');
+            dd('Done Bonus Royalti Bulan '.$getPreviousMonth->textMonth);
         }
     }
     
