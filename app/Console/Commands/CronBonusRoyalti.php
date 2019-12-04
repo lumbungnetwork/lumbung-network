@@ -36,7 +36,7 @@ class CronBonusRoyalti extends Command {
         if($getData != null){
             foreach($getData as $row){
                 if($row->month_sale_price > 100000){
-                    $bonus_royalti = (floor($row->month_sale_price/100000)) * $royalti;
+                    $bonus_royalti = 500; //(floor($row->month_sale_price/100000)) * $royalti;
                     $getLevelSp = $modelMember->getLevelSponsoring($row->id);
                     if($getLevelSp->id_lvl1 != null){
                         $dataInsertBonusLvl1 = array(
