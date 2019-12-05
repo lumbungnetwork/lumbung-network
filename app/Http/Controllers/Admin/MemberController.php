@@ -1456,6 +1456,14 @@ class MemberController extends Controller {
         $invoice = $modelSales->getCodeMasterSales($user_id);
         $sale_date = date('Y-m-d');
         $total_price = 0;
+        //cek takutnya kelebihan qty
+        foreach($arrayLog as $rowCekQuantity){
+            if($rowCekQuantity['product_quantity'] > $rowCekQuantity['max_qty']){
+                return redirect()->route('m_MemberShoping', [$stockist_id])
+                            ->with('message', 'total keranjang '.$rowCekQuantity['nama_produk'].' melebihi dari stok yang tersedia')
+                            ->with('messageclass', 'danger');
+            }
+        }
         foreach($arrayLog as $rowTotPrice){
             $total_price += $rowTotPrice['product_quantity'] * $rowTotPrice['product_price'];
         }

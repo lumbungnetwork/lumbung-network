@@ -53,16 +53,18 @@ class Bonus extends Model {
     }
     
     public function getCekBonusRoyaltiMax($id, $level, $maxBonus){
-        $sql = DB::table('bonus_member')
-                    ->selectRaw('count(id) as total_max')
-                    ->where('user_id', '=', $id)
-                    ->where('type', '=', 3)
-                    ->where('level_id', '=', $level)
-                    ->first();
         $return = true;
-        if($sql->total_max != null){
-            if($sql->total_max >= $maxBonus){
-                $return = false;
+        if($id > 11){
+            $sql = DB::table('bonus_member')
+                        ->selectRaw('count(id) as total_max')
+                        ->where('user_id', '=', $id)
+                        ->where('type', '=', 3)
+                        ->where('level_id', '=', $level)
+                        ->first();
+            if($sql->total_max != null){
+                if($sql->total_max >= $maxBonus){
+                    $return = false;
+                }
             }
         }
         return $return;

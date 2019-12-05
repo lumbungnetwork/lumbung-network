@@ -42,6 +42,8 @@
                                             </div>
                                             <input name="product_price" value="{{number_format($row->member_price, 0, ',', '')}}" type="hidden" />
                                             <input name="product_id" value="{{$row->id}}" type="hidden" />
+                                            <input name="max_qty" value="{{number_format($row->total_sisa, 0, ',', '')}}" type="hidden" />
+                                            <input name="nama_produk" value="{{$row->name}}" type="hidden" />
                                             @if($row->total_sisa > 0)
                                             <button class="sc-add-to-cart btn btn-success btn-sm m-t-10">Masuk ke keranjang</button>
                                             @endif
