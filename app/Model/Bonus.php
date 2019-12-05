@@ -62,7 +62,7 @@ class Bonus extends Model {
                         ->where('level_id', '=', $level)
                         ->first();
             if($sql->total_max != null){
-                if($sql->total_max >= $maxBonus){
+                if($sql->total_max >= pow($maxBonus, $level)){
                     $return = false;
                 }
             }
