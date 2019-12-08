@@ -145,6 +145,7 @@
                  "info":     false,
                  "ordering": true,
         } );
+        
         $('#myTable #example-select-all').change(function() {
                 var checked = $(this).is(":checked");
                 $("input", myTableRow.rows({search:'applied'}).nodes()).each(function(){
@@ -159,14 +160,6 @@
         $("form").submit(function() {
                 $(myTableRow.rows({search:'applied'}).nodes()).find('input[type="checkbox"]:checked');
         });
-        
     } );
-    
-</script>
-<script type="text/javascript">
-    $("#popUp").on("show.bs.modal", function(e) {
-        var link = $(e.relatedTarget);
-        $(this).find(".modal-content").load(link.attr("href"));
-    });
 </script>
 @stop
