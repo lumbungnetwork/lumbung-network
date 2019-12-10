@@ -434,13 +434,12 @@ class AjaxmemberController extends Controller {
                         ->with('dataRequest', null)
                         ->with('check', $canInsert);
         }
-//        $cekTron = $modelMember->getCheckTron($request->tron);
-//        if($cekTron != null){
-//            $canInsert = (object) array('can' => false, 'pesan' => 'Gunakan alamat TRON yang lain');
-//            return view('member.ajax.confirm_add_tron')
-//                        ->with('dataRequest', null)
-//                        ->with('check', $canInsert);
-//        }
+        if(strlen($request->tron) != 34){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Alamat TRON harus 34 karakter');
+            return view('member.ajax.confirm_add_tron')
+                        ->with('dataRequest', null)
+                        ->with('check', $canInsert);
+        }
         return view('member.ajax.confirm_add_tron')
                         ->with('dataRequest', $data)
                         ->with('check', $canInsert)
