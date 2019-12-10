@@ -1400,7 +1400,6 @@ class MasterAdminController extends Controller {
         if(!in_array($dataUser->user_type, $onlyUser)){
             return redirect()->route('mainDashboard');
         }
-        dd($request->path());
         $modelSales = New Sales;
         $dataUpdate = array(
             'deleted_at' => date('Y-m-d H:i:s')
