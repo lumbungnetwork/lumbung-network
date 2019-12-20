@@ -1976,6 +1976,10 @@ class MemberController extends Controller {
         if($data != null){
             foreach($data as $row){
                 $jml_keluar = $modelSales->getSumStock($dataUser->id, $row->id);
+                $total_sisa = $row->total_qty - $jml_keluar;
+                if($total_sisa < 0){
+                    $total_sisa = 0;
+                }
                 $getData[] = (object) array(
                     'total_qty' => $row->total_qty,
                     'name' => $row->name,
@@ -1986,7 +1990,7 @@ class MemberController extends Controller {
                     'stockist_price' => $row->stockist_price,
                     'id' => $row->id,
                     'jml_keluar' => $jml_keluar,
-                    'total_sisa' => ($row->total_qty - $jml_keluar)
+                    'total_sisa' => $total_sisa
                 );
             }
         }
