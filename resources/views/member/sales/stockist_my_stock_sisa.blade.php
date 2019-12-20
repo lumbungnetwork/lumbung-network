@@ -41,17 +41,19 @@
                             <tbody>
                                 @if($getData != null)
                                 <?php $no = 0; ?>
-                                @foreach($getData as $row)
-                                <?php
-                                    $no++;
-                                ?>
-                                <tr>
-                                    <td>{{$no}}</td>
-                                    <td>{{$row->ukuran}} {{$row->name}}</td>
-                                    <td>{{$row->code}}</td>
-                                    <td>{{number_format($row->total_sisa, 0, ',', ',')}}</td>
-                                </tr>
-                                @endforeach
+                                    @foreach($getData as $row)
+                                        @if($row->hapus == 0)
+                                        <?php
+                                            $no++;
+                                        ?>
+                                        <tr>
+                                            <td>{{$no}}</td>
+                                            <td>{{$row->ukuran}} {{$row->name}}</td>
+                                            <td>{{$row->code}}</td>
+                                            <td>{{number_format($row->total_sisa, 0, ',', ',')}}</td>
+                                        </tr>
+                                        @endif
+                                    @endforeach
                                 @endif
                             </tbody>
                         </table>

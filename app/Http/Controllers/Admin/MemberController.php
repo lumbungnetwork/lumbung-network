@@ -1392,6 +1392,12 @@ class MemberController extends Controller {
                 if($total_sisa < 0){
                     $total_sisa = 0;
                 }
+                $hapus = 0;
+                if($total_sisa == 0){
+                    if($row->deleted_at != null){
+                        $hapus = 1;
+                    }
+                }
                 $getData[] = (object) array(
                     'total_qty' => $row->total_qty,
                     'name' => $row->name,
@@ -1402,7 +1408,8 @@ class MemberController extends Controller {
                     'stockist_price' => $row->stockist_price,
                     'id' => $row->id,
                     'jml_keluar' => $jml_keluar,
-                    'total_sisa' => $total_sisa
+                    'total_sisa' => $total_sisa,
+                    'hapus' => $hapus
                 );
             }
         }
@@ -1980,6 +1987,12 @@ class MemberController extends Controller {
                 if($total_sisa < 0){
                     $total_sisa = 0;
                 }
+                $hapus = 0;
+                if($total_sisa == 0){
+                    if($row->deleted_at != null){
+                        $hapus = 1;
+                    }
+                }
                 $getData[] = (object) array(
                     'total_qty' => $row->total_qty,
                     'name' => $row->name,
@@ -1990,7 +2003,8 @@ class MemberController extends Controller {
                     'stockist_price' => $row->stockist_price,
                     'id' => $row->id,
                     'jml_keluar' => $jml_keluar,
-                    'total_sisa' => $total_sisa
+                    'total_sisa' => $total_sisa,
+                    'hapus' => $hapus
                 );
             }
         }

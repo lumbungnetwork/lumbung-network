@@ -384,7 +384,7 @@ class Sales extends Model {
                     ->selectRaw('sum(item_purchase.qty) as total_qty, '
                             . 'sum(item_purchase.sisa) as total_sisa, '
                             . 'purchase.name, purchase.code, purchase.ukuran, purchase.image, purchase.member_price,'
-                            . 'purchase.stockist_price, purchase.id')
+                            . 'purchase.stockist_price, purchase.id, purchase.deleted_at')
                     ->where('item_purchase_master.status', '=', 2)
                     ->where('item_purchase_master.stockist_id', '=', $stockist_id)
                     ->groupBy('purchase.name')
@@ -394,6 +394,7 @@ class Sales extends Model {
                     ->groupBy('purchase.member_price')
                     ->groupBy('purchase.stockist_price')
                     ->groupBy('purchase.id')
+                    ->groupBy('purchase.deleted_at')
                     ->get();
         $return = null;
         if(count($sql) > 0){

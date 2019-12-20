@@ -28,33 +28,35 @@
                         @endif
                         <div class="row">
                             @foreach($getData as $row)
-                            <div class="col-md-4 col-sm-6 col-xs-12" style="margin-bottom: 20px;text-align: center;">
-                                <div class="sc-product-item thumbnail card card-block">
-                                    <img data-name="product_image" src="{{$row->image}}" alt="..." style="width: 150px;">
-                                    <div class="caption">
-                                        <h5 data-name="product_name">{{$row->name}} </h5>
-                                        <h6 data-name="product_desc">{{$row->ukuran}} </h6>
-                                        <h5 data-name="product_name"><b>Rp. {{number_format($row->member_price, 0, ',', ',')}}</b></h5>
-                                        <h6>Stok tersedia: <b>{{number_format($row->total_sisa, 0, ',', ',')}}</b> </h6>
-                                        <div>
-                                            <div class="form-group2">
-                                                <input class="sc-cart-item-qty cekInput{{$row->id}}" name="product_quantity" min="1" max="{{number_format($row->total_sisa, 0, ',', '')}}" value="1" type="number">
+                                @if($row->hapus == 0)
+                                    <div class="col-md-4 col-sm-6 col-xs-12" style="margin-bottom: 20px;text-align: center;">
+                                        <div class="sc-product-item thumbnail card card-block">
+                                            <img data-name="product_image" src="{{$row->image}}" alt="..." style="width: 150px;">
+                                            <div class="caption">
+                                                <h5 data-name="product_name">{{$row->name}} </h5>
+                                                <h6 data-name="product_desc">{{$row->ukuran}} </h6>
+                                                <h5 data-name="product_name"><b>Rp. {{number_format($row->member_price, 0, ',', ',')}}</b></h5>
+                                                <h6>Stok tersedia: <b>{{number_format($row->total_sisa, 0, ',', ',')}}</b> </h6>
+                                                <div>
+                                                    <div class="form-group2">
+                                                        <input class="sc-cart-item-qty cekInput{{$row->id}}" name="product_quantity" min="1" max="{{number_format($row->total_sisa, 0, ',', '')}}" value="1" type="number">
+                                                    </div>
+                                                    <input name="product_price" value="{{number_format($row->member_price, 0, ',', '')}}" type="hidden" />
+                                                    <input name="product_id" value="{{$row->id}}" type="hidden" />
+                                                    <input name="max_qty" value="{{number_format($row->total_sisa, 0, ',', '')}}" type="hidden" />
+                                                    <input name="nama_produk" value="{{$row->name}}" type="hidden" />
+                                                    @if($row->total_sisa > 0)
+                                                    <button class="sc-add-to-cart btn btn-success btn-sm m-t-10">Masuk ke keranjang</button>
+                                                    @endif
+                                                    @if($row->total_sisa <= 0)
+                                                    <div class="btn btn-dark btn-sm m-t-10">Masuk ke keranjang</div>
+                                                    @endif
+                                                </div>
+                                                <div class="clearfix"></div>
                                             </div>
-                                            <input name="product_price" value="{{number_format($row->member_price, 0, ',', '')}}" type="hidden" />
-                                            <input name="product_id" value="{{$row->id}}" type="hidden" />
-                                            <input name="max_qty" value="{{number_format($row->total_sisa, 0, ',', '')}}" type="hidden" />
-                                            <input name="nama_produk" value="{{$row->name}}" type="hidden" />
-                                            @if($row->total_sisa > 0)
-                                            <button class="sc-add-to-cart btn btn-success btn-sm m-t-10">Masuk ke keranjang</button>
-                                            @endif
-                                            @if($row->total_sisa <= 0)
-                                            <div class="btn btn-dark btn-sm m-t-10">Masuk ke keranjang</div>
-                                            @endif
                                         </div>
-                                        <div class="clearfix"></div>
                                     </div>
-                                </div>
-                            </div>
+                                @endif
                             @endforeach
                         </div>
                     </div>
