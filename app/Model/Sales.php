@@ -403,15 +403,26 @@ class Sales extends Model {
     }
     
     public function getSumStock($stockist_id, $purchase_id){
-        $sql = DB::table('stock')
-                    ->selectRaw('sum(amount) as jml_keluar')
-                    ->where('type', '=', 2)
-                    ->where('stockist_id', '=', $stockist_id)
-                    ->where('purchase_id', '=', $purchase_id)
-                    ->first();
+//        $sql = DB::table('stock')
+//                    ->selectRaw('sum(amount) as jml_keluar')
+//                    ->where('type', '=', 2)
+//                    ->where('stockist_id', '=', $stockist_id)
+//                    ->where('purchase_id', '=', $purchase_id)
+//                    ->first();
+        $query = " 
+            SELECT sum(data_stock.amount) as jml_keluar
+            FROM (
+                SELECT 
+                        amount
+                FROM stock
+                WHERE stockist_id = $stockist_id
+                AND purchase_id = $purchase_id
+                GROUP BY sales_id, amount
+            ) as data_stock ";
+        $sql = DB::select($query);
         $return = 0;
-        if($sql->jml_keluar != null){
-            $return = $sql->jml_keluar;
+        if($sql[0]->jml_keluar != null){
+            $return = $sql[0]->jml_keluar;
         }
         return $return;
     }
