@@ -243,6 +243,8 @@ Route::prefix('/')->group(function () {
         Route::post('/m/add/reject-pembelian', 'Admin\MemberController@postAddRejectPembelian')->middleware('auth');
         Route::get('/m/purchase/my-stock', 'Admin\MemberController@getStockistMyStockPurchaseSisa')->name('m_StockistMyPruchaseSisa')->middleware('auth');
         
+        Route::get('/m/explorer/statistic', 'Admin\MemberController@getExplorerStatistic')->name('m_ExplorerStatistic')->middleware('auth');
+        
         //Ajax
         Route::get('/m/cek/add-sponsor', 'Admin\AjaxmemberController@postCekAddSponsor')->middleware('auth');
         Route::get('/m/cek/add-package/{id_paket}/{setuju}', 'Admin\AjaxmemberController@getCekAddPackage')->middleware('auth');

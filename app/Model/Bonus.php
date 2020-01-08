@@ -489,6 +489,50 @@ class Bonus extends Model {
         }
         return $return;
     }
+    
+    public function getAllClaimLMB(){
+        $sql = DB::table('belanja_reward')
+                    ->selectRaw('sum(belanja_reward.reward) as total_claim_shop')
+                    ->where('belanja_reward.status', '=', 1)
+                    ->first();
+        return $sql;
+    }
+    
+    public function getAllClaimRewardLMB(){
+        $sql = DB::table('claim_reward')
+                    ->selectRaw('sum(case when reward_id = 1 then 100 else 0 end) as tot_reward_1, '
+                            . 'sum(case when reward_id = 2 then 200 else 0 end) as tot_reward_2,'
+                            . 'sum(case when reward_id = 3 then 500 else 0 end) as tot_reward_3,'
+                            . 'sum(case when reward_id = 4 then 2000 else 0 end) as tot_reward_4')
+                    ->where('status', '=', 1)
+                    ->whereIn('reward_id', array(1,2,3,4))
+                    ->first();
+        return $sql;
+    }
+    
+    public function getAllClaimLMBLastMonth($date){
+        $sql = DB::table('belanja_reward')
+                    ->selectRaw('sum(belanja_reward.reward) as total_claim_shop')
+                    ->where('belanja_reward.status', '=', 1)
+                    ->whereDate('belanja_reward.belanja_date', '>=', $date->start_day)
+                    ->whereDate('belanja_reward.belanja_date', '<=', $date->end_day)
+                    ->first();
+        return $sql;
+    }
+    
+    public function getAllClaimRewardLMBLastMonth($date){
+        $sql = DB::table('claim_reward')
+                    ->selectRaw('sum(case when reward_id = 1 then 100 else 0 end) as tot_reward_1, '
+                            . 'sum(case when reward_id = 2 then 200 else 0 end) as tot_reward_2,'
+                            . 'sum(case when reward_id = 3 then 500 else 0 end) as tot_reward_3,'
+                            . 'sum(case when reward_id = 4 then 2000 else 0 end) as tot_reward_4')
+                    ->where('status', '=', 1)
+                    ->whereIn('reward_id', array(1,2,3,4))
+                    ->whereDate('claim_date', '>=', $date->start_day)
+                    ->whereDate('claim_date', '<=', $date->end_day)
+                    ->first();
+        return $sql;
+    }
    
     
 }

@@ -115,13 +115,15 @@
                         <li @if(Route::currentRouteName() == 'm_requestWDRoyalti') class="active" @endif><a href="{{ URL::to('/') }}/m/req/wd-royalti">Request WD Royalti</a></li>
                     </ul>
                 </li>
-                
-<!--                <li class="has_sub">
-                    <a class="waves-effect"><i class="zmdi zmdi-comment-alt-text"></i> <span> News </span> <span class="menu-arrow"></span></a>
+                <li class="has_sub">
+                    <a class="waves-effect @if(Route::currentRouteName() == 'm_ExplorerStatistic') active @endif">
+                        <i class="zmdi zmdi-bookmark"></i> 
+                        <span> Explorer </span> <span class="menu-arrow"></span>
+                    </a>
                     <ul class="list-unstyled">
-                        <li><a href="#">Berita</a></li>
+                        <li @if(Route::currentRouteName() == 'm_ExplorerStatistic') class="active" @endif><a href="{{ URL::to('/') }}/m/explorer/statistic">Statistik</a></li>
                     </ul>
-                </li>-->
+                </li>
                 <li class="has_sub">
                     <a href="{{ URL::to('/') }}/user_logout" class="waves-effect">
                         <i class="zmdi zmdi-power text-danger"></i>

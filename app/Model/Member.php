@@ -814,6 +814,17 @@ class Member extends Model {
         return $return;
     }
     
+    public function getAllMemberLastMonth($date){
+        $sql = DB::table('users')
+                    ->selectRaw('id')
+                    ->where('is_active', '=', 1)
+                    ->where('user_type', '=', 10)
+                    ->whereDate('active_at', '>=', $date->start_day)
+                    ->whereDate('active_at', '<=', $date->end_day)
+                    ->count();
+        return $sql;
+    }
+    
     
     
 }

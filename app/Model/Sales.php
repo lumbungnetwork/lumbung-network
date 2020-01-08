@@ -708,5 +708,25 @@ class Sales extends Model {
         return $return;
     }
     
+    public function getSalesAllHistory(){
+        $sql = DB::table('master_sales')
+                    ->selectRaw('sum(master_sales.total_price) as total_sales')
+                    ->where('master_sales.status', '=', 2)
+                    ->whereNull('master_sales.deleted_at')
+                    ->first();
+        return $sql;
+    }
+    
+    public function getSalesAllHistoryLastMonth($date){
+        $sql = DB::table('master_sales')
+                    ->selectRaw('sum(master_sales.total_price) as total_sales')
+                    ->where('master_sales.status', '=', 2)
+                    ->whereDate('master_sales.sale_date', '>=', $date->start_day)
+                    ->whereDate('master_sales.sale_date', '<=', $date->end_day)
+                    ->whereNull('master_sales.deleted_at')
+                    ->first();
+        return $sql;
+    }
+    
 }
 

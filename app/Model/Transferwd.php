@@ -424,6 +424,98 @@ class Transferwd extends Model {
         }
         return $return;
     }
+    
+    public function getTotalDiTransferAll(){
+        $sql = DB::table('transfer_wd')
+                    ->selectRaw('sum(case when status = 1 then wd_total else 0 end) as total_wd, '
+                            . 'sum(case when status = 0 then wd_total else 0 end) as total_tunda,'
+                            . 'sum(case when status = 2 then wd_total else 0 end) as  total_cancel,'
+                            . 'sum(case when status IN (0, 1) then admin_fee else 0 end) as total_fee_admin,'
+                            . 'sum(case when status = 1 then admin_fee else 0 end) as fee_tuntas,'
+                            . 'sum(case when status = 0 then admin_fee else 0 end) as fee_tunda')
+                    ->where('type', '=', 1)
+                    ->first();
+        $total_wd = 0;
+        if($sql->total_wd != null){
+            $total_wd = $sql->total_wd;
+        }
+        $total_tunda = 0;
+        if($sql->total_tunda != null){
+            $total_tunda = $sql->total_tunda;
+        }
+        $total_cancel = 0;
+        if($sql->total_cancel != null){
+            $total_cancel = $sql->total_cancel;
+        }
+        $total_fee_admin = 0;
+        if($sql->total_fee_admin != null){
+            $total_fee_admin = $sql->total_fee_admin;
+        }
+        $fee_tuntas = 0;
+        if($sql->fee_tuntas != null){
+            $fee_tuntas = $sql->fee_tuntas;
+        }
+        $fee_tunda = 0;
+        if($sql->fee_tunda != null){
+            $fee_tunda = $sql->fee_tunda;
+        }
+        $return = (object) array(
+            'total_wd' => $total_wd,
+            'total_tunda' => $total_tunda,
+            'total_cancel' => $total_cancel,
+            'total_fee_admin' => $total_fee_admin,
+            'fee_tuntas' => $fee_tuntas,
+            'fee_tunda' => $fee_tunda
+        );
+        return $return;
+    }
+    
+    public function getTotalDiTransferAllLastMonth($date){
+        $sql = DB::table('transfer_wd')
+                    ->selectRaw('sum(case when status = 1 then wd_total else 0 end) as total_wd, '
+                            . 'sum(case when status = 0 then wd_total else 0 end) as total_tunda,'
+                            . 'sum(case when status = 2 then wd_total else 0 end) as  total_cancel,'
+                            . 'sum(case when status IN (0, 1) then admin_fee else 0 end) as total_fee_admin,'
+                            . 'sum(case when status = 1 then admin_fee else 0 end) as fee_tuntas,'
+                            . 'sum(case when status = 0 then admin_fee else 0 end) as fee_tunda')
+                    ->where('type', '=', 1)
+                    ->whereDate('wd_date', '>=', $date->start_day)
+                    ->whereDate('wd_date', '<=', $date->end_day)
+                    ->first();
+        $total_wd = 0;
+        if($sql->total_wd != null){
+            $total_wd = $sql->total_wd;
+        }
+        $total_tunda = 0;
+        if($sql->total_tunda != null){
+            $total_tunda = $sql->total_tunda;
+        }
+        $total_cancel = 0;
+        if($sql->total_cancel != null){
+            $total_cancel = $sql->total_cancel;
+        }
+        $total_fee_admin = 0;
+        if($sql->total_fee_admin != null){
+            $total_fee_admin = $sql->total_fee_admin;
+        }
+        $fee_tuntas = 0;
+        if($sql->fee_tuntas != null){
+            $fee_tuntas = $sql->fee_tuntas;
+        }
+        $fee_tunda = 0;
+        if($sql->fee_tunda != null){
+            $fee_tunda = $sql->fee_tunda;
+        }
+        $return = (object) array(
+            'total_wd' => $total_wd,
+            'total_tunda' => $total_tunda,
+            'total_cancel' => $total_cancel,
+            'total_fee_admin' => $total_fee_admin,
+            'fee_tuntas' => $fee_tuntas,
+            'fee_tunda' => $fee_tunda
+        );
+        return $return;
+    }
    
     
 }

@@ -20,6 +20,7 @@ use App\Model\Bank;
 use App\Model\Pengiriman;
 use App\Model\Membership;
 use App\Model\Sales;
+use App\Model\Transferwd;
 
 class MemberController extends Controller {
     
@@ -2070,6 +2071,67 @@ class MemberController extends Controller {
         return redirect()->route('m_MemberStockistReport')
                             ->with('message', 'Berhasil reject pembayaran member')
                             ->with('messageclass', 'success');
+    }
+    
+    public function getExplorerStatistic(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        $modelMember = New Member;
+        $modelWD = new Transferwd;
+        $modelSales = New Sales;
+        $modelBonus = New Bonus;
+        
+        //all time
+        $total_aktifasi = $modelMember->getAllMember();
+        $totalWD = $modelWD->getTotalDiTransferAll();
+        $getSales = $modelSales->getSalesAllHistory();
+        $getAllShopLMB = $modelBonus->getAllClaimLMB();
+        $getAllClaimLMB = $modelBonus->getAllClaimRewardLMB();
+        $sum = 0;
+        if($getAllClaimLMB != null){
+            $sum = $getAllClaimLMB->tot_reward_1 + $getAllClaimLMB->tot_reward_2 + $getAllClaimLMB->tot_reward_3 + $getAllClaimLMB->tot_reward_4;
+        }
+        $lmb_claim = $sum + $getAllShopLMB->total_claim_shop;
+        $dataAll = (object) array(
+            'total_aktifasi' => $total_aktifasi,
+            'total_wd' => $totalWD->total_wd,
+            'fee_tuntas' => $totalWD->fee_tuntas,
+            'total_sales' => $getSales->total_sales,
+            'lmb_claim' => $lmb_claim
+        );
+        
+        //last month
+        $last_month = (object) array(
+            'start_day' => date("Y-n-j", strtotime("first day of previous month")),
+            'end_day' => date("Y-n-j", strtotime("last day of previous month"))
+        );
+        $total_aktifasi_date = $modelMember->getAllMemberLastMonth($last_month);
+        $totalWD_date = $modelWD->getTotalDiTransferAllLastMonth($last_month);
+        $getSales_date = $modelSales->getSalesAllHistoryLastMonth($last_month);
+        $getAllShopLMB_date = $modelBonus->getAllClaimLMBLastMonth($last_month);
+        $getAllClaimLMB_date = $modelBonus->getAllClaimRewardLMBLastMonth($last_month);
+        $sum_date = 0;
+        if($getAllClaimLMB_date != null){
+            $sum_date = $getAllClaimLMB_date->tot_reward_1 + $getAllClaimLMB_date->tot_reward_2 + $getAllClaimLMB_date->tot_reward_3 + $getAllClaimLMB_date->tot_reward_4;
+        }
+        $lmb_claim_date = $sum_date + $getAllShopLMB_date->total_claim_shop;
+        $dataAll_lastmonth = (object) array(
+            'total_aktifasi' => $total_aktifasi_date,
+            'total_wd' => $totalWD_date->total_wd,
+            'fee_tuntas' => $totalWD_date->fee_tuntas,
+            'total_sales' => $getSales_date->total_sales,
+            'lmb_claim' => $lmb_claim_date
+        );
+        return view('member.explorer.statistic')
+                ->with('dataAll', $dataAll)
+                ->with('dataAll_month', $dataAll_lastmonth)
+                ->with('dataUser', $dataUser);
     }
     
     
