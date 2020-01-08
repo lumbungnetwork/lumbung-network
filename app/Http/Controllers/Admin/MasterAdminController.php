@@ -773,6 +773,20 @@ class MasterAdminController extends Controller {
                 ->with('dataUser', $dataUser);
     }
     
+    public function getHistoryRequestMemberStockist(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelMember = New Member;
+        $getData = $modelMember->getHistoryAllMemberReqSotckist();
+        return view('admin.member.history-req_stockist')
+                ->with('headerTitle', 'History Request Stockist')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
     public function getAllMemberStockists(){
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
@@ -787,7 +801,7 @@ class MasterAdminController extends Controller {
                 ->with('dataUser', $dataUser);
     }
     
-    public function postRequestMemberStockist(Request $request){
+    public function postRequestMemberStockist(Request $request){ //disini
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
         if(!in_array($dataUser->user_type, $onlyUser)){
@@ -797,7 +811,9 @@ class MasterAdminController extends Controller {
         $date =  date('Y-m-d H:i:s');
         $dataUpdate = array(
             'status' => 1,
-            'active_at' => $date
+            'active_at' => $date,
+            'submit_by' => $dataUser->id,
+            'submit_at' => $date,
         );
         $modelMember->getUpdateStockist('id', $request->id, $dataUpdate);
         $dataUpdateUser = array(
@@ -820,7 +836,9 @@ class MasterAdminController extends Controller {
         $date =  date('Y-m-d H:i:s');
         $dataUpdate = array(
             'status' => 2,
-            'deleted_at' => $date
+            'deleted_at' => $date,
+            'submit_by' => $dataUser->id,
+            'submit_at' => $date,
         );
         $modelMember->getUpdateStockist('id', $request->id, $dataUpdate);
         return redirect()->route('adm_listReqStockist')

@@ -698,6 +698,17 @@ class Member extends Model {
         return $sql;
     }
     
+    public function getHistoryAllMemberReqSotckist(){
+        $sql = DB::table('stockist_request')
+                    ->join('users', 'users.id', '=', 'stockist_request.user_id')
+                    ->join('users as u', 'stockist_request.submit_by', '=', 'u.id')
+                    ->selectRaw('stockist_request.id, users.user_code, users.total_sponsor, stockist_request.created_at, u.name as submit_name, '
+                            . 'stockist_request.active_at, stockist_request.submit_at, stockist_request.status, stockist_request.submit_by')
+                    ->orderBy('stockist_request.status', 'ASC')
+                    ->get();
+        return $sql;
+    }
+    
     public function getCekRequestSotckist($id){
         $sql = DB::table('stockist_request')
                     ->selectRaw('id')

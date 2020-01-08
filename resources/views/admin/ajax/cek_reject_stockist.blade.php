@@ -1,4 +1,4 @@
-<form class="login100-form validate-form" method="post" action="/adm/req-stockist">
+<form class="login100-form validate-form" method="post" action="/adm/reject-stockist">
     <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">{{$headerTitle}}</h5>
     </div>
