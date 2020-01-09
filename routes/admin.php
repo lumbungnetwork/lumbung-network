@@ -100,6 +100,7 @@ Route::prefix('/')->group(function () {
         Route::post('/adm/change/tron/member', 'Admin\MasterAdminController@postAdminChangeTronMember')->middleware('auth');
         Route::post('/adm/search-list/member-stockist', 'Admin\MasterAdminController@postSearchMemberStockist')->middleware('auth');
         Route::get('/adm/history/req-stockist', 'Admin\MasterAdminController@getHistoryRequestMemberStockist')->name('adm_historyReqStockist')->middleware('auth');
+        Route::get('/adm/history/req-input-stock', 'Admin\MasterAdminController@getHistoryRequestInputStock')->name('adm_historyReqInputStock')->middleware('auth');
         
 
         //Ajax

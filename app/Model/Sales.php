@@ -717,6 +717,25 @@ class Sales extends Model {
         return $sql;
     }
     
+    public function getMemberReqInputStockistHistory(){
+        $sql = DB::table('item_purchase_master')
+                    ->join('users', 'item_purchase_master.stockist_id', '=', 'users.id')
+                    ->join('users as u', 'item_purchase_master.submit_by', '=', 'u.id')
+                    ->selectRaw('users.user_code, users.hp,  item_purchase_master.stockist_id, '
+                            . 'item_purchase_master.id, item_purchase_master.price, item_purchase_master.created_at,'
+                            . 'item_purchase_master.buy_metode, item_purchase_master.tron, item_purchase_master.tron_transfer,'
+                            . 'item_purchase_master.bank_name, item_purchase_master.account_no, item_purchase_master.account_name, item_purchase_master.status,'
+                            . 'item_purchase_master.submit_by, u.name as submit_name')
+                    ->where('item_purchase_master.status', '>', 0)
+                    ->orderBy('item_purchase_master.status', 'ASC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
     public function getSalesAllHistoryLastMonth($date){
         $sql = DB::table('master_sales')
                     ->selectRaw('sum(master_sales.total_price) as total_sales')

@@ -1775,6 +1775,20 @@ class MasterAdminController extends Controller {
                 ->with('dataUser', $dataUser);
     }
     
+    public function getHistoryRequestInputStock(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSales = New Sales;
+        $getData = $modelSales->getMemberReqInputStockistHistory();
+        return view('admin.member.history-input-stock')
+                ->with('headerTitle', 'History Stock & Royalti')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
     
 
 }

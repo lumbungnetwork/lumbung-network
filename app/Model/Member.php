@@ -45,6 +45,7 @@ class Member extends Model {
                     ->leftJoin('users as u1', 'users.sponsor_id', '=', 'u1.id')
                     ->where('users.is_active', '=', 1)
                     ->where('users.user_type', '=', 10)
+                    ->orderBy('users.active_at', 'ASC')
                     ->get();
         return $sql;
     }

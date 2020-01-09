@@ -214,6 +214,18 @@
                             <span class="sidebar-normal"> List Stockist Input Stock </span>
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ URL::to('/') }}/adm/history/req-stockist">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> History Pengajuan Stockist </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ URL::to('/') }}/adm/history/req-input-stock">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> History Stockist Input Stock</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </li>
