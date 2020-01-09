@@ -727,6 +727,7 @@ class Sales extends Model {
                             . 'item_purchase_master.bank_name, item_purchase_master.account_no, item_purchase_master.account_name, item_purchase_master.status,'
                             . 'item_purchase_master.submit_by, u.name as submit_name')
                     ->where('item_purchase_master.status', '>', 0)
+                    ->orderBy('item_purchase_master.created_at', 'DESC')
                     ->orderBy('item_purchase_master.status', 'ASC')
                     ->get();
         $return = null;

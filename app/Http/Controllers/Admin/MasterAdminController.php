@@ -1133,7 +1133,9 @@ class MasterAdminController extends Controller {
         }
         $modelSales = New Sales;
         $dataUpdate = array(
-            'status' => 2
+            'status' => 2,
+            'submit_by' => $dataUser->id,
+            'submit_at' => date('Y-m-d H:i:s'),
         );
         $modelSales->getUpdateItemPurchaseMaster('id', $request->id, $dataUpdate);
         return redirect()->route('adm_listReqInputStock')
