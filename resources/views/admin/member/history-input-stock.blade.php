@@ -80,7 +80,13 @@
                                                 $status = 'Reject';
                                                 $label = 'danger';
                                             }
-                                            $name = $row->submit_name;
+                                            if($row->submit_by != 1){
+                                                $name = '--';
+                                                if($row->status >= 2){
+                                                    $name = $row->submit_name;
+                                                }
+                                            }
+                                            
                                             if($row->submit_by == 1){
                                                 $name = 'Master Admin';
                                             }

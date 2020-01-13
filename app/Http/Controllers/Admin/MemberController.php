@@ -2134,6 +2134,69 @@ class MemberController extends Controller {
                 ->with('dataUser', $dataUser);
     }
     
+    public function getExplorerUser(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        $modelMember = New Member;
+        $modelBonusSetting = new Bonussetting;
+        $modelWD = new Transferwd;
+        $modelSales = New Sales;
+        $modelBonus = New Bonus;
+        $modelPin = new Pin;
+        $modelPengiriman = new Pengiriman;
+        $dataExplore = null;
+        if($request->get_id != null){
+            $user = $modelMember->getExplorerByID($request->get_id);
+//            $sponsor = $modelMember->getExplorerByID($user->sponsor_id);
+            $getMyPeringkat = $modelBonusSetting->getPeringkatByType($dataUser->member_type);
+            $namePeringkat = 'Member Biasa';
+            if($getMyPeringkat != null){
+                $namePeringkat = $getMyPeringkat->name;
+            }
+            $getTotalPin = $modelPin->getTotalPinMember($user);
+            $sum_pin_masuk = 0;
+            $sum_pin_keluar = 0;
+            if($getTotalPin->sum_pin_masuk != null){
+                $sum_pin_masuk = $getTotalPin->sum_pin_masuk;
+            }
+            if($getTotalPin->sum_pin_keluar != null){
+                $sum_pin_keluar = $getTotalPin->sum_pin_keluar;
+            }
+            $total = $sum_pin_masuk - $sum_pin_keluar;
+            
+            $totalWD = $modelWD->getTotalDiTransfer($user);
+            $getSales = $modelSales->getSalesAllHistoryByID($user);
+            $getAllShopLMB = $modelBonus->getAllClaimLMBByIDUserCode($user);
+            $getAllClaimLMB = $modelBonus->getAllClaimRewardLMBByIDUserCode($user);
+            $sum = 0;
+            if($getAllClaimLMB != null){
+                $sum = $getAllClaimLMB->tot_reward_1 + $getAllClaimLMB->tot_reward_2 + $getAllClaimLMB->tot_reward_3 + $getAllClaimLMB->tot_reward_4;
+            }
+            $lmb_claim = $sum + $getAllShopLMB->total_claim_shop;
+        
+            $dataExplore = (object) array(
+                'user' => $user,
+//                'sponsor' => $sponsor,
+                'peringkat' => $namePeringkat,
+                'pin_tersedia' => $total,
+                'pin_terpakai' => $sum_pin_keluar,
+                'total_wd' => $totalWD->total_wd,
+                'fee_tuntas' => $totalWD->fee_tuntas,
+                'total_sales' => $getSales->total_sales,
+                'lmb_claim' => $lmb_claim
+            );
+        }
+        return view('member.explorer.user')
+                ->with('dataExplore', $dataExplore)
+                ->with('dataUser', $dataUser);
+    }
+    
     
     
     

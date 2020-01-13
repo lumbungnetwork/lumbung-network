@@ -317,6 +317,20 @@ class AjaxmemberController extends Controller {
                         ->with('dataUser', $dataUser);
     }
     
+    public function getExplorerMemberByUserCode(Request $request){
+        $dataUser=  Auth::user();
+        $modelMember = New Member;
+        $getUsername = null;
+        if($request->name != null){
+            if(strlen($request->name) >= 3){
+                $getUsername = $modelMember->getExplorerUsername($dataUser->id, $request->name);
+            }
+        }
+        return view('member.ajax.get_explore_user')
+                        ->with('getData', $getUsername)
+                        ->with('dataUser', $dataUser);
+    }
+    
     public function getCekRO(Request $request){
         $dataUser = Auth::user();
         $modelValidasi = New Validation;

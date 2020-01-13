@@ -837,6 +837,31 @@ class Member extends Model {
         return $sql;
     }
     
+    public function getExplorerUsername($id, $username){
+        $sql = DB::table('users')
+                    ->where('user_type', '=', 10)
+                    ->where('is_active', '=', 1)
+                    ->where('id', '!=', $id)
+                    ->where('id', '>', 11)
+                    ->where('user_code', 'LIKE', '%'.$username.'%')
+                    ->orderBy('id', 'ASC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getExplorerByID($id){
+        $sql = DB::table('users')
+                    ->where('user_type', '=', 10)
+                    ->where('is_active', '=', 1)
+                    ->where('id', '=', $id)
+                    ->first();
+        return $sql;
+    }
+    
     
     
 }
