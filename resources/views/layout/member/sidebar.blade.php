@@ -116,12 +116,13 @@
                     </ul>
                 </li>
                 <li class="has_sub">
-                    <a class="waves-effect @if(Route::currentRouteName() == 'm_ExplorerStatistic') active @endif">
+                    <a class="waves-effect @if(Route::currentRouteName() == 'm_ExplorerStatistic' || Route::currentRouteName() == 'm_ExplorerUser') active @endif">
                         <i class="zmdi zmdi-bookmark"></i> 
                         <span> Explorer </span> <span class="menu-arrow"></span>
                     </a>
                     <ul class="list-unstyled">
                         <li @if(Route::currentRouteName() == 'm_ExplorerStatistic') class="active" @endif><a href="{{ URL::to('/') }}/m/explorer/statistic">Statistik</a></li>
+                        <li @if(Route::currentRouteName() == 'm_ExplorerUser') class="active" @endif><a href="{{ URL::to('/') }}/m/explorer/user">User</a></li>
                     </ul>
                 </li>
                 <li class="has_sub">
