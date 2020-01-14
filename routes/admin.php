@@ -68,6 +68,7 @@ Route::prefix('/')->group(function () {
         Route::get('/adm/list/stockist', 'Admin\MasterAdminController@getAllMemberStockists')->name('adm_listMemberStockist')->middleware('auth');
         Route::post('/adm/req-stockist', 'Admin\MasterAdminController@postRequestMemberStockist')->middleware('auth');
         Route::post('/adm/reject-stockist', 'Admin\MasterAdminController@postRejectMemberStockist')->middleware('auth');
+        Route::post('/adm/remove-stockist', 'Admin\MasterAdminController@postRemoveMemberStockist')->middleware('auth');
         Route::get('/adm/list/purchases', 'Admin\MasterAdminController@getAllPurchase')->name('adm_listPurchases')->middleware('auth');
         Route::get('/adm/add/purchase', 'Admin\MasterAdminController@getAddPurchase')->name('adm_addPurchase')->middleware('auth');
         Route::post('/adm/add/purchase', 'Admin\MasterAdminController@postAddPurchase')->middleware('auth');
@@ -120,6 +121,7 @@ Route::prefix('/')->group(function () {
         Route::get('/ajax/adm/cek/detail-wd-royalti/{id}', 'Admin\AjaxController@getCekDetailWDRoyalti')->middleware('auth');
         Route::get('/ajax/adm/cek/req-stockist/{id}', 'Admin\AjaxController@getCekRequestMemberStockist')->middleware('auth');
         Route::get('/ajax/adm/reject/req-stockist/{id}', 'Admin\AjaxController@getCekRejectMemberStockist')->middleware('auth');
+        Route::get('/ajax/adm/remove/stockist/{id}', 'Admin\AjaxController@getCekRemoveMemberStockist')->middleware('auth');
         Route::get('/ajax/adm/edit/bonus-reward/{id}', 'Admin\AjaxController@getEditBonusReward')->middleware('auth');
         Route::get('/ajax/adm/cek/reject-claim-reward/{id}', 'Admin\AjaxController@getCekRejectClaimReward')->middleware('auth');
         Route::get('/ajax/adm/cek/detail-claim-reward/{id}', 'Admin\AjaxController@getCekDetailClaimReward')->middleware('auth');

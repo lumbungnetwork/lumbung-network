@@ -690,6 +690,18 @@ class Member extends Model {
         return $sql;
     }
     
+    public function getCekMemberSotckistToRemove($id){
+        $sql = DB::table('stockist_request')
+                    ->join('users', 'users.id', '=', 'stockist_request.user_id')
+                    ->selectRaw('stockist_request.id, users.user_code, users.total_sponsor, users.id as id_user')
+                    ->where('users.id', '=', $id)
+                    ->where('users.user_type', '=', 10)
+                    ->where('users.is_active', '=', 1)
+                    ->where('users.is_stockist', '=', 1)
+                    ->first();
+        return $sql;
+    }
+    
     public function getAllMemberReqSotckist(){
         $sql = DB::table('stockist_request')
                     ->join('users', 'users.id', '=', 'stockist_request.user_id')

@@ -846,6 +846,37 @@ class MasterAdminController extends Controller {
                     ->with('messageclass', 'success');
     }
     
+    public function postRemoveMemberStockist(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelMember = New Member;
+        $date =  date('Y-m-d H:i:s');
+        $dataUpdate = array(
+            'status' => 10,
+            'deleted_at' => $date,
+            'submit_by' => $dataUser->id,
+            'submit_at' => $date,
+        );
+        $modelMember->getUpdateStockist('id', $request->id, $dataUpdate);
+        $dataUpdateUser = array(
+            'is_stockist' => 0,
+            'stockist_at' => null
+        );
+        $modelMember->getUpdateUsers('id', $request->id_user, $dataUpdateUser);
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => 'hapus member stockist'
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
+        return redirect()->route('adm_listMemberStockist')
+                    ->with('message', 'stockist '.$request->user_code.' dihapus kememberannya')
+                    ->with('messageclass', 'success');
+    }
+    
     public function getAllPurchase(){
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);

@@ -95,17 +95,14 @@
                                                     {{$row->kota}}, {{$row->provinsi}}
                                                 </td>
                                                 <td>{{date('d F Y', strtotime($row->stockist_at))}}</td>
-                                                <td>&nbsp;</td>
+                                                <td>
+                                                    <a rel="tooltip"  data-toggle="modal" data-target="#popUp1" class="text-danger" href="{{ URL::to('/') }}/ajax/adm/remove/stockist/{{$row->id}}">hapus</a>
+                                                </td>
                                             </tr>
                                         @endforeach
                                     @endif
                                 </tbody>
                             </table>
-                             <div class="modal fade" id="popUp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content"></div>
-                                </div>
-                            </div>
                              <div class="modal fade" id="popUp1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content"></div>
@@ -138,10 +135,6 @@
 <script type="text/javascript" language="javascript" src="{{ asset('js/buttons.html5.min.js') }}"></script>
 
 <script type="text/javascript">
-    $("#popUp").on("show.bs.modal", function(e) {
-        var link = $(e.relatedTarget);
-        $(this).find(".modal-content").load(link.attr("href"));
-    });
     $("#popUp1").on("show.bs.modal", function(e) {
         var link = $(e.relatedTarget);
         $(this).find(".modal-content").load(link.attr("href"));
