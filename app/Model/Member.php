@@ -693,7 +693,7 @@ class Member extends Model {
     public function getCekMemberSotckistToRemove($id){
         $sql = DB::table('stockist_request')
                     ->join('users', 'users.id', '=', 'stockist_request.user_id')
-                    ->selectRaw('stockist_request.id, users.user_code, users.total_sponsor, users.id as id_user')
+                    ->selectRaw('stockist_request.id, users.user_code, users.total_sponsor, users.id as id_user, users.hp')
                     ->where('users.id', '=', $id)
                     ->where('users.user_type', '=', 10)
                     ->where('users.is_active', '=', 1)

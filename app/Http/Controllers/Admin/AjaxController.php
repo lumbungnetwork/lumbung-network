@@ -207,6 +207,14 @@ class AjaxController extends Controller {
                 ->with('getData', $getData);
     }
     
+    public function getCekEditMemberStockist($id){
+        $modelMember = New Member;
+        $getData = $modelMember->getCekMemberSotckistToRemove($id);
+        return view('admin.ajax.cek_edit_stockist')
+                ->with('headerTitle', 'Edit Member Stockist')
+                ->with('getData', $getData);
+    }
+    
     public function getEditBonusReward($id){
         $modelBonusSetting = new Bonussetting;
         $getData = $modelBonusSetting->getActiveBonusRewardByID($id);

@@ -96,6 +96,8 @@
                                                 </td>
                                                 <td>{{date('d F Y', strtotime($row->stockist_at))}}</td>
                                                 <td>
+                                                    <a rel="tooltip"  data-toggle="modal" data-target="#popUp2" class="text-info" href="{{ URL::to('/') }}/ajax/adm/edit/stockist/{{$row->id}}">edit</a>
+                                                    &nbsp;&nbsp;
                                                     <a rel="tooltip"  data-toggle="modal" data-target="#popUp1" class="text-danger" href="{{ URL::to('/') }}/ajax/adm/remove/stockist/{{$row->id}}">hapus</a>
                                                 </td>
                                             </tr>
