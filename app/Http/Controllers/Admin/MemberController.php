@@ -2154,10 +2154,12 @@ class MemberController extends Controller {
         if($request->get_id != null){
             $user = $modelMember->getExplorerByID($request->get_id);
 //            $sponsor = $modelMember->getExplorerByID($user->sponsor_id);
-            $getMyPeringkat = $modelBonusSetting->getPeringkatByType($dataUser->member_type);
+            $getMyPeringkat = $modelBonusSetting->getPeringkatByType($user->member_type);
             $namePeringkat = 'Member Biasa';
+            $image = '';
             if($getMyPeringkat != null){
                 $namePeringkat = $getMyPeringkat->name;
+                $image = $getMyPeringkat->image;
             }
             $getTotalPin = $modelPin->getTotalPinMember($user);
             $sum_pin_masuk = 0;
@@ -2184,6 +2186,7 @@ class MemberController extends Controller {
                 'user' => $user,
 //                'sponsor' => $sponsor,
                 'peringkat' => $namePeringkat,
+                'image_peringkat' => $image,
                 'pin_tersedia' => $total,
                 'pin_terpakai' => $sum_pin_keluar,
                 'total_wd' => $totalWD->total_wd,
