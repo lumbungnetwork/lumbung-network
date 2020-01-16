@@ -23,31 +23,7 @@
     <div class="content">
         <div class="row">
             <div class="col-md-12">
-                <div class="card card-user">
-                    <div class="card-header">
-                    </div>
-                    <div class="card-body" style="min-height: auto;">
-                        <form class="login100-form validate-form" method="post" action="/adm/search-list/member-stockist">
-                            {{ csrf_field() }}
-                            <div id="addPenjualan">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Relevant Search</label>
-                                            <input type="text" class="form-control" name="name" placeholder="Minimal 3 karakter">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label>&nbsp;</label>
-                                             <button type="submit" class="form-control btn btn-sm btn-info " title="cari" style="margin: 0;">Cari</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>    
-                        </form>
-                    </div>
-                </div>
+                
                 <div class="card">
                     <div class="card-header">
                         <h5 class="card-title">List</h5>
@@ -65,42 +41,32 @@
                             <table class="table table-striped nowrap" id="myTable">
                                 <thead class=" text-primary">
                                     <tr>
-                                        <th>No</th>
-                                        <th>UserID</th>
-                                        <th>No HP</th>
-                                        <th>Alamat</th>
-                                        <th>Tgl Stockist</th>
+                                        <th>No.</th>
+                                        <th>Nama Produk</th>
+                                        <th>Kode Produk</th>
+                                        <th>Stok Tersedia</th>
                                         <th>###</th>
                                     </tr>
                                 </thead>
                                 
                                 <tbody>
                                     @if($getData != null)
-                                        <?php 
-                                        $no = 0; 
-                                        ?>
+                                    <?php $no = 0; ?>
                                         @foreach($getData as $row)
-                                        <?php 
-                                            $no++;
-                                        ?>
+                                            @if($row->hapus == 0)
+                                            <?php
+                                                $no++;
+                                            ?>
                                             <tr>
                                                 <td>{{$no}}</td>
-                                                <td>{{$row->user_code}}</td>
-                                                <td>{{$row->hp}}</td>
+                                                <td>{{$row->ukuran}} {{$row->name}}</td>
+                                                <td>{{$row->code}}</td>
+                                                <td>{{number_format($row->total_sisa, 0, ',', ',')}}</td>
                                                 <td>
-                                                    {{$row->alamat}} 
-                                                    <br>
-                                                    {{$row->kelurahan}}, {{$row->kecamatan}} 
-                                                    <br>
-                                                    {{$row->kota}}, {{$row->provinsi}}
-                                                </td>
-                                                <td>{{date('d F Y', strtotime($row->stockist_at))}}</td>
-                                                <td>
-                                                    <a class="text-info" href="{{ URL::to('/') }}/adm/stockist/stock/{{$row->id}}">stock</a>
-                                                    &nbsp;&nbsp;
-                                                    <a rel="tooltip"  data-toggle="modal" data-target="#popUp1" class="text-danger" href="{{ URL::to('/') }}/ajax/adm/remove/stockist/{{$row->id}}">hapus</a>
+                                                    <a class="text-info" href="#">edit</a>
                                                 </td>
                                             </tr>
+                                            @endif
                                         @endforeach
                                     @endif
                                 </tbody>

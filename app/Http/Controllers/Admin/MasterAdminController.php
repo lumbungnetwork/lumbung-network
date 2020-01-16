@@ -1852,6 +1852,51 @@ class MasterAdminController extends Controller {
                 ->with('dataUser', $dataUser);
     }
     
+    public function getMemberStockistStock($id){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelMember = New Member;
+        $getDataUser = $modelMember->getExplorerByID($id);
+        $modelSales = New Sales;
+        $data = $modelSales->getMemberPurchaseShoping($getDataUser->id);
+        $getData = array();
+        if($data != null){
+            foreach($data as $row){
+                $jml_keluar = $modelSales->getSumStock($getDataUser->id, $row->id);
+                $total_sisa = $row->total_qty - $jml_keluar;
+                if($total_sisa < 0){
+                    $total_sisa = 0;
+                }
+                $hapus = 0;
+                if($total_sisa == 0){
+                    if($row->deleted_at != null){
+                        $hapus = 1;
+                    }
+                }
+                $getData[] = (object) array(
+                    'total_qty' => $row->total_qty,
+                    'name' => $row->name,
+                    'code' => $row->code,
+                    'ukuran' => $row->ukuran,
+                    'image' => $row->image,
+                    'member_price' => $row->member_price,
+                    'stockist_price' => $row->stockist_price,
+                    'id' => $row->id,
+                    'jml_keluar' => $jml_keluar,
+                    'total_sisa' => $total_sisa,
+                    'hapus' => $hapus
+                );
+            }
+        }
+        return view('admin.member.stock-product')
+                ->with('headerTitle', 'Stock Product')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
     
 
 }
