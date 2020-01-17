@@ -93,6 +93,16 @@ class Sales extends Model {
         return $sql;
     }
     
+    public function getLastStockID($purchase_id, $user_id){
+        $sql = DB::table('stock')
+                    ->where('purchase_id', '=', $purchase_id)
+                    ->where('user_id', '=', $user_id)
+                    ->where('type', '=', 1)
+                    ->orderBy('id', 'DESC')
+                    ->first();
+        return $sql;
+    }
+    
     public function getInsertSales($data){
         try {
             $lastInsertedID = DB::table('sales')->insertGetId($data);
@@ -384,7 +394,7 @@ class Sales extends Model {
                     ->selectRaw('sum(item_purchase.qty) as total_qty, '
                             . 'sum(item_purchase.sisa) as total_sisa, '
                             . 'purchase.name, purchase.code, purchase.ukuran, purchase.image, purchase.member_price,'
-                            . 'purchase.stockist_price, purchase.id, purchase.deleted_at')
+                            . 'purchase.stockist_price, purchase.id, purchase.deleted_at, purchase.id as purchase_id')
                     ->where('item_purchase_master.status', '=', 2)
                     ->where('item_purchase_master.stockist_id', '=', $stockist_id)
                     ->groupBy('purchase.name')
@@ -427,6 +437,31 @@ class Sales extends Model {
         }
         return $return;
     }
+    
+    public function getStockByPurchaseIdStockist($stockist_id, $purchase_id){
+        $sql = DB::table('item_purchase_master')
+                    ->join('users', 'item_purchase_master.stockist_id', '=', 'users.id')
+                    ->join('item_purchase', 'item_purchase_master.id', '=', 'item_purchase.master_item_id')
+                    ->join('purchase', 'purchase.id', '=', 'item_purchase.purchase_id')
+                    ->selectRaw('sum(item_purchase.qty) as total_qty, '
+                            . 'sum(item_purchase.sisa) as total_sisa, '
+                            . 'purchase.name, purchase.code, purchase.ukuran, purchase.image, purchase.member_price,'
+                            . 'purchase.stockist_price, purchase.id, purchase.deleted_at, purchase.id as purchase_id')
+                    ->where('item_purchase_master.status', '=', 2)
+                    ->where('item_purchase_master.stockist_id', '=', $stockist_id)
+                    ->where('purchase.id', '=', $purchase_id)
+                    ->groupBy('purchase.name')
+                    ->groupBy('purchase.code')
+                    ->groupBy('purchase.ukuran')
+                    ->groupBy('purchase.image')
+                    ->groupBy('purchase.member_price')
+                    ->groupBy('purchase.stockist_price')
+                    ->groupBy('purchase.id')
+                    ->groupBy('purchase.deleted_at')
+                    ->first();
+        return $sql;
+    }
+    
     
     public function getMemberReportSalesStockist($id){
         $sql = DB::table('master_sales')
@@ -754,6 +789,15 @@ class Sales extends Model {
                     ->whereDate('master_sales.sale_date', '>=', $date->start_day)
                     ->whereDate('master_sales.sale_date', '<=', $date->end_day)
                     ->whereNull('master_sales.deleted_at')
+                    ->first();
+        return $sql;
+    }
+    
+    public function getLastItemPurchase($purchase_id, $user_id){
+        $sql = DB::table('item_purchase')
+                    ->where('purchase_id', '=', $purchase_id)
+                    ->where('stockist_id', '=', $user_id)
+                    ->orderBy('id', 'DESC')
                     ->first();
         return $sql;
     }

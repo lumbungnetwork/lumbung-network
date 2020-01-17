@@ -63,7 +63,7 @@
                                                 <td>{{$row->code}}</td>
                                                 <td>{{number_format($row->total_sisa, 0, ',', ',')}}</td>
                                                 <td>
-                                                    <a class="text-info" href="#">edit</a>
+                                                    <a rel="tooltip"  data-toggle="modal" data-target="#popUp1" class="text-info" href="{{ URL::to('/') }}/ajax/adm/edit-stock/{{$getStockist->id}}/{{$row->purchase_id}}">edit</a>
                                                 </td>
                                             </tr>
                                             @endif
@@ -72,11 +72,6 @@
                                 </tbody>
                             </table>
                              <div class="modal fade" id="popUp1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content"></div>
-                                </div>
-                            </div>
-                             <div class="modal fade" id="popUp2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content"></div>
                                 </div>
@@ -91,16 +86,9 @@
 @stop
 
 
-@section('styles')
-<link rel="stylesheet" href="{{ asset('css/jquery.dataTables.min.css') }}">
-<link rel="stylesheet" href="{{ asset('css/buttons.dataTables.min.css') }}">
-@stop
+
 
 @section('javascript')
-<script type="text/javascript" language="javascript" src="{{ asset('js/jquery.dataTables.min.js') }}"></script>
-<script type="text/javascript" language="javascript" src="{{ asset('js/dataTables.buttons.min.js') }}"></script>
-<script type="text/javascript" language="javascript" src="{{ asset('js/jszip.min.js') }}"></script>
-<script type="text/javascript" language="javascript" src="{{ asset('js/buttons.html5.min.js') }}"></script>
 
 <script type="text/javascript">
     $("#popUp1").on("show.bs.modal", function(e) {
@@ -118,12 +106,6 @@
                 columnDefs: [
                     { orderable: false, targets: -1 }
                  ],
-                buttons: [
-                    {
-                        extend: 'excelHtml5',
-                        title: 'export_xls' ,
-                   }
-                ],
                 searching: false,
                  pagingType: "full_numbers",
                  "paging":   true,

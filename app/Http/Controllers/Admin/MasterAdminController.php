@@ -1887,14 +1887,85 @@ class MasterAdminController extends Controller {
                     'id' => $row->id,
                     'jml_keluar' => $jml_keluar,
                     'total_sisa' => $total_sisa,
-                    'hapus' => $hapus
+                    'hapus' => $hapus,
+                    'purchase_id' => $row->purchase_id,
                 );
             }
         }
         return view('admin.member.stock-product')
                 ->with('headerTitle', 'Stock Product')
                 ->with('getData', $getData)
+                ->with('getStockist', $getDataUser)
                 ->with('dataUser', $dataUser);
+    }
+    
+    public function postEditStock(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($request->jml_stock == null){
+            return redirect()->route('adm_memberStockistStock', [$request->stockist_id])
+                        ->with('message', 'Jumlah Stock harus diisi')
+                        ->with('messageclass', 'danger');
+        }
+        if($request->jml_stock < 0){
+            return redirect()->route('adm_memberStockistStock', [$request->stockist_id])
+                        ->with('message', 'Jumlah Stock tidak boleh kurang dari 0')
+                        ->with('messageclass', 'danger');
+        }
+        $metode = $request->metode;
+        $purchase_id = $request->purchase_id;
+        $stockist_id = $request->stockist_id;
+//        $modelMember = New Member;
+        $modelSales = New Sales;
+        $data = $modelSales->getStockByPurchaseIdStockist($stockist_id, $purchase_id);
+        $jml_keluar = $modelSales->getSumStock($stockist_id, $data->id);
+        // klo nambah maka ubah qty di table item_purchase dan table stock yg sales_id, stockist_id is null
+        // klo kurang insert di stock isi stockist_id
+        $total_sisa = $data->total_qty - $jml_keluar;
+        $getLastItemPurchase = $modelSales->getLastItemPurchase($purchase_id, $stockist_id);
+        if($getLastItemPurchase == null){
+            return redirect()->route('adm_memberStockistStock', [$request->stockist_id])
+                        ->with('message', 'tidak ada data')
+                        ->with('messageclass', 'danger');
+        }
+        if($metode == 1){
+            $idLastPurchase = $getLastItemPurchase->id;
+            $tambahStock = $getLastItemPurchase->qty + $request->jml_stock;
+            $dataUpdateItemPurchase = array(
+                'qty' => $tambahStock
+            );
+            $modelSales->getUpdateItemPurchase('id', $idLastPurchase, $dataUpdateItemPurchase);
+            $getLastStock = $modelSales->getLastStockID($purchase_id, $stockist_id);
+            $dataUpdateStock = array(
+                'amount' => $tambahStock
+            );
+            $modelSales->getUpdateStock('id', $getLastStock->id, $dataUpdateStock);
+            return redirect()->route('adm_memberStockistStock', [$request->stockist_id])
+                            ->with('message', 'berhasil tambah stock')
+                            ->with('messageclass', 'success');
+        }
+        if($metode == 2){
+            if(($total_sisa - $request->jml_stock) < 0){
+                return redirect()->route('adm_memberStockistStock', [$request->stockist_id])
+                                ->with('message', 'stock kurang dari 0')
+                                ->with('messageclass', 'danger');
+            }
+            $dataInsertStock = array(
+                'purchase_id' => $purchase_id,
+                'user_id' => $stockist_id,
+                'type' => 2,
+                'amount' => $request->jml_stock,
+                'stockist_id' => $stockist_id,
+            );
+            $modelSales->getInsertStock($dataInsertStock);
+            return redirect()->route('adm_memberStockistStock', [$request->stockist_id])
+                            ->with('message', 'berhasil kurang stock')
+                            ->with('messageclass', 'success');
+        }
+        
     }
     
     

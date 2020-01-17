@@ -104,6 +104,7 @@ Route::prefix('/')->group(function () {
         Route::get('/adm/history/req-stockist', 'Admin\MasterAdminController@getHistoryRequestMemberStockist')->name('adm_historyReqStockist')->middleware('auth');
         Route::get('/adm/history/req-input-stock', 'Admin\MasterAdminController@getHistoryRequestInputStock')->name('adm_historyReqInputStock')->middleware('auth');
         Route::get('/adm/stockist/stock/{id}', 'Admin\MasterAdminController@getMemberStockistStock')->name('adm_memberStockistStock')->middleware('auth');
+        Route::post('/adm/edit-stock', 'Admin\MasterAdminController@postEditStock')->middleware('auth');
         
 
         //Ajax
@@ -142,6 +143,7 @@ Route::prefix('/')->group(function () {
         Route::get('/ajax/adm/change-block/member/{id}', 'Admin\AjaxController@getAdminChangeBlockMember')->middleware('auth');
         Route::get('/ajax/adm/change-tron/member/{id}', 'Admin\AjaxController@getAdminChangeTronMember')->middleware('auth');
         Route::get('/ajax/adm/get-page', 'Admin\AjaxController@getAdminGetCurrentPage')->middleware('auth');
+        Route::get('/ajax/adm/edit-stock/{stockist_id}/{purchase_id}', 'Admin\AjaxController@getAdminEditStock')->middleware('auth');
         
 //        Route::get('/adm/daerah', 'Admin\MasterAdminController@getAllDaerah')->middleware('auth');
         ////////////////////////////////////////////////////////////////////////
