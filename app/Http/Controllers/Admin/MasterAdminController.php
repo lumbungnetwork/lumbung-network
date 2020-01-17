@@ -1918,7 +1918,7 @@ class MasterAdminController extends Controller {
         $metode = $request->metode;
         $purchase_id = $request->purchase_id;
         $stockist_id = $request->stockist_id;
-//        $modelMember = New Member;
+        $modelAdmin = New Admin;
         $modelSales = New Sales;
         $data = $modelSales->getStockByPurchaseIdStockist($stockist_id, $purchase_id);
         $jml_keluar = $modelSales->getSumStock($stockist_id, $data->id);
@@ -1943,6 +1943,11 @@ class MasterAdminController extends Controller {
                 'amount' => $tambahStock
             );
             $modelSales->getUpdateStock('id', $getLastStock->id, $dataUpdateStock);
+            $logHistory = array(
+                'user_id' => $dataUser->id,
+                'detail_log' => 'POST adm/edit-stock Tambah Stock'
+            );
+            $modelAdmin->getInsertLogHistory($logHistory);
             return redirect()->route('adm_memberStockistStock', [$request->stockist_id])
                             ->with('message', 'berhasil tambah stock')
                             ->with('messageclass', 'success');
@@ -1961,6 +1966,11 @@ class MasterAdminController extends Controller {
                 'stockist_id' => $stockist_id,
             );
             $modelSales->getInsertStock($dataInsertStock);
+            $logHistory = array(
+                'user_id' => $dataUser->id,
+                'detail_log' => 'POST adm/edit-stock Kurang Stock'
+            );
+            $modelAdmin->getInsertLogHistory($logHistory);
             return redirect()->route('adm_memberStockistStock', [$request->stockist_id])
                             ->with('message', 'berhasil kurang stock')
                             ->with('messageclass', 'success');
