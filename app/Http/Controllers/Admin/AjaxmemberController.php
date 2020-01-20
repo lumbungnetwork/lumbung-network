@@ -857,6 +857,12 @@ class AjaxmemberController extends Controller {
                         ->with('cekType', $cekType)
                         ->with('data', $data);
     }
+    
+    public function getCekRejectTopup(Request $request){
+        $data = (object) array('id_topup' => $request->id_topup);
+        return view('member.ajax.confirm_reject_topup')
+                        ->with('data', $data);
+    }
 
     
     

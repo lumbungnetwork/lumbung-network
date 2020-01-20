@@ -131,6 +131,7 @@
                                         <div class="hidden-print">
                                             <div class="pull-xs-right">
                                                 <input type="hidden" value="{{$getData->id}}" name="id_topup" id="id_topup">
+                                                <button type="submit" class="btn btn-danger"  id="submitBtn" data-toggle="modal" data-target="#rejectSubmit" onClick="rejectSubmit()">Batal</button>
                                                 <button type="submit" class="btn btn-success"  id="submitBtn" data-toggle="modal" data-target="#confirmSubmit" onClick="inputSubmit()">Confirm</button>
                                             </div>
                                             <div class="clearfix"></div>
@@ -176,6 +177,18 @@
                      success: function(url){
                          $("#confirmDetail" ).empty();
                          $("#confirmDetail").html(url);
+                     }
+                 });
+           }
+           
+           function rejectSubmit(){
+                var id_topup = $("#id_topup").val();
+                 $.ajax({
+                     type: "GET",
+                     url: "{{ URL::to('/') }}/m/cek/reject-topup?id_topup="+id_topup,
+                     success: function(url){
+                         $("#rejectDetail" ).empty();
+                         $("#rejectDetail").html(url);
                      }
                  });
            }

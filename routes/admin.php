@@ -237,6 +237,7 @@ Route::prefix('/')->group(function () {
         Route::get('/m/history/topup-saldo', 'Admin\BonusmemberController@getHistoryTopupSaldo')->name('m_historyTopupSaldo')->middleware('auth');
         Route::get('/m/topup/pembayaran/{id}', 'Admin\BonusmemberController@getMemberTopupPembayaran')->name('m_MemberTopupPembayaran')->middleware('auth');
         Route::post('/m/topup/pembayaran', 'Admin\BonusmemberController@postMemberTopupPembayaran')->middleware('auth');
+        Route::post('/m/reject/topup', 'Admin\BonusmemberController@postRejectTopup')->middleware('auth');
         
         //Belanja
         Route::get('/m/req/stockist', 'Admin\MemberController@getRequestMemberStockist')->name('m_reqMemberStockist')->middleware('auth');
@@ -303,6 +304,7 @@ Route::prefix('/')->group(function () {
         Route::get('/m/explore/member', 'Admin\AjaxmemberController@getExplorerMemberByUserCode')->middleware('auth');
         Route::get('/m/cek/confirm-topup', 'Admin\AjaxmemberController@getCekConfirmTopUp')->middleware('auth');
         Route::get('/m/cek/topup-transaction', 'Admin\AjaxmemberController@getCekTopupTransaction')->middleware('auth');
+        Route::get('/m/cek/reject-topup', 'Admin\AjaxmemberController@getCekRejectTopup')->middleware('auth');
         
         Route::get('/m/search/{type}', 'Admin\AjaxmemberController@getSearchByType')->middleware('auth');
 });

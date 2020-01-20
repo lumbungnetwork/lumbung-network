@@ -612,6 +612,38 @@ class BonusmemberController extends Controller {
                     ->with('messageclass', 'success');
     }
     
+    public function postRejectTopup(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+        if($request->reason == null){
+            return redirect()->route('m_addTransaction', [$request->id_trans])
+                        ->with('message', 'Alasan harus diisi')
+                        ->with('messageclass', 'danger');
+        }
+        $modelBonus = New Bonus;
+        $id_topup = $request->id_topup;
+        $dataUpdate = array(
+            'status' => 3,
+            'deleted_at' => date('Y-m-d H:i:s'),
+            'reason' => $request->reason,
+            'submit_by' => $dataUser->id,
+            'submit_at' => date('Y-m-d H:i:s'),
+        );
+        $modelBonus->getUpdateTopUp('id', $id_topup, $dataUpdate);
+        return redirect()->route('m_historyTopupSaldo')
+                    ->with('message', 'Transaksi Top Up dibatalkan')
+                    ->with('messageclass', 'success');
+    }
+    
     
 }
 
