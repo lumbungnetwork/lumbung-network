@@ -25,7 +25,7 @@
                 @endif
                 <div class="row">
                     <?php
-                        $saldo = $dataAll->total_bonus - $dataAll->total_wd - $dataAll->total_tunda - $dataAll->total_fee_admin - ($dataAll->total_wd_eidr + $dataAll->fee_tuntas_eidr + $dataAll->total_tunda_eidr + $dataAll->fee_tunda_eidr);
+                        $saldo = $dataAll->top_up + $dataAll->total_bonus - $dataAll->total_wd - $dataAll->total_tunda - $dataAll->total_fee_admin - ($dataAll->total_wd_eidr + $dataAll->fee_tuntas_eidr + $dataAll->total_tunda_eidr + $dataAll->fee_tunda_eidr);
                         if($saldo < 0){
                             $saldo = 0;
                         }
@@ -91,6 +91,33 @@
                     <div class="modal-dialog" role="document" id="confirmDetail">
                     </div>
                 </div>
+                
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-block">
+                                <p class="card-text">Top Up Saldo eIDR</p>
+                                <div class="row">
+                                    <div class="col-xl-8 col-xs-12">
+                                        <fieldset class="form-group">
+                                            <label for="input_topup">Jumlah (Rp.)</label>
+                                            <input type="text" class="form-control allownumericwithoutdecimal" id="input_jml_topup" name="input_topup" autocomplete="off" placeholder="Minimum Top Up Rp. 20.000">
+                                        </fieldset>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xl-6">
+                                        <button type="submit" class="btn btn-primary"  id="submitBtn" data-toggle="modal" data-target="#confirmSubmitTopUp" onClick="inputSubmitTopUp()">Submit</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="confirmSubmitTopUp" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document" id="confirmDetailTopUp">
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -107,6 +134,18 @@
                 success: function(url){
                     $("#confirmDetail" ).empty();
                     $("#confirmDetail").html(url);
+                }
+            });
+        }
+        
+        function inputSubmitTopUp(){
+           var input_jml_wd = $("#input_jml_topup").val();
+            $.ajax({
+                type: "GET",
+                url: "{{ URL::to('/') }}/m/cek/confirm-topup?input_jml_topup="+input_jml_wd,
+                success: function(url){
+                    $("#confirmDetailTopUp" ).empty();
+                    $("#confirmDetailTopUp").html(url);
                 }
             });
         }

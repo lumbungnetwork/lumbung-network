@@ -1975,6 +1975,38 @@ class MasterAdminController extends Controller {
                             ->with('message', 'berhasil kurang stock')
                             ->with('messageclass', 'success');
         }
+    }
+    
+    public function postRemoveStock(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $purchase_id = $request->purchase_id;
+        $stockist_id = $request->stockist_id;
+        $modelAdmin = New Admin;
+        $modelSales = New Sales;
+        $getAllItem = $modelSales->getAllItemPurchaseStockistPurchase($purchase_id, $stockist_id);
+        if($getAllItem != null){
+            foreach($getAllItem as $row){
+                $dataUpdateItemPurchase = array(
+                    'deleted_at' => date('Y-m-d H:i:s')
+                );
+                $modelSales->getUpdateItemPurchase('id', $row->id, $dataUpdateItemPurchase);
+            }
+            $logHistory = array(
+                'user_id' => $dataUser->id,
+                'detail_log' => 'POST adm/rm-stock Hapus Stock, Purchase ID '.$purchase_id.', Stockist ID '.$stockist_id
+            );
+            $modelAdmin->getInsertLogHistory($logHistory);
+            return redirect()->route('adm_memberStockistStock', [$request->stockist_id])
+                        ->with('message', 'berhasil hapus stock')
+                        ->with('messageclass', 'success');
+        }
+        return redirect()->route('adm_memberStockistStock', [$request->stockist_id])
+                        ->with('message', 'tidak ada data')
+                        ->with('messageclass', 'danger');
         
     }
     

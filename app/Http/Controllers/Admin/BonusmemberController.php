@@ -15,6 +15,7 @@ use App\Model\Bonussetting;
 use App\Model\Transferwd;
 use App\Model\Bonus;
 use App\Model\Sales;
+use App\Model\Bank;
 
 class BonusmemberController extends Controller {
     
@@ -267,6 +268,7 @@ class BonusmemberController extends Controller {
         $totalBonus = $modelBonus->getTotalBonus($dataUser);
         $totalWD = $modelWD->getTotalDiTransfer($dataUser);
         $totalWDeIDR = $modelWD->getTotalDiTransfereIDR($dataUser);
+        $totalTopUp = $modelBonus->getTotalSaldoUserId($dataUser);
         $dataAll = (object) array(
             'total_bonus' => floor($totalBonus->total_bonus),
             'admin_fee' => 5000,
@@ -279,7 +281,8 @@ class BonusmemberController extends Controller {
             'total_tunda_eidr' => $totalWDeIDR->total_tunda,
             'total_fee_admin_eidr' => $totalWDeIDR->total_fee_admin,
             'fee_tuntas_eidr' => $totalWDeIDR->fee_tuntas,
-            'fee_tunda_eidr' => $totalWDeIDR->fee_tunda
+            'fee_tunda_eidr' => $totalWDeIDR->fee_tunda,
+            'top_up' => $totalTopUp
         );
         return view('member.bonus.req-wd-eidr')
                 ->with('dataAll', $dataAll)
@@ -522,6 +525,90 @@ class BonusmemberController extends Controller {
         $modelBonus->getInsertBelanjaReward($dataInsert);
         return redirect()->route('m_PenjualanReward')
                     ->with('message', 'Claim Reward Penjualan berhasil')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function postRequestTopupSaldo(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = new Bonus;
+        $rand = rand(101, 249);
+        $dataInsert = array(
+            'user_id' => $dataUser->id,
+            'nominal' => $request->req_topup, 
+            'unique_digit' => $rand
+        );
+        $getIDTrans = $modelBonus->getInsertTopUp($dataInsert);
+        return redirect()->route('m_MemberTopupPembayaran', [$getIDTrans->lastID])
+                    ->with('message', 'request Top Up Saldo berhasil')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function getHistoryTopupSaldo(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = new Bonus;
+        $getData = $modelBonus->getAllTopUpSaldo($dataUser);
+        return view('member.bonus.topup-saldo')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function getMemberTopupPembayaran($id){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        $modelBonus = New Bonus;
+        $modelBank = New Bank;
+        $getData = $modelBonus->getTopUpSaldoID($id);
+        $getPerusahaanBank = null;
+        if($getData->bank_perusahaan_id != null){
+                $getPerusahaanBank = $modelBank->getBankPerusahaanID($getData->bank_perusahaan_id);
+        } else {
+            $getPerusahaanBank = $modelBank->getBankPerusahaan();
+        }
+        return view('member.bonus.detail-pembayaran')
+                    ->with('headerTitle', 'Pembayaran')
+                    ->with('getData', $getData)
+                    ->with('bankPerusahaan', $getPerusahaanBank)
+                    ->with('dataUser', $dataUser);
+    }
+    
+    public function postMemberTopupPembayaran(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = New Bonus;
+        $modelBank = New Bank;
+        $id_topup = $request->id_topup;
+//        $getData = $modelBonus->getTopUpSaldoID($id_topup);
+        $dataUpdate = array(
+            'status' => 1,
+            'bank_perusahaan_id' => $request->bank_perusahaan_id,
+            'updated_at' => date('Y-m-d H:i:s'),
+        );
+        $modelBonus->getUpdateTopUp('id', $id_topup, $dataUpdate);
+        return redirect()->route('m_historyTopupSaldo')
+                    ->with('message', 'Konfirmasi transfer berhasil')
                     ->with('messageclass', 'success');
     }
     

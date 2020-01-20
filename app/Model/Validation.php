@@ -296,4 +296,17 @@ class Validation extends Model {
         return $canInsert;
     }
     
+    public function getCheckTopUp($data){
+        $canInsert = (object) array('can' => true, 'pesan' => '');
+        if($data->tron == null){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum mengisi data alamat tron');
+            return $canInsert;
+        }
+        if($data->req_topup < 20000){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Batas minimum Top Up Saldo ke eIDR adalah Rp. 20.000');
+            return $canInsert;
+        }
+        return $canInsert;
+    }
+    
 }

@@ -412,6 +412,7 @@ class AjaxmemberController extends Controller {
         $totalBonusAll = $modelBonus->getTotalBonus($dataUser);
         $totalWD = $modelWD->getTotalDiTransfer($dataUser);
         $totalWDeIDR = $modelWD->getTotalDiTransfereIDR($dataUser);
+        $totalTopUp = $modelBonus->getTotalSaldoUserId($dataUser);
         $dataAll = (object) array(
             'req_wd' => (int) $totalBonus,
             'total_bonus' => $totalBonus,
@@ -419,7 +420,7 @@ class AjaxmemberController extends Controller {
             'total_tunda' => $totalWD->total_tunda,
             'total_wd_eidr' => $totalWDeIDR->total_wd,
             'total_tunda_eidr' => $totalWDeIDR->total_tunda,
-            'saldo' => (int) ($totalBonusAll->total_bonus - ($totalWD->total_wd + $totalWD->total_tunda + $totalWD->total_fee_admin + $totalWDeIDR->total_wd + $totalWDeIDR->total_tunda + $totalWDeIDR->total_fee_admin)),
+            'saldo' => (int) ($totalTopUp + $totalBonusAll->total_bonus - ($totalWD->total_wd + $totalWD->total_tunda + $totalWD->total_fee_admin + $totalWDeIDR->total_wd + $totalWDeIDR->total_tunda + $totalWDeIDR->total_fee_admin)),
             'admin_fee' => 5000,
             'tron' => $dataUser->tron
         );
@@ -817,6 +818,44 @@ class AjaxmemberController extends Controller {
         return view('member.ajax.get_name_autocomplete')
                         ->with('getData', $getDownlineUsername)
                         ->with('dataUser', $dataUser);
+    }
+    
+    public function getCekConfirmTopUp(Request $request){
+        $dataUser = Auth::user();
+        $modelValidasi = New Validation;
+        $modelBonus = new Bonus;
+        $modelWD = new Transferwd;
+        $totalTopUp = $request->input_jml_topup;
+        
+        $dataAll = (object) array(
+            'req_topup' => (int) $totalTopUp,
+            'tron' => $dataUser->tron
+        );
+        $canInsert = $modelValidasi->getCheckTopUp($dataAll);
+         return view('member.ajax.confirm_add_topup')
+                        ->with('check', $canInsert)
+                        ->with('data', $dataAll);
+    }
+    
+    public function getCekTopupTransaction(Request $request){
+        $dataUser = Auth::user();
+        $modelBank = New Bank;
+        $modelBonus = New Bonus;
+        $separate = explode('_', $request->id_bank);
+        $getPerusahaanBank = null;
+        $cekType = null;
+        if(count($separate) == 2){
+            $cekType = $separate[0];
+            $bankId = $separate[1];
+            $getPerusahaanBank = $modelBank->getBankPerusahaanID($bankId);
+        }
+        $getTrans = $modelBonus->getTopUpSaldoID($request->id_topup, $dataUser);
+        $data = (object) array('id_topup' => $request->id_topup);
+        return view('member.ajax.confirm_topup_transaction')
+                        ->with('bankPerusahaan', $getPerusahaanBank)
+                        ->with('getTrans', $getTrans)
+                        ->with('cekType', $cekType)
+                        ->with('data', $data);
     }
 
     

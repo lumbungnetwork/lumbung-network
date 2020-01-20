@@ -64,6 +64,10 @@
                                                 <td>{{number_format($row->total_sisa, 0, ',', ',')}}</td>
                                                 <td>
                                                     <a rel="tooltip"  data-toggle="modal" data-target="#popUp1" class="text-info" href="{{ URL::to('/') }}/ajax/adm/edit-stock/{{$getStockist->id}}/{{$row->purchase_id}}">edit</a>
+                                                    @if($row->total_sisa <= 0)
+                                                        &nbsp;&nbsp;
+                                                        <a rel="tooltip"  data-toggle="modal" data-target="#popUp2" class="text-danger" href="{{ URL::to('/') }}/ajax/adm/rm-stock/{{$getStockist->id}}/{{$row->purchase_id}}">hapus</a>
+                                                    @endif
                                                 </td>
                                             </tr>
                                             @endif
@@ -72,6 +76,11 @@
                                 </tbody>
                             </table>
                              <div class="modal fade" id="popUp1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content"></div>
+                                </div>
+                            </div>
+                             <div class="modal fade" id="popUp2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content"></div>
                                 </div>

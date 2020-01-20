@@ -95,13 +95,14 @@
                     </ul>
                 </li>
                 <li class="has_sub">
-                    <a class="waves-effect @if(Route::currentRouteName() == 'm_myBonusSaldo' || Route::currentRouteName() == 'm_requestWDeIDR') active @endif">
+                    <a class="waves-effect @if(Route::currentRouteName() == 'm_myBonusSaldo' || Route::currentRouteName() == 'm_requestWDeIDR' || Route::currentRouteName() == 'm_historyTopupSaldo') active @endif">
                         <i class="zmdi zmdi-money-box"></i> 
                         <span> Saldo </span> <span class="menu-arrow"></span>
                     </a>
                     <ul class="list-unstyled">
                         <li @if(Route::currentRouteName() == 'm_myBonusSaldo') class="active" @endif><a href="{{ URL::to('/') }}/m/saldo/bonus">Bonus</a></li>
                         <li @if(Route::currentRouteName() == 'm_requestWDeIDR') class="active" @endif><a href="{{ URL::to('/') }}/m/req/wd-eidr">eIDR</a></li>
+                        <li @if(Route::currentRouteName() == 'm_historyTopupSaldo') class="active" @endif><a href="{{ URL::to('/') }}/m/history/topup-saldo">History eIDR</a></li>
                     </ul>
                 </li>
                 <li class="has_sub">

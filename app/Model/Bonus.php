@@ -555,6 +555,67 @@ class Bonus extends Model {
                     ->first();
         return $sql;
     }
+    
+    public function getInsertTopUp($data){
+        try {
+            $lastInsertedID = DB::table('top_up')->insertGetId($data);
+            $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
+        }
+        return $result;
+    }
+    
+    public function getUpdateTopUp($fieldName, $name, $data){
+        try {
+            DB::table('top_up')->where($fieldName, '=', $name)->update($data);
+            $result = (object) array('status' => true, 'message' => null);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message);
+        }
+        return $result;
+    }
+    
+    public function getAllTopUpSaldo($data){
+        $sql = DB::table('top_up')
+                    ->where('user_id', '=', $data->id)
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getTopUpSaldoID($id){
+        $sql = DB::table('top_up')
+                    ->where('id', '=', $id)
+                    ->first();
+        return $sql;
+    }
+    
+    public function getTopUpSaldoIDUserId($id, $data){
+        $sql = DB::table('top_up')
+                    ->where('id', '=', $id)
+                    ->where('user_id', '=', $data->id)
+                    ->first();
+        return $sql;
+    }
+    
+    public function getTotalSaldoUserId($data){
+        $sql = DB::table('top_up')
+                    ->selectRaw('sum(nominal) as total_topup')
+                    ->where('user_id', '=', $data->id)
+                    ->where('status', '=', 2)
+                    ->first();
+        $total = 0;
+        if($sql->total_topup != null){
+            $total = $sql->total_topup;
+        }
+        return $total;
+    }
    
     
 }

@@ -423,6 +423,47 @@ class AjaxController extends Controller {
                 ->with('dataUser', $dataUser);
     }
     
+    public function getAdminRemoveStock($stockist_id, $purchase_id){
+        $dataUser = Auth::user();
+        $modelMember = New Member;
+        $modelSales = New Sales;
+        $getDataUser = $modelMember->getExplorerByID($stockist_id);
+        $data = $modelSales->getStockByPurchaseIdStockist($getDataUser->id, $purchase_id);
+        $getData = null;
+        if($data != null){
+            $jml_keluar = $modelSales->getSumStock($getDataUser->id, $data->id);
+            $total_sisa = $data->total_qty - $jml_keluar;
+            if($total_sisa < 0){
+                $total_sisa = 0;
+            }
+            $hapus = 0;
+            if($total_sisa == 0){
+                if($data->deleted_at != null){
+                    $hapus = 1;
+                }
+            }
+            $getData = (object) array(
+                'total_qty' => $data->total_qty,
+                'name' => $data->name,
+                'code' => $data->code,
+                'ukuran' => $data->ukuran,
+                'image' => $data->image,
+                'member_price' => $data->member_price,
+                'stockist_price' => $data->stockist_price,
+                'id' => $data->id,
+                'jml_keluar' => $jml_keluar,
+                'total_sisa' => $total_sisa,
+                'hapus' => $hapus,
+                'purchase_id' => $data->purchase_id,
+            );
+        }
+        return view('admin.ajax.rm-stock')
+                ->with('headerTitle', 'Remove Stock')
+                ->with('getData', $getData)
+                ->with('getDataUser', $getDataUser)
+                ->with('dataUser', $dataUser);
+    }
+    
     
       
     

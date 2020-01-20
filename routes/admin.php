@@ -105,6 +105,7 @@ Route::prefix('/')->group(function () {
         Route::get('/adm/history/req-input-stock', 'Admin\MasterAdminController@getHistoryRequestInputStock')->name('adm_historyReqInputStock')->middleware('auth');
         Route::get('/adm/stockist/stock/{id}', 'Admin\MasterAdminController@getMemberStockistStock')->name('adm_memberStockistStock')->middleware('auth');
         Route::post('/adm/edit-stock', 'Admin\MasterAdminController@postEditStock')->middleware('auth');
+        Route::post('/adm/rm-stock', 'Admin\MasterAdminController@postRemoveStock')->middleware('auth');
         
 
         //Ajax
@@ -144,6 +145,7 @@ Route::prefix('/')->group(function () {
         Route::get('/ajax/adm/change-tron/member/{id}', 'Admin\AjaxController@getAdminChangeTronMember')->middleware('auth');
         Route::get('/ajax/adm/get-page', 'Admin\AjaxController@getAdminGetCurrentPage')->middleware('auth');
         Route::get('/ajax/adm/edit-stock/{stockist_id}/{purchase_id}', 'Admin\AjaxController@getAdminEditStock')->middleware('auth');
+        Route::get('/ajax/adm/rm-stock/{stockist_id}/{purchase_id}', 'Admin\AjaxController@getAdminRemoveStock')->middleware('auth');
         
 //        Route::get('/adm/daerah', 'Admin\MasterAdminController@getAllDaerah')->middleware('auth');
         ////////////////////////////////////////////////////////////////////////
@@ -226,6 +228,10 @@ Route::prefix('/')->group(function () {
         Route::post('/m/request/belanja-reward', 'Admin\BonusmemberController@postRequestBelanjaReward')->middleware('auth');
         Route::get('/m/stockist/penjualan-reward', 'Admin\BonusmemberController@getPenjualanReward')->name('m_PenjualanReward')->middleware('auth');
         Route::post('/m/request/penjualan-reward', 'Admin\BonusmemberController@postRequestPenjualanReward')->middleware('auth');
+        Route::post('/m/request/topup-saldo', 'Admin\BonusmemberController@postRequestTopupSaldo')->middleware('auth');
+        Route::get('/m/history/topup-saldo', 'Admin\BonusmemberController@getHistoryTopupSaldo')->name('m_historyTopupSaldo')->middleware('auth');
+        Route::get('/m/topup/pembayaran/{id}', 'Admin\BonusmemberController@getMemberTopupPembayaran')->name('m_MemberTopupPembayaran')->middleware('auth');
+        Route::post('/m/topup/pembayaran', 'Admin\BonusmemberController@postMemberTopupPembayaran')->middleware('auth');
         
         //Belanja
         Route::get('/m/req/stockist', 'Admin\MemberController@getRequestMemberStockist')->name('m_reqMemberStockist')->middleware('auth');
@@ -290,6 +296,8 @@ Route::prefix('/')->group(function () {
         Route::get('/m/cek/confirm-penjualan-reward', 'Admin\AjaxmemberController@getCekConfirmPenjualanReward')->middleware('auth');
         Route::get('/m/cek/usercode-stockist', 'Admin\AjaxmemberController@getSearchUserCodeStockist')->middleware('auth');
         Route::get('/m/explore/member', 'Admin\AjaxmemberController@getExplorerMemberByUserCode')->middleware('auth');
+        Route::get('/m/cek/confirm-topup', 'Admin\AjaxmemberController@getCekConfirmTopUp')->middleware('auth');
+        Route::get('/m/cek/topup-transaction', 'Admin\AjaxmemberController@getCekTopupTransaction')->middleware('auth');
         
         Route::get('/m/search/{type}', 'Admin\AjaxmemberController@getSearchByType')->middleware('auth');
 });

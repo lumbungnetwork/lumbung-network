@@ -397,6 +397,7 @@ class Sales extends Model {
                             . 'purchase.stockist_price, purchase.id, purchase.deleted_at, purchase.id as purchase_id')
                     ->where('item_purchase_master.status', '=', 2)
                     ->where('item_purchase_master.stockist_id', '=', $stockist_id)
+                    ->whereNull('item_purchase.deleted_at')
                     ->groupBy('purchase.name')
                     ->groupBy('purchase.code')
                     ->groupBy('purchase.ukuran')
@@ -800,6 +801,19 @@ class Sales extends Model {
                     ->orderBy('id', 'DESC')
                     ->first();
         return $sql;
+    }
+    
+    public function getAllItemPurchaseStockistPurchase($purchase_id, $user_id){
+        $sql = DB::table('item_purchase')
+                    ->where('purchase_id', '=', $purchase_id)
+                    ->where('stockist_id', '=', $user_id)
+                    ->orderBy('id', 'ASC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
     }
     
 }
