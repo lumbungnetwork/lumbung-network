@@ -48,6 +48,7 @@
                                          <th><input type="checkbox" name="select_all" value="1" id="example-select-all"></th>
                                         <th>No</th>
                                         <th>UserID</th>
+                                        <th>Tron</th>
                                         <th>Bank</th>
                                         <th>No. Rek</th>
                                         <th>Nama. Rek</th>
@@ -72,6 +73,7 @@
                                                 <td><input type="checkbox" name="id[]" value="{{$row->id}}"></td>
                                                 <td>{{$no}}</td>
                                                 <td>{{$row->user_code}}</td>
+                                                <td>{{$row->tron}}</td>
                                                 <td>{{$row->bank_name}}</td>
                                                 <td>{{$row->account_no}}</td>
                                                 <td>{{$row->account_name}}</td>
