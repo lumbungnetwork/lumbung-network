@@ -106,6 +106,10 @@ Route::prefix('/')->group(function () {
         Route::get('/adm/stockist/stock/{id}', 'Admin\MasterAdminController@getMemberStockistStock')->name('adm_memberStockistStock')->middleware('auth');
         Route::post('/adm/edit-stock', 'Admin\MasterAdminController@postEditStock')->middleware('auth');
         Route::post('/adm/rm-stock', 'Admin\MasterAdminController@postRemoveStock')->middleware('auth');
+        Route::get('/adm/list/topup', 'Admin\MasterAdminController@getAllTopup')->name('adm_listTopup')->middleware('auth');
+        Route::post('/adm/check/topup', 'Admin\MasterAdminController@postCheckTopup')->middleware('auth');
+        Route::post('/adm/reject/topup', 'Admin\MasterAdminController@postRejectTopup')->middleware('auth');
+        Route::get('/adm/history/topup', 'Admin\MasterAdminController@getAllHistoryTopup')->name('adm_listHistoryTopup')->middleware('auth');
         
 
         //Ajax
@@ -146,6 +150,7 @@ Route::prefix('/')->group(function () {
         Route::get('/ajax/adm/get-page', 'Admin\AjaxController@getAdminGetCurrentPage')->middleware('auth');
         Route::get('/ajax/adm/edit-stock/{stockist_id}/{purchase_id}', 'Admin\AjaxController@getAdminEditStock')->middleware('auth');
         Route::get('/ajax/adm/rm-stock/{stockist_id}/{purchase_id}', 'Admin\AjaxController@getAdminRemoveStock')->middleware('auth');
+        Route::get('/ajax/adm/cek/reject-topup/{id}/{user_id}', 'Admin\AjaxController@getCekRejectTopup')->middleware('auth');
         
 //        Route::get('/adm/daerah', 'Admin\MasterAdminController@getAllDaerah')->middleware('auth');
         ////////////////////////////////////////////////////////////////////////

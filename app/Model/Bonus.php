@@ -616,6 +616,54 @@ class Bonus extends Model {
         }
         return $total;
     }
+    
+    public function getAllRequestTopup(){
+        $sql = DB::table('top_up')
+                        ->join('users', 'top_up.user_id', '=', 'users.id')
+                        ->join('bank', 'top_up.bank_perusahaan_id', '=', 'bank.id')
+                        ->selectRaw('users.name, users.hp, users.user_code, '
+                                . 'top_up.status, top_up.updated_at, top_up.id,'
+                                . 'top_up.created_at, top_up.unique_digit, top_up.user_id, top_up.nominal, '
+                                . 'bank.bank_name, bank.account_name, bank.account_no')
+                        ->where('top_up.status', '=', 1)
+                        ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getAdminTopUpSaldoIDUserId($id, $user_id){
+        $sql = DB::table('top_up')
+                        ->join('users', 'top_up.user_id', '=', 'users.id')
+                        ->join('bank', 'top_up.bank_perusahaan_id', '=', 'bank.id')
+                        ->selectRaw('users.name, users.hp, users.user_code, '
+                                . 'top_up.status, top_up.updated_at, top_up.id,'
+                                . 'top_up.created_at, top_up.unique_digit, top_up.user_id, top_up.nominal, '
+                                . 'bank.bank_name, bank.account_name, bank.account_no')
+                        ->where('top_up.id', '=', $id)
+                        ->where('top_up.user_id', '=', $user_id)
+                        ->first();
+        return $sql;
+    }
+    
+    public function getAllHistoryTopup(){
+        $sql = DB::table('top_up')
+                        ->join('users', 'top_up.user_id', '=', 'users.id')
+                        ->leftJoin('bank', 'top_up.bank_perusahaan_id', '=', 'bank.id')
+                        ->selectRaw('users.name, users.hp, users.user_code, '
+                                . 'top_up.status, top_up.updated_at, top_up.id,'
+                                . 'top_up.created_at, top_up.unique_digit, top_up.user_id, top_up.nominal, '
+                                . 'bank.bank_name, bank.account_name, bank.account_no')
+                        ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
    
     
 }

@@ -464,6 +464,16 @@ class AjaxController extends Controller {
                 ->with('dataUser', $dataUser);
     }
     
+    public function getCekRejectTopup($id, $user_id){
+        $dataUser = Auth::user();
+        $modelBonus = new Bonus;
+        $getData = $modelBonus->getAdminTopUpSaldoIDUserId($id, $user_id);
+        return view('admin.ajax.reject-topup')
+                ->with('headerTitle', 'Reject Top Up')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
     
       
     

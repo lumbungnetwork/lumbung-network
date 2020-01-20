@@ -183,6 +183,18 @@
                             <span class="sidebar-normal"> List Member </span>
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ URL::to('/') }}/adm/list/topup">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> List Member Top Up </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ URL::to('/') }}/adm/history/topup">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> History Member Top Up </span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </li>

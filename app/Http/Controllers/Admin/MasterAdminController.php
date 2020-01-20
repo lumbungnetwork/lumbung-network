@@ -2010,6 +2010,95 @@ class MasterAdminController extends Controller {
         
     }
     
+    public function getAllTopup(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = New Bonus;
+        $getData = $modelBonus->getAllRequestTopup();
+        return view('admin.member.list-topup')
+                ->with('headerTitle', 'Request Top Up Saldo')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postCheckTopup(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = New Bonus;
+        if($request->id == null){
+            return redirect()->route('adm_listTopup')
+                        ->with('message', 'tidak ada data yang dipilih')
+                        ->with('messageclass', 'danger');
+        }
+        $getRowID = $request->id;
+        foreach($getRowID as $getID){
+            $dataUpdate = array(
+                'status' => 2,
+                'tuntas_at' => date('Y-m-d H:i:s'),
+                'submit_by' => $dataUser->id,
+                'submit_at' => date('Y-m-d H:i:s'),
+            );
+            $modelBonus->getUpdateTopUp('id', $getID, $dataUpdate);
+        }
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => $request->method().' '.$request->path()
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
+        return redirect()->route('adm_listTopup')
+                    ->with('message', 'Konfirmasi Transfer Top Up berhasil')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function postRejectTopup(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = New Bonus;
+        $getID = $request->cekId;
+        $alesan = $request->reason;
+        $getData = $modelBonus->getTopUpSaldoID($getID);
+        $dataUpdate = array(
+            'status' => 3,
+            'reason' => $alesan,
+            'deleted_at' => date('Y-m-d H:i:s'),
+            'submit_by' => $dataUser->id,
+            'submit_at' => date('Y-m-d H:i:s'),
+        );
+        $modelBonus->getUpdateTopUp('id', $getID, $dataUpdate);
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => $request->method().' '.$request->path()
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
+        return redirect()->route('adm_listTopup')
+                    ->with('message', 'Data Top Up '.$getData->user_code.' senilai Rp. '.number_format($getData->nominal + $getData->unique_digit, 0, ',', '.').' direject')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function getAllHistoryTopup(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = New Bonus;
+        $getData = $modelBonus->getAllHistoryTopup();
+        return view('admin.member.history-topup')
+                ->with('headerTitle', 'History Top Up Saldo')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
     
 
 }
