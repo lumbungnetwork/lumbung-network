@@ -49,6 +49,10 @@
                                             $status = 'Tuntas';
                                             $label = 'success';
                                         }
+                                        if($row->status == 3){
+                                            $status = 'Reject';
+                                            $label = 'danger';
+                                        }
                                     ?>
                                     <tr>
                                         <td>{{$no}}</td>
