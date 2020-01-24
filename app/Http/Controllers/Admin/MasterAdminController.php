@@ -2082,7 +2082,7 @@ class MasterAdminController extends Controller {
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listTopup')
-                    ->with('message', 'Data Top Up '.$getData->user_code.' senilai Rp. '.number_format($getData->nominal + $getData->unique_digit, 0, ',', '.').' direject')
+                    ->with('message', 'Data Top Up senilai Rp. '.number_format($getData->nominal + $getData->unique_digit, 0, ',', '.').' direject')
                     ->with('messageclass', 'success');
     }
     

@@ -46,7 +46,7 @@
                                             @endif
                                             @if($getDataMaster->buy_metode == 3)
                                                 <br>
-                                                Nama: <strong>{{$getDataSales->tron}}</strong>
+                                                Nama: <strong>{{$getDataMaster->tron}}</strong>
                                                 <br>
                                                 Alamat Tron: <strong>{{$getDataMaster->tron_transfer}}</strong>
                                             @endif

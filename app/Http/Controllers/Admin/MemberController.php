@@ -2108,8 +2108,8 @@ class MemberController extends Controller {
         
         //last month
         $last_month = (object) array(
-            'start_day' => date("Y-n-j", strtotime("first day of previous month")),
-            'end_day' => date("Y-n-j", strtotime("last day of previous month"))
+            'start_day' => date("Y-m-d", strtotime("first day of previous month")),
+            'end_day' => date("Y-m-d", strtotime("last day of previous month"))
         );
         $total_aktifasi_date = $modelMember->getAllMemberLastMonth($last_month);
         $totalWD_date = $modelWD->getTotalDiTransferAllLastMonth($last_month);
