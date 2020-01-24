@@ -1541,6 +1541,9 @@ class MemberController extends Controller {
         }
         $modelSales = New Sales;
         $getDataSales = $modelSales->getMemberReportSalesStockistDetail($id, $dataUser->id);
+        if($getDataSales == null){
+            return redirect()->route('mainDashboard');
+        }
         $getDataItem = $modelSales->getMemberPembayaranSales($id);
         return view('member.sales.m_stockist_transfer')
                     ->with('headerTitle', 'Stockist Transfer')
