@@ -1794,16 +1794,19 @@ class MemberController extends Controller {
         $modelSales = New Sales;
         $getData = $modelSales->getMemberMasterPurchaseStockist($dataUser->id);
         $dataAll = array();
-        foreach($getData as $row){
-            $detailAll = $modelSales->getMemberItemPurchaseStockist($row->id, $dataUser->id);
-            $dataAll[] = (object) array(
-                'status' => $row->status,
-                'created_at' => $row->created_at,
-                'price' => $row->price,
-                'id' => $row->id,
-                'detail_all' => $detailAll
-            );
+        if($getData != null){
+            foreach($getData as $row){
+                $detailAll = $modelSales->getMemberItemPurchaseStockist($row->id, $dataUser->id);
+                $dataAll[] = (object) array(
+                    'status' => $row->status,
+                    'created_at' => $row->created_at,
+                    'price' => $row->price,
+                    'id' => $row->id,
+                    'detail_all' => $detailAll
+                );
+            }
         }
+        
         return view('member.sales.stockist_purchase')
                 ->with('getData', $dataAll)
                 ->with('dataUser', $dataUser);

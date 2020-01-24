@@ -231,9 +231,23 @@ class AjaxmemberController extends Controller {
         $modelMember = new Member;
         $canInsert = $modelValidasi->getCheckPengiriman($request);
         $cekPin =$modelPin->getTotalPinMember($dataUser);
+        if($request->total_pin == null){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Anda tidak mengisi jumlah pin');
+            return view('member.ajax.confirm_transfer_pin')
+                        ->with('dataRequest', null)
+                        ->with('check', $canInsert)
+                        ->with('dataUser', $dataUser);
+        }
+        if($request->to_id == null){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Anda tidak mengisi data penerima Pin');
+            return view('member.ajax.confirm_transfer_pin')
+                        ->with('dataRequest', null)
+                        ->with('check', $canInsert)
+                        ->with('dataUser', $dataUser);
+        }
         $sisaPin = $cekPin->sum_pin_masuk - $cekPin->sum_pin_keluar;
         if($sisaPin < $request->total_pin){
-            $canInsert = (object) array('can' => false, 'pesan' => 'Pn anda idak tersedia untuk transfer pin');
+            $canInsert = (object) array('can' => false, 'pesan' => 'Pin anda idak tersedia untuk transfer pin');
         }
         $cekMember = $modelMember->getUsers('id', $request->to_id);
         $data = (object) array(
