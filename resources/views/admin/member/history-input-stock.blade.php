@@ -118,13 +118,16 @@
 </div>
 @stop
 
-
 @section('styles')
 <link rel="stylesheet" href="{{ asset('css/jquery.dataTables.min.css') }}">
+<link rel="stylesheet" href="{{ asset('css/buttons.dataTables.min.css') }}">
 @stop
 
 @section('javascript')
 <script type="text/javascript" language="javascript" src="{{ asset('js/jquery.dataTables.min.js') }}"></script>
+<script type="text/javascript" language="javascript" src="{{ asset('js/dataTables.buttons.min.js') }}"></script>
+<script type="text/javascript" language="javascript" src="{{ asset('js/jszip.min.js') }}"></script>
+<script type="text/javascript" language="javascript" src="{{ asset('js/buttons.html5.min.js') }}"></script>
 
 <script type="text/javascript">
     $("#popUp").on("show.bs.modal", function(e) {
@@ -142,6 +145,12 @@
                 columnDefs: [
                     { orderable: false, targets: -1 }
                  ],
+                 buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'export_history_input_stock' ,
+                   }
+                ],
                 searching: false,
                  pagingType: "full_numbers",
                  "paging":   true,
