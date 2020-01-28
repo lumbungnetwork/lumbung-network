@@ -9,13 +9,14 @@
                     </a>
                 </li>
                 <li class="has_sub">
-                    <a class="waves-effect @if(Route::currentRouteName() == 'm_myProfile' || Route::currentRouteName() == 'm_newProfile' || Route::currentRouteName() == 'm_myBank' || Route::currentRouteName() == 'm_myTron') active @endif">
+                    <a class="waves-effect @if(Route::currentRouteName() == 'm_myProfile' || Route::currentRouteName() == 'm_newProfile' || Route::currentRouteName() == 'm_myBank' || Route::currentRouteName() == 'm_myTron' || Route::currentRouteName() == 'm_editPassword') active @endif">
                         <i class="zmdi zmdi-account-circle"></i> 
                         <span> User Profile</span> <span class="menu-arrow"></span>
                     </a>
                     <ul class="list-unstyled">
                         <li @if(Route::currentRouteName() == 'm_myProfile' || Route::currentRouteName() == 'm_newProfile') class="active" @endif><a href="{{ URL::to('/') }}/m/profile">Profile</a></li>
                         <li @if(Route::currentRouteName() == 'm_myBank') class="active" @endif><a href="{{ URL::to('/') }}/m/bank">Bank</a></li>
+                        <li @if(Route::currentRouteName() == 'm_editPassword') class="active" @endif><a href="{{ URL::to('/') }}/m/edit/password">Edit Password</a></li>
                         <li @if(Route::currentRouteName() == 'm_myTron') class="active" @endif><a href="{{ URL::to('/') }}/m/tron">Tron</a></li>
                     </ul>
                 </li>

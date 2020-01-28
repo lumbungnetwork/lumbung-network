@@ -168,6 +168,8 @@ Route::prefix('/')->group(function () {
         Route::post('/m/add/profile', 'Admin\MemberController@postAddMyProfile')->middleware('auth');
         Route::get('/m/edit/address', 'Admin\MemberController@getEditAddress')->name('m_editAddress')->middleware('auth');
         Route::post('/m/edit/address', 'Admin\MemberController@postEditAddress')->middleware('auth');
+        Route::get('/m/edit/password', 'Admin\MemberController@getEditPassword')->name('m_editPassword')->middleware('auth');
+        Route::post('/m/edit/password', 'Admin\MemberController@postEditPassword')->middleware('auth');
         
         Route::get('/m/tron', 'Admin\MemberController@getMyTron')->name('m_myTron')->middleware('auth');
         Route::get('/m/add/tron', 'Admin\MemberController@getAddMyTron')->name('m_newTron')->middleware('auth');
@@ -291,6 +293,7 @@ Route::prefix('/')->group(function () {
         Route::get('/m/stockist/cek/shoping', 'Admin\AjaxmemberController@getStockistCekSoping')->middleware('auth');
         Route::get('/m/cek/shoping', 'Admin\AjaxmemberController@getCekSoping')->middleware('auth');
         Route::get('/m/cek/edit-address', 'Admin\AjaxmemberController@getCekEditAddress')->middleware('auth');
+        Route::get('/m/cek/edit-password', 'Admin\AjaxmemberController@getCekEditPassword')->middleware('auth');
         Route::get('/m/cek/confirm-claim-reward', 'Admin\AjaxmemberController@getCekConfirmClaimReward')->middleware('auth');
         Route::get('/m/cek/member-pembayaran', 'Admin\AjaxmemberController@getCekMemberPembayaran')->middleware('auth');
         Route::get('/m/cek/add-stock', 'Admin\AjaxmemberController@postCekAddRequestStock')->middleware('auth');

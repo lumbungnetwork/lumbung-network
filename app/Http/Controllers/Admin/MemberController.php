@@ -2206,6 +2206,39 @@ class MemberController extends Controller {
                 ->with('dataUser', $dataUser);
     }
     
+    public function getEditPassword(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        return view('member.profile.my-password')
+                    ->with('headerTitle', 'Password')
+                    ->with('dataUser', $dataUser);
+    }
+    
+    public function postEditPassword(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        $dataUpdatePass = array(
+            'password' => bcrypt($request->password),
+        );
+        $modelMember = New Member;
+        $modelMember->getUpdateUsers('id', $dataUser->id, $dataUpdatePass);
+        return redirect()->route('m_editPassword')
+                            ->with('message', 'Berhasil edit passowrd')
+                            ->with('messageclass', 'success');
+    }
+    
     
     
     

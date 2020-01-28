@@ -877,6 +877,42 @@ class AjaxmemberController extends Controller {
         return view('member.ajax.confirm_reject_topup')
                         ->with('data', $data);
     }
+    
+    public function getCekEditPassword(Request $request){
+        $dataUser = Auth::user();
+        $canInsert = (object) array('can' => true, 'pesan' => '');
+        if($request->password == null){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Password harus diisii');
+            return view('member.ajax.confirm_edit_password')
+                        ->with('dataRequest', null)
+                        ->with('check', $canInsert);
+        }
+        if(strpos($request->repassword, ' ') !== false){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Ketik ulang password harus diisi');
+            return view('member.ajax.confirm_edit_password')
+                        ->with('dataRequest', null)
+                        ->with('check', $canInsert);
+        }
+        if($request->password != $request->repassword){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Password tidak sama');
+            return view('member.ajax.confirm_edit_password')
+                        ->with('dataRequest', null)
+                        ->with('check', $canInsert);
+        }
+        if(strlen($request->password) < 6){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Password terlalu pendek, minimal 6 karakter');
+            return view('member.ajax.confirm_edit_password')
+                        ->with('dataRequest', null)
+                        ->with('check', $canInsert);
+        }
+        $data = (object) array(
+            'password' => $request->password
+        );
+        return view('member.ajax.confirm_edit_password')
+                        ->with('dataRequest', $data)
+                        ->with('check', $canInsert)
+                        ->with('dataUser', $dataUser);
+    }
 
     
     
