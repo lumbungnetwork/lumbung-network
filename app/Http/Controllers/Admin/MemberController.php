@@ -2043,17 +2043,23 @@ class MemberController extends Controller {
         $modelSales = New Sales;
         $id_master = $request->master_id;
         $getSales = $modelSales->getMemberPembayaranSales($id_master);
-//        foreach($getSales as $row){
-//            $dataInsertStock = array(
-//                'purchase_id' => $row->purchase_id,
-//                'user_id' => $row->user_id,
-//                'type' => 2,
-//                'amount' => $row->amount,
-//                'sales_id' => $row->id,
-//                'stockist_id' => $row->stockist_id,
-//            );
-//            $modelSales->getInsertStock($dataInsertStock);
-//        }
+        if($getSales != null){
+            foreach($getSales as $row){
+                $cekAda = $modelSales->getLastStockIDCekExist($row->purchase_id, $row->user_id, $row->stockist_id, $row->id);
+                if($cekAda == null){
+                    $dataInsertStock = array(
+                        'purchase_id' => $row->purchase_id,
+                        'user_id' => $row->user_id,
+                        'type' => 2,
+                        'amount' => $row->amount,
+                        'sales_id' => $row->id,
+                        'stockist_id' => $row->stockist_id,
+                    );
+                    $modelSales->getInsertStock($dataInsertStock);
+                }
+            }
+        }
+        
         $dataUpdate = array(
             'status' => 2
         );
@@ -2085,7 +2091,10 @@ class MemberController extends Controller {
         $getSales = $modelSales->getMemberPembayaranSales($id_master);
         if($getSales != null){
             foreach($getSales as $row){
-                $modelSales->getDeleteStock($row->purchase_id, $row->id, $row->stockist_id);
+                $cekAda = $modelSales->getLastStockIDCekExist($row->purchase_id, $row->user_id, $row->stockist_id, $row->id);
+                if($cekAda != null){
+                    $modelSales->getDeleteStock($row->purchase_id, $row->id, $row->stockist_id, $row->user_id);
+                }
             }
         }
         return redirect()->route('m_MemberStockistReport')

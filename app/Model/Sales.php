@@ -84,12 +84,13 @@ class Sales extends Model {
         return $result;
     }
     
-    public function getDeleteStock($purchase_id, $sale_id, $stockist_id){
+    public function getDeleteStock($purchase_id, $sale_id, $stockist_id, $user_id){
         try {
             DB::table('stock')
                     ->where('purchase_id', '=', $purchase_id)
                     ->where('sales_id', '=', $sale_id)
                     ->where('stockist_id', '=', $stockist_id)
+                    ->where('user_id', '=', $user_id)
                     ->delete();
             $result = (object) array('status' => true, 'message' => null);
         } catch (Exception $ex) {
@@ -114,6 +115,16 @@ class Sales extends Model {
                     ->where('user_id', '=', $user_id)
                     ->where('type', '=', 1)
                     ->orderBy('id', 'DESC')
+                    ->first();
+        return $sql;
+    }
+    
+    public function getLastStockIDCekExist($purchase_id, $user_id, $stockist_id, $sales_id){
+        $sql = DB::table('stock')
+                    ->where('purchase_id', '=', $purchase_id)
+                    ->where('user_id', '=', $user_id)
+                    ->where('stockist_id', '=', $stockist_id)
+                    ->where('sales_id', '=', $sales_id)
                     ->first();
         return $sql;
     }
