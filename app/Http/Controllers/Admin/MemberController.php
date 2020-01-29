@@ -1471,6 +1471,14 @@ class MemberController extends Controller {
                             ->with('message', 'total keranjang '.$rowCekQuantity['nama_produk'].' melebihi dari stok yang tersedia')
                             ->with('messageclass', 'danger');
             }
+            $cekQuota = $modelSales->getStockByPurchaseIdStockist($stockist_id, $rowCekQuantity['product_id']);
+            $jml_keluar = $modelSales->getSumStock($stockist_id, $rowCekQuantity['product_id']);
+            $total_sisa = $cekQuota->total_qty - $jml_keluar;
+            if($rowCekQuantity['product_quantity'] > $total_sisa){
+                return redirect()->route('m_MemberShoping', [$stockist_id])
+                            ->with('message', 'total keranjang '.$rowCekQuantity['nama_produk'].' melebihi dari stok yang tersedia')
+                            ->with('messageclass', 'danger');
+            }
         }
         foreach($arrayLog as $rowTotPrice){
             $total_price += $rowTotPrice['product_quantity'] * $rowTotPrice['product_price'];
@@ -1497,15 +1505,15 @@ class MemberController extends Controller {
                 'master_sales_id' => $insertMasterSales->lastID
             );
             $insertSales = $modelSales->getInsertSales($dataInsert);
-//            $dataInsertStock = array(
-//                'purchase_id' => $row['product_id'],
-//                'user_id' => $user_id,
-//                'type' => 2,
-//                'amount' => $row['product_quantity'],
-//                'sales_id' => $insertSales->lastID,
-//                'stockist_id' => $stockist_id,
-//            );
-//            $modelSales->getInsertStock($dataInsertStock);
+            $dataInsertStock = array(
+                'purchase_id' => $row['product_id'],
+                'user_id' => $user_id,
+                'type' => 2,
+                'amount' => $row['product_quantity'],
+                'sales_id' => $insertSales->lastID,
+                'stockist_id' => $stockist_id,
+            );
+            $modelSales->getInsertStock($dataInsertStock);
         }
 
         return redirect()->route('m_MemberPembayaran', [$insertMasterSales->lastID])
@@ -2035,17 +2043,17 @@ class MemberController extends Controller {
         $modelSales = New Sales;
         $id_master = $request->master_id;
         $getSales = $modelSales->getMemberPembayaranSales($id_master);
-        foreach($getSales as $row){
-            $dataInsertStock = array(
-                'purchase_id' => $row->purchase_id,
-                'user_id' => $row->user_id,
-                'type' => 2,
-                'amount' => $row->amount,
-                'sales_id' => $row->id,
-                'stockist_id' => $row->stockist_id,
-            );
-            $modelSales->getInsertStock($dataInsertStock);
-        }
+//        foreach($getSales as $row){
+//            $dataInsertStock = array(
+//                'purchase_id' => $row->purchase_id,
+//                'user_id' => $row->user_id,
+//                'type' => 2,
+//                'amount' => $row->amount,
+//                'sales_id' => $row->id,
+//                'stockist_id' => $row->stockist_id,
+//            );
+//            $modelSales->getInsertStock($dataInsertStock);
+//        }
         $dataUpdate = array(
             'status' => 2
         );
@@ -2074,6 +2082,12 @@ class MemberController extends Controller {
             'reason' => $request->reason
         );
         $modelSales->getUpdateMasterSales('id', $id_master, $dataUpdate);
+        $getSales = $modelSales->getMemberPembayaranSales($id_master);
+        if($getSales != null){
+            foreach($getSales as $row){
+                $modelSales->getDeleteStock($row->purchase_id, $row->id, $row->stockist_id);
+            }
+        }
         return redirect()->route('m_MemberStockistReport')
                             ->with('message', 'Berhasil reject pembayaran member')
                             ->with('messageclass', 'success');

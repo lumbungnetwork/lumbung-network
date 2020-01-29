@@ -84,6 +84,21 @@ class Sales extends Model {
         return $result;
     }
     
+    public function getDeleteStock($purchase_id, $sale_id, $stockist_id){
+        try {
+            DB::table('stock')
+                    ->where('purchase_id', '=', $purchase_id)
+                    ->where('sales_id', '=', $sale_id)
+                    ->where('stockist_id', '=', $stockist_id)
+                    ->delete();
+            $result = (object) array('status' => true, 'message' => null);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message);
+        }
+        return $result;
+    }
+    
     public function getStockID($purchase_id){
         $sql = DB::table('stock')
                     ->where('purchase_id', '=', $purchase_id)
