@@ -15,7 +15,7 @@
                     @endif
                     @if($getDataMemberBuy != null)
                         <div class="alert alert-warning" role="alert">
-                            <b> Konfirmasi penjualan member (Total {{count($getDataMemberBuy)}}) - </b> <a href="{{ URL::to('/') }}/m/stockist-report" class="label label-primary">link</a>
+                            <b> Konfirmasi Belanja Member (Total {{count($getDataMemberBuy)}}) - </b> <a href="{{ URL::to('/') }}/m/stockist-report" class="label label-primary">link</a>
                         </div>
                     @endif
                     @if($dataUser->id > 4)
