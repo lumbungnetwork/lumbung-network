@@ -48,11 +48,15 @@
                                         @foreach($getData as $row)
                                             <?php
                                                 $kelipatan = floor(($row->month_sale_price/10000)/10) * 10;
+                                                $reward = '--';
+                                                if($kelipatan > 0){
+                                                    $reward = $kelipatan.' LMB';
+                                                }
                                             ?>
                                             <tr>
                                                 <td>{{$row->monthly}}</td>
                                                 <td>{{number_format($row->month_sale_price, 0, ',', '.')}}</td>
-                                                <td>{{$kelipatan}} LMB</td>
+                                                <td>{{$reward}}</td>
                                                 <td>
                                                     @if($row->canClaim == 1)
                                                     <a rel="tooltip" data-toggle="modal" data-target="#confirmSubmit" class="btn btn-custom btn-sm waves-effect waves-light" href="{{ URL::to('/') }}/m/cek/confirm-belanja-reward?m={{$row->month}}&y={{$row->year}}">
