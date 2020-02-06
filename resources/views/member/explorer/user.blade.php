@@ -86,8 +86,8 @@
                                             $total_wd = $dataExplore->total_wd + $dataExplore->fee_tuntas;
                                         ?>
                                         <tr>
-                                            <td>Total Bonus Diterima (Rp)</td>
-                                            <td>{{number_format($total_wd, 0, ',', '.')}}</td>
+                                            <td>Total Bonus (Rp)</td>
+                                            <td>{{number_format($dataExplore->total_bonus, 0, ',', '.')}}</td>
                                         </tr>
                                         <tr>
                                             <td>Total Belanja (Rp)</td>

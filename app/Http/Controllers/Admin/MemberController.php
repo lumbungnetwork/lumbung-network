@@ -2205,6 +2205,7 @@ class MemberController extends Controller {
             $getSales = $modelSales->getSalesAllHistoryByID($user);
             $getAllShopLMB = $modelBonus->getAllClaimLMBByIDUserCode($user);
             $getAllClaimLMB = $modelBonus->getAllClaimRewardLMBByIDUserCode($user);
+            $totalBonus = $modelBonus->getTotalBonus($user);
             $sum = 0;
             if($getAllClaimLMB != null){
                 $sum = $getAllClaimLMB->tot_reward_1 + $getAllClaimLMB->tot_reward_2 + $getAllClaimLMB->tot_reward_3 + $getAllClaimLMB->tot_reward_4;
@@ -2220,6 +2221,7 @@ class MemberController extends Controller {
                 'pin_terpakai' => $sum_pin_keluar,
                 'total_wd' => $totalWD->total_wd,
                 'fee_tuntas' => $totalWD->fee_tuntas,
+                'total_bonus' => floor($totalBonus->total_bonus),
                 'total_sales' => $getSales->total_sales,
                 'lmb_claim' => $lmb_claim
             );
