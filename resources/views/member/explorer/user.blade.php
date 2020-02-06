@@ -84,10 +84,11 @@
                                         </tr>
                                         <?php
                                             $total_wd = $dataExplore->total_wd + $dataExplore->fee_tuntas;
+                                            $total_bonus_blmWD = $dataExplore->total_bonus - $dataExplore->total_wd - $dataExplore->fee_tuntas;
                                         ?>
                                         <tr>
                                             <td>Total Bonus (Rp)</td>
-                                            <td>{{number_format($dataExplore->total_bonus, 0, ',', '.')}}</td>
+                                            <td>{{number_format($total_bonus_blmWD, 0, ',', '.')}}</td>
                                         </tr>
                                         <tr>
                                             <td>Total Belanja (Rp)</td>
