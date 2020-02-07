@@ -63,6 +63,10 @@
                                             <td>Aktif</td>
                                         </tr>
                                         <tr>
+                                            <td>Sponsor</td>
+                                            <td>{{$dataExplore->sponsor->user_code}}</td>
+                                        </tr>
+                                        <tr>
                                             <td>Aktif Sejak</td>
                                             <td>{{date('d F Y', strtotime($dataExplore->user->active_at))}}</td>
                                         </tr>
@@ -88,7 +92,7 @@
                                         ?>
                                         <tr>
                                             <td>Total Bonus (Rp)</td>
-                                            <td>{{number_format($total_bonus_blmWD, 0, ',', '.')}}</td>
+                                            <td>{{number_format($dataExplore->total_bonus, 0, ',', '.')}}</td>
                                         </tr>
                                         <tr>
                                             <td>Total Belanja (Rp)</td>

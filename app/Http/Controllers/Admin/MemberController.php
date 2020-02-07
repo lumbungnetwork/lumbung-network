@@ -2182,7 +2182,7 @@ class MemberController extends Controller {
         $dataExplore = null;
         if($request->get_id != null){
             $user = $modelMember->getExplorerByID($request->get_id);
-//            $sponsor = $modelMember->getExplorerByID($user->sponsor_id);
+            $sponsor = $modelMember->getExplorerByID($user->sponsor_id);
             $getMyPeringkat = $modelBonusSetting->getPeringkatByType($user->member_type);
             $namePeringkat = 'Member Biasa';
             $image = '';
@@ -2214,7 +2214,7 @@ class MemberController extends Controller {
         
             $dataExplore = (object) array(
                 'user' => $user,
-//                'sponsor' => $sponsor,
+                'sponsor' => $sponsor,
                 'peringkat' => $namePeringkat,
                 'image_peringkat' => $image,
                 'pin_tersedia' => $total,
