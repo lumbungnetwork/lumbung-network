@@ -11,11 +11,11 @@
                     <?php
                         $confirm = 'Konfirmasi Pembayaran';
                         $text = 'Konfirmasi';
-                        $status = 'proses member';
+                        $status = 'proses pembeli';
                         $label = 'info';
                         if($getDataSales->status == 1){
                             $status = 'proses stockist';
-                            $label = 'info';
+                            $label = 'warning';
                         }
                         if($getDataSales->status == 2){
                             $status = 'TUNTAS';

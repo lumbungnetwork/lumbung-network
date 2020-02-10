@@ -41,11 +41,11 @@
                                 @foreach($getData as $row)
                                     <?php
                                         $no++;
-                                        $status = 'proses member';
+                                        $status = 'proses pembeli';
                                         $label = 'info';
                                         if($row->status == 1){
                                             $status = 'proses stockist';
-                                            $label = 'info';
+                                            $label = 'warning';
                                         }
                                         if($row->status == 2){
                                             $status = 'tuntas';
@@ -55,7 +55,7 @@
                                             $status = 'batal';
                                             $label = 'danger';
                                         }
-                                        $buy = 'Belum';
+                                        $buy = 'proses pemilihan';
                                         if($row->buy_metode == 1){
                                             $buy = 'COD';
                                         }

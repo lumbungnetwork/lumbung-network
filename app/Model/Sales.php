@@ -497,7 +497,6 @@ class Sales extends Model {
                             . 'master_sales.id, master_sales.status, master_sales.buy_metode,'
                             . 'master_sales.royalti_metode')
                     ->where('master_sales.stockist_id', '=', $id)
-                    ->where('master_sales.status', '>=', 1)
                     ->whereNull('master_sales.deleted_at')
                     ->orderBy('master_sales.sale_date', 'DESC')
                     ->get();
