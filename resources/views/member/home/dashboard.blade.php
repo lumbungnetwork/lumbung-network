@@ -135,25 +135,28 @@
                                 <h2 class="m-b-20">{{number_format($dataMy->sales, 0, ',', '.')}}</g2>
                             </div>
                         </div>
-                        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-3">
-                            <div class="card-box tilebox-one">
-                                <i class="icon-trophy pull-xs-right text-muted text-warning"></i>
-                                <h6 class="text-muted text-uppercase m-b-20">Total Bonus (Rp.)</h6>
-                                <h2 class="m-b-20">{{number_format($dataAll->total_bonus, 0, ',', '.')}}</h2>
-                            </div>
-                        </div>
                         <?php
-                            $saldo = $dataAll->total_bonus - $dataAll->total_wd - $dataAll->total_tunda - $dataAll->total_fee_admin;
-                            if($saldo < 0){
+                            $saldo = $dataAll->total_bonus - $dataAll->total_wd - $dataAll->total_tunda - $dataAll->total_fee_admin - ($dataAll->total_wd_eidr + $dataAll->fee_tuntas_eidr + $dataAll->total_tunda_eidr + $dataAll->fee_tunda_eidr);
+                            if($saldo > -20000 && $saldo <= 0){
                                 $saldo = 0;
                             }
                             $total_wd = $dataAll->total_wd + $dataAll->fee_tuntas;
+                            $total_tunda = $dataAll->total_tunda + $dataAll->fee_tunda;
+                            $total_wd_eidr = $dataAll->total_wd_eidr + $dataAll->fee_tuntas_eidr;
+                            $total_tunda_eidr = $dataAll->total_tunda_eidr + $dataAll->fee_tunda_eidr;
                         ?>
                         <div class="col-xs-12 col-md-6 col-lg-6 col-xl-3">
                             <div class="card-box tilebox-one">
                                 <i class="icon-rocket pull-xs-right text-muted text-warning"></i>
                                 <h6 class="text-muted text-uppercase m-b-20">Bonus Ditransfer (Rp.)</h6>
                                 <h2 class="m-b-20">{{number_format($total_wd, 0, ',', '.')}}</h2>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-3">
+                            <div class="card-box tilebox-one">
+                                <i class="icon-trophy pull-xs-right text-muted text-warning"></i>
+                                <h6 class="text-muted text-uppercase m-b-20">Konversi Ditransfer (Rp.)</h6>
+                                <h2 class="m-b-20">{{number_format($total_wd_eidr, 0, ',', '.')}}</h2>
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-6 col-lg-6 col-xl-3">

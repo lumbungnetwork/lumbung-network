@@ -26,7 +26,10 @@
                 <div class="row">
                     <?php
                         $saldo = $dataAll->total_bonus - $dataAll->total_wd - $dataAll->total_tunda - $dataAll->total_fee_admin - ($dataAll->total_wd_eidr + $dataAll->fee_tuntas_eidr + $dataAll->total_tunda_eidr + $dataAll->fee_tunda_eidr);
-                        if($saldo < 0){
+//                        if($saldo < 0){
+//                            $saldo = 0;
+//                        }
+                        if($saldo > -20000 && $saldo <= 0){
                             $saldo = 0;
                         }
                         $total_wd = $dataAll->total_wd + $dataAll->fee_tuntas;
@@ -124,6 +127,8 @@
         function confirmSubmit(){
             var dataInput = $("#form-add").serializeArray();
             $('#form-add').submit();
+            $('#tutupModal').remove();
+            $('#submit').remove();
         }
         
         $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {    

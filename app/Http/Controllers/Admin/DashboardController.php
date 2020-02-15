@@ -60,6 +60,7 @@ class DashboardController extends Controller {
         }
         $totalBonus = $modelBonus->getTotalBonus($dataUser);
         $totalWD = $modelWD->getTotalDiTransfer($dataUser);
+        $totalWDeIDR = $modelWD->getTotalDiTransfereIDR($dataUser);
         $getMyPackage = $modelPackage->getPackageId($dataUser->package_id);
         $stock_wd = 0;
         if($getMyPackage != null){
@@ -90,6 +91,11 @@ class DashboardController extends Controller {
             'total_fee_admin' => $totalWD->total_fee_admin,
             'fee_tuntas' => $totalWD->fee_tuntas,
             'fee_tunda' => $totalWD->fee_tunda,
+            'total_wd_eidr' => $totalWDeIDR->total_wd,
+            'total_tunda_eidr' => $totalWDeIDR->total_tunda,
+            'total_fee_admin_eidr' => $totalWDeIDR->total_fee_admin,
+            'fee_tuntas_eidr' => $totalWDeIDR->fee_tuntas,
+            'fee_tunda_eidr' => $totalWDeIDR->fee_tunda,
             'stock_wd' => $stock_wd,
             'kanan' => $kanan,
             'kiri' => $kiri,

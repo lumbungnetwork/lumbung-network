@@ -33,7 +33,10 @@
                     </div>
                     <?php
                     $saldo = $dataAll->total_bonus - $dataAll->total_wd - $dataAll->total_tunda - $dataAll->total_fee_admin - ($dataAll->total_wd_eidr + $dataAll->fee_tuntas_eidr + $dataAll->total_tunda_eidr + $dataAll->fee_tunda_eidr);
-                    if($saldo < 0){
+//                    if($saldo < 0){
+//                        $saldo = 0;
+//                    }
+                    if($saldo > -5000 && $saldo <= 0){
                         $saldo = 0;
                     }
                     ?>
