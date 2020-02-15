@@ -239,7 +239,7 @@ class Transferwd extends Model {
                     ->join('bank', 'transfer_wd.user_bank', '=', 'bank.id')
                     ->selectRaw('transfer_wd.id, bank.bank_name, bank.account_no, bank.account_name,'
                             . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee,'
-                            . 'transfer_wd.status, transfer_wd.reason, transfer_wd.wd_date')
+                            . 'transfer_wd.status, transfer_wd.reason, transfer_wd.wd_date, transfer_wd.type')
                     ->where('transfer_wd.user_id', '=', $data->id)
                     ->orderBy('transfer_wd.id', 'DESC')
                     ->get();
@@ -514,6 +514,23 @@ class Transferwd extends Model {
             'fee_tuntas' => $fee_tuntas,
             'fee_tunda' => $fee_tunda
         );
+        return $return;
+    }
+    
+    public function getAllMemberWDeIDR($data){
+        $sql = DB::table('transfer_wd')
+                    ->selectRaw('transfer_wd.id, '
+                            . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee,'
+                            . 'transfer_wd.status, transfer_wd.reason, transfer_wd.wd_date')
+                    ->where('transfer_wd.type', '=', 5)
+                    ->where('transfer_wd.is_tron', '=', 1)
+                    ->where('transfer_wd.user_id', '=', $data->id)
+                    ->orderBy('transfer_wd.id', 'DESC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
         return $return;
     }
    

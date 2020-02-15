@@ -240,6 +240,7 @@ Route::prefix('/')->group(function () {
         Route::get('/m/topup/pembayaran/{id}', 'Admin\BonusmemberController@getMemberTopupPembayaran')->name('m_MemberTopupPembayaran')->middleware('auth');
         Route::post('/m/topup/pembayaran', 'Admin\BonusmemberController@postMemberTopupPembayaran')->middleware('auth');
         Route::post('/m/reject/topup', 'Admin\BonusmemberController@postRejectTopup')->middleware('auth');
+        Route::get('/m/history/wd-eidr', 'Admin\BonusmemberController@getHistoryWithdrawaleIDR')->name('m_historyWDeIDR')->middleware('auth');
         
         //Belanja
         Route::get('/m/req/stockist', 'Admin\MemberController@getRequestMemberStockist')->name('m_reqMemberStockist')->middleware('auth');

@@ -647,6 +647,19 @@ class BonusmemberController extends Controller {
                     ->with('messageclass', 'success');
     }
     
+    public function getHistoryWithdrawaleIDR(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelWD = new Transferwd;
+        $getData = $modelWD->getAllMemberWDeIDR($dataUser);
+        return view('member.bonus.history-wd-eidr')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
     
 }
 

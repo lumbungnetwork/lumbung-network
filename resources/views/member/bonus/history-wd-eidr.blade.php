@@ -31,7 +31,6 @@
                                     <th>Jml. WD</th>
                                     <th>Admin Fee</th>
                                     <th>Jml. Transfer</th>
-                                    <th>Jenis</th>
                                     <th>Status</th>
                                     <th>Keterangan</th>
                                 </tr>
@@ -57,10 +56,6 @@
                                                 $label = 'danger';
                                             }
                                             $jml_WD = $row->wd_total + $row->admin_fee;
-                                            $jenis = 'Bonus';
-                                            if($row->type == 3){
-                                                $jenis = 'Bonus Royalti';
-                                            }
                                         ?>
                                         <tr>
                                             <td>{{$no}}</td>
@@ -68,7 +63,6 @@
                                             <td>{{number_format($jml_WD, 0, ',', '.')}}</td>
                                             <td>{{number_format($row->admin_fee, 0, ',', '.')}}</td>
                                             <td>{{number_format($row->wd_total, 0, ',', '.')}}</td>
-                                            <td>{{$jenis}}</td>
                                             <td><label class="label label-{{$label}}">{{$status}}</label></td>
                                             <td>{{$row->reason}}</td>
                                         </tr>
