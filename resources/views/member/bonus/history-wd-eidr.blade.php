@@ -8,7 +8,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="page-title-box">
-                        <h4 class="page-title">History Withdrawal</h4>
+                        <h4 class="page-title">History Konversi</h4>
                         <div class="clearfix"></div>
                     </div>
                 </div>
@@ -27,8 +27,8 @@
                             <thead>
                                 <tr>
                                     <th>No.</th>
-                                    <th>Tgl. WD</th>
-                                    <th>Jml. WD</th>
+                                    <th>Tgl. Konversi</th>
+                                    <th>Jml. Konversi</th>
                                     <th>Admin Fee</th>
                                     <th>Jml. Transfer</th>
                                     <th>Status</th>
