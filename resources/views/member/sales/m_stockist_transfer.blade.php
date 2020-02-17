@@ -135,7 +135,11 @@
                                         <button type="submit" class="btn btn-danger"  id="submitBtn" data-toggle="modal" data-target="#rejectSubmit" onClick="rejectSubmit()">Batal</button>
                                         <button type="submit" class="btn btn-success"  id="submitBtn" data-toggle="modal" data-target="#confirmSubmit" onClick="inputSubmit()">Confirm</button>
                                     @else 
-                                        <a  class="btn btn-success" href="{{ URL::to('/') }}/m/stockist-report">Kembali</a>
+                                        @if($getDataSales->status == 0)
+                                            <input type="hidden" value="{{$getDataSales->id}}" name="id_master" id="id_master">
+                                            <button type="submit" class="btn btn-danger"  id="submitBtn" data-toggle="modal" data-target="#rejectSubmit" onClick="rejectSubmit()">Batal</button>
+                                        @endif
+                                        <a  class="btn btn-info" href="{{ URL::to('/') }}/m/stockist-report">Kembali</a>
                                     @endif
                                 </div>
                                 <div class="clearfix"></div>
@@ -150,6 +154,12 @@
                             <div class="modal-dialog" role="document" id="rejectDetail">
                             </div>
                         </div>
+                        @endif
+                        @if($getDataSales->status == 0)
+                            <div class="modal fade" id="rejectSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document" id="rejectDetail">
+                                </div>
+                            </div>
                         @endif
                     </div>
                 </div>
@@ -176,6 +186,32 @@
                  });
            }
            
+           function rejectSubmit(){
+                var id_master = $("#id_master").val();
+                 $.ajax({
+                     type: "GET",
+                     url: "{{ URL::to('/') }}/m/cek/reject-pembelian?id_master="+id_master,
+                     success: function(url){
+                         $("#rejectDetail" ).empty();
+                         $("#rejectDetail").html(url);
+                     }
+                 });
+           }
+
+            function confirmSubmit(){
+                var dataInput = $("#form-add").serializeArray();
+                $('#form-add').submit();
+                $('#tutupModal').remove();
+                $('#submit').remove();
+            }
+    </script>
+@stop
+@endif
+
+@if($getDataSales->status == 0)
+@section('javascript')
+    <script>
+          
            function rejectSubmit(){
                 var id_master = $("#id_master").val();
                  $.ajax({
