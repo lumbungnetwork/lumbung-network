@@ -1698,12 +1698,12 @@ class MemberController extends Controller {
         if($request->buy_metode == 3){
             $buy_metode = 3;
             $tron = $request->tron;
-            if($request->tron_tranfer == null){
+            if($request->tron_transfer == null){
                 return redirect()->route('m_MemberPembayaran', [$request->master_sale_id])
                         ->with('message', 'Hash transaksi transfer dari Blockchain TRON belum diisi')
                         ->with('messageclass', 'danger');
             }
-            $tron_transfer = $request->tron_tranfer;
+            $tron_transfer = $request->tron_transfer;
         }
         $dataUpdate = array(
             'status' => 1,
@@ -1817,7 +1817,6 @@ class MemberController extends Controller {
                 );
             }
         }
-        
         return view('member.sales.stockist_purchase')
                 ->with('getData', $dataAll)
                 ->with('dataUser', $dataUser);
@@ -2261,6 +2260,734 @@ class MemberController extends Controller {
         $modelMember->getUpdateUsers('id', $dataUser->id, $dataUpdatePass);
         return redirect()->route('m_editPassword')
                             ->with('message', 'Berhasil edit passowrd')
+                            ->with('messageclass', 'success');
+    }
+    
+    public function getRequestMemberVendor(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_profile == 0){
+            return redirect()->route('m_SearchStockist')
+                    ->with('message', 'Data profil anda belum lengkap')
+                    ->with('messageclass', 'danger');
+        }
+        $modelMember = New Member;
+        $cekRequestStockist = $modelMember->getCekRequestVendor($dataUser->id);
+        if($cekRequestStockist != null){
+            return redirect()->route('m_SearchStockist')
+                        ->with('message', 'Anda sudah pernah mengajukan menjadi vendor')
+                        ->with('messageclass', 'danger');
+        }
+        return view('member.profile.add-vendor')
+                ->with('headerTitle', 'Aplikasi Pengajuan Vendor')
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postRequestMemberVendor(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_profile == 0){
+            return redirect()->route('m_SearchVendor')
+                    ->with('message', 'Data profil anda belum lengkap')
+                    ->with('messageclass', 'danger');
+        }
+        $modelMember = New Member;
+        $dataInsert = array(
+            'user_id' => $dataUser->id
+        );
+        $modelMember->getInsertVendor($dataInsert);
+        return redirect()->route('m_SearchVendor')
+                    ->with('message', 'Aplikasi Pengajuan Vendor berhasil dibuat')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function getSearchVendor(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        $modelMember = New Member;
+        $getDataKelurahan = null;
+        $getDataKecamatan = null;
+        $getDataKota = null;
+        $getData = null;
+        if($dataUser->kode_daerah != null){
+            $dataDaerah = explode('.', $dataUser->kode_daerah);
+            $kelurahan = $dataUser->kelurahan;
+            $kecamatan = $dataUser->kecamatan;
+            $kota = $dataUser->kota;
+            $getDataKelurahan = $modelMember->getSearchVendorUserByKelurahan($kelurahan, $kecamatan);
+            $getDataKecamatan = $modelMember->getSearchVendorUserByKecamatan($kecamatan, $kelurahan);
+            $getDataKota = $modelMember->getSearchUserVendorByKota($kota, $kecamatan, $kelurahan);
+        }
+        $cekRequestStockist = $modelMember->getCekRequestVendorExist($dataUser->id);
+        return view('member.profile.m_vshop')
+                ->with('getDataKelurahan', $getDataKelurahan)
+                ->with('getDataKecamatan', $getDataKecamatan)
+                ->with('getDataKota', $getDataKota)
+                ->with('cekRequest', $cekRequestStockist)
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postSearchVendor(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_profile == 0){
+            return redirect()->route('m_SearchVendor')
+                    ->with('message', 'Data profil anda belum lengkap')
+                    ->with('messageclass', 'danger');
+        }
+        $modelMember = New Member;
+        $getDataKelurahan = null;
+        $getDataKecamatan = null;
+        $getDataKota = null;
+        $getData = $modelMember->getSearchUserVendor($request->user_name);
+        $cekRequestStockist = $modelMember->getCekRequestVendorExist($dataUser->id);
+        return view('member.profile.m_vshop')
+                ->with('getData', $getData)
+                ->with('getDataKelurahan', $getDataKelurahan)
+                ->with('getDataKecamatan', $getDataKecamatan)
+                ->with('getDataKota', $getDataKota)
+                ->with('cekRequest', $cekRequestStockist)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function getMemberShopingVendor($vendor_id){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_profile == 0){
+            return redirect()->route('m_SearchVendor')
+                    ->with('message', 'Data profil anda belum lengkap')
+                    ->with('messageclass', 'danger');
+        }
+        //cek stockistnya
+        $modelSales = New Sales;
+        $modelMember = New Member;
+        $getDataVendor = $dataUser;
+        if($dataUser->id != $vendor_id){
+            $getDataVendor = $modelMember->getUsers('id', $vendor_id);
+            if($getDataVendor->is_vendor == null){
+                return redirect()->route('mainDashboard');
+            }
+        }
+        $data = $modelSales->getMemberPurchaseVendorShoping($vendor_id);
+        $getData = array();
+        if($data != null){
+            foreach($data as $row){
+                $jml_keluar = $modelSales->getSumStockVendor($vendor_id, $row->id);
+                $total_sisa = $row->total_qty - $jml_keluar;
+                if($total_sisa < 0){
+                    $total_sisa = 0;
+                }
+                $hapus = 0;
+                if($total_sisa == 0){
+                    if($row->deleted_at != null){
+                        $hapus = 1;
+                    }
+                }
+                $getData[] = (object) array(
+                    'total_qty' => $row->total_qty,
+                    'name' => $row->name,
+                    'code' => $row->code,
+                    'ukuran' => $row->ukuran,
+                    'image' => $row->image,
+                    'member_price' => $row->member_price,
+                    'vendor_price' => $row->vendor_price,
+                    'id' => $row->id,
+                    'jml_keluar' => $jml_keluar,
+                    'total_sisa' => $total_sisa,
+                    'hapus' => $hapus
+                );
+            }
+        }
+        return view('member.sales.m_vshoping')
+                ->with('getData', $getData)
+                ->with('id', $vendor_id)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function getVendorInputPurchase(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_vendor == 0){
+            return redirect()->route('m_SearchVendor');
+        }
+        $modelSales = New Sales;
+        $getData = null;
+        if($dataUser->kode_daerah != null){
+            $dataDaerah = explode('.', $dataUser->kode_daerah);
+            $getData = $modelSales->getAllPurchaseVendorByRegion($dataDaerah[0], $dataDaerah[1]);
+        }
+        return view('member.sales.vendor_input_stock')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postVendorInputPurchase(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_stockist == 0){
+            return redirect()->route('m_SearchVendor');
+        }
+        $modelSales = New Sales;
+        $arrayLog = json_decode($request->cart_list, true);
+        $total_price = 0;
+        foreach($arrayLog as $rowTotPrice){
+            $total_price += $rowTotPrice['product_quantity'] * $rowTotPrice['product_price'];
+        }
+        $dataInsertMasterStock = array(
+            'vendor_id' => $dataUser->id,
+            'price' => $total_price
+        );
+        $masterStock = $modelSales->getInsertVendorItemPurchaseMaster($dataInsertMasterStock);
+        foreach($arrayLog as $row){
+            $dataInsertItem = array(
+                'purchase_id' => $row['product_id'],
+                'vmaster_item_id' => $masterStock->lastID,
+                'vendor_id' => $dataUser->id,
+                'qty' => $row['product_quantity'],
+                'sisa' => $row['product_quantity'],
+                'price' => $row['product_price']
+            );
+            $modelSales->getInsertVItemPurchase($dataInsertItem);
+            $dataInsertStock = array(
+                'purchase_id' => $row['product_id'],
+                'user_id' => $dataUser->id,
+                'type' => 1,
+                'amount' => $row['product_quantity'],
+            );
+            $modelSales->getInsertVStock($dataInsertStock);
+        }
+        return redirect()->route('m_VendorDetailPruchase', [$masterStock->lastID])
+                        ->with('message', 'request Tambah stock oleh Vendor berhasil, Silakan lakukan konfirmasi')
+                        ->with('messageclass', 'success');
+    }
+    
+    public function getVendorDetailRequestStock($id){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_stockist == 0){
+            return redirect()->route('m_SearchVendor');
+        }
+        $modelSales = New Sales;
+        $getDataMaster = $modelSales->getMemberMasterPurchaseVendorByID($id, $dataUser->id);
+        $getDataItem = $modelSales->getMemberItemPurchaseVendor($getDataMaster->id, $dataUser->id);
+        return view('member.sales.vendor_detail_purchase')
+                ->with('getDataMaster', $getDataMaster)
+                ->with('getDataItem', $getDataItem)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function getVendorListPurchase(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_stockist == 0){
+            return redirect()->route('m_SearchVendor');
+        }
+        $modelSales = New Sales;
+        $getData = $modelSales->getMemberMasterPurchaseVendor($dataUser->id);
+        $dataAll = array();
+        if($getData != null){
+            foreach($getData as $row){
+                $detailAll = $modelSales->getMemberItemPurchaseVendor($row->id, $dataUser->id);
+                $dataAll[] = (object) array(
+                    'status' => $row->status,
+                    'created_at' => $row->created_at,
+                    'price' => $row->price,
+                    'id' => $row->id,
+                    'detail_all' => $detailAll
+                );
+            }
+        }
+        return view('member.sales.vendor_purchase')
+                ->with('getData', $dataAll)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postAddRequestVStock(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_stockist == 0){
+            return redirect()->route('m_SearchVendor');
+        }
+        $modelSales = New Sales;
+        $tron = null;
+        $tron_transfer = null;
+        $bank_name = null;
+        $account_no = null;
+        $account_name = null;
+        $buy_metode = 0;
+        if($request->metode == 2){
+            $buy_metode = 2;
+            $bank_name = $request->bank_name;
+            $account_no = $request->account_no;
+            $account_name = $request->account_name;
+        }
+        if($request->metode == 3){
+            $buy_metode = 3;
+            $tron = $request->tron;
+            if($request->transfer == null){
+                return redirect()->route('m_VendorDetailPruchase', [$request->id_master])
+                        ->with('message', 'Hash transaksi transfer dari Blockchain TRON belum diisi')
+                        ->with('messageclass', 'danger');
+            }
+            $tron_transfer = $request->transfer;
+        }
+        $dataUpdate = array(
+            'status' => 1,
+            'buy_metode' => $buy_metode,
+            'tron' => $tron,
+            'tron_transfer' => $tron_transfer,
+            'bank_name' => $bank_name,
+            'account_no' => $account_no,
+            'account_name' => $account_name,
+            'metode_at' => date('Y-m-d H:i:s')
+        );
+        $modelSales->getUpdateVendorItemPurchaseMaster('id', $request->id_master, $dataUpdate);
+        return redirect()->route('m_VendorListPruchase')
+                    ->with('message', 'Konfirmasi request Vendor Input Stock berhasil')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function postRejectRequestVStock(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_stockist == 0){
+            return redirect()->route('m_SearchVendor');
+        }
+        $modelSales = New Sales;
+        $id_master = $request->id_master;
+        $date = date('Y-m-d H:i:s');
+        $dataUpdate = array(
+            'status' => 10,
+            'deleted_at' => $date,
+        );
+        $modelSales->getUpdateVendorItemPurchaseMaster('id', $id_master, $dataUpdate);
+        $dataUpdateItem = array(
+            'deleted_at' => $date,
+        );
+        $modelSales->getUpdateVItemPurchase('vmaster_item_id', $id_master, $dataUpdateItem);
+        return redirect()->route('m_StockistListPruchase')
+                    ->with('message', 'Request Input Stock dibatalkan')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function getVendorMyStockPurchaseSisa(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_profile == 0){
+            return redirect()->route('m_SearchVendor')
+                    ->with('message', 'Data profil anda belum lengkap')
+                    ->with('messageclass', 'danger');
+        }
+        if($dataUser->is_vendor == 0){
+            return redirect()->route('m_SearchVendor');
+        }
+        $modelSales = New Sales;
+        $data = $modelSales->getMemberPurchaseVendorShoping($dataUser->id);
+        $getData = array();
+        if($data != null){
+            foreach($data as $row){
+                $jml_keluar = $modelSales->getSumStockVendor($dataUser->id, $row->id);
+                $total_sisa = $row->total_qty - $jml_keluar;
+                if($total_sisa < 0){
+                    $total_sisa = 0;
+                }
+                $hapus = 0;
+                if($total_sisa == 0){
+                    if($row->deleted_at != null){
+                        $hapus = 1;
+                    }
+                }
+                $getData[] = (object) array(
+                    'total_qty' => $row->total_qty,
+                    'name' => $row->name,
+                    'code' => $row->code,
+                    'ukuran' => $row->ukuran,
+                    'image' => $row->image,
+                    'member_price' => $row->member_price,
+                    'vendor_price' => $row->vendor_price,
+                    'id' => $row->id,
+                    'jml_keluar' => $jml_keluar,
+                    'total_sisa' => $total_sisa,
+                    'hapus' => $hapus
+                );
+            }
+        }
+        return view('member.sales.vendor_my_stock_sisa')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function getMemberVendorReport(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        $modelSales = New Sales;
+        $getData = $modelSales->getMemberReportSalesVendor($dataUser->id);
+        return view('member.sales.report_vendor')
+                ->with('headerTitle', 'Report Belanja')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postMemberShopingVendor(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        $modelSales = New Sales;
+        $arrayLog = json_decode($request->cart_list, true);
+//        dd($arrayLog);
+        $user_id = $dataUser->id;
+        $vendor_id = $request->vendor_id;
+        $is_vendor = 0;
+        $invoice = $modelSales->getCodeMasterSales($user_id);
+        $sale_date = date('Y-m-d');
+        $total_price = 0;
+        //cek takutnya kelebihan qty
+        foreach($arrayLog as $rowCekQuantity){
+            if($rowCekQuantity['product_quantity'] > $rowCekQuantity['max_qty']){
+                return redirect()->route('m_MemberShopingVendor', [$vendor_id])
+                            ->with('message', 'total keranjang '.$rowCekQuantity['nama_produk'].' melebihi dari stok yang tersedia')
+                            ->with('messageclass', 'danger');
+            }
+            $cekQuota = $modelSales->getStockByPurchaseIdVendor($vendor_id, $rowCekQuantity['product_id']);
+            $jml_keluar = $modelSales->getSumStockVendor($vendor_id, $rowCekQuantity['product_id']);
+            $total_sisa = $cekQuota->total_qty - $jml_keluar;
+            if($rowCekQuantity['product_quantity'] > $total_sisa){
+                return redirect()->route('m_MemberShopingVendor', [$vendor_id])
+                            ->with('message', 'total keranjang '.$rowCekQuantity['nama_produk'].' melebihi dari stok yang tersedia')
+                            ->with('messageclass', 'danger');
+            }
+        }
+        foreach($arrayLog as $rowTotPrice){
+            $total_price += $rowTotPrice['product_quantity'] * $rowTotPrice['product_price'];
+        }
+        $dataInsertMasterSales = array(
+            'user_id' => $user_id,
+            'vendor_id' => $vendor_id,
+            'is_vendor' => $is_vendor,
+            'invoice' => $invoice,
+            'total_price' => $total_price,
+            'sale_date' => $sale_date,
+        );
+        $insertMasterSales = $modelSales->getInsertVMasterSales($dataInsertMasterSales);
+        foreach($arrayLog as $row){
+            $dataInsert = array(
+                'user_id' => $user_id,
+                'vendor_id' => $vendor_id,
+                'is_vendor' => $is_vendor,
+                'purchase_id' => $row['product_id'],
+                'invoice' => $invoice,
+                'amount' => $row['product_quantity'],
+                'sale_price' => $row['product_quantity'] * $row['product_price'],
+                'sale_date' => $sale_date,
+                'vmaster_sales_id' => $insertMasterSales->lastID
+            );
+            $insertSales = $modelSales->getInsertVSales($dataInsert);
+            $dataInsertStock = array(
+                'purchase_id' => $row['product_id'],
+                'user_id' => $user_id,
+                'type' => 2,
+                'amount' => $row['product_quantity'],
+                'vsales_id' => $insertSales->lastID,
+                'vendor_id' => $vendor_id,
+            );
+            $modelSales->getInsertVStock($dataInsertStock);
+        }
+
+        return redirect()->route('m_MemberVPembayaran', [$insertMasterSales->lastID])
+                    ->with('message', 'Berhasil member belanja')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function getMemberVPembayaran($id){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        $modelSales = New Sales;
+        $modelMember = New Member;
+        $modelBank = New Bank;
+        $getDataMaster = $modelSales->getMemberPembayaranVMasterSales($id);
+        //klo kosong
+        $getDataSales = $modelSales->getMemberPembayaranVSales($getDataMaster->id);
+        $getVendor = $dataUser;
+        if($dataUser->id != $getDataMaster->vendor_id){
+            $getVendor = $modelMember->getUsers('id', $getDataMaster->vendor_id);
+            if($getVendor->is_vendor == null){
+                return redirect()->route('mainDashboard');
+            }
+        }
+        $getStockistBank = $modelBank->getBankMemberActive($getVendor);
+        return view('member.sales.m_vpembayaran')
+                    ->with('headerTitle', 'Pembayaran')
+                    ->with('getDataSales', $getDataSales)
+                    ->with('getDataMaster', $getDataMaster)
+                    ->with('getStockist', $getVendor)
+                    ->with('getStockistBank', $getStockistBank)
+                    ->with('dataUser', $dataUser);
+    }
+    
+    public function postMemberVPembayaran(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        $modelSales = New Sales;
+        $tron = null;
+        $tron_transfer = null;
+        $bank_name = null;
+        $account_no = null;
+        $account_name = null;
+        $getStockistBank = null;
+        $buy_metode = 0;
+        $getDataMaster = $modelSales->getMemberPembayaranVMasterSales($request->master_sale_id);
+        if($request->buy_metode == 1){
+            $buy_metode = 1;
+        }
+        if($request->buy_metode == 2){
+            $buy_metode = 2;
+            $bank_name = $request->bank_name;
+            $account_no = $request->account_no;
+            $account_name = $request->account_name;
+        }
+        if($request->buy_metode == 3){
+            $buy_metode = 3;
+            $tron = $request->tron;
+            if($request->tron_tranfer == null){
+                return redirect()->route('m_MemberVPembayaran', [$request->master_sale_id])
+                        ->with('message', 'Hash transaksi transfer dari Blockchain TRON belum diisi')
+                        ->with('messageclass', 'danger');
+            }
+            $tron_transfer = $request->tron_tranfer;
+        }
+        $dataUpdate = array(
+            'status' => 1,
+            'buy_metode' => $buy_metode,
+            'tron' => $tron,
+            'tron_transfer' => $tron_transfer,
+            'bank_name' => $bank_name,
+            'account_no' => $account_no,
+            'account_name' => $account_name,
+        );
+        $modelSales->getUpdateVMasterSales('id', $request->master_sale_id, $dataUpdate);
+        return redirect()->route('m_historyShoping')
+                        ->with('message', 'Konfirmasi pembayaran berhasil.')
+                        ->with('messageclass', 'success');
+    }
+    
+    public function getHistoryVShoping(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        $modelSales = New Sales;
+        $getMonth = $modelSales->getThisMonth();
+        if($request->month != null && $request->year != null) {
+            $start_day = date('Y-m-01', strtotime($request->year.'-'.$request->month));
+            $end_day = date('Y-m-t', strtotime($request->year.'-'.$request->month));
+            $text_month = date('F Y', strtotime($request->year.'-'.$request->month));
+            $getMonth = (object) array(
+                'startDay' => $start_day,
+                'endDay' => $end_day,
+                'textMonth' => $text_month
+            );
+        }
+        $getData = $modelSales->getMemberVMasterSalesHistory($dataUser->id, $getMonth);
+        return view('member.sales.history_vsales')
+                ->with('headerTitle', 'History Belanja Vendor')
+                ->with('getData', $getData)
+                ->with('getDate', $getMonth)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function getMemberDetailVendorReport($id){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        $modelSales = New Sales;
+        $getDataSales = $modelSales->getMemberReportSalesVendorDetail($id, $dataUser->id);
+        if($getDataSales == null){
+            return redirect()->route('mainDashboard');
+        }
+        $getDataItem = $modelSales->getMemberPembayaranVSales($id);
+        return view('member.sales.m_vendor_transfer')
+                    ->with('headerTitle', 'Vendor Transfer')
+                    ->with('getDataSales', $getDataSales)
+                    ->with('getDataItem', $getDataItem)
+                    ->with('dataUser', $dataUser);
+    }
+    
+    public function postAddConfirmVPembelian(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_vendor == 0){
+            return redirect()->route('m_SearchStockist');
+        }
+        $modelSales = New Sales;
+        $id_master = $request->master_id;
+        $getSales = $modelSales->getMemberPembayaranVSales($id_master);
+        if($getSales != null){
+            foreach($getSales as $row){
+                $cekAda = $modelSales->getLastVStockIDCekExist($row->purchase_id, $row->user_id, $row->vendor_id, $row->id);
+                if($cekAda == null){
+                    $dataInsertStock = array(
+                        'purchase_id' => $row->purchase_id,
+                        'user_id' => $row->user_id,
+                        'type' => 2,
+                        'amount' => $row->amount,
+                        'vsales_id' => $row->id,
+                        'vendor_id' => $row->vendor_id,
+                    );
+                    $modelSales->getInsertVStock($dataInsertStock);
+                }
+            }
+        }
+        
+        $dataUpdate = array(
+            'status' => 2
+        );
+        $modelSales->getUpdateVMasterSales('id', $id_master, $dataUpdate);
+        return redirect()->route('m_MemberVendorReport')
+                            ->with('message', 'Berhasil konfirmasi pembayaran member')
+                            ->with('messageclass', 'success');
+    }
+    
+    public function postAddRejectVPembelian(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_vendor == 0){
+            return redirect()->route('m_SearchVendor');
+        }
+        $modelSales = New Sales;
+        $id_master = $request->master_id;
+        $dataUpdate = array(
+            'status' => 10,
+            'reason' => $request->reason
+        );
+        $modelSales->getUpdateVMasterSales('id', $id_master, $dataUpdate);
+        $getSales = $modelSales->getMemberPembayaranVSales($id_master);
+        if($getSales != null){
+            foreach($getSales as $row){
+                $cekAda = $modelSales->getLastVStockIDCekExist($row->purchase_id, $row->user_id, $row->vendor_id, $row->id);
+                if($cekAda != null){
+                    $modelSales->getDeleteStock($row->purchase_id, $row->id, $row->vendor_id, $row->user_id);
+                }
+            }
+        }
+        return redirect()->route('m_MemberVendorReport')
+                            ->with('message', 'Berhasil reject pembayaran member')
                             ->with('messageclass', 'success');
     }
     
