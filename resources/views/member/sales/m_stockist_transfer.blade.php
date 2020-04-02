@@ -54,7 +54,7 @@
                                 <div class="col-xs-12">
                                     <div class="pull-xs-left m-t-30">
                                         Pembeli: <strong>{{$getDataSales->user_code}}</strong>
-                                        <address style="width: 420px; word-wrap: break-word;">
+                                        <address style="width: 280px; word-wrap: break-word;">
                                             @if($getDataSales->status == 1 || $getDataSales->status == 2)
                                                 @if($getDataSales->buy_metode == 1)
                                                     <br>
@@ -72,7 +72,7 @@
                                                     <br>
                                                     Nama: <strong>{{$getDataSales->tron}}</strong>
                                                     <br>
-                                                    Alamat Tron: <strong>{{$getDataSales->tron_transfer}}</strong>
+                                                    Hash Transaksi: <strong>{{$getDataSales->tron_transfer}}</strong>
                                                 @endif
                                             @endif
                                         </address>
