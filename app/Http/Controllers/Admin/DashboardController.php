@@ -13,6 +13,8 @@ use App\Model\Transferwd;
 use App\Model\Package;
 use App\Model\Bonussetting;
 use App\Model\Sales;
+use App\Model\Pengiriman;
+use App\Model\Membership;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller {
@@ -128,12 +130,138 @@ class DashboardController extends Controller {
             'sales' => $mySales
         );
         $getDataMemberBuy = $modelSales->getMemberSalesBuy($dataUser->id);
+        $getMonth = $modelSales->getThisMonth();
+        $getData = $modelSales->getMemberMasterSalesHistory($dataUser->id, $getMonth);
+        $getDataVSales = $modelSales->getMemberVMasterSalesHistory($dataUser->id, $getMonth);
+        $sum = 0;
+        if($getData != null){
+            foreach($getData as $row){
+                if($row->status == 2){
+                    $sum += $row->sale_price;
+                }
+            }
+        }
+        $vsum = 0;
+        if($getDataVSales != null){
+            foreach($getDataVSales as $rowv){
+                if($rowv->status == 2){
+                    $vsum += $rowv->sale_price;
+                }
+            }
+        }
         return view('member.home.dashboard')
                     ->with('headerTitle', 'Dashboard')
                     ->with('dataOrder', $getCheckNewOrder)
                     ->with('dataAll', $dataDashboard)
                     ->with('dataSponsor', $dataSponsor)
                     ->with('dataMy', $dataMy)
+                    ->with('getDataMemberBuy', $getDataMemberBuy)
+                    ->with('sum', $sum)
+                    ->with('vsum', $vsum)
+                    ->with('dataUser', $dataUser);
+    }
+    
+    public function getMemberNetworking(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        $modelPin = new Pin;
+        $modelPengiriman = new Pengiriman;
+        $getTotalPin = $modelPin->getTotalPinMember($dataUser);
+        $getTotalPinTerkirim = $modelPengiriman->getCekPinTuntasTerkirim($dataUser);
+        return view('member.home.networking')
+                    ->with('dataPin', $getTotalPin)
+                    ->with('dataTerkirim', $getTotalPinTerkirim)
+                    ->with('dataUser', $dataUser);
+    }
+    
+    public function getMemberWallet(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        $modelBonus = new Bonus;
+        $modelWD = new Transferwd;
+        $totalBonus = $modelBonus->getTotalBonus($dataUser);
+        $totalWD = $modelWD->getTotalDiTransfer($dataUser);
+        $totalWDeIDR = $modelWD->getTotalDiTransfereIDR($dataUser);
+        $dataAll = (object) array(
+            'total_bonus' => floor($totalBonus->total_bonus),
+            'total_wd' => $totalWD->total_wd,
+            'total_tunda' => $totalWD->total_tunda,
+            'admin_fee' => 6500,
+            'total_fee_admin' => $totalWD->total_fee_admin,
+            'fee_tuntas' => $totalWD->fee_tuntas,
+            'fee_tunda' => $totalWD->fee_tunda,
+            'total_wd_eidr' => $totalWDeIDR->total_wd,
+            'total_tunda_eidr' => $totalWDeIDR->total_tunda,
+            'total_fee_admin_eidr' => $totalWDeIDR->total_fee_admin,
+            'fee_tuntas_eidr' => $totalWDeIDR->fee_tuntas,
+            'fee_tunda_eidr' => $totalWDeIDR->fee_tunda
+        );
+        return view('member.home.wallet')
+                    ->with('dataAll', $dataAll)
+                    ->with('dataUser', $dataUser);
+    }
+    
+    public function getMemberExplorers(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        return view('member.home.explorer')
+                    ->with('headerTitle', 'Explorer')
+                    ->with('dataUser', $dataUser);
+    }
+    
+    public function getMemberMyAccount(){
+        $dataUser = Auth::user();
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        return view('member.home.account')
+                    ->with('dataUser', $dataUser);
+    }
+    
+    public function getMemberNotification(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        $modelMemberPackage = New Memberpackage;
+        $modelMember = new Member;
+        $modelBonus = new Bonus;
+        $modelBonusSetting = new Bonussetting;
+        $modelWD = new Transferwd;
+        $modelPackage = New Package;
+        $modelSales = new Sales;
+        $sponsor_id = $dataUser->sponsor_id;
+        if($dataUser->is_active == 0){
+            $getCheckNewOrder = $modelMemberPackage->getCountNewMemberPackageInactive($dataUser);
+        }
+        if($dataUser->is_active == 1){
+            $getCheckNewOrder = $modelMemberPackage->getCountMemberPackageInactive($dataUser);
+        }
+        $getDataMemberBuy = $modelSales->getMemberSalesBuy($dataUser->id);
+        return view('member.home.notification')
+                    ->with('dataOrder', $getCheckNewOrder)
                     ->with('getDataMemberBuy', $getDataMemberBuy)
                     ->with('dataUser', $dataUser);
     }

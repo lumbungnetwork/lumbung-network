@@ -1,21 +1,30 @@
-@extends('layout.member.main')
+@extends('layout.member.new_main')
 @section('content')
-@include('layout.member.topbar')
-@include('layout.member.sidebar')
-<div class="content-page">
-    <div class="content">
-        <div class="container">
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="page-title-box">
-                        <h4 class="page-title">Beli Paket</h4>
-                        <div class="clearfix"></div>
+
+<div class="wrapper">
+        
+    
+        <!-- Page Content -->
+        <div id="content">
+            
+            <div class="bg-gradient-sm">
+                <nav class="navbar navbar-expand-lg navbar-light bg-transparent w-100">
+                    <div class="container">
+                        <a class="navbar-brand" href="{{ URL::to('/') }}/m/dashboard">
+                            <i class="fa fa-arrow-left"></i> Beranda
+                        </a>
+                        <a href="{{ URL::to('/') }}/user_logout" class="btn  btn-transparent">
+                            <i class="fas fa-power-off text-danger icon-bottom"></i>
+                        </a>
                     </div>
-                </div>
+                </nav>
             </div>
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="card-box">
+            <div class="mt-min-10">
+                <div class="container">
+                    
+                    <div class="rounded-lg bg-white p-3 mb-3">
+                        <h6 class="mb-3">Beli Paket</h6>
+                       
                         <div class="alert alert-info" role="alert" style="color:#222;">
                             Halo <b>{{$dataUser->name}}</b>, Selamat bergabung di keluarga Lumbung Network. Saat ini status keanggotaan anda belum aktif, Silakan memilih paket di bawah ini  dengan klik "Beli Paket"
                         </div>
@@ -42,7 +51,7 @@
                                                 <li>Bonus Sponsor Rp. 20.000 / PIN</li>
                                                 <li>Link Referal</li>
                                             </ul>
-                                            <a rel="tooltip" title="View" data-toggle="modal" data-target="#orderPackage" id="beli" class="btn  btn-primary" href="{{ URL::to('/') }}/m/cek/add-package/{{$row->id}}/0" style="margin-bottom: 15px;">Beli</i></a>
+                                            <a rel="tooltip" title="View" data-toggle="modal" data-target="#orderPackage" id="beli" class="btn  btn-success" href="{{ URL::to('/') }}/m/cek/add-package/{{$row->id}}/0" style="margin-bottom: 15px;">Beli</i></a>
                                             <div class="checkbox checkbox-success checkbox-single">
                                                 <input type="checkbox" id="singleCheckbox2" name="setuju" value="setuju" aria-label="Single checkbox Two" data-url="{{ URL::to('/') }}/m/cek/add-package/{{$row->id}}/1">
                                                 <label></label>
@@ -63,18 +72,29 @@
                             </div>
                         </div>
                     </div>
+                    
                 </div>
             </div>
+            @include('layout.member.nav')
         </div>
+        <div class="overlay"></div>
     </div>
-</div>
-@include('layout.member.footer')
+
 @stop
+
 @section('styles')
-<link href="{{ asset('asset_member/plugins/switchery/switchery.min.css') }}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="{{ asset('asset_new/css/siderbar.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/4.9.95/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/fonts/slick.woff">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
 @stop
+
 @section('javascript')
-<script type="text/javascript">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
+    <script src="{{ asset('asset_new/js/sidebar.js') }}"></script>
+    <script type="text/javascript">
     $("#orderPackage").on("show.bs.modal", function(e) {
         var link = $(e.relatedTarget);
         $(this).find(".modal-content").load(link.attr("href"));

@@ -32,6 +32,7 @@ class Sales extends Model {
     public function getAllPurchase(){
         $sql = DB::table('purchase')
                     ->whereNull('deleted_at')
+                    ->where('type', '=', 1)
                     ->orderBy('id', 'DESC')
                     ->get();
         $return = null;
@@ -46,6 +47,7 @@ class Sales extends Model {
                     ->where('provinsi', '=', $prov)
                     ->where('kota', '=', $kota)
                     ->whereNull('deleted_at')
+                    ->where('type', '=', 1)
                     ->get();
         $return = null;
         if(count($sql) > 0){
@@ -54,10 +56,48 @@ class Sales extends Model {
         return $return;
     }
     
+    
     public function getDetailPurchase($id){
         $sql = DB::table('purchase')
                     ->where('id', '=', $id)
                     ->whereNull('deleted_at')
+                    ->where('type', '=', 1)
+                    ->first();
+        return $sql;
+    }
+    
+    public function getAllPurchaseVendor(){
+        $sql = DB::table('purchase')
+                    ->whereNull('deleted_at')
+                    ->where('type', '=', 2)
+                    ->orderBy('id', 'DESC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return =$sql;
+        }
+        return $return;
+    }
+    
+    public function getAllPurchaseVendorByRegion($prov, $kota){
+        $sql = DB::table('purchase')
+                    ->where('provinsi', '=', $prov)
+                    ->where('kota', '=', $kota)
+                    ->whereNull('deleted_at')
+                    ->where('type', '=', 2)
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return =$sql;
+        }
+        return $return;
+    }
+    
+    public function getDetailPurchaseVendor($id){
+        $sql = DB::table('purchase')
+                    ->where('id', '=', $id)
+                    ->whereNull('deleted_at')
+                    ->where('type', '=', 2)
                     ->first();
         return $sql;
     }
@@ -83,7 +123,7 @@ class Sales extends Model {
         }
         return $result;
     }
-    
+        
     public function getDeleteStock($purchase_id, $sale_id, $stockist_id, $user_id){
         try {
             DB::table('stock')
@@ -129,9 +169,87 @@ class Sales extends Model {
         return $sql;
     }
     
+    public function getLastVStockIDCekExist($purchase_id, $user_id, $vendor_id, $sales_id){
+        $sql = DB::table('vstock')
+                    ->where('purchase_id', '=', $purchase_id)
+                    ->where('user_id', '=', $user_id)
+                    ->where('vendor_id', '=', $vendor_id)
+                    ->where('vsales_id', '=', $sales_id)
+                    ->first();
+        return $sql;
+    }
+    
+    public function getInsertVStock($data){
+        try {
+            $lastInsertedID = DB::table('vstock')->insertGetId($data);
+            $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
+        }
+        return $result;
+    }
+    
+    public function getUpdateVStock($fieldName, $name, $data){
+        try {
+            DB::table('vstock')->where($fieldName, '=', $name)->update($data);
+            $result = (object) array('status' => true, 'message' => null);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message);
+        }
+        return $result;
+    }
+    
+    public function getDeleteVStock($purchase_id, $sale_id, $stockist_id, $user_id){
+        try {
+            DB::table('vstock')
+                    ->where('purchase_id', '=', $purchase_id)
+                    ->where('vsales_id', '=', $sale_id)
+                    ->where('vendor_id', '=', $stockist_id)
+                    ->where('user_id', '=', $user_id)
+                    ->delete();
+            $result = (object) array('status' => true, 'message' => null);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message);
+        }
+        return $result;
+    }
+    
+    public function getVStockID($purchase_id){
+        $sql = DB::table('vstock')
+                    ->where('purchase_id', '=', $purchase_id)
+                    ->where('type', '=', 1)
+                    ->orderBy('id', 'DESC')
+                    ->first();
+        return $sql;
+    }
+    
+    public function getLastVStockID($purchase_id, $user_id){
+        $sql = DB::table('vstock')
+                    ->where('purchase_id', '=', $purchase_id)
+                    ->where('user_id', '=', $user_id)
+                    ->where('type', '=', 1)
+                    ->orderBy('id', 'DESC')
+                    ->first();
+        return $sql;
+    }
+    
     public function getInsertSales($data){
         try {
             $lastInsertedID = DB::table('sales')->insertGetId($data);
+            $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
+        }
+        return $result;
+    }
+    
+    public function getInsertVSales($data){
+        try {
+            $lastInsertedID = DB::table('vsales')->insertGetId($data);
             $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
         } catch (Exception $ex) {
             $message = $ex->getMessage();
@@ -203,6 +321,28 @@ class Sales extends Model {
         return $result;
     }
     
+    public function getInsertVMasterSales($data){
+        try {
+            $lastInsertedID = DB::table('vmaster_sales')->insertGetId($data);
+            $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
+        }
+        return $result;
+    }
+    
+    public function getUpdateVMasterSales($fieldName, $name, $data){
+        try {
+            DB::table('vmaster_sales')->where($fieldName, '=', $name)->update($data);
+            $result = (object) array('status' => true, 'message' => null);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message);
+        }
+        return $result;
+    }
+    
     public function getCodeMasterSales($id){
         $getTransCount = DB::table('master_sales')->selectRaw('id')->whereDate('created_at', date('Y-m-d'))->count();
         $tmp = $getTransCount+1;
@@ -214,6 +354,14 @@ class Sales extends Model {
         $sql = DB::table('master_sales')
                     ->where('master_sales.id', '=', $id)
                     ->whereNull('master_sales.deleted_at')
+                    ->first();
+        return $sql;
+    }
+    
+    public function getMemberPembayaranVMasterSales($id){
+        $sql = DB::table('vmaster_sales')
+                    ->where('vmaster_sales.id', '=', $id)
+                    ->whereNull('vmaster_sales.deleted_at')
                     ->first();
         return $sql;
     }
@@ -234,6 +382,22 @@ class Sales extends Model {
         return $return;
     }
     
+    public function getMemberPembayaranVSales($id){
+        $sql = DB::table('vsales')
+                    ->join('purchase', 'purchase.id', '=', 'vsales.purchase_id')
+                    ->selectRaw('vsales.sale_price, vsales.amount, vsales.invoice, vsales.sale_date, '
+                            . 'purchase.name, purchase.ukuran, purchase.code, vsales.purchase_id, vsales.vendor_id, vsales.user_id,'
+                            . 'vsales.id')
+                    ->where('vsales.vmaster_sales_id', '=', $id)
+                    ->whereNull('vsales.deleted_at')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
     public function getMemberMasterSalesHistory($id, $date){
         $sql = DB::table('master_sales')
                     ->join('users', 'master_sales.stockist_id', '=', 'users.id')
@@ -243,6 +407,23 @@ class Sales extends Model {
                     ->whereDate('master_sales.sale_date', '>=', $date->startDay)
                     ->whereDate('master_sales.sale_date', '<=', $date->endDay)
                     ->whereNull('master_sales.deleted_at')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getMemberVMasterSalesHistory($id, $date){
+        $sql = DB::table('vmaster_sales')
+                    ->join('users', 'vmaster_sales.vendor_id', '=', 'users.id')
+                    ->selectRaw('vmaster_sales.sale_date, users.user_code, vmaster_sales.total_price as sale_price, '
+                            . 'vmaster_sales.id, vmaster_sales.status, vmaster_sales.buy_metode')
+                    ->where('vmaster_sales.user_id', '=', $id)
+                    ->whereDate('vmaster_sales.sale_date', '>=', $date->startDay)
+                    ->whereDate('vmaster_sales.sale_date', '<=', $date->endDay)
+                    ->whereNull('vmaster_sales.deleted_at')
                     ->get();
         $return = null;
         if(count($sql) > 0){
@@ -334,9 +515,65 @@ class Sales extends Model {
         return $result;
     }
     
+    public function getInsertVItemPurchase($data){
+        try {
+            $lastInsertedID = DB::table('vitem_purchase')->insertGetId($data);
+            $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
+        }
+        return $result;
+    }
+    
+    public function getUpdateVItemPurchase($fieldName, $name, $data){
+        try {
+            DB::table('vitem_purchase')->where($fieldName, '=', $name)->update($data);
+            $result = (object) array('status' => true, 'message' => null);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message);
+        }
+        return $result;
+    }
+    
+    public function getInsertVendorItemPurchaseMaster($data){
+        try {
+            $lastInsertedID = DB::table('vitem_purchase_master')->insertGetId($data);
+            $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
+        }
+        return $result;
+    }
+    
+    public function getUpdateVendorItemPurchaseMaster($fieldName, $name, $data){
+        try {
+            DB::table('vitem_purchase_master')->where($fieldName, '=', $name)->update($data);
+            $result = (object) array('status' => true, 'message' => null);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message);
+        }
+        return $result;
+    }
+    
     public function getMemberMasterPurchaseStockist($id){
         $sql = DB::table('item_purchase_master')
                     ->where('stockist_id', '=', $id)
+                    ->orderBy('id', 'DESC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getMemberMasterPurchaseVendor($id){
+        $sql = DB::table('vitem_purchase_master')
+                    ->where('vendor_id', '=', $id)
                     ->orderBy('id', 'DESC')
                     ->get();
         $return = null;
@@ -354,6 +591,14 @@ class Sales extends Model {
         return $sql;
     }
     
+    public function getMemberMasterPurchaseVendorByID($id, $user_id){
+        $sql = DB::table('vitem_purchase_master')
+                    ->where('id', '=', $id)
+                    ->where('vendor_id', '=', $user_id)
+                    ->first();
+        return $sql;
+    }
+    
     public function getMemberItemPurchaseStockist($master_id, $id){
         $sql = DB::table('item_purchase')
                     ->join('purchase', 'purchase.id', '=', 'item_purchase.purchase_id')
@@ -361,6 +606,21 @@ class Sales extends Model {
                             . 'purchase.name, purchase.ukuran, purchase.member_price, purchase.stockist_price')
                     ->where('item_purchase.master_item_id', '=', $master_id)
                     ->where('item_purchase.stockist_id', '=', $id)
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getMemberItemPurchaseVendor($master_id, $id){
+        $sql = DB::table('vitem_purchase')
+                    ->join('purchase', 'purchase.id', '=', 'vitem_purchase.purchase_id')
+                    ->selectRaw('vitem_purchase.qty, vitem_purchase.price,  '
+                            . 'purchase.name, purchase.ukuran, purchase.member_price, purchase.stockist_price as vendor_price')
+                    ->where('vitem_purchase.vmaster_item_id', '=', $master_id)
+                    ->where('vitem_purchase.vendor_id', '=', $id)
                     ->get();
         $return = null;
         if(count($sql) > 0){
@@ -385,6 +645,22 @@ class Sales extends Model {
         return $return;
     }
     
+    public function getMemberReqInputVendor(){
+        $sql = DB::table('vitem_purchase_master')
+                    ->join('users', 'vitem_purchase_master.vendor_id', '=', 'users.id')
+                    ->selectRaw('users.user_code, users.hp,  vitem_purchase_master.vendor_id, '
+                            . 'vitem_purchase_master.id, vitem_purchase_master.price, vitem_purchase_master.created_at,'
+                            . 'vitem_purchase_master.buy_metode, vitem_purchase_master.tron, vitem_purchase_master.tron_transfer,'
+                            . 'vitem_purchase_master.bank_name, vitem_purchase_master.account_no, vitem_purchase_master.account_name')
+                    ->where('vitem_purchase_master.status', '=', 1)
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
     public function getMemberReqInputStockistID($id){
         $sql = DB::table('item_purchase_master')
                     ->join('users', 'item_purchase_master.stockist_id', '=', 'users.id')
@@ -398,12 +674,39 @@ class Sales extends Model {
         return $sql;
     }
     
+    public function getMemberReqInputVStockistID($id){
+        $sql = DB::table('vitem_purchase_master')
+                    ->join('users', 'vitem_purchase_master.vendor_id', '=', 'users.id')
+                    ->selectRaw('users.user_code, users.hp,  vitem_purchase_master.vendor_id, '
+                            . 'vitem_purchase_master.id, vitem_purchase_master.price, vitem_purchase_master.created_at,'
+                            . 'vitem_purchase_master.buy_metode, vitem_purchase_master.tron, vitem_purchase_master.tron_transfer,'
+                            . 'vitem_purchase_master.bank_name, vitem_purchase_master.account_no, vitem_purchase_master.account_name')
+                    ->where('vitem_purchase_master.id', '=', $id)
+                    ->where('vitem_purchase_master.status', '=', 1)
+                    ->first();
+        return $sql;
+    }
+    
     public function getMemberReqInputStockistItem($id){
         $sql = DB::table('item_purchase')
                     ->join('purchase', 'purchase.id', '=', 'item_purchase.purchase_id')
                     ->selectRaw('item_purchase.qty, item_purchase.price,  '
                             . 'purchase.name, purchase.ukuran, purchase.member_price, purchase.stockist_price')
                     ->where('item_purchase.master_item_id', '=', $id)
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getMemberReqInputVStockistItem($id){
+        $sql = DB::table('vitem_purchase')
+                    ->join('purchase', 'purchase.id', '=', 'vitem_purchase.purchase_id')
+                    ->selectRaw('vitem_purchase.qty, vitem_purchase.price,  '
+                            . 'purchase.name, purchase.ukuran, purchase.member_price, purchase.stockist_price as vendor_price')
+                    ->where('vitem_purchase.vmaster_item_id', '=', $id)
                     ->get();
         $return = null;
         if(count($sql) > 0){
@@ -465,6 +768,53 @@ class Sales extends Model {
         return $return;
     }
     
+    public function getMemberPurchaseVendorShoping($vendor_id){
+        $sql = DB::table('vitem_purchase_master')
+                    ->join('users', 'vitem_purchase_master.vendor_id', '=', 'users.id')
+                    ->join('vitem_purchase', 'vitem_purchase_master.id', '=', 'vitem_purchase.vmaster_item_id')
+                    ->join('purchase', 'purchase.id', '=', 'vitem_purchase.purchase_id')
+                    ->selectRaw('sum(vitem_purchase.qty) as total_qty, '
+                            . 'sum(vitem_purchase.sisa) as total_sisa, '
+                            . 'purchase.name, purchase.code, purchase.ukuran, purchase.image, purchase.member_price,'
+                            . 'purchase.stockist_price as vendor_price, purchase.id, purchase.deleted_at, purchase.id as purchase_id')
+                    ->where('vitem_purchase_master.status', '=', 2)
+                    ->where('vitem_purchase_master.vendor_id', '=', $vendor_id)
+                    ->whereNull('vitem_purchase.deleted_at')
+                    ->groupBy('purchase.name')
+                    ->groupBy('purchase.code')
+                    ->groupBy('purchase.ukuran')
+                    ->groupBy('purchase.image')
+                    ->groupBy('purchase.member_price')
+                    ->groupBy('purchase.stockist_price')
+                    ->groupBy('purchase.id')
+                    ->groupBy('purchase.deleted_at')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getSumStockVendor($vendor_id, $purchase_id){
+        $query = " 
+            SELECT sum(data_stock.amount) as jml_keluar
+            FROM (
+                SELECT 
+                        amount
+                FROM vstock
+                WHERE vendor_id = $vendor_id
+                AND purchase_id = $purchase_id
+                GROUP BY vsales_id, amount
+            ) as data_stock ";
+        $sql = DB::select($query);
+        $return = 0;
+        if($sql[0]->jml_keluar != null){
+            $return = $sql[0]->jml_keluar;
+        }
+        return $return;
+    }
+    
     public function getStockByPurchaseIdStockist($stockist_id, $purchase_id){
         $sql = DB::table('item_purchase_master')
                     ->join('users', 'item_purchase_master.stockist_id', '=', 'users.id')
@@ -476,6 +826,30 @@ class Sales extends Model {
                             . 'purchase.stockist_price, purchase.id, purchase.deleted_at, purchase.id as purchase_id')
                     ->where('item_purchase_master.status', '=', 2)
                     ->where('item_purchase_master.stockist_id', '=', $stockist_id)
+                    ->where('purchase.id', '=', $purchase_id)
+                    ->groupBy('purchase.name')
+                    ->groupBy('purchase.code')
+                    ->groupBy('purchase.ukuran')
+                    ->groupBy('purchase.image')
+                    ->groupBy('purchase.member_price')
+                    ->groupBy('purchase.stockist_price')
+                    ->groupBy('purchase.id')
+                    ->groupBy('purchase.deleted_at')
+                    ->first();
+        return $sql;
+    }
+    
+    public function getStockByPurchaseIdVendor($vendor_id, $purchase_id){
+        $sql = DB::table('vitem_purchase_master')
+                    ->join('users', 'vitem_purchase_master.vendor_id', '=', 'users.id')
+                    ->join('vitem_purchase', 'vitem_purchase_master.id', '=', 'vitem_purchase.vmaster_item_id')
+                    ->join('purchase', 'purchase.id', '=', 'vitem_purchase.purchase_id')
+                    ->selectRaw('sum(vitem_purchase.qty) as total_qty, '
+                            . 'sum(vitem_purchase.sisa) as total_sisa, '
+                            . 'purchase.name, purchase.code, purchase.ukuran, purchase.image, purchase.member_price,'
+                            . 'purchase.stockist_price, purchase.id, purchase.deleted_at, purchase.id as purchase_id')
+                    ->where('vitem_purchase_master.status', '=', 2)
+                    ->where('vitem_purchase_master.vendor_id', '=', $vendor_id)
                     ->where('purchase.id', '=', $purchase_id)
                     ->groupBy('purchase.name')
                     ->groupBy('purchase.code')
@@ -507,6 +881,23 @@ class Sales extends Model {
         return $return;
     }
     
+    public function getMemberReportSalesVendor($id){
+        $sql = DB::table('vmaster_sales')
+                    ->join('users', 'vmaster_sales.user_id', '=', 'users.id')
+                    ->selectRaw('vmaster_sales.sale_date, users.user_code, vmaster_sales.total_price as sale_price, '
+                            . 'vmaster_sales.id, vmaster_sales.status, vmaster_sales.buy_metode,'
+                            . 'vmaster_sales.royalti_metode')
+                    ->where('vmaster_sales.vendor_id', '=', $id)
+                    ->whereNull('vmaster_sales.deleted_at')
+                    ->orderBy('vmaster_sales.sale_date', 'DESC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
     public function getMemberReportSalesStockistDetail($id, $stockist_id){
         $sql = DB::table('master_sales')
                     ->join('users', 'master_sales.user_id', '=', 'users.id')
@@ -519,6 +910,22 @@ class Sales extends Model {
                     ->where('master_sales.stockist_id', '=', $stockist_id)
 //                    ->where('master_sales.status', '=', 1)
                     ->whereNull('master_sales.deleted_at')
+                    ->first();
+        return $sql;
+    }
+    
+    public function getMemberReportSalesVendorDetail($id, $vendor_id){
+        $sql = DB::table('vmaster_sales')
+                    ->join('users', 'vmaster_sales.user_id', '=', 'users.id')
+                    ->selectRaw('vmaster_sales.sale_date, users.user_code, vmaster_sales.total_price as sale_price, '
+                            . 'vmaster_sales.id, vmaster_sales.status, vmaster_sales.buy_metode, '
+                            . 'vmaster_sales.royalti_metode, vmaster_sales.royalti_tron, vmaster_sales.royalti_tron_transfer,'
+                            . 'vmaster_sales.tron, vmaster_sales.tron_transfer, vmaster_sales.bank_name, vmaster_sales.account_name, vmaster_sales.account_no, '
+                            . 'vmaster_sales.royalti_bank_name, vmaster_sales.royalti_account_no, vmaster_sales.royalti_account_name')
+                    ->where('vmaster_sales.id', '=', $id)
+                    ->where('vmaster_sales.vendor_id', '=', $vendor_id)
+//                    ->where('master_sales.status', '=', 1)
+                    ->whereNull('vmaster_sales.deleted_at')
                     ->first();
         return $sql;
     }
@@ -637,6 +1044,28 @@ class Sales extends Model {
         return $return;
     }
     
+    public function getMemberVendorMasterSalesMonthly($id){
+        $start_day = date("Y-m-01");
+        $sql = DB::table('vmaster_sales')
+                    ->selectRaw('sum(vmaster_sales.total_price) as month_sale_price, '
+                            . 'DATE_FORMAT(vmaster_sales.sale_date, "%M-%Y") as monthly, YEAR(vmaster_sales.sale_date) as year, '
+                            . 'MONTH(vmaster_sales.sale_date) as month')
+                    ->where('vmaster_sales.user_id', '=', $id)
+                    ->where('vmaster_sales.status', '=', 2)
+                    ->whereDate('vmaster_sales.sale_date', '<', $start_day)
+                    ->whereNull('vmaster_sales.deleted_at')
+                    ->groupBy('year', 'month')
+                    ->groupBy('monthly')
+                    ->orderBy('month', 'DESC')
+                    ->orderBy('year', 'DESC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
     public function getMemberMasterSalesMonthlyTerbaru($id){
         $start_day = date("Y-m-01");
         $query = " 
@@ -693,6 +1122,28 @@ class Sales extends Model {
                     ->where('master_sales.status', '=', 2)
                     ->whereDate('master_sales.sale_date', '<', $start_day)
                     ->whereNull('master_sales.deleted_at')
+                    ->groupBy('year', 'month')
+                    ->groupBy('monthly')
+                    ->orderBy('month', 'DESC')
+                    ->orderBy('year', 'DESC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getVendorPenjualanMonthly($id){
+        $start_day = date("Y-m-01");
+        $sql = DB::table('vmaster_sales')
+                    ->selectRaw('sum(vmaster_sales.total_price) as month_sale_price, '
+                            . 'DATE_FORMAT(vmaster_sales.sale_date, "%M-%Y") as monthly, YEAR(vmaster_sales.sale_date) as year, '
+                            . 'MONTH(vmaster_sales.sale_date) as month')
+                    ->where('vmaster_sales.vendor_id', '=', $id)
+                    ->where('vmaster_sales.status', '=', 2)
+                    ->whereDate('vmaster_sales.sale_date', '<', $start_day)
+                    ->whereNull('vmaster_sales.deleted_at')
                     ->groupBy('year', 'month')
                     ->groupBy('monthly')
                     ->orderBy('month', 'DESC')
@@ -800,6 +1251,26 @@ class Sales extends Model {
                     ->where('item_purchase_master.status', '>', 0)
                     ->orderBy('item_purchase_master.created_at', 'DESC')
                     ->orderBy('item_purchase_master.status', 'ASC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getMemberReqInputVStockistHistory(){
+        $sql = DB::table('vitem_purchase_master')
+                    ->join('users', 'vitem_purchase_master.vendor_id', '=', 'users.id')
+                    ->join('users as u', 'vitem_purchase_master.submit_by', '=', 'u.id')
+                    ->selectRaw('users.user_code, users.hp,  vitem_purchase_master.vendor_id, '
+                            . 'vitem_purchase_master.id, vitem_purchase_master.price, vitem_purchase_master.created_at,'
+                            . 'vitem_purchase_master.buy_metode, vitem_purchase_master.tron, vitem_purchase_master.tron_transfer,'
+                            . 'vitem_purchase_master.bank_name, vitem_purchase_master.account_no, vitem_purchase_master.account_name, vitem_purchase_master.status,'
+                            . 'vitem_purchase_master.submit_by, u.name as submit_name')
+                    ->where('vitem_purchase_master.status', '>', 0)
+                    ->orderBy('vitem_purchase_master.created_at', 'DESC')
+                    ->orderBy('vitem_purchase_master.status', 'ASC')
                     ->get();
         $return = null;
         if(count($sql) > 0){

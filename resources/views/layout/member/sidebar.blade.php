@@ -72,14 +72,31 @@
                     </ul>
                 </li>
                 @endif
+                @if($dataUser->is_vendor == 1)
                 <li class="has_sub">
-                    <a class="waves-effect @if(Route::currentRouteName() == 'm_SearchStockist' || Route::currentRouteName() == 'm_BelanjaReward' || Route::currentRouteName() == 'm_historyShoping' ) active @endif">    
+                    <a class="waves-effect @if(Route::currentRouteName() == 'm_VendorInputPruchase' || Route::currentRouteName() == 'm_VendorListPruchase' || Route::currentRouteName() == 'm_VendorMyPruchaseSisa' || Route::currentRouteName() == 'm_MemberVendorReport') active @endif">
+                        <i class="zmdi zmdi-shopping-basket"></i> 
+                        <span> Vendor </span> <span class="menu-arrow"></span>
+                    </a>
+                    <ul class="list-unstyled">
+                        <li @if(Route::currentRouteName() == 'm_VendorInputPruchase') class="active" @endif><a href="{{ URL::to('/') }}/m/purchase/input-vstock">Input Stock</a></li>
+                        <li @if(Route::currentRouteName() == 'm_VendorListPruchase') class="active" @endif><a href="{{ URL::to('/') }}/m/purchase/list-vstock">List Transaksi</a></li>
+                        <li @if(Route::currentRouteName() == 'm_VendorMyPruchaseSisa') class="active" @endif><a href="{{ URL::to('/') }}/m/purchase/my-vstock">List Stock</a></li>
+                        <li @if(Route::currentRouteName() == 'm_MemberVendorReport') class="active" @endif><a href="{{ URL::to('/') }}/m/vendor-report">Report</a></li>
+                        <!--<li @if(Route::currentRouteName() == 'm_PenjualanReward') class="active" @endif><a href="{{ URL::to('/') }}/m/stockist/penjualan-reward">Reward Penjualan</a></li>-->
+                    </ul>
+                </li>
+                @endif
+                <li class="has_sub">
+                    <a class="waves-effect @if(Route::currentRouteName() == 'm_SearchStockist' || Route::currentRouteName() == 'm_SearchVendor' || Route::currentRouteName() == 'm_BelanjaReward' || Route::currentRouteName() == 'm_historyShoping' ) active @endif">    
                         <i class="zmdi zmdi-shopping-cart"></i> 
                         <span> Belanja </span><span class="menu-arrow"></span>
                     </a>
                     <ul class="list-unstyled">
                         <li @if(Route::currentRouteName() == 'm_SearchStockist') class="active" @endif><a href="{{ URL::to('/') }}/m/search/stockist">Stockist</a></li>
-                        <li @if(Route::currentRouteName() == 'm_historyShoping') class="active" @endif><a href="{{ URL::to('/') }}/m/history/shoping">History</a></li>
+                        <li @if(Route::currentRouteName() == 'm_SearchVendor') class="active" @endif><a href="{{ URL::to('/') }}/m/search/vendor">Vendor</a></li>
+                        <li @if(Route::currentRouteName() == 'm_historyShoping') class="active" @endif><a href="{{ URL::to('/') }}/m/history/shoping">History Belanja Stockist</a></li>
+                        <li @if(Route::currentRouteName() == 'm_historyVShoping') class="active" @endif><a href="{{ URL::to('/') }}/m/history/vshoping">History Belanja Vendor</a></li>
                         <li @if(Route::currentRouteName() == 'm_BelanjaReward') class="active" @endif><a href="{{ URL::to('/') }}/m/belanja-reward">Reward Belanja</a></li>
                     </ul>
                 </li>

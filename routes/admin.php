@@ -111,6 +111,22 @@ Route::prefix('/')->group(function () {
         Route::post('/adm/reject/topup', 'Admin\MasterAdminController@postRejectTopup')->middleware('auth');
         Route::get('/adm/history/topup', 'Admin\MasterAdminController@getAllHistoryTopup')->name('adm_listHistoryTopup')->middleware('auth');
         
+        Route::get('/adm/list/vpurchases', 'Admin\MasterAdminController@getAllVendorPurchase')->name('adm_listVendorPurchases')->middleware('auth');
+        Route::get('/adm/add/vpurchase', 'Admin\MasterAdminController@getAddVendorPurchase')->name('adm_addVendorPurchase')->middleware('auth');
+        Route::post('/adm/add/vpurchase', 'Admin\MasterAdminController@postAddVendorPurchase')->middleware('auth');
+        Route::get('/adm/edit/vpurchase/{id}', 'Admin\MasterAdminController@getEditVendorPurchase')->name('adm_editVendorPurchase')->middleware('auth');
+        Route::post('/adm/edit/vpurchase', 'Admin\MasterAdminController@postEditVendorPurchase')->middleware('auth');
+        Route::post('/adm/rm/vpurchase', 'Admin\MasterAdminController@postRemoveVendorPurchase')->middleware('auth');
+        Route::get('/adm/list/req-vendor', 'Admin\MasterAdminController@getAllRequestMemberVendor')->name('adm_listReqVendor')->middleware('auth');
+        Route::get('/adm/list/vendor', 'Admin\MasterAdminController@getAllMemberVendor')->name('adm_listMemberVendor')->middleware('auth');
+        Route::post('/adm/req-vendor', 'Admin\MasterAdminController@postRequestMemberVendor')->middleware('auth');
+        Route::post('/adm/reject-vendor', 'Admin\MasterAdminController@postRejectMemberVendor')->middleware('auth');
+        Route::get('/adm/history/req-vendor', 'Admin\MasterAdminController@getHistoryRequestMemberVendor')->name('adm_historyReqVendor')->middleware('auth');
+        Route::get('/adm/history/req-input-vstock', 'Admin\MasterAdminController@getHistoryRequestInputVStock')->name('adm_historyReqInputVStock')->middleware('auth');
+        Route::get('/adm/list/req-input-vstock', 'Admin\MasterAdminController@getAllRequestMemberInputVStock')->name('adm_listReqInputVStock')->middleware('auth');
+        Route::post('/adm/req-input-vstock', 'Admin\MasterAdminController@postRequestMemberInputVStock')->middleware('auth');
+        Route::post('/adm/reject-input-vstock', 'Admin\MasterAdminController@postRejectMemberInputVStock')->middleware('auth');
+        
 
         //Ajax
         Route::get('/ajax/adm/admin/{type}/{id}', 'Admin\AjaxController@getAdminById')->middleware('auth');
@@ -151,6 +167,13 @@ Route::prefix('/')->group(function () {
         Route::get('/ajax/adm/edit-stock/{stockist_id}/{purchase_id}', 'Admin\AjaxController@getAdminEditStock')->middleware('auth');
         Route::get('/ajax/adm/rm-stock/{stockist_id}/{purchase_id}', 'Admin\AjaxController@getAdminRemoveStock')->middleware('auth');
         Route::get('/ajax/adm/cek/reject-topup/{id}/{user_id}', 'Admin\AjaxController@getCekRejectTopup')->middleware('auth');
+        Route::get('/ajax/rm/vpurchase/{id}', 'Admin\AjaxController@getRemoveVendorPurchaseId')->middleware('auth');
+         Route::get('/ajax/adm/cek/req-vendor/{id}', 'Admin\AjaxController@getCekRequestMemberVendor')->middleware('auth');
+        Route::get('/ajax/adm/reject/req-vendor/{id}', 'Admin\AjaxController@getCekRejectMemberVendor')->middleware('auth');
+//        Route::get('/ajax/adm/remove/stockist/{id}', 'Admin\AjaxController@getCekRemoveMemberStockist')->middleware('auth');
+//        Route::get('/ajax/adm/edit/stockist/{id}', 'Admin\AjaxController@getCekEditMemberStockist')->middleware('auth');
+        Route::get('/ajax/adm/cek/req-input-vstock/{id}/{user_id}', 'Admin\AjaxController@getCekRequestMemberInputVStock')->middleware('auth');
+        Route::get('/ajax/adm/reject/req-input-vstock/{id}/{user_id}', 'Admin\AjaxController@getCekRejectMemberInputVStock')->middleware('auth');
         
 //        Route::get('/adm/daerah', 'Admin\MasterAdminController@getAllDaerah')->middleware('auth');
         ////////////////////////////////////////////////////////////////////////
@@ -161,6 +184,11 @@ Route::prefix('/')->group(function () {
         
     //Wilayah Member
         Route::get('/m/dashboard', 'Admin\DashboardController@getMemberDashboard')->name('mainDashboard')->middleware('auth');
+        Route::get('/m/networking', 'Admin\DashboardController@getMemberNetworking')->name('mainNetworking')->middleware('auth');
+        Route::get('/m/wallet', 'Admin\DashboardController@getMemberWallet')->name('mainWallet')->middleware('auth');
+        Route::get('/m/explorers', 'Admin\DashboardController@getMemberExplorers')->name('mainExplorer')->middleware('auth');
+        Route::get('/m/my-account', 'Admin\DashboardController@getMemberMyAccount')->name('mainMyAccount')->middleware('auth');
+        Route::get('/m/notification', 'Admin\DashboardController@getMemberNotification')->name('mainNotification')->middleware('auth');
         
         //profile
         Route::get('/m/profile', 'Admin\MemberController@getMyProfile')->name('m_myProfile')->middleware('auth');
@@ -241,6 +269,10 @@ Route::prefix('/')->group(function () {
         Route::post('/m/topup/pembayaran', 'Admin\BonusmemberController@postMemberTopupPembayaran')->middleware('auth');
         Route::post('/m/reject/topup', 'Admin\BonusmemberController@postRejectTopup')->middleware('auth');
         Route::get('/m/history/wd-eidr', 'Admin\BonusmemberController@getHistoryWithdrawaleIDR')->name('m_historyWDeIDR')->middleware('auth');
+        Route::get('/m/vbelanja-reward', 'Admin\BonusmemberController@getVBelanjaReward')->name('m_VBelanjaReward')->middleware('auth');
+        Route::post('/m/request/vbelanja-reward', 'Admin\BonusmemberController@postRequestVBelanjaReward')->middleware('auth');
+        Route::get('/m/vendor/penjualan-reward', 'Admin\BonusmemberController@getVendorPenjualanReward')->name('m_VPenjualanReward')->middleware('auth');
+        Route::post('/m/vendor/penjualan-reward', 'Admin\BonusmemberController@postVendorPenjualanReward')->middleware('auth');
         
         //Belanja
         Route::get('/m/req/stockist', 'Admin\MemberController@getRequestMemberStockist')->name('m_reqMemberStockist')->middleware('auth');
@@ -266,6 +298,27 @@ Route::prefix('/')->group(function () {
         Route::post('/m/add/confirm-pembelian', 'Admin\MemberController@postAddConfirmPembelian')->middleware('auth');
         Route::post('/m/add/reject-pembelian', 'Admin\MemberController@postAddRejectPembelian')->middleware('auth');
         Route::get('/m/purchase/my-stock', 'Admin\MemberController@getStockistMyStockPurchaseSisa')->name('m_StockistMyPruchaseSisa')->middleware('auth');
+        
+        Route::get('/m/req/vendor', 'Admin\MemberController@getRequestMemberVendor')->name('m_reqMemberVendor')->middleware('auth');
+        Route::post('/m/req/vendor', 'Admin\MemberController@postRequestMemberVendor')->middleware('auth');
+        Route::get('/m/search/vendor', 'Admin\MemberController@getSearchVendor')->name('m_SearchVendor')->middleware('auth');
+        Route::post('/m/s/vendor', 'Admin\MemberController@postSearchVendor')->middleware('auth');
+        Route::get('/m/vshoping/{vendor_id}', 'Admin\MemberController@getMemberShopingVendor')->name('m_MemberShopingVendor')->middleware('auth');
+        Route::post('/m/vshoping', 'Admin\MemberController@postMemberShopingVendor')->middleware('auth');
+        Route::get('/m/purchase/input-vstock', 'Admin\MemberController@getVendorInputPurchase')->name('m_VendorInputPruchase')->middleware('auth');
+        Route::post('/m/purchase/input-vstock', 'Admin\MemberController@postVendorInputPurchase')->middleware('auth');
+        Route::get('/m/purchase/detail-vstock/{id}', 'Admin\MemberController@getVendorDetailRequestStock')->name('m_VendorDetailPruchase')->middleware('auth');
+        Route::get('/m/purchase/list-vstock', 'Admin\MemberController@getVendorListPurchase')->name('m_VendorListPruchase')->middleware('auth');
+        Route::post('/m/add/req-vstock', 'Admin\MemberController@postAddRequestVStock')->middleware('auth');
+        Route::post('/m/reject/req-vstock', 'Admin\MemberController@postRejectRequestVStock')->middleware('auth');
+        Route::get('/m/purchase/my-vstock', 'Admin\MemberController@getVendorMyStockPurchaseSisa')->name('m_VendorMyPruchaseSisa')->middleware('auth');
+        Route::get('/m/vendor-report', 'Admin\MemberController@getMemberVendorReport')->name('m_MemberVendorReport')->middleware('auth');
+        Route::get('/m/vpembayaran/{id}', 'Admin\MemberController@getMemberVPembayaran')->name('m_MemberVPembayaran')->middleware('auth');
+        Route::post('/m/vpembayaran', 'Admin\MemberController@postMemberVPembayaran')->middleware('auth');
+        Route::get('/m/history/vshoping', 'Admin\MemberController@getHistoryVShoping')->name('m_historyVShoping')->middleware('auth');
+        Route::get('/m/detail/vendor-report/{id}', 'Admin\MemberController@getMemberDetailVendorReport')->name('m_MemberDetailVendorReport')->middleware('auth');
+        Route::post('/m/add/confirm-vpembelian', 'Admin\MemberController@postAddConfirmVPembelian')->middleware('auth');
+        Route::post('/m/add/reject-vpembelian', 'Admin\MemberController@postAddRejectVPembelian')->middleware('auth');
         
         Route::get('/m/explorer/statistic', 'Admin\MemberController@getExplorerStatistic')->name('m_ExplorerStatistic')->middleware('auth');
         Route::get('/m/explorer/user', 'Admin\MemberController@getExplorerUser')->name('m_ExplorerUser')->middleware('auth');
@@ -309,6 +362,13 @@ Route::prefix('/')->group(function () {
         Route::get('/m/cek/confirm-topup', 'Admin\AjaxmemberController@getCekConfirmTopUp')->middleware('auth');
         Route::get('/m/cek/topup-transaction', 'Admin\AjaxmemberController@getCekTopupTransaction')->middleware('auth');
         Route::get('/m/cek/reject-topup', 'Admin\AjaxmemberController@getCekRejectTopup')->middleware('auth');
+        Route::get('/m/cek/req-vendor', 'Admin\AjaxmemberController@getCekRequestMemberVendor')->middleware('auth');
+        Route::get('/m/cek/usercode-vendor', 'Admin\AjaxmemberController@getSearchUserCodeVendor')->middleware('auth');
+        Route::get('/m/cek/add-vstock', 'Admin\AjaxmemberController@postCekAddRequestVStock')->middleware('auth');
+        Route::get('/m/cek/reject-vstock', 'Admin\AjaxmemberController@postCekRejectRequestVStock')->middleware('auth');
+        Route::get('/m/cek/member-vpembayaran', 'Admin\AjaxmemberController@getCekMemberVPembayaran')->middleware('auth');
+        Route::get('/m/cek/confirm-vpembelian', 'Admin\AjaxmemberController@postCekConfirmVPembelian')->middleware('auth');
+        Route::get('/m/cek/reject-vpembelian', 'Admin\AjaxmemberController@postCekRejectVPembelian')->middleware('auth');
         
         Route::get('/m/search/{type}', 'Admin\AjaxmemberController@getSearchByType')->middleware('auth');
 });

@@ -913,6 +913,189 @@ class AjaxmemberController extends Controller {
                         ->with('check', $canInsert)
                         ->with('dataUser', $dataUser);
     }
+    
+    public function getCekRequestMemberVendor(Request $request){
+        $dataUser = Auth::user();
+        $modelMember = New Member;
+        $modelValidasi = New Validation;
+        $cekHU1 = null;
+        if($request->hu1 != null){
+            $getHU1 = $modelMember->getCekHakUsaha($dataUser, $request->hu1);
+            if($getHU1 != null){
+                $cekHU1 = $getHU1->id;
+            }
+        }
+        $cekHU2 = null;
+        if($request->hu2 != null){
+            $getHU2 = $modelMember->getCekHakUsaha($dataUser, $request->hu2);
+            if($getHU2 != null){
+                $cekHU2 = $getHU2->id;
+            }
+        }
+        $cekHU3 = null;
+        if($request->hu3 != null){
+            $getHU3 = $modelMember->getCekHakUsaha($dataUser, $request->hu3);
+            if($getHU3 != null){
+                $cekHU3 = $getHU3->id;
+            }
+        }
+        $cekHU4 = null;
+        if($request->hu4 != null){
+            $getHU4 = $modelMember->getCekHakUsaha($dataUser, $request->hu4);
+            if($getHU4 != null){
+                $cekHU4 = $getHU4->id;
+            }
+        }
+        $cekHU5 = null;
+        if($request->hu5 != null){
+            $getHU5 = $modelMember->getCekHakUsaha($dataUser, $request->hu5);
+            if($getHU5 != null){
+                $cekHU5 = $getHU5->id;
+            }
+        }
+        $dataAll = (object) array(
+            'syarat1' => $request->syarat1,
+            'syarat2' => $request->syarat2,
+            'syarat3' => $request->syarat3,
+            'syarat4' => $request->syarat4,
+            'hu1' => $cekHU1,
+            'hu2' => $cekHU2,
+            'hu3' => $cekHU3,
+            'hu4' => $cekHU4,
+            'hu5' => $cekHU5,
+            'total_sp' => $dataUser->total_sponsor,
+            'alamat' => $dataUser
+        );
+        $canInsert = $modelValidasi->getCheckRequestVendor($dataAll);
+        return view('member.ajax.confirm_request_vendor')
+                        ->with('check', $canInsert)
+                        ->with('data', $dataAll);
+    }
+    
+    public function getSearchUserCodeVendor(Request $request){
+        $dataUser=  Auth::user();
+        $modelMember = New Member;
+        $getDownlineUsername = null;
+        if($request->name != null){
+            $getDownlineUsername = $modelMember->getMyDownlineUsernameVendor($request->name);
+        }
+        return view('member.ajax.get_name_autocomplete')
+                        ->with('getData', $getDownlineUsername)
+                        ->with('dataUser', $dataUser);
+    }
+    
+    public function postCekAddRequestVStock(Request $request){
+        $dataUser = Auth::user();
+        $modelSales = New Sales;
+        $canInsert =  (object) array('can' => true, 'pesan' => '');
+        if($request->metode == 'undefined'){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum memilih metode pembayaran');
+            return view('member.ajax.confirm_add_vstock')
+                            ->with('check', $canInsert)
+                            ->with('dataUser', $dataUser);
+        }
+        $tron = null;
+        $bank_name = null;
+        $account_no = null;
+        $account_name = null;
+        if($request->metode == 2){
+            $bank_name = 'BRI';
+            $account_no = '033601001795562';
+            $account_name = 'PT LUMBUNG MOMENTUM BANGSA';
+        }
+        if($request->metode == 3){
+            $tron = 'TWJtGQHBS88PfZTXvWAYhQEMrx36eX2F9Pc';
+        }
+        $data = (object) array(
+            'id_master' => $request->id_master,
+            'royalti' => $request->royalti,
+            'buy_metode' => $request->metode,
+            'bank_name' => $bank_name,
+            'account_no' => $account_no,
+            'account_name' => $account_name,
+            'tron' => $tron
+        );
+        return view('member.ajax.confirm_add_vstock')
+                            ->with('check', $canInsert)
+                            ->with('data', $data);
+    }
+    
+    public function postCekRejectRequestVStock(Request $request){
+        $data = (object) array('id_master' => $request->id_master);
+        return view('member.ajax.confirm_reject_vstock')
+                        ->with('data', $data);
+    }
+    
+    public function getCekMemberVPembayaran(Request $request){
+        $dataUser = Auth::user();
+        $modelSales = New Sales;
+        $modelMember = New Member;
+        $modelBank = New Bank;
+        $tron = null;
+        $bank_name = null;
+        $account_no = null;
+        $account_name = null;
+        $getStockistBank = null;
+        $buy_metode = 0;
+        $getDataMaster = $modelSales->getMemberPembayaranVMasterSales($request->sale_id);
+        $getStockist = $modelMember->getUsers('id', $getDataMaster->vendor_id);
+        if($request->buy_metode == 1){
+            $buy_metode = 1;
+        }
+        if($request->buy_metode == 2){
+            $buy_metode = 2;
+            $getStockistBank = $modelBank->getBankMemberActive($getStockist);
+            $bank_name = $getStockistBank->bank_name;
+            $account_no = $getStockistBank->account_no;
+            $account_name = $getStockistBank->account_name;
+        }
+        if($request->buy_metode == 3){
+            $buy_metode = 3;
+            $tron = $getStockist->tron;
+        }
+        $dataAll = (object) array(
+            'buy_metode' => $buy_metode,
+            'getDataMaster' => $getDataMaster,
+            'getStockist' => $getStockist,
+            'tron' => $tron,
+            'bank_name' => $bank_name,
+            'account_no' => $account_no,
+            'account_name' => $account_name,
+        );
+        return view('member.ajax.confirm_member_vpembayaran')
+                        ->with('data', $dataAll);
+        
+    }
+    
+    public function postCekConfirmVPembelian(Request $request){
+        $dataUser = Auth::user();
+        $modelSales = New Sales;
+        $canInsert = (object) array('can' => true, 'pesan' => '');
+        $id_master = $request->id_master;
+        $getDataSales = $modelSales->getMemberReportSalesVendorDetail($id_master, $dataUser->id);
+        $data = (object) array(
+            'id_master' => $id_master
+        );
+        return view('member.ajax.confirm_confirm_vpembelian')
+                        ->with('getDataSales', $getDataSales)
+                        ->with('check', $canInsert)
+                        ->with('data', $data);
+    }
+    
+    public function postCekRejectVPembelian(Request $request){
+        $dataUser = Auth::user();
+        $modelSales = New Sales;
+        $canInsert = (object) array('can' => true, 'pesan' => '');
+        $id_master = $request->id_master;
+        $getDataSales = $modelSales->getMemberReportSalesVendorDetail($id_master, $dataUser->id);
+        $data = (object) array(
+            'id_master' => $id_master
+        );
+        return view('member.ajax.reject_vpembelian')
+                        ->with('getDataSales', $getDataSales)
+                        ->with('check', $canInsert)
+                        ->with('data', $data);
+    }
 
     
     

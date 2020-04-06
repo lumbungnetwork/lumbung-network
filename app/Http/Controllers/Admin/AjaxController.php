@@ -474,6 +474,54 @@ class AjaxController extends Controller {
                 ->with('dataUser', $dataUser);
     }
     
+    public function getRemoveVendorPurchaseId($id){
+        $modelSales = New Sales;
+        $getData = $modelSales->getDetailPurchaseVendor($id);
+        return view('admin.ajax.cek_rm_vproduct')
+                ->with('headerTitle', 'Hapus Produk Vendor')
+                ->with('getData', $getData);
+    }
+    
+    public function getCekRequestMemberVendor($id){
+        $modelMember = New Member;
+        $getData = $modelMember->getCekMemberReqVendor($id);
+        return view('admin.ajax.cek_req_vendor')
+                ->with('headerTitle', 'Cek Request Vendor')
+                ->with('getData', $getData);
+    }
+    
+    public function getCekRejectMemberVendor($id){
+        $modelMember = New Member;
+        $getData = $modelMember->getCekMemberReqVendor($id);
+        return view('admin.ajax.cek_reject_vendor')
+                ->with('headerTitle', 'Reject Request Vendor')
+                ->with('getData', $getData);
+    }
+    
+    public function getCekRequestMemberInputVStock($id, $user_id){
+        $modelSales = New Sales;
+        $getData = $modelSales->getMemberReqInputVStockistItem($id);
+        $getDataMaster = $modelSales->getMemberReqInputVStockistID($id);
+        return view('admin.ajax.cek_req_input_vstock')
+                ->with('headerTitle', 'Konfirmasi Vendor Input Stock & Royalti')
+                ->with('getDataMaster', $getDataMaster)
+                ->with('master_item_id', $id)
+                ->with('user_id', $user_id)
+                ->with('getData', $getData);
+    }
+    
+    public function getCekRejectMemberInputVStock($id, $user_id){
+        $modelSales = New Sales;
+        $getData = $modelSales->getMemberReqInputVStockistItem($id);
+        $getDataMaster = $modelSales->getMemberReqInputVStockistID($id);
+        return view('admin.ajax.cek_reject_input_vstock')
+                ->with('headerTitle', 'Reject Vendor Input Stock & Royalti')
+                ->with('getDataMaster', $getDataMaster)
+                ->with('master_item_id', $id)
+                ->with('user_id', $user_id)
+                ->with('getData', $getData);
+    }
+    
     
       
     

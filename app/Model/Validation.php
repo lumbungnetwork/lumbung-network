@@ -296,6 +296,62 @@ class Validation extends Model {
         return $canInsert;
     }
     
+    public function getCheckRequestVendor($data){
+        $canInsert = (object) array('can' => true, 'pesan' => '');
+        if($data->alamat->provinsi == null || $data->alamat->kota == null || $data->alamat->kecamatan == null || $data->alamat->kelurahan == null){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Data Alamat Profil belum lengkap.');
+            return $canInsert;
+        }
+        if($data->syarat1 == 0){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum menyetujui telah memiliki 5 Hak Usaha');
+            return $canInsert;
+        }
+        if($data->syarat2 == 0){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum menyanggupi modal belanja awal senilai minimal Rp2.000.000,00');
+            return $canInsert;
+        }
+        if($data->syarat3 == 0){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum menyatakan bahwa di RW/Lingkungan tempat tinggal saya BELUM ADA Stokis Lumbung Network.');
+            return $canInsert;
+        }
+        if($data->syarat4 == 0){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum Saya telah membaca dan menyetujui Peraturan dan Kode Etik Stokis Lumbung Network.');
+            return $canInsert;
+        }
+//        if($data->total_sp < 3){
+//            $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum memenuhi jumlah Hak Usaha sebanyak 3, atas nama sendiri');
+//            return $canInsert;
+//        }
+        if($data->hu1 == null){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Username pada Hak Usaha 1 Anda tidak ada');
+            return $canInsert;
+        }
+        if($data->hu2 == null){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Username pada Hak Usaha 2 Anda tidak ada');
+            return $canInsert;
+        }
+        if($data->hu3 == null){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Username pada Hak Usaha 3 Anda tidak ada');
+            return $canInsert;
+        }
+        if($data->hu4 == null){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Username pada Hak Usaha 4 Anda tidak ada');
+            return $canInsert;
+        }
+        if($data->hu5 == null){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Username pada Hak Usaha 5 Anda tidak ada');
+            return $canInsert;
+        }
+        if($data->hu1 == $data->hu2 || $data->hu1 == $data->hu3 || $data->hu1 == $data->hu4 || $data->hu1 == $data->hu5
+                || $data->hu2 == $data->hu3 || $data->hu2 == $data->hu4 || $data->hu2 == $data->hu5 
+                || $data->hu3 == $data->hu4 || $data->hu3 == $data->hu5 
+                || $data->hu4 == $data->hu5){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Username pada Hak Usaha tidak boleh ada yang sama');
+            return $canInsert;
+        }
+        return $canInsert;
+    }
+    
     public function getCheckTopUp($data){
         $canInsert = (object) array('can' => true, 'pesan' => '');
         if($data->tron == null){

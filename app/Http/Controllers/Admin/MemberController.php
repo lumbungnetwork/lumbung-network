@@ -2844,12 +2844,12 @@ class MemberController extends Controller {
         if($request->buy_metode == 3){
             $buy_metode = 3;
             $tron = $request->tron;
-            if($request->tron_tranfer == null){
+            if($request->tron_transfer == null){
                 return redirect()->route('m_MemberVPembayaran', [$request->master_sale_id])
                         ->with('message', 'Hash transaksi transfer dari Blockchain TRON belum diisi')
                         ->with('messageclass', 'danger');
             }
-            $tron_transfer = $request->tron_tranfer;
+            $tron_transfer = $request->tron_transfer;
         }
         $dataUpdate = array(
             'status' => 1,
@@ -2861,7 +2861,7 @@ class MemberController extends Controller {
             'account_name' => $account_name,
         );
         $modelSales->getUpdateVMasterSales('id', $request->master_sale_id, $dataUpdate);
-        return redirect()->route('m_historyShoping')
+        return redirect()->route('m_historyVShoping')
                         ->with('message', 'Konfirmasi pembayaran berhasil.')
                         ->with('messageclass', 'success');
     }

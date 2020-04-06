@@ -302,6 +302,27 @@ class Bonus extends Model {
         return $sql;
     }
     
+    public function getTotalVBelanjaReward($id){
+        $sql = DB::table('belanja_reward')
+                    ->where('belanja_reward.user_id', '=', $id)
+                    ->where('belanja_reward.status', '=', 1)
+                    ->where('belanja_reward.type', '=', 3)
+                    ->sum('belanja_reward.reward');
+        return $sql;
+    }
+    
+    public function getVBelanjaRewardByMonthYear($id, $month, $year){
+        $sql = DB::table('belanja_reward')
+                    ->selectRaw('id')
+                    ->where('user_id', '=', $id)
+                    ->where('month', '=', $month)
+                    ->where('year', '=', $year)
+                    ->where('status', '!=', 2)
+                    ->where('type', '=', 3)
+                    ->first();
+        return $sql;
+    }
+    
     public function getAdminAllBelanjaReward(){
         $sql = DB::table('belanja_reward')
                     ->join('users', 'belanja_reward.user_id', '=', 'users.id')
@@ -376,6 +397,27 @@ class Bonus extends Model {
                     ->where('year', '=', $year)
                     ->where('status', '!=', 2)
                     ->where('type', '=', 2)
+                    ->first();
+        return $sql;
+    }
+    
+    public function getTotalVPenjualanReward($id){
+        $sql = DB::table('belanja_reward')
+                    ->where('belanja_reward.user_id', '=', $id)
+                    ->where('belanja_reward.status', '=', 1)
+                    ->where('belanja_reward.type', '=', 4)
+                    ->sum('belanja_reward.reward');
+        return $sql;
+    }
+    
+    public function getVPenjualanRewardByMonthYear($id, $month, $year){
+        $sql = DB::table('belanja_reward')
+                    ->selectRaw('id')
+                    ->where('user_id', '=', $id)
+                    ->where('month', '=', $month)
+                    ->where('year', '=', $year)
+                    ->where('status', '!=', 2)
+                    ->where('type', '=', 4)
                     ->first();
         return $sql;
     }

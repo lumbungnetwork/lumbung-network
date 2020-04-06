@@ -110,7 +110,7 @@ class Member extends Model {
     }
     
     public function getCheckUsercode($usercode){
-        $sqlCode = DB::table('users')->selectRaw('id')->where('user_code', '=', $usercode)->where('user_type', '=', 10)->count();
+        $sqlCode = DB::table('users')->selectRaw('id')->where('user_code', '=', $usercode)->count();
         $data = (object) array(
             'cekCode' => $sqlCode
         );
@@ -542,12 +542,42 @@ class Member extends Model {
         return $return;
     }
     
+    public function getSearchUserVendor($data){
+        $sql = DB::table('users')
+                    ->where('user_code', '=', $data)
+                    ->where('user_type', '=', 10)
+                    ->where('is_active', '=', 1)
+                    ->where('is_vendor', '=', 1)
+                    ->orderBy('id', 'ASC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
     public function getMyDownlineUsernameStockist($username){
         $sql = DB::table('users')
                     ->where('user_type', '=', 10)
                     ->where('is_active', '=', 1)
                     ->where('user_code', 'LIKE', '%'.$username.'%')
                     ->where('is_stockist', '=', 1)
+                    ->orderBy('id', 'ASC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getMyDownlineUsernameVendor($username){
+        $sql = DB::table('users')
+                    ->where('user_type', '=', 10)
+                    ->where('is_active', '=', 1)
+                    ->where('user_code', 'LIKE', '%'.$username.'%')
+                    ->where('is_vendor', '=', 1)
                     ->orderBy('id', 'ASC')
                     ->get();
         $return = null;
@@ -690,6 +720,16 @@ class Member extends Model {
         return $sql;
     }
     
+    public function getCekMemberReqVendor($id){
+        $sql = DB::table('vendor_request')
+                    ->join('users', 'users.id', '=', 'vendor_request.user_id')
+                    ->selectRaw('vendor_request.id, users.user_code, users.total_sponsor, users.id as id_user')
+                    ->where('vendor_request.id', '=', $id)
+                    ->where('vendor_request.status', '=', 0)
+                    ->first();
+        return $sql;
+    }
+    
     public function getCekMemberSotckistToRemove($id){
         $sql = DB::table('stockist_request')
                     ->join('users', 'users.id', '=', 'stockist_request.user_id')
@@ -711,6 +751,15 @@ class Member extends Model {
         return $sql;
     }
     
+    public function getAllMemberReqVendor(){
+        $sql = DB::table('vendor_request')
+                    ->join('users', 'users.id', '=', 'vendor_request.user_id')
+                    ->selectRaw('vendor_request.id, users.user_code, users.total_sponsor, vendor_request.created_at')
+                    ->where('vendor_request.status', '=', 0)
+                    ->get();
+        return $sql;
+    }
+    
     public function getHistoryAllMemberReqSotckist(){
         $sql = DB::table('stockist_request')
                     ->join('users', 'users.id', '=', 'stockist_request.user_id')
@@ -722,8 +771,27 @@ class Member extends Model {
         return $sql;
     }
     
+    public function getHistoryAllMemberReqVendor(){
+        $sql = DB::table('vendor_request')
+                    ->join('users', 'users.id', '=', 'vendor_request.user_id')
+                    ->join('users as u', 'vendor_request.submit_by', '=', 'u.id')
+                    ->selectRaw('vendor_request.id, users.user_code, users.total_sponsor, vendor_request.created_at, u.name as submit_name, '
+                            . 'vendor_request.active_at, vendor_request.submit_at, vendor_request.status, vendor_request.submit_by')
+                    ->orderBy('vendor_request.status', 'ASC')
+                    ->get();
+        return $sql;
+    }
+    
     public function getCekRequestSotckist($id){
         $sql = DB::table('stockist_request')
+                    ->selectRaw('id')
+                    ->where('user_id', '=', $id)
+                    ->first();
+        return $sql;
+    }
+    
+    public function getCekRequestVendorExist($id){
+        $sql = DB::table('vendor_request')
                     ->selectRaw('id')
                     ->where('user_id', '=', $id)
                     ->first();
@@ -737,6 +805,46 @@ class Member extends Model {
                     ->where('is_stockist', '=', 1)
                     ->orderBy('stockist_at', 'DESC')
                     ->get();
+        return $sql;
+    }
+    
+    public function getAdminAllVendor(){
+        $sql = DB::table('users')
+                    ->where('user_type', '=', 10)
+                    ->where('is_active', '=', 1)
+                    ->where('is_vendor', '=', 1)
+                    ->orderBy('vendor_at', 'DESC')
+                    ->get();
+        return $sql;
+    }
+    
+    public function getInsertVendor($data){
+        try {
+            $lastInsertedID = DB::table('vendor_request')->insertGetId($data);
+            $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
+        }
+        return $result;
+    }
+    
+    public function getUpdateVendor($fieldName, $name, $data){
+        try {
+            DB::table('vendor_request')->where($fieldName, '=', $name)->update($data);
+            $result = (object) array('status' => true, 'message' => null);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message);
+        }
+        return $result;
+    }
+    
+    public function getCekRequestVendor($id){
+        $sql = DB::table('vendor_request')
+                    ->selectRaw('id')
+                    ->where('user_id', '=', $id)
+                    ->first();
         return $sql;
     }
     
@@ -829,6 +937,55 @@ class Member extends Model {
                     ->where('user_type', '=', 10)
                     ->where('is_active', '=', 1)
                     ->where('is_stockist', '=', 1)
+                    ->orderBy('user_code', 'ASC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getSearchVendorUserByKelurahan($data, $kecamatan){
+        $sql = DB::table('users')
+                    ->where('kelurahan', '=', $data)
+                    ->where('kecamatan', '=', $kecamatan)
+                    ->where('user_type', '=', 10)
+                    ->where('is_active', '=', 1)
+                    ->where('is_vendor', '=', 1)
+                    ->orderBy('user_code', 'ASC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getSearchVendorUserByKecamatan($kecamatan, $kelurahan){
+        $sql = DB::table('users')
+                    ->where('kecamatan', '=', $kecamatan)
+                    ->where('kelurahan', '!=', $kelurahan)
+                    ->where('user_type', '=', 10)
+                    ->where('is_active', '=', 1)
+                    ->where('is_vendor', '=', 1)
+                    ->orderBy('user_code', 'ASC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getSearchUserVendorByKota($data, $kecamatan, $kelurahan){
+        $sql = DB::table('users')
+                    ->where('kota', '=', $data)
+                    ->where('kecamatan', '!=', $kecamatan)
+                    ->where('kelurahan', '!=', $kelurahan)
+                    ->where('user_type', '=', 10)
+                    ->where('is_active', '=', 1)
+                    ->where('is_vendor', '=', 1)
                     ->orderBy('user_code', 'ASC')
                     ->get();
         $return = null;

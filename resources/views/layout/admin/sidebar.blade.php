@@ -243,6 +243,49 @@
             </li>
             @endif
             
+            @if($can5)
+            <li>
+                <a data-toggle="collapse" href="#pageVendor" class="collapsed" aria-expanded="false">
+                    <i class="nc-icon nc-cart-simple"></i>
+                    <p>Vendor  <b class="caret"></b></p>
+                </a>
+                <div class="collapse" id="pageVendor" style="">
+                    <ul class="nav">
+                        <li>
+                            <a href="{{ URL::to('/') }}/adm/list/req-vendor">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> List Pengajuan Vendor </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ URL::to('/') }}/adm/list/vendor">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> List Member Vendor </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ URL::to('/') }}/adm/list/req-input-vstock">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> List Vendor Input Stock </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ URL::to('/') }}/adm/history/req-vendor">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> History Pengajuan Vendor </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ URL::to('/') }}/adm/history/req-input-vstock">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> History Vendor Input Stock</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            @endif
+            
             @if($can6)
             <li>
                 <a data-toggle="collapse" href="#pageProduct" class="collapsed" aria-expanded="false">
@@ -255,6 +298,12 @@
                             <a href="{{ URL::to('/') }}/adm/list/purchases">
                             <span class="sidebar-mini-icon">+</span>
                             <span class="sidebar-normal"> List Product </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ URL::to('/') }}/adm/list/vpurchases">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> List Product Vendor</span>
                             </a>
                         </li>
                     </ul>

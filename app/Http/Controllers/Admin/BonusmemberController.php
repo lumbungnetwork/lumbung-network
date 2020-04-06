@@ -660,6 +660,146 @@ class BonusmemberController extends Controller {
                 ->with('dataUser', $dataUser);
     }
     
+    public function getVBelanjaReward(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSales = New Sales;
+        $modelBonus = new Bonus;
+        $getData = $modelSales->getMemberVendorMasterSalesMonthly($dataUser->id);
+        $getTotalBonus = $modelBonus->getTotalVBelanjaReward($dataUser->id);
+        $dataClaim = array();
+        $month = date('m');
+        $year = date('Y');
+        if($getData != null){
+            foreach($getData as $row){
+                $can = 1;
+                if($month == $row->month && $year == $row->year){
+                    $can = 0;
+                } else {
+                    $cekCanClaim = $modelBonus->getVBelanjaRewardByMonthYear($dataUser->id, $row->month, $row->year);
+                    if($cekCanClaim != null){
+                        $can = 0;
+                    }
+                    if($row->month_sale_price < 100000){
+                        $can = 0;
+                    }
+                }
+                $dataClaim[] = (object) array(
+                    'month_sale_price' => $row->month_sale_price,
+                    'monthly' => $row->monthly,
+                    'month' => $row->month,
+                    'year' => $row->year,
+                    'canClaim' => $can
+                );
+            }
+        }
+        return view('member.bonus.req-vbelanja-reward')
+                ->with('getData', $dataClaim)
+                ->with('getTotal', $getTotalBonus)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postRequestVBelanjaReward(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSales = New Sales;
+        $modelBonus = new Bonus;
+        $getData = $modelSales->getMemberMasterSalesMonthYear($dataUser->id, $request->month, $request->year);
+        $dataInsert = array(
+            'user_id' => $dataUser->id,
+            'reward' => $request->reward,
+            'month' => $request->month,
+            'year' => $request->year,
+            'belanja_date' => $request->year.'-'.$request->month.'-01',
+            'total_belanja' => $getData->month_sale_price
+        );
+        $modelBonus->getInsertBelanjaReward($dataInsert);
+        return redirect()->route('m_BelanjaReward')
+                    ->with('message', 'Claim Reward Belanja berhasil')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function getVendorPenjualanReward(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_vendor == 0){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSales = New Sales;
+        $modelBonus = new Bonus;
+        $getData = $modelSales->getVendorPenjualanMonthly($dataUser->id);
+        $getTotalBonus = $modelBonus->getTotalVPenjualanReward($dataUser->id);
+        $dataClaim = array();
+        $month = date('m');
+        $year = date('Y');
+        if($getData != null){
+            foreach($getData as $row){
+                $can = 1;
+                if($month == $row->month && $year == $row->year){
+                    $can = 0;
+                } else {
+                    $cekCanClaim = $modelBonus->getVPenjualanRewardByMonthYear($dataUser->id, $row->month, $row->year);
+                    if($cekCanClaim != null){
+                        $can = 0;
+                    }
+                }
+                $dataClaim[] = (object) array(
+                    'month_sale_price' => $row->month_sale_price,
+                    'monthly' => $row->monthly,
+                    'month' => $row->month,
+                    'year' => $row->year,
+                    'canClaim' => $can
+                );
+            }
+        }
+        return view('member.bonus.req-vpenjualan-reward')
+                ->with('getData', $dataClaim)
+                ->with('getTotal', $getTotalBonus)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postVendorPenjualanReward(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_stockist == 0){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSales = New Sales;
+        $modelBonus = new Bonus;
+        $getData = $modelSales->getStockistPenjualanMonthYear($dataUser->id, $request->month, $request->year);
+        $dataInsert = array(
+            'user_id' => $dataUser->id,
+            'reward' => $request->reward,
+            'month' => $request->month,
+            'year' => $request->year,
+            'belanja_date' => $request->year.'-'.$request->month.'-01',
+            'total_belanja' => $getData->month_sale_price,
+            'type' => 2
+        );
+        $modelBonus->getInsertBelanjaReward($dataInsert);
+        return redirect()->route('m_PenjualanReward')
+                    ->with('message', 'Claim Reward Penjualan berhasil')
+                    ->with('messageclass', 'success');
+    }
+    
     
 }
 

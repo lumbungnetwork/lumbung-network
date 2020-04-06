@@ -846,6 +846,65 @@ class MasterAdminController extends Controller {
                     ->with('messageclass', 'success');
     }
     
+    public function postRequestMemberVendor(Request $request){ //disini
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelMember = New Member;
+        $date =  date('Y-m-d H:i:s');
+        $dataUpdate = array(
+            'status' => 1,
+            'active_at' => $date,
+            'submit_by' => $dataUser->id,
+            'submit_at' => $date,
+        );
+        $modelMember->getUpdateVendor('id', $request->id, $dataUpdate);
+        $dataUpdateUser = array(
+            'is_vendor' => 1,
+            'vendor_at' => $date
+        );
+        $modelMember->getUpdateUsers('id', $request->id_user, $dataUpdateUser);
+        return redirect()->route('adm_listReqVendor')
+                    ->with('message', 'Member berhasil menjadi vendor')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function postRejectMemberVendor(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelMember = New Member;
+        $date =  date('Y-m-d H:i:s');
+        $dataUpdate = array(
+            'status' => 2,
+            'deleted_at' => $date,
+            'submit_by' => $dataUser->id,
+            'submit_at' => $date,
+        );
+        $modelMember->getUpdateVendor('id', $request->id, $dataUpdate);
+        return redirect()->route('adm_listReqVendor')
+                    ->with('message', 'Member request vendor direject')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function getAllMemberVendor(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelMember = New Member;
+        $getData = $modelMember->getAdminAllVendor();
+        return view('admin.member.all-vendor')
+                ->with('headerTitle', 'List Vendor')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
     public function postRemoveMemberStockist(Request $request){
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
@@ -2098,6 +2157,328 @@ class MasterAdminController extends Controller {
                 ->with('headerTitle', 'History Top Up Saldo')
                 ->with('getData', $getData)
                 ->with('dataUser', $dataUser);
+    }
+    
+    public function getAllVendorPurchase(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSales = New Sales;
+        $getData = $modelSales->getAllPurchaseVendor();
+        return view('admin.sales.all_purchase_vendor')
+                ->with('headerTitle', 'All Product Vendor')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function getAddVendorPurchase(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSales = New Sales;
+        $modelMember = New Member;
+        $getProvince = $modelMember->getProvinsi();
+        return view('admin.sales.add_vpurchase')
+                ->with('headerTitle', 'Create Product Vendor')
+                ->with('provinsi', $getProvince)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postAddVendorPurchase(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSales = New Sales;
+        $modelMember = New Member;
+        if($request->provinsi == 0){
+            return redirect()->route('adm_addVendorPurchase')
+                    ->with('message', 'Anda Tidak memilih propinsi')
+                    ->with('messageclass', 'danger');
+        }
+        $provinsiSearch = $modelMember->getProvinsiByID($request->provinsi);
+        $provinsiName = $provinsiSearch->nama;
+        $kota = 0;
+        $kotaName = '';
+        if($request->kota != null){
+            if($request->kota != 0){
+                $kotaSearch = $modelMember->getNamaByKode($request->kota);
+                $kota = $kotaSearch->kabupatenkota;
+                $kotaName = ' - '.$kotaSearch->nama;
+            }
+        }
+        $kecamatan = 0;
+        $kecamatanName = '';
+        if($request->kecamatan != null){
+            if($request->kecamatan != 0){
+                $kecamatanSearch = $modelMember->getNamaByKode($request->kecamatan);
+                $kecamatan = $kecamatanSearch->kecamatan;
+                $kecamatanName = ' - '.$kecamatanSearch->nama;
+            }
+        }
+        $kelurahan = 0;
+        $kelurahanName = '';
+        if($request->kelurahan != null){
+            if($request->kelurahan != 0){
+                $kelurahanSearch = $modelMember->getNamaByKode($request->kelurahan);
+                $kelurahan = $kelurahanSearch->kelurahan;
+                $kelurahanName = ' - '.$kelurahanSearch->nama;
+            }
+            
+        }
+        $qty = 200000;
+        $dataInsert = array(
+            'name' => $request->name,
+            'ukuran' => $request->ukuran,
+            'stockist_price' => $request->stockist_price,
+            'member_price' => $request->member_price,
+            'code' => $request->code,
+            'image' => $request->image,
+            'provinsi' => $request->provinsi,
+            'kota' => $kota,
+            'kecamatan' => $kecamatan,
+            'kelurahan' => $kelurahan,
+            'qty' => $qty,
+            'area' => $provinsiName.' '.$kotaName.' '.$kecamatanName.' '.$kelurahanName,
+            'type' => 2,
+        );
+        $getInsertPurchase = $modelSales->getInsertPurchase($dataInsert);
+        //insert stock
+        $dataInsertStock = array(
+            'purchase_id' => $getInsertPurchase->lastID,
+            'user_id' => $dataUser->id,
+            'type' => 1,
+            'amount' => $qty
+        );
+        $modelSales->getInsertVStock($dataInsertStock);
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => $request->method().' '.$request->path()
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
+        return redirect()->route('adm_listVendorPurchases')
+                    ->with('message', 'Produk Vendor berhasil ditambahkan')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function getEditVendorPurchase($id){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSales = New Sales;
+        $modelMember = New Member;
+        $getData = $modelSales->getDetailPurchaseVendor($id);
+        $getProvince = $modelMember->getProvinsi();
+        $geCodeProvince = $getData->provinsi.'.00.00.0000';
+         $cekLenght = strlen($getData->kota);
+         $kota = $getData->kota;
+         if($cekLenght == 1){
+             $kota = '0'.$getData->kota;
+         }
+        $getCodeKota = $getData->provinsi.'.'.$kota.'.00.0000';
+        $getDetailProvinsi = $modelMember->getNamaByKode($geCodeProvince);
+        $getDetailKota = $modelMember->getNamaByKode($getCodeKota);
+        $getAllKotaFromProvince = $modelMember->getKabupatenKotaByPropinsi($getData->provinsi);
+        return view('admin.sales.edit_vpurchase')
+                ->with('headerTitle', 'Edit Products Vendor')
+                ->with('provinsi', $getProvince)
+                ->with('getData', $getData)
+                ->with('detailProvinsi', $getDetailProvinsi)
+                ->with('detailKota', $getDetailKota)
+                ->with('allKota', $getAllKotaFromProvince)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postEditVendorPurchase(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSales = New Sales;
+        $modelMember = New Member;
+        if($request->provinsi == 0){
+            return redirect()->route('adm_editVendorPurchase', [$request->id])
+                    ->with('message', 'Provinsi harus dipilih')
+                    ->with('messageclass', 'danger');
+        }
+        $provinsiSearch = $modelMember->getProvinsiByID($request->provinsi);
+        $provinsiName = $provinsiSearch->nama;
+        $kota = 0;
+        $kotaName = '';
+        if($request->kota != null){
+            if($request->kota != 0){
+                $kotaSearch = $modelMember->getNamaByKode($request->kota);
+                $kota = $kotaSearch->kabupatenkota;
+                $kotaName = ' - '.$kotaSearch->nama;
+            }
+        }
+        $kecamatan = 0;
+        $kecamatanName = '';
+        if($request->kecamatan != null){
+            if($request->kecamatan != 0){
+                $kecamatanSearch = $modelMember->getNamaByKode($request->kecamatan);
+                $kecamatan = $kecamatanSearch->kecamatan;
+                $kecamatanName = ' - '.$kecamatanSearch->nama;
+            }
+        }
+        $kelurahan = 0;
+        $kelurahanName = '';
+        if($request->kelurahan != null){
+            if($request->kelurahan != 0){
+                $kelurahanSearch = $modelMember->getNamaByKode($request->kelurahan);
+                $kelurahan = $kelurahanSearch->kelurahan;
+                $kelurahanName = ' - '.$kelurahanSearch->nama;
+            }
+            
+        }
+        $dataUpdate = array(
+            'name' => $request->name,
+            'ukuran' => $request->ukuran,
+            'stockist_price' => $request->stockist_price,
+            'member_price' => $request->member_price,
+            'code' => $request->code,
+            'image' => $request->image,
+            'provinsi' => $request->provinsi,
+            'kota' => $kota,
+            'kecamatan' => $kecamatan,
+            'kelurahan' => $kelurahan,
+            'area' => $provinsiName.' '.$kotaName.' '.$kecamatanName.' '.$kelurahanName
+        );
+        $modelSales->getUpdatePurchase('id', $request->id, $dataUpdate);
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => $request->method().' '.$request->path()
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
+        return redirect()->route('adm_listVendorPurchases')
+                    ->with('message', 'Produk Vendor berhasil diedit')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function postRemoveVendorPurchase(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSales = New Sales;
+        $dataUpdate = array(
+            'deleted_at' => date('Y-m-d H:i:s')
+        );
+        $modelSales->getUpdatePurchase('id', $request->id, $dataUpdate);
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => $request->method().' '.$request->path()
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
+        return redirect()->route('adm_listVendorPurchases')
+                    ->with('message', 'Produk Vendor berhasil dihapus')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function getAllRequestMemberVendor(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelMember = New Member;
+        $getData = $modelMember->getAllMemberReqVendor();
+        return view('admin.member.req-vendor')
+                ->with('headerTitle', 'Request Vendor')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function getHistoryRequestMemberVendor(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelMember = New Member;
+        $getData = $modelMember->getHistoryAllMemberReqVendor();
+        return view('admin.member.history-req_vendor')
+                ->with('headerTitle', 'History Request Vendor')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function getHistoryRequestInputVStock(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSales = New Sales;
+        $getData = $modelSales->getMemberReqInputVStockistHistory();
+        return view('admin.member.history-input-vstock')
+                ->with('headerTitle', 'History Vendor Stock & Royalti')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function getAllRequestMemberInputVStock(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSales = New Sales;
+        $getData = $modelSales->getMemberReqInputVendor();
+        return view('admin.member.req-input-vstock')
+                ->with('headerTitle', 'Input Vendor Stock & Royalti')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postRequestMemberInputVStock(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSales = New Sales;
+        $dataUpdate = array(
+            'status' => 2,
+            'submit_by' => $dataUser->id,
+            'submit_at' => date('Y-m-d H:i:s'),
+        );
+        $modelSales->getUpdateVendorItemPurchaseMaster('id', $request->id, $dataUpdate);
+        return redirect()->route('adm_listReqInputVStock')
+                    ->with('message', 'Konfirmasi Member request vendor input stock & royalti berhasil')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function postRejectMemberInputVStock(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSales = New Sales;
+        $dataUpdate = array(
+            'status' => 10,
+            'deleted_at' => date('Y-m-d H:i:s'),
+            'submit_by' => $dataUser->id,
+            'submit_at' => date('Y-m-d H:i:s'),
+            'reason' => $request->reason
+        );
+        $modelSales->getUpdateVendorItemPurchaseMaster('id', $request->id, $dataUpdate);
+        return redirect()->route('adm_listReqInputVStock')
+                    ->with('message', 'Reject Member request input stock & royalti berhasil')
+                    ->with('messageclass', 'success');
     }
     
 
