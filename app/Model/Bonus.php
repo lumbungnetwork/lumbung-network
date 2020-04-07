@@ -706,6 +706,25 @@ class Bonus extends Model {
         return $return;
     }
     
+    public function getAllRequestTopupYesterday(){
+        $yesterday = date('Y-m-d',strtotime("-1 days"));
+        $sql = DB::table('top_up')
+                        ->join('users', 'top_up.user_id', '=', 'users.id')
+                        ->join('bank', 'top_up.bank_perusahaan_id', '=', 'bank.id')
+                        ->selectRaw('users.name, users.hp, users.user_code, users.tron, '
+                                . 'top_up.status, top_up.updated_at, top_up.id,'
+                                . 'top_up.created_at, top_up.unique_digit, top_up.user_id, top_up.nominal, '
+                                . 'bank.bank_name, bank.account_name, bank.account_no')
+                        ->where('top_up.status', '=', 1)
+                        ->whereDate('top_up.created_at', '=', $yesterday)
+                        ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
    
     
 }

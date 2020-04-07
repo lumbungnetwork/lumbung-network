@@ -205,5 +205,24 @@ class Transaction extends Model {
         return $cek;
     }
     
+    public function getAllRequestBeliPinYesterday(){
+        $yesterday = date('Y-m-d',strtotime("-1 days"));
+        $sql = DB::table('transaction')
+                        ->join('users', 'transaction.user_id', '=', 'users.id')
+                        ->selectRaw('users.user_code, users.hp, users.user_code, '
+                                . 'transaction.transaction_code, transaction.type, transaction.total_pin, transaction.price, transaction.status,'
+                                . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id, transaction.is_tron')
+                        ->where('transaction.status', '<', 2)
+                        ->whereDate('transaction.created_at', '=', $yesterday)
+                        ->orderBy('transaction.status', 'DESC')
+                        ->orderBy('transaction.id', 'DESC')
+                        ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
     
 }
