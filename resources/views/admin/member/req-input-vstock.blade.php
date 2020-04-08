@@ -68,7 +68,7 @@
                                                     <br>
                                                     033601001795562';
                                             }
-                                            $royalti = 2/100 * $row->price;
+                                            $royalti = 4/100 * $row->price;
                                         ?>
                                             <tr>
                                                 <td>{{$no}}</td>

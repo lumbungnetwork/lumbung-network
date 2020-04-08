@@ -122,7 +122,7 @@
                         <div class="col-md-3 col-sm-6 col-xs-6 col-md-offset-9">
                             <p class="text-xs-right"><b>Total Harga : </b> Rp. {{number_format($getDataMaster->price, 0, ',', ',')}}</p>
                             <?php
-                                $royalti = 2/100 * $getDataMaster->price; //2% bisa dinamis nanti
+                                $royalti = 4/100 * $getDataMaster->price; //2% bisa dinamis nanti
                             ?>
                             <p class="text-xs-right"><b>Total Royalti : </b>Rp. {{number_format($royalti, 0, ',', ',')}}</p>
                             <hr>
