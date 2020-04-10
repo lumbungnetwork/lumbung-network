@@ -49,6 +49,7 @@
                         </div>
                         </form>
                     </div>
+                    @if($dataUser->is_stockist == 0 && $dataUser->is_vendor == 0)
                     <div class="rounded-lg bg-white p-3 mb-3">
                         <div class="row">
                             <div class="col-sm-12 col-xs-12">
@@ -62,7 +63,7 @@
                             </div>
                         </div>
                     </div>
-                    
+                    @endif
                     <?php
                         $totKota = 0;
                         if($getDataKota != null){

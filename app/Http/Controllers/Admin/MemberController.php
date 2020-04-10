@@ -1261,6 +1261,11 @@ class MemberController extends Controller {
                     ->with('message', 'Data profil anda belum lengkap')
                     ->with('messageclass', 'danger');
         }
+        if($dataUser->is_stockist == 1 && $dataUser->is_vendor == 1){
+             return redirect()->route('mainDashboard')
+                    ->with('message', 'Anda sudah menjadi member salah satu stockist atau vendor')
+                    ->with('messageclass', 'danger');
+        }
         $modelMember = New Member;
         $cekRequestStockist = $modelMember->getCekRequestSotckist($dataUser->id);
         if($cekRequestStockist != null){
@@ -2273,14 +2278,19 @@ class MemberController extends Controller {
             return redirect()->route('m_newPackage');
         }
         if($dataUser->is_profile == 0){
-            return redirect()->route('m_SearchStockist')
+            return redirect()->route('m_SearchVendor')
                     ->with('message', 'Data profil anda belum lengkap')
+                    ->with('messageclass', 'danger');
+        }
+        if($dataUser->is_stockist == 1 || $dataUser->is_vendor == 1){
+             return redirect()->route('m_SearchVendor')
+                    ->with('message', 'Anda sudah menjadi member salah satu stockist atau vendor')
                     ->with('messageclass', 'danger');
         }
         $modelMember = New Member;
         $cekRequestStockist = $modelMember->getCekRequestVendor($dataUser->id);
         if($cekRequestStockist != null){
-            return redirect()->route('m_SearchStockist')
+            return redirect()->route('m_SearchVendor')
                         ->with('message', 'Anda sudah pernah mengajukan menjadi vendor')
                         ->with('messageclass', 'danger');
         }

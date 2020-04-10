@@ -82,7 +82,8 @@
                             </div>
                         </div>
                     </div>
-
+                    
+                    @if($dataUser->is_stockist == 1)
                     <div class="rounded-lg bg-white p-3 mb-3">
                         <h6 class="mb-3">Stokis Saya</h6>
                         <div class="row">
@@ -128,7 +129,8 @@
                             </div>
                         </div>
                     </div>
-
+                    @endif
+                    @if($dataUser->is_vendor == 1)
                     <div class="rounded-lg bg-white p-3 mb-3">
                         <h6 class="mb-3">Vendor Saya</h6>
                         <p>Produk Fisik</p>
@@ -222,6 +224,7 @@
                             </div>
                         </div>
                     </div>
+                    @endif
 
                     <a href="{{ URL::to('/') }}/m/stockist/penjualan-reward" class="btn btn-warning btn-block shadow-sm mb-3">  <div class="f-14">Claim Reward Penjualan  </div></a>
                     
