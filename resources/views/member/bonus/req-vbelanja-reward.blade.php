@@ -70,7 +70,7 @@
                                                         <td>{{$reward}}</td>
                                                         <td>
                                                             @if($row->canClaim == 1)
-                                                            <a rel="tooltip" data-toggle="modal" data-target="#confirmSubmit" class="btn btn-custom btn-sm waves-effect waves-light" href="{{ URL::to('/') }}/m/cek/confirm-vbelanja-reward?m={{$row->month}}&y={{$row->year}}">
+                                                            <a rel="tooltip" data-toggle="modal" data-target="#confirmSubmit" class="btn btn-success btn-sm" href="{{ URL::to('/') }}/m/cek/confirm-vbelanja-reward?m={{$row->month}}&y={{$row->year}}">
                                                                 Claim
                                                             </a>
                                                             @endif

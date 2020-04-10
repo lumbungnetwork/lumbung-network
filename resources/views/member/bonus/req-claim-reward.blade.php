@@ -35,6 +35,28 @@
                             <div class="col-12">
                                 <div class="rounded bg-white p-3 text-center">
                                     @if($dataMy->image != null)
+                                        <img src="{{$dataMy->image}}" class="img-responsive pull-xs-right text-muted" alt="user" style="height: 90px;">
+                                    @endif
+                                    <div class="">
+                                        <h6 class="text-muted text-uppercase m-b-15 m-t-10">Peringkat Anda</h6>
+                                        <h2 class="m-b-10">{{$dataMy->name}}</h2>
+                                        <p class="m-b-10">
+                                            <h2 class="m-b-10"><a href="{{ URL::to('/') }}/m/history/reward" class="btn btn-success btn-sm">history reward</a></h2>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    @if($getMyPeringkat != null)
+                    @if($canClaim == true )
+                    <br>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="rounded bg-white p-3 text-center">
+                                    @if($dataMy->image != null)
                                         <img src="/image/koin_lmb.png" class="img-responsive pull-xs-right text-muted" alt="user" style="height: 90px;">
                                     @endif
                                     <div class="">
@@ -43,7 +65,6 @@
                                         <p class="m-b-10">
                                             <input type="hidden" id="reward_id" value="{{$getMyPeringkat->id}}">
                                             <button type="submit" class="btn btn-secondary btn-sm"  id="submitBtn" data-toggle="modal" data-target="#confirmSubmit" onClick="inputSubmit()">claimed</button>
-                                            <h2 class="m-b-10"><a href="{{ URL::to('/') }}/m/history/reward" class="btn btn-success btn-sm">view</a></h2>
                                         </p>
                                     </div>
                                     <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
@@ -54,7 +75,10 @@
                             </div>
                         </div>
                     </div>
+                    @endif
+                    @endif
                     <br>
+                    
                     <div class="rounded-lg bg-white p-3 mb-3">
                         <div class="row">
                             <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">

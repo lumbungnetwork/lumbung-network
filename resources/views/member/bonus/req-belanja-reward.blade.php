@@ -70,7 +70,7 @@
                                                         <td>{{$reward}}</td>
                                                         <td>
                                                             @if($row->canClaim == 1)
-                                                            <a rel="tooltip" data-toggle="modal" data-target="#confirmSubmit" class="btn btn-custom btn-sm waves-effect waves-light" href="{{ URL::to('/') }}/m/cek/confirm-belanja-reward?m={{$row->month}}&y={{$row->year}}">
+                                                            <a rel="tooltip" data-toggle="modal" data-target="#confirmSubmit" class="btn btn-success btn-sm" href="{{ URL::to('/') }}/m/cek/confirm-belanja-reward?m={{$row->month}}&y={{$row->year}}">
                                                                 Claim
                                                             </a>
                                                             @endif
@@ -114,24 +114,17 @@
 @section('javascript')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
     <script src="{{ asset('asset_new/js/sidebar.js') }}"></script>
-    <script type="text/javascript">
-    $(document).ready(function(){
-        $("#get_id").keyup(function(){
-            $.ajax({
-                type: "GET",
-                url: "{{ URL::to('/') }}/m/cek/usercode-stockist" + "?name=" + $(this).val() ,
-                success: function(data){
-                    $("#get_id-box").show();
-                    $("#get_id-box").html(data);
-                }
-            });
-        });
-    });
-    function selectUsername(val) {
-        var valNew = val.split("____");
-        $("#get_id").val(valNew[1]);
-        $("#id_get_id").val(valNew[0]);
-        $("#get_id-box").hide();
+    <script>
+    function confirmSubmit(){
+        var dataInput = $("#form-add").serializeArray();
+        $('#form-add').submit();
+        $('#tutupModal').remove();
+        $('#submit').remove();
     }
+        
+    $("#confirmSubmit").on("show.bs.modal", function(e) {
+        var link = $(e.relatedTarget);
+        $(this).find(".modal-dialog").load(link.attr("href"));
+    });
 </script>
 @stop
