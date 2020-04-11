@@ -156,6 +156,7 @@ a.article:hover {
     top: 0;
     right: 0;
     padding-bottom: 80px;
+    margin-bottom: 50px;
 }
 
 #content.active {

@@ -172,11 +172,33 @@ class DashboardController extends Controller {
         }
         $modelPin = new Pin;
         $modelPengiriman = new Pengiriman;
+        $modelMember = new Member;
         $getTotalPin = $modelPin->getTotalPinMember($dataUser);
         $getTotalPinTerkirim = $modelPengiriman->getCekPinTuntasTerkirim($dataUser);
+        $kanan = 0;
+        if($dataUser->kanan_id != null){
+            $downlineKanan = $dataUser->upline_detail.',['.$dataUser->id.']'.',['.$dataUser->kanan_id.']';
+            if($dataUser->upline_detail == null){
+                $downlineKanan = '['.$dataUser->id.']'.',['.$dataUser->kanan_id.']';
+            }
+            $kanan = $modelMember->getCountMyDownline($downlineKanan) + 1;
+        }
+        $kiri = 0;
+        if($dataUser->kiri_id != null){
+            $downlineKiri = $dataUser->upline_detail.',['.$dataUser->id.']'.',['.$dataUser->kiri_id.']';
+            if($dataUser->upline_detail == null){
+                $downlineKiri = '['.$dataUser->id.']'.',['.$dataUser->kiri_id.']';
+            }
+            $kiri = $modelMember->getCountMyDownline($downlineKiri) + 1;
+        }
+        $dataNetworking = (object) array(
+            'kanan' => $kanan,
+            'kiri' => $kiri,
+        );
         return view('member.home.networking')
                     ->with('dataPin', $getTotalPin)
                     ->with('dataTerkirim', $getTotalPinTerkirim)
+                    ->with('dataAll', $dataNetworking)
                     ->with('dataUser', $dataUser);
     }
     

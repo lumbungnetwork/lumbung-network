@@ -117,6 +117,27 @@
                     $total = $sum_pin_masuk - $sum_pin_keluar;
                 ?>
                     <div class="rounded-lg bg-white p-3 mb-3">
+                        <h6 class="mb-3">Data Networking</h6>
+                        <div class="row">
+                            <div class="col-5">
+                                <p class="f-14">Jml Sponsor</p>
+                            </div>
+                            <div class="col-5">
+                                <h6 class="text-warning"> {{$dataUser->total_sponsor}} </h6>
+                            </div>
+                            <div class="col-5">
+                                <p class="f-14">Jml Kiri</p>
+                            </div>
+                            <div class="col-5">
+                                <h6 class="text-warning"> {{$dataAll->kiri}}</h6>
+                            </div>
+                            <div class="col-5">
+                                <p class="f-14">Jml Kanan</p>
+                            </div>
+                            <div class="col-5">
+                                <h6 class="text-warning"> {{$dataAll->kanan}} </h6>
+                            </div>
+                        </div>
                         <h6 class="mb-3">Subscription PIN</h6>
                         <div class="row">
                             <div class="col-5">
