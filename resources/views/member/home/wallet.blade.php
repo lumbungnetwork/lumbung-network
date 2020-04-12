@@ -54,7 +54,7 @@
                             </div>
                             <div class="col-6 mb-3">
                                 <div class="rounded-lg shadow-sm p-2">
-                                    <p class="f-12">
+                                    <p>
                                         Proses Transfer:
                                     </p>
                                     <h6 class="text-warning">Rp {{number_format($dataAll->total_tunda + $dataAll->fee_tunda, 0, ',', '.')}}</h6>
@@ -62,7 +62,7 @@
                             </div>
                             <div class="col-6 mb-3">
                                 <div class="rounded-lg shadow-sm p-2">
-                                    <p class="f-12">
+                                    <p>
                                         Total Ditransfer:
                                     </p>
                                     <h6 class="text-warning">Rp {{number_format($dataAll->total_wd + $dataAll->fee_tuntas, 0, ',', '.')}}</h6>
@@ -93,7 +93,7 @@
                         <div class="row">
                             <div class="col-6 mb-3">
                                 <div class="rounded-lg shadow-sm p-2">
-                                    <p class="f-12">
+                                    <p>
                                         Proses Konversi:
                                     </p>
                                     <h6 class="text-warning">Rp {{number_format($dataAll->total_tunda_eidr + $dataAll->fee_tunda_eidr, 0, ',', '.')}}</h6>
@@ -101,7 +101,7 @@
                             </div>
                             <div class="col-6 mb-3">
                                 <div class="rounded-lg shadow-sm p-2">
-                                    <p class="f-12">
+                                    <p>
                                         Total Dikonversi:
                                     </p>
                                     <h6 class="text-warning">Rp {{number_format($dataAll->total_wd_eidr + $dataAll->fee_tuntas_eidr, 0, ',', '.')}}</h6>
@@ -155,6 +155,32 @@
                                             <i class="mdi mdi-axis-arrow icon-menu"></i>
                                         </div>
                                         <dd>Pairing</dd>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <div class="rounded-lg shadow-sm p-2">
+                                    <p>
+                                        Saldo Bonus Royalti:
+                                    </p>
+                                    <?php
+                                        $saldoRO = $dataAll->total_bonus_ro - $dataAll->total_wd_ro - $dataAll->total_tunda_ro - $dataAll->total_fee_admin_ro;
+                                        if($saldo < 0){
+                                            $saldo = 0;
+                                        }
+                                    ?>
+                                    <h6 class="text-warning">Rp {{number_format($saldoRO, 0, ',', '.')}}</h6>
+                                </div>
+                            </div>
+                            <div class="col-3 mb-3">
+                                <a href="{{ URL::to('/') }}/m/req/wd-royalti" class="text-decoration-none">
+                                    <div class="rounded icon-ppob text-center">
+                                        <div class="box-icon bg-green text-center">
+                                            <i class="mdi mdi-console-network-outline icon-menu"></i>
+                                        </div>
+                                        <dd>Withdraw Royalti</dd>
                                     </div>
                                 </a>
                             </div>
