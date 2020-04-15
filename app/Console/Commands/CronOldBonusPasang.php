@@ -31,13 +31,26 @@ class CronOldBonusPasang extends Command {
         $modelBonus = new Bonus;
         $modelHistoryIndex = New Historyindex;
         $hari_ke = $this->argument('hari');
-        $dateStart = '2019-09-03';
+        $dateStart = '2020-04-06';
         $date = $dateStart;
         if($hari_ke > 0){
             $date = date('Y-m-d', strtotime('+'.$hari_ke.' day', strtotime($dateStart)));
         }
         if($date == date('Y-m-d')){
             dd('date stop here');
+        }
+        if($hari_ke == 1){ //sementara
+            DB::table('bonus_member')
+                    ->where('type', '=', 2)
+                    ->where('poin_type', '=', 1)
+                    ->whereDate('bonus_date', '>', $dateStart)
+                    ->delete();
+            DB::table('binary_history')
+                    ->whereDate('binary_date', '>', $dateStart)
+                    ->delete();
+            DB::table('history_index')
+                    ->whereDate('index_date', '>', $dateStart)
+                    ->delete();
         }
         $cekHistoryIndex = $modelHistoryIndex->getHistoryIndex($date);
         if($cekHistoryIndex != null){
