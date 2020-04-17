@@ -21,6 +21,7 @@ Route::prefix('/')->group(function () {
         //admin
         Route::get('/adm/add-admin', 'Admin\MasterAdminController@getAddAdmin')->name('addCrew')->middleware('auth');
         Route::post('/adm/new-admin', 'Admin\MasterAdminController@postAddAdmin')->middleware('auth');
+        Route::post('/adm/admin', 'Admin\MasterAdminController@postEditAdmin')->middleware('auth');
 
         //setting
         Route::get('/adm/add/pin-setting', 'Admin\MasterAdminController@getAddPinSetting')->name('addSettingPin')->middleware('auth');

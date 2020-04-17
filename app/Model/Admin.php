@@ -52,6 +52,15 @@ class Admin extends Model {
         return $sql;
     }
     
+    public function getCekNewUsernameEdit($username, $id){
+        $sql = DB::table('users')
+                    ->selectRaw('id')
+                    ->where('users.email', '=', $username)
+                    ->where('users.id', '!=', $id)
+                    ->first();
+        return $sql;
+    }
+    
     public function getAdminById($id){
         $sql = DB::table('users')
                     ->selectRaw('id, email, name, user_type')

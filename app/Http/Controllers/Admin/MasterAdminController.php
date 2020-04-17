@@ -86,6 +86,46 @@ class MasterAdminController extends Controller {
                 ->with('messageclass', 'success');
     }
     
+    public function postEditAdmin(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($request->email == null || $request->password == null || $request->repassword == null || $request->name == null){
+            return redirect()->route('addCrew')
+                ->with('message', 'Data tidak boleh kosong.')
+                ->with('messageclass', 'danger');
+        }
+        if($request->password != $request->repassword){
+            return redirect()->route('addCrew')
+                ->with('message', 'Password harus sama dengan ketik ulang password')
+                ->with('messageclass', 'danger');
+        }
+        $modelAdmin = New Admin;
+        $cekUsername = $modelAdmin->getCekNewUsernameEdit($request->email, $request->cekId);
+         if($cekUsername != null){
+            return redirect()->route('addCrew')
+                ->with('message', 'gunakan username/email yang lain')
+                ->with('messageclass', 'danger');
+        }
+        $dataUpdate = array(
+            'user_code' => $request->email,
+            'password' => bcrypt($request->password),
+            'name' => $request->name,
+            'email' => $request->email,
+        );
+        $modelAdmin->getUpdateMember('id', $request->cekId, $dataUpdate);
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => 'POST /adm/admin user_code = '.$request->email
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
+        return redirect()->route('addCrew')
+                ->with('message', 'Berhasil edit admin')
+                ->with('messageclass', 'success');
+    }
+    
     //Setting
     public function getAddPinSetting(){
         $dataUser = Auth::user();
