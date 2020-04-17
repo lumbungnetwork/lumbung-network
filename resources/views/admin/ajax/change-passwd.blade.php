@@ -33,6 +33,7 @@
                     </div>
                 </div>
                 <input type="hidden" name="cekId" value="{{$getData->id}}" >
+                <input type="hidden" name="user_code" value="{{$getData->user_code}}" >
             </div>
         @else 
             Tidak ada data

@@ -1710,7 +1710,7 @@ class MasterAdminController extends Controller {
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listMember')
-                    ->with('message', 'Berhasil')
+                    ->with('message', 'Password username '.$request->user_code.' berhasil diubah')
                     ->with('messageclass', 'success');
     }
     

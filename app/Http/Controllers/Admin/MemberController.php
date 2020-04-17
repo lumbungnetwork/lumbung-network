@@ -2477,7 +2477,7 @@ class MemberController extends Controller {
         if($dataUser->package_id == null){
             return redirect()->route('m_newPackage');
         }
-        if($dataUser->is_stockist == 0){
+        if($dataUser->is_vendor == 0){
             return redirect()->route('m_SearchVendor');
         }
         $modelSales = New Sales;
@@ -2523,7 +2523,7 @@ class MemberController extends Controller {
         if($dataUser->package_id == null){
             return redirect()->route('m_newPackage');
         }
-        if($dataUser->is_stockist == 0){
+        if($dataUser->is_vendor == 0){
             return redirect()->route('m_SearchVendor');
         }
         $modelSales = New Sales;
@@ -2544,7 +2544,7 @@ class MemberController extends Controller {
         if($dataUser->package_id == null){
             return redirect()->route('m_newPackage');
         }
-        if($dataUser->is_stockist == 0){
+        if($dataUser->is_vendor == 0){
             return redirect()->route('m_SearchVendor');
         }
         $modelSales = New Sales;
@@ -2576,7 +2576,7 @@ class MemberController extends Controller {
         if($dataUser->package_id == null){
             return redirect()->route('m_newPackage');
         }
-        if($dataUser->is_stockist == 0){
+        if($dataUser->is_vendor == 0){
             return redirect()->route('m_SearchVendor');
         }
         $modelSales = New Sales;
@@ -2627,7 +2627,7 @@ class MemberController extends Controller {
         if($dataUser->package_id == null){
             return redirect()->route('m_newPackage');
         }
-        if($dataUser->is_stockist == 0){
+        if($dataUser->is_vendor == 0){
             return redirect()->route('m_SearchVendor');
         }
         $modelSales = New Sales;
@@ -2937,7 +2937,7 @@ class MemberController extends Controller {
             return redirect()->route('m_newPackage');
         }
         if($dataUser->is_vendor == 0){
-            return redirect()->route('m_SearchStockist');
+            return redirect()->route('m_SearchVendor');
         }
         $modelSales = New Sales;
         $id_master = $request->master_id;
