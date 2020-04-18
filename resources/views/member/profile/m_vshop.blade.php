@@ -91,7 +91,7 @@
                                             <p>{{$row->alamat}} {{$row->kelurahan}} {{$row->kecamatan}} {{$row->kota}}</p>
                                             <p>{{$row->hp}}</p>
                                             <p>{{$row->full_name}}</p>
-                                            <p><a class="btn btn-success btn-sm waves-effect waves-light" href="{{ URL::to('/') }}/m/shoping/{{$row->id}}"> <span>Shop</span> </a></p>
+                                            <p><a class="btn btn-success btn-sm waves-effect waves-light" href="{{ URL::to('/') }}/m/vshoping/{{$row->id}}"> <span>Shop</span> </a></p>
                                         </div>
                                     </div>
                                 </div>
@@ -107,7 +107,7 @@
                                             <p>{{$row->alamat}} {{$row->kelurahan}} {{$row->kecamatan}} {{$row->kota}}</p>
                                             <p>{{$row->hp}}</p>
                                             <p>{{$row->full_name}}</p>
-                                            <p><a class="btn btn-success btn-sm waves-effect waves-light" href="{{ URL::to('/') }}/m/shoping/{{$row->id}}"> <span>Shop</span> </a></p>
+                                            <p><a class="btn btn-success btn-sm waves-effect waves-light" href="{{ URL::to('/') }}/m/vshoping/{{$row->id}}"> <span>Shop</span> </a></p>
                                         </div>
                                     </div>
                                 </div>
@@ -123,7 +123,7 @@
                                             <p>{{$row->alamat}} {{$row->kelurahan}} {{$row->kecamatan}} {{$row->kota}}</p>
                                             <p>{{$row->hp}}</p>
                                             <p>{{$row->full_name}}</p>
-                                            <p><a class="btn btn-success btn-sm waves-effect waves-light" href="{{ URL::to('/') }}/m/shoping/{{$row->id}}"> <span>Shop</span> </a></p>
+                                            <p><a class="btn btn-success btn-sm waves-effect waves-light" href="{{ URL::to('/') }}/m/vshoping/{{$row->id}}"> <span>Shop</span> </a></p>
                                         </div>
                                     </div>
                                 </div>
@@ -140,7 +140,7 @@
                                         <p>{{$row->alamat}} {{$row->kelurahan}} {{$row->kecamatan}} {{$row->kota}}</p>
                                         <p>{{$row->hp}}</p>
                                         <p>{{$row->full_name}}</p>
-                                        <p><a class="btn btn-success btn-sm waves-effect waves-light" href="{{ URL::to('/') }}/m/shoping/{{$row->id}}"> <span>Shop</span> </a></p>
+                                        <p><a class="btn btn-success btn-sm waves-effect waves-light" href="{{ URL::to('/') }}/m/vshoping/{{$row->id}}"> <span>Shop</span> </a></p>
                                     </div>
                                     <hr>
                                 @endforeach
