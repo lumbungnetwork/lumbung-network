@@ -127,6 +127,8 @@ Route::prefix('/')->group(function () {
         Route::get('/adm/list/req-input-vstock', 'Admin\MasterAdminController@getAllRequestMemberInputVStock')->name('adm_listReqInputVStock')->middleware('auth');
         Route::post('/adm/req-input-vstock', 'Admin\MasterAdminController@postRequestMemberInputVStock')->middleware('auth');
         Route::post('/adm/reject-input-vstock', 'Admin\MasterAdminController@postRejectMemberInputVStock')->middleware('auth');
+        Route::get('/adm/vendor/stock/{id}', 'Admin\MasterAdminController@getMemberVendorStock')->name('adm_memberVendorStock')->middleware('auth');
+        Route::post('/adm/remove-vendor', 'Admin\MasterAdminController@postRemoveMemberVendor')->middleware('auth');
         
 
         //Ajax
@@ -171,7 +173,7 @@ Route::prefix('/')->group(function () {
         Route::get('/ajax/rm/vpurchase/{id}', 'Admin\AjaxController@getRemoveVendorPurchaseId')->middleware('auth');
          Route::get('/ajax/adm/cek/req-vendor/{id}', 'Admin\AjaxController@getCekRequestMemberVendor')->middleware('auth');
         Route::get('/ajax/adm/reject/req-vendor/{id}', 'Admin\AjaxController@getCekRejectMemberVendor')->middleware('auth');
-//        Route::get('/ajax/adm/remove/stockist/{id}', 'Admin\AjaxController@getCekRemoveMemberStockist')->middleware('auth');
+        Route::get('/ajax/adm/remove/vendor/{id}', 'Admin\AjaxController@getCekRemoveMemberVendor')->middleware('auth');
 //        Route::get('/ajax/adm/edit/stockist/{id}', 'Admin\AjaxController@getCekEditMemberStockist')->middleware('auth');
         Route::get('/ajax/adm/cek/req-input-vstock/{id}/{user_id}', 'Admin\AjaxController@getCekRequestMemberInputVStock')->middleware('auth');
         Route::get('/ajax/adm/reject/req-input-vstock/{id}/{user_id}', 'Admin\AjaxController@getCekRejectMemberInputVStock')->middleware('auth');

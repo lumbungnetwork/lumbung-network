@@ -96,9 +96,9 @@
                                                 </td>
                                                 <td>{{date('d F Y', strtotime($row->vendor_at))}}</td>
                                                 <td>
-                                                    <a class="text-info" href="{{ URL::to('/') }}/adm/stockist/stock/{{$row->id}}">stock</a>
+                                                    <a class="text-info" href="{{ URL::to('/') }}/adm/vendor/stock/{{$row->id}}">stock</a>
                                                     &nbsp;&nbsp;
-                                                    <a rel="tooltip"  data-toggle="modal" data-target="#popUp1" class="text-danger" href="{{ URL::to('/') }}/ajax/adm/remove/stockist/{{$row->id}}">hapus</a>
+                                                    <a rel="tooltip"  data-toggle="modal" data-target="#popUp1" class="text-danger" href="{{ URL::to('/') }}/ajax/adm/remove/vendor/{{$row->id}}">hapus</a>
                                                 </td>
                                             </tr>
                                         @endforeach

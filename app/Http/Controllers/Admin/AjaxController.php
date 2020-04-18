@@ -498,6 +498,14 @@ class AjaxController extends Controller {
                 ->with('getData', $getData);
     }
     
+    public function getCekRemoveMemberVendor($id){
+        $modelMember = New Member;
+        $getData = $modelMember->getCekMemberVendorToRemove($id);
+        return view('admin.ajax.cek_remove_vendor')
+                ->with('headerTitle', 'Remove Member Vendor')
+                ->with('getData', $getData);
+    }
+    
     public function getCekRequestMemberInputVStock($id, $user_id){
         $modelSales = New Sales;
         $getData = $modelSales->getMemberReqInputVStockistItem($id);

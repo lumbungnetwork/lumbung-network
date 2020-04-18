@@ -2521,5 +2521,82 @@ class MasterAdminController extends Controller {
                     ->with('messageclass', 'success');
     }
     
+    public function getMemberVendorStock($id){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelMember = New Member;
+        $getDataUser = $modelMember->getExplorerByID($id);
+        $modelSales = New Sales;
+        $data = $modelSales->getMemberPurchaseVendorShoping($getDataUser->id);
+        $getData = array();
+        if($data != null){
+            foreach($data as $row){
+                $jml_keluar = $modelSales->getSumStockVendor($getDataUser->id, $row->id);
+                $total_sisa = $row->total_qty - $jml_keluar;
+                if($total_sisa < 0){
+                    $total_sisa = 0;
+                }
+                $hapus = 0;
+                if($total_sisa == 0){
+                    if($row->deleted_at != null){
+                        $hapus = 1;
+                    }
+                }
+                $getData[] = (object) array(
+                    'total_qty' => $row->total_qty,
+                    'name' => $row->name,
+                    'code' => $row->code,
+                    'ukuran' => $row->ukuran,
+                    'image' => $row->image,
+                    'member_price' => $row->member_price,
+                    'vendor_price' => $row->vendor_price,
+                    'id' => $row->id,
+                    'jml_keluar' => $jml_keluar,
+                    'total_sisa' => $total_sisa,
+                    'hapus' => $hapus,
+                    'purchase_id' => $row->purchase_id,
+                );
+            }
+        }
+        return view('admin.member.stock-vproduct')
+                ->with('headerTitle', 'Stock Vendor Product')
+                ->with('getData', $getData)
+                ->with('getStockist', $getDataUser)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postRemoveMemberVendor(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelMember = New Member;
+        $date =  date('Y-m-d H:i:s');
+        $dataUpdate = array(
+            'status' => 10,
+            'deleted_at' => $date,
+            'submit_by' => $dataUser->id,
+            'submit_at' => $date,
+        );
+        $modelMember->getUpdateVendor('id', $request->id, $dataUpdate);
+        $dataUpdateUser = array(
+            'is_vendor' => 0,
+        );
+        $modelMember->getUpdateUsers('id', $request->id_user, $dataUpdateUser);
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => 'hapus member vendor'
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
+        return redirect()->route('adm_listMemberVendor')
+                    ->with('message', 'vendor '.$request->user_code.' dihapus kememberannya')
+                    ->with('messageclass', 'success');
+    }
+    
 
 }

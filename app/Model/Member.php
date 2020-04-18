@@ -742,6 +742,18 @@ class Member extends Model {
         return $sql;
     }
     
+    public function getCekMemberVendorToRemove($id){
+        $sql = DB::table('vendor_request')
+                    ->join('users', 'users.id', '=', 'vendor_request.user_id')
+                    ->selectRaw('vendor_request.id, users.user_code, users.total_sponsor, users.id as id_user, users.hp')
+                    ->where('users.id', '=', $id)
+                    ->where('users.user_type', '=', 10)
+                    ->where('users.is_active', '=', 1)
+                    ->where('users.is_vendor', '=', 1)
+                    ->first();
+        return $sql;
+    }
+    
     public function getAllMemberReqSotckist(){
         $sql = DB::table('stockist_request')
                     ->join('users', 'users.id', '=', 'stockist_request.user_id')
@@ -1027,6 +1039,13 @@ class Member extends Model {
                     ->where('user_type', '=', 10)
                     ->where('is_active', '=', 1)
                     ->where('id', '=', $id)
+                    ->first();
+        return $sql;
+    }
+    
+    public function getCekRequestSotckistBalikinData($id){
+        $sql = DB::table('stockist_request')
+                    ->where('user_id', '=', $id)
                     ->first();
         return $sql;
     }
