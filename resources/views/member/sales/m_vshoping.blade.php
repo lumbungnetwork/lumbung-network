@@ -66,7 +66,7 @@
                         <div class="col-xl-12 col-xs-12">
                             <form action="/m/vshoping" method="POST">
                                 {{ csrf_field() }}
-                                <input type="hidden" name="stockist_id" value="{{$id}}">
+                                <input type="hidden" name="vendor_id" value="{{$id}}">
                                 <div id="smartcart" class="text-center"></div>
                             </form>
                         </div>

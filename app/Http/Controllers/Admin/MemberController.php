@@ -2728,7 +2728,6 @@ class MemberController extends Controller {
         }
         $modelSales = New Sales;
         $arrayLog = json_decode($request->cart_list, true);
-//        dd($arrayLog);
         $user_id = $dataUser->id;
         $vendor_id = $request->vendor_id;
         $is_vendor = 0;
