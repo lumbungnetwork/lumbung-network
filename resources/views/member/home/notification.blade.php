@@ -35,10 +35,22 @@
                         <div class="alert alert-warning" role="alert">
                             <div class="row">
                                 <div class="col-9">
-                                    Konﬁrmasi Belanja Member ({{count($getDataMemberBuy)}})
+                                    Konﬁrmasi Stockist Belanja Member ({{count($getDataMemberBuy)}})
                                 </div>
                                 <div class="col-3"> 
                                     <a href="{{ URL::to('/') }}/m/stockist-report" class="btn btn-sm btn-success rounded-pill"> Action </a>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+                        @if($getDataVendorMemberBuy != null)
+                        <div class="alert alert-warning" role="alert">
+                            <div class="row">
+                                <div class="col-9">
+                                    Konﬁrmasi Vendor Belanja Member ({{count($getDataVendorMemberBuy)}})
+                                </div>
+                                <div class="col-3"> 
+                                    <a href="{{ URL::to('/') }}/m/vendor-report" class="btn btn-sm btn-success rounded-pill"> Action </a>
                                 </div>
                             </div>
                         </div>

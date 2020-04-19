@@ -60,49 +60,49 @@ class DashboardController extends Controller {
         if($dataUser->is_active == 1){
             $getCheckNewOrder = $modelMemberPackage->getCountMemberPackageInactive($dataUser);
         }
-        $totalBonus = $modelBonus->getTotalBonus($dataUser);
-        $totalWD = $modelWD->getTotalDiTransfer($dataUser);
-        $totalWDeIDR = $modelWD->getTotalDiTransfereIDR($dataUser);
-        $getMyPackage = $modelPackage->getPackageId($dataUser->package_id);
-        $stock_wd = 0;
-        if($getMyPackage != null){
-            $stock_wd = $getMyPackage->stock_wd;
-        }
+//        $totalBonus = $modelBonus->getTotalBonus($dataUser);
+//        $totalWD = $modelWD->getTotalDiTransfer($dataUser);
+//        $totalWDeIDR = $modelWD->getTotalDiTransfereIDR($dataUser);
+//        $getMyPackage = $modelPackage->getPackageId($dataUser->package_id);
+//        $stock_wd = 0;
+//        if($getMyPackage != null){
+//            $stock_wd = $getMyPackage->stock_wd;
+//        }
         $kanan = 0;
-        if($dataUser->kanan_id != null){
-            $downlineKanan = $dataUser->upline_detail.',['.$dataUser->id.']'.',['.$dataUser->kanan_id.']';
-            if($dataUser->upline_detail == null){
-                $downlineKanan = '['.$dataUser->id.']'.',['.$dataUser->kanan_id.']';
-            }
-            $kanan = $modelMember->getCountMyDownline($downlineKanan) + 1;
-        }
+//        if($dataUser->kanan_id != null){
+//            $downlineKanan = $dataUser->upline_detail.',['.$dataUser->id.']'.',['.$dataUser->kanan_id.']';
+//            if($dataUser->upline_detail == null){
+//                $downlineKanan = '['.$dataUser->id.']'.',['.$dataUser->kanan_id.']';
+//            }
+//            $kanan = $modelMember->getCountMyDownline($downlineKanan) + 1;
+//        }
         $kiri = 0;
-        if($dataUser->kiri_id != null){
-            $downlineKiri = $dataUser->upline_detail.',['.$dataUser->id.']'.',['.$dataUser->kiri_id.']';
-            if($dataUser->upline_detail == null){
-                $downlineKiri = '['.$dataUser->id.']'.',['.$dataUser->kiri_id.']';
-            }
-            $kiri = $modelMember->getCountMyDownline($downlineKiri) + 1;
-        }
+//        if($dataUser->kiri_id != null){
+//            $downlineKiri = $dataUser->upline_detail.',['.$dataUser->id.']'.',['.$dataUser->kiri_id.']';
+//            if($dataUser->upline_detail == null){
+//                $downlineKiri = '['.$dataUser->id.']'.',['.$dataUser->kiri_id.']';
+//            }
+//            $kiri = $modelMember->getCountMyDownline($downlineKiri) + 1;
+//        }
         $downline_saya = '['.$dataUser->id.']';
         $total_tdkAktif = $modelMember->getCountMemberActivate($downline_saya, 0);
         $dataDashboard = (object) array(
-            'total_bonus' => floor($totalBonus->total_bonus),
-            'total_wd' => $totalWD->total_wd,
-            'total_tunda' => $totalWD->total_tunda,
-            'total_fee_admin' => $totalWD->total_fee_admin,
-            'fee_tuntas' => $totalWD->fee_tuntas,
-            'fee_tunda' => $totalWD->fee_tunda,
-            'total_wd_eidr' => $totalWDeIDR->total_wd,
-            'total_tunda_eidr' => $totalWDeIDR->total_tunda,
-            'total_fee_admin_eidr' => $totalWDeIDR->total_fee_admin,
-            'fee_tuntas_eidr' => $totalWDeIDR->fee_tuntas,
-            'fee_tunda_eidr' => $totalWDeIDR->fee_tunda,
-            'stock_wd' => $stock_wd,
+//            'total_bonus' => floor($totalBonus->total_bonus),
+//            'total_wd' => $totalWD->total_wd,
+//            'total_tunda' => $totalWD->total_tunda,
+//            'total_fee_admin' => $totalWD->total_fee_admin,
+//            'fee_tuntas' => $totalWD->fee_tuntas,
+//            'fee_tunda' => $totalWD->fee_tunda,
+//            'total_wd_eidr' => $totalWDeIDR->total_wd,
+//            'total_tunda_eidr' => $totalWDeIDR->total_tunda,
+//            'total_fee_admin_eidr' => $totalWDeIDR->total_fee_admin,
+//            'fee_tuntas_eidr' => $totalWDeIDR->fee_tuntas,
+//            'fee_tunda_eidr' => $totalWDeIDR->fee_tunda,
+//            'stock_wd' => $stock_wd,
             'kanan' => $kanan,
             'kiri' => $kiri,
             'member_tdk_aktif' => $total_tdkAktif,
-            'paket_name' => $getMyPackage->name
+//            'paket_name' => $getMyPackage->name
         );
         
         $getMyPeringkat = $modelBonusSetting->getPeringkatByType($dataUser->member_type);
@@ -130,6 +130,7 @@ class DashboardController extends Controller {
             'sales' => $mySales
         );
         $getDataMemberBuy = $modelSales->getMemberSalesBuy($dataUser->id);
+        $getDataVendorMemberBuy = $modelSales->getMemberVSalesBuy($dataUser->id);
         $getMonth = $modelSales->getThisMonth();
         $getData = $modelSales->getMemberMasterSalesHistory($dataUser->id, $getMonth);
         $getDataVSales = $modelSales->getMemberVMasterSalesHistory($dataUser->id, $getMonth);
@@ -156,6 +157,7 @@ class DashboardController extends Controller {
                     ->with('dataSponsor', $dataSponsor)
                     ->with('dataMy', $dataMy)
                     ->with('getDataMemberBuy', $getDataMemberBuy)
+                    ->with('getDataVendorMemberBuy', $getDataVendorMemberBuy)
                     ->with('sum', $sum)
                     ->with('vsum', $vsum)
                     ->with('dataUser', $dataUser);
@@ -288,9 +290,11 @@ class DashboardController extends Controller {
             $getCheckNewOrder = $modelMemberPackage->getCountMemberPackageInactive($dataUser);
         }
         $getDataMemberBuy = $modelSales->getMemberSalesBuy($dataUser->id);
+        $getDataVendorMemberBuy = $modelSales->getMemberVSalesBuy($dataUser->id);
         return view('member.home.notification')
                     ->with('dataOrder', $getCheckNewOrder)
                     ->with('getDataMemberBuy', $getDataMemberBuy)
+                    ->with('getDataVendorMemberBuy', $getDataVendorMemberBuy)
                     ->with('dataUser', $dataUser);
     }
     

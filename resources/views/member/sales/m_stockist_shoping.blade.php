@@ -19,7 +19,7 @@
                 <div class="col-xs-12 col-md-6 col-lg-6 col-xl-8">
                     <div class="card-box tilebox-one">
                         @if ( Session::has('message') )
-                            <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible fade in" role="alert">
+                            <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible" role="alert">
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">×</span>
                                 </button>

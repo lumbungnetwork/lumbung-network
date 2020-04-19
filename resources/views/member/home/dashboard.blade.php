@@ -109,7 +109,11 @@
                                     if($getDataMemberBuy != null){
                                         $countDataMemberBuy = count($getDataMemberBuy);
                                     }
-                                    $totalNotif = $dataOrder + $countDataMemberBuy;
+                                    $countDataVMemberBuy = 0;
+                                    if($getDataVendorMemberBuy != null){
+                                        $countDataVMemberBuy = count($getDataVendorMemberBuy);
+                                    }
+                                    $totalNotif = $dataOrder + $countDataMemberBuy + $countDataVMemberBuy;
                                 ?>
                                 @if($totalNotif > 0)
                                 <div class="row">

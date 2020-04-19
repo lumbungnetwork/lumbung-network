@@ -1022,6 +1022,23 @@ class Sales extends Model {
         return $return;
     }
     
+    public function getMemberVSalesBuy($id){
+        $sql = DB::table('vmaster_sales')
+                    ->join('users', 'vmaster_sales.user_id', '=', 'users.id')
+                    ->selectRaw('vmaster_sales.sale_date, users.user_code, vmaster_sales.total_price as sale_price, '
+                            . 'vmaster_sales.id, vmaster_sales.status, vmaster_sales.buy_metode,'
+                            . 'vmaster_sales.royalti_metode')
+                    ->where('vmaster_sales.vendor_id', '=', $id)
+                    ->where('vmaster_sales.status', '=', 1)
+                    ->whereNull('vmaster_sales.deleted_at')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
     public function getMemberMasterSalesMonthly($id){
         $start_day = date("Y-m-01");
         $sql = DB::table('master_sales')

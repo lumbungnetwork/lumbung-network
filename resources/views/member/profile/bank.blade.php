@@ -20,7 +20,7 @@
                     <div class="rounded-lg bg-white p-3 mb-3">
                         <h6 class="mb-3">Bank</h6>
                         @if ( Session::has('message') )
-                            <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible fade in" role="alert">
+                            <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible" role="alert">
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">×</span>
                                 </button>

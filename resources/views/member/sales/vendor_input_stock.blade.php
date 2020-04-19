@@ -74,7 +74,7 @@
                         
                         <div class="col-xs-12 col-md-6 col-lg-6 col-xl-12">
                             <div class="card-box tilebox-one">
-                                    <div class="alert alert-warning alert-dismissible fade in" role="alert">
+                                    <div class="alert alert-warning alert-dismissible" role="alert">
                                         Tidak ada data stock
                                     </div>
                             </div>
