@@ -104,6 +104,14 @@
                     <div class="mt-min-10">
                         <div class="container">
                             <div class="rounded-lg bg-white shadow-sm p-3">
+                                @if ( Session::has('message') )
+                                    <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible" role="alert">
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                        {{  Session::get('message')    }} 
+                                    </div>
+                                @endif
                                 <?php
                                     $countDataMemberBuy = 0;
                                     if($getDataMemberBuy != null){

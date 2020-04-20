@@ -80,6 +80,7 @@
                             <div class="pull-xs-right">
                                 <input type="hidden" value="{{$getData->id}}" name="id_paket" id="id_paket">
                                 <button type="submit" class="btn btn-success"  id="submitBtn" data-toggle="modal" data-target="#confirmSubmit" onClick="inputSubmit()">Aktifasi</button>
+                                <button type="submit" class="btn btn-danger"  id="rejectBtn" data-toggle="modal" data-target="#rejectSubmit" onClick="rejectSubmit()">Reject</button>
                             </div>
                             <div class="clearfix"></div>
                         </div>
@@ -87,6 +88,10 @@
                 </div>
                 <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document" id="confirmDetail">
+                    </div>
+                </div>
+                <div class="modal fade" id="rejectSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document" id="rejectDetail">
                     </div>
                 </div>
             </div>
@@ -127,9 +132,23 @@
             });
         }
         
+        function rejectSubmit(){
+            var id_paket = $("#id_paket").val();
+            $.ajax({
+                type: "GET",
+                url: "{{ URL::to('/') }}/m/cek/reject-order?id_paket="+id_paket,
+                success: function(url){
+                    $("#rejectDetail" ).empty();
+                    $("#rejectDetail").html(url);
+                }
+            });
+        }
+        
         function confirmSubmit(){
             var dataInput = $("#form-add").serializeArray();
             $('#form-add').submit();
+            $('#tutupModal').remove();
+            $('#submit').remove();
         }
 
 </script>

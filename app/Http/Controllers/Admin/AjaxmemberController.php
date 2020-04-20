@@ -195,6 +195,32 @@ class AjaxmemberController extends Controller {
                         ->with('data', $data);
     }
     
+    public function getCekRejectOrderPackage(Request $request){
+        $dataUser = Auth::user();
+        $data = (object) array('id_paket' => $request->id_paket);
+        $modelPin = new Pin;
+        $modelMemberPackage = New Memberpackage;
+        $getData = $modelMemberPackage->getDetailMemberPackageInactive($request->id_paket, $dataUser);
+        $sisaPin = $modelPin->getTotalPinMember($dataUser);
+        $sum_pin_masuk = 0;
+        $sum_pin_keluar = 0;
+        if($sisaPin->sum_pin_masuk != null){
+            $sum_pin_masuk = $sisaPin->sum_pin_masuk;
+        }
+        if($sisaPin->sum_pin_keluar != null){
+            $sum_pin_keluar = $sisaPin->sum_pin_keluar;
+        }
+        $total = $sum_pin_masuk - $sum_pin_keluar;
+        $totalPinOrder = $getData->total_pin;
+        $lanjut = false;
+        if($total >= $totalPinOrder){
+            $lanjut = true;
+        }
+        return view('member.ajax.reject_order')
+                        ->with('lanjut', $lanjut)
+                        ->with('data', $data);
+    }
+    
     public function getCekAddBank(Request $request){
         $dataUser = Auth::user();
         $modelValidasi = New Validation;

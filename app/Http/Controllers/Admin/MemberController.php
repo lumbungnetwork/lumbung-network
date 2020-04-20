@@ -320,6 +320,30 @@ class MemberController extends Controller {
                         ->with('messageclass', 'success');
     }
     
+    public function postRejectPackage(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelMemberPackage = New Memberpackage;
+        $modelMember = New Member;
+        $getData = $modelMemberPackage->getDetailMemberPackageInactive($request->id_paket, $dataUser);
+        $dataUpdate = array(
+            'status' => 10
+        );
+        $modelMemberPackage->getUpdateMemberPackage('id', $getData->id, $dataUpdate);
+        $dataUpdateIsActive = array(
+            'is_login' => 0,
+            'sponsor_id' => null,
+            'deleted_at' => date('Y-m-d H:i:s')
+        );
+        $modelMember->getUpdateUsers('id', $getData->request_user_id, $dataUpdateIsActive);
+        return redirect()->route('mainDashboard')
+                        ->with('message', 'member baru di reject')
+                        ->with('messageclass', 'success');
+    }
+    
     public function getAddPin(){
         $dataUser = Auth::user();
         $onlyUser  = array(10);

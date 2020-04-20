@@ -228,6 +228,7 @@ Route::prefix('/')->group(function () {
         Route::get('/m/list/order-package', 'Admin\MemberController@getListOrderPackage')->name('m_listOrderPackage')->middleware('auth');
         Route::get('/m/detail/order-package/{paket_id}', 'Admin\MemberController@getDetailOrderPackage')->name('m_detailOrderPackage')->middleware('auth');
         Route::post('/m/confirm/package', 'Admin\MemberController@postActivatePackage')->middleware('auth');
+        Route::post('/m/reject/package', 'Admin\MemberController@postRejectPackage')->middleware('auth');
         Route::get('/m/add/upgrade', 'Admin\MemberController@getAddUpgrade')->name('m_newUpgrade')->middleware('auth');
         Route::post('/m/add/upgrade', 'Admin\MemberController@postAddUpgrade')->middleware('auth');
         Route::get('/m/add/repeat-order', 'Admin\MemberController@getAddRO')->name('m_newRO')->middleware('auth');
@@ -334,6 +335,7 @@ Route::prefix('/')->group(function () {
         Route::get('/m/cek/add-transaction', 'Admin\AjaxmemberController@postCekAddTransaction')->middleware('auth');
         Route::get('/m/cek/reject-transaction', 'Admin\AjaxmemberController@postCekRejectTransaction')->middleware('auth');
         Route::get('/m/cek/confirm-order', 'Admin\AjaxmemberController@getCekConfirmOrderPackage')->middleware('auth');
+        Route::get('/m/cek/reject-order', 'Admin\AjaxmemberController@getCekRejectOrderPackage')->middleware('auth');
         Route::get('/m/cek/add-bank', 'Admin\AjaxmemberController@getCekAddBank')->middleware('auth');
         Route::get('/m/activate/bank/{id}', 'Admin\AjaxmemberController@getActivateBank')->middleware('auth');
         Route::get('/m/cek/kirim-paket', 'Admin\AjaxmemberController@getCekConfirmKirimPaket')->middleware('auth');
