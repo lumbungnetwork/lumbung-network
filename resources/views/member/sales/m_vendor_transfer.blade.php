@@ -226,7 +226,7 @@
                 var id_master = $("#id_master").val();
                  $.ajax({
                      type: "GET",
-                     url: "{{ URL::to('/') }}/m/cek/reject-pembelian?id_master="+id_master,
+                     url: "{{ URL::to('/') }}/m/cek/reject-vpembelian?id_master="+id_master,
                      success: function(url){
                          $("#rejectDetail" ).empty();
                          $("#rejectDetail").html(url);

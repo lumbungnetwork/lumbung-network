@@ -3015,7 +3015,7 @@ class MemberController extends Controller {
             foreach($getSales as $row){
                 $cekAda = $modelSales->getLastVStockIDCekExist($row->purchase_id, $row->user_id, $row->vendor_id, $row->id);
                 if($cekAda != null){
-                    $modelSales->getDeleteStock($row->purchase_id, $row->id, $row->vendor_id, $row->user_id);
+                    $modelSales->getDeleteVStock($row->purchase_id, $row->id, $row->vendor_id, $row->user_id);
                 }
             }
         }
