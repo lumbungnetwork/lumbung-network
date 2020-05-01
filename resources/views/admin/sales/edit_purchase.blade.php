@@ -56,16 +56,16 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
+<!--                            <div class="row">
                                 <label class="col-md-2 col-form-label">Harga Stockist</label>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <input type="text" class="form-control allownumericwithoutdecimal" name="stockist_price" required="true" autocomplete="off" value="{{number_format($getData->stockist_price, 0, ',', '')}}">
                                     </div>
                                 </div>
-                            </div>
+                            </div>-->
                             <div class="row">
-                                <label class="col-md-2 col-form-label">Harga Member</label>
+                                <label class="col-md-2 col-form-label">Harga Jual</label>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <input type="text" class="form-control allownumericwithoutdecimal" name="member_price" required="true" autocomplete="off" value="{{number_format($getData->member_price, 0, ',', '')}}">

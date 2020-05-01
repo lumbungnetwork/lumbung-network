@@ -44,8 +44,9 @@
                                         <th>No</th>
                                         <th>Nama</th>
                                         <th>Ukuran Kemasan</th>
-                                        <th>Harga Stockist</th>
-                                        <th>Harga Member</th>
+                                        <!--<th>Harga Stockist</th>-->
+                                        <!--<th>Harga Member</th>-->
+                                        <th>Harga Jual</th>
                                         <th>Kode Produk</th>
                                         <th>Area</th>
                                         <th>###</th>
@@ -65,7 +66,7 @@
                                                 <td>{{$no}}</td>
                                                 <td>{{$row->name}}</td>
                                                 <td>{{$row->ukuran}}</td>
-                                                <td>{{number_format($row->stockist_price, 0, ',', ',')}}</td>
+                                                <!--<td>{{number_format($row->stockist_price, 0, ',', ',')}}</td>-->
                                                 <td>{{number_format($row->member_price, 0, ',', ',')}}</td>
                                                 <td>{{$row->code}}</td>
                                                 <td>{{$row->area}}</td>

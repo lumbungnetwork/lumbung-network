@@ -48,16 +48,16 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
+<!--                            <div class="row">
                                 <label class="col-md-2 col-form-label">Harga Stockist</label>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <input type="text" class="form-control" name="stockist_price" required="true" autocomplete="off">
                                     </div>
                                 </div>
-                            </div>
+                            </div>-->
                             <div class="row">
-                                <label class="col-md-2 col-form-label">Harga Member</label>
+                                <label class="col-md-2 col-form-label">Harga Jual</label>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <input type="text" class="form-control" name="member_price" required="true" autocomplete="off">

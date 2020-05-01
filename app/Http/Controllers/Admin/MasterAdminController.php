@@ -1082,7 +1082,7 @@ class MasterAdminController extends Controller {
         $dataInsert = array(
             'name' => $request->name,
             'ukuran' => $request->ukuran,
-            'stockist_price' => $request->stockist_price,
+            'stockist_price' => $request->member_price,
             'member_price' => $request->member_price,
             'code' => $request->code,
             'image' => $request->image,
@@ -1552,7 +1552,7 @@ class MasterAdminController extends Controller {
         $dataUpdate = array(
             'name' => $request->name,
             'ukuran' => $request->ukuran,
-            'stockist_price' => $request->stockist_price,
+            'stockist_price' => $request->member_price,
             'member_price' => $request->member_price,
             'code' => $request->code,
             'image' => $request->image,
@@ -2275,7 +2275,7 @@ class MasterAdminController extends Controller {
         $dataInsert = array(
             'name' => $request->name,
             'ukuran' => $request->ukuran,
-            'stockist_price' => $request->stockist_price,
+            'stockist_price' => $request->member_price,
             'member_price' => $request->member_price,
             'code' => $request->code,
             'image' => $request->image,
@@ -2383,7 +2383,7 @@ class MasterAdminController extends Controller {
         $dataUpdate = array(
             'name' => $request->name,
             'ukuran' => $request->ukuran,
-            'stockist_price' => $request->stockist_price,
+            'stockist_price' => $request->member_price,
             'member_price' => $request->member_price,
             'code' => $request->code,
             'image' => $request->image,
