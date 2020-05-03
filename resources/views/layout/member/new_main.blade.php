@@ -7,6 +7,7 @@
         <meta name="author" content="Lumbung Network IT">
         <link rel="shortcut icon" href="/image/icon2.png">
         <title>Lumbung Network</title>
+        <link rel="manifest" href="/manifest.json">
         <link href="{{ asset('asset_new/css/style.css') }}" rel="stylesheet" type="text/css" />
         <link href="https://fonts.googleapis.com/css?family=Poppins|Roboto&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.1/css/all.css">

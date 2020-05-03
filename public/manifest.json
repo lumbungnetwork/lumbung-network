@@ -1,0 +1,30 @@
+{
+  "short_name": "Lumbung",
+  "name": "Lumbung",
+  "theme_color": "#4A90E2",
+  "background_color": "#F7F8F9",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/image/icon_lumbung_1x.png",
+      "type": "image/png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "/image/icon_lumbung_2x.png",
+      "type": "image/png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "/image/icon_lumbung_3x.png",
+      "type": "image/png",
+      "sizes": "144x144"
+    },
+    {
+      "src": "/image/icon_lumbung_4x.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "start_url": "/?utm_source=launcher"
+}
