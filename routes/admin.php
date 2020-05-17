@@ -111,6 +111,10 @@ Route::prefix('/')->group(function () {
         Route::post('/adm/check/topup', 'Admin\MasterAdminController@postCheckTopup')->middleware('auth');
         Route::post('/adm/reject/topup', 'Admin\MasterAdminController@postRejectTopup')->middleware('auth');
         Route::get('/adm/history/topup', 'Admin\MasterAdminController@getAllHistoryTopup')->name('adm_listHistoryTopup')->middleware('auth');
+        Route::get('/adm/list/vpenjualan-reward', 'Admin\MasterAdminController@getAllVPenjualanReward')->name('adm_listVPenjualanReward')->middleware('auth');
+        Route::post('/adm/check/vpenjualan-reward', 'Admin\MasterAdminController@postCheckVPenjualanReward')->middleware('auth');
+        Route::post('/adm/reject/vpenjualan-reward', 'Admin\MasterAdminController@postRejectVPenjualanReward')->middleware('auth');
+        Route::get('/adm/history/vpenjualan-reward', 'Admin\MasterAdminController@getHistoryVPenjualanReward')->name('adm_historyVPenjualanReward')->middleware('auth');
         
         Route::get('/adm/list/vpurchases', 'Admin\MasterAdminController@getAllVendorPurchase')->name('adm_listVendorPurchases')->middleware('auth');
         Route::get('/adm/add/vpurchase', 'Admin\MasterAdminController@getAddVendorPurchase')->name('adm_addVendorPurchase')->middleware('auth');
@@ -161,7 +165,9 @@ Route::prefix('/')->group(function () {
         Route::get('/ajax/adm/cek/detail-belanja-reward/{id}', 'Admin\AjaxController@getCekDetailBelanjaReward')->middleware('auth');
         Route::get('/ajax/rm/purchase/{id}', 'Admin\AjaxController@getRemovePurchaseId')->middleware('auth');
         Route::get('/ajax/adm/cek/reject-penjualan-reward/{id}', 'Admin\AjaxController@getCekRejectPenjualanReward')->middleware('auth');
+        Route::get('/ajax/adm/cek/reject-vpenjualan-reward/{id}', 'Admin\AjaxController@getCekRejectVPenjualanReward')->middleware('auth');
         Route::get('/ajax/adm/cek/detail-penjualan-reward/{id}', 'Admin\AjaxController@getCekDetailPenjualanReward')->middleware('auth');
+        Route::get('/ajax/adm/cek/detail-vpenjualan-reward/{id}', 'Admin\AjaxController@getCekDetailVPenjualanReward')->middleware('auth');
         Route::get('/ajax/adm/change-data/member/{id}', 'Admin\AjaxController@getAdminChangeDataMember')->middleware('auth');
         Route::get('/ajax/adm/change-passwd/member/{id}', 'Admin\AjaxController@getAdminChangePasswordMember')->middleware('auth');
         Route::get('/ajax/adm/change-block/member/{id}', 'Admin\AjaxController@getAdminChangeBlockMember')->middleware('auth');
@@ -326,6 +332,7 @@ Route::prefix('/')->group(function () {
         
         Route::get('/m/explorer/statistic', 'Admin\MemberController@getExplorerStatistic')->name('m_ExplorerStatistic')->middleware('auth');
         Route::get('/m/explorer/user', 'Admin\MemberController@getExplorerUser')->name('m_ExplorerUser')->middleware('auth');
+        Route::get('/m/pobx/req-{paket}', 'Admin\MemberController@getMyRequestPOBX')->name('m_myReportRequestPulsa')->middleware('auth');
         
         //Ajax
         Route::get('/m/cek/add-sponsor', 'Admin\AjaxmemberController@postCekAddSponsor')->middleware('auth');
@@ -374,6 +381,8 @@ Route::prefix('/')->group(function () {
         Route::get('/m/cek/member-vpembayaran', 'Admin\AjaxmemberController@getCekMemberVPembayaran')->middleware('auth');
         Route::get('/m/cek/confirm-vpembelian', 'Admin\AjaxmemberController@postCekConfirmVPembelian')->middleware('auth');
         Route::get('/m/cek/reject-vpembelian', 'Admin\AjaxmemberController@postCekRejectVPembelian')->middleware('auth');
+        Route::get('/m/cek/confirm-vpenjualan-reward', 'Admin\AjaxmemberController@getCekConfirmVPenjualanReward')->middleware('auth');
         
         Route::get('/m/search/{type}', 'Admin\AjaxmemberController@getSearchByType')->middleware('auth');
+        Route::get('/m/cek/pulsa', 'Admin\AjaxmemberController@getCekPOBX')->middleware('auth');
 });

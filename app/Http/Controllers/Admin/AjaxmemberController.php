@@ -1122,6 +1122,101 @@ class AjaxmemberController extends Controller {
                         ->with('check', $canInsert)
                         ->with('data', $data);
     }
+    
+    public function getCekConfirmVPenjualanReward(Request $request){
+        $dataUser = Auth::user();
+        $canInsert = (object) array('can' => true, 'pesan' => '');
+        if($dataUser->is_tron == 0){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum mengisi data alamat tron');
+            return view('member.ajax.confirm_reward_vpenjualan')
+                        ->with('data', null)
+                        ->with('check', $canInsert);
+        }
+        $modelSales = New Sales;
+        $getData = $modelSales->getVendorPenjualanMonthYear($dataUser->id, $request->m, $request->y);
+         return view('member.ajax.confirm_reward_vpenjualan')
+                        ->with('data', $getData)
+                        ->with('check', $canInsert);
+    }
+    
+    public function getCekPOBX(Request $request){
+        $dataUser = Auth::user();
+        $modelValidasi = New Validation;
+        $modelBonus = new Bonus;
+        $modelWD = new Transferwd;
+        $modelMember = New Member;
+        $canInsert = (object) array('can' => true, 'pesan' => '');
+        if($request->jaringan == null){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum memilih jaringan');
+            return view('member.ajax.confirm_add_pulsa')
+                        ->with('check', $canInsert)
+                        ->with('data', null);
+        }
+        $jaringan = $request->jaringan;
+        $getDataAPI = $modelMember->getDataAPIMobilePulsa();
+        $username   = $getDataAPI->username;
+        $apiKey   = $getDataAPI->api_key;
+        $sign = md5($username.$apiKey.'pl');
+        $json = '{
+                    "commands" : "pricelist",
+                    "username" : "'.$username.'",
+                    "sign"     : "'.$sign.'", 
+                    "status" : "active"
+            }';
+        $url = $getDataAPI->master_url.'/v1/legacy/index/pulsa/'.$jaringan;
+        $cek = $modelMember->getAPIurlCheck($url, $json);
+        $arrayData = json_decode($cek, true);
+        $totalBonusAll = $modelBonus->getTotalBonusSponsor($dataUser);
+        if($totalBonusAll == 0){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Anda tidak memiliki bonus Sponsor');
+            return view('member.ajax.confirm_add_pulsa')
+                        ->with('check', $canInsert)
+                        ->with('data', null);
+        }
+        $totalWD = $modelWD->getTotalDiTransferByType($dataUser, 1);
+        $dataAll = (object) array(
+            'total_bonus_get' => $totalBonusAll,
+            'total_wd' => $totalWD->total_wd,
+            'total_tunda' => $totalWD->total_tunda,
+            'saldo' => (int) ($totalBonusAll - ($totalWD->total_wd + $totalWD->total_tunda )),
+            'wd_fee' => $totalWD->total_wd_admin_fee,
+            'wd_tunda_fee' => $totalWD->total_tunda_admin_fee,
+            'jaringan' => $jaringan, 
+            //'data_jaringan' => $arrayData['data']
+            'data_jaringan' => array(
+                array(
+                    "pulsa_code" => "htelkomsel1000",
+                    "pulsa_op" => "Telkomsel",
+                    "pulsa_nominal" => "1000",
+                    "pulsa_price" => 1900,
+                    "pulsa_type" => "pulsa",
+                    "masaaktif" => "3",
+                    "status" => "active"
+                ),
+                array(
+                    "pulsa_code" => "htelkomsel10000",
+                    "pulsa_op" => "Telkomsel",
+                    "pulsa_nominal" => "10000",
+                    "pulsa_price" => 10900,
+                    "pulsa_type" => "pulsa",
+                    "masaaktif" => "15",
+                    "status" => "active",
+                ),
+                array(
+                    "pulsa_code" => "htelkomsel20000",
+                    "pulsa_op" => "Telkomsel",
+                    "pulsa_nominal" => "20000",
+                    "pulsa_price" => 20500,
+                    "pulsa_type" => "pulsa",
+                    "masaaktif" => "30",
+                    "status" => "active",
+                )
+            )
+        );
+         return view('member.ajax.confirm_add_pulsa')
+                        ->with('check', $canInsert)
+                        ->with('data', $dataAll);
+    }
 
     
     

@@ -2598,5 +2598,122 @@ class MasterAdminController extends Controller {
                     ->with('messageclass', 'success');
     }
     
+    public function getAllVPenjualanReward(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = New Bonus;
+        $getData = $modelBonus->getAdminAllVendorPenjualanReward();
+        return view('admin.member.vpenjualan-reward')
+                ->with('headerTitle', 'Claim Reward Penjualan Vendor')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postCheckVPenjualanReward(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = New Bonus;
+        $getRowID = $request->id;
+        if($getRowID == null){
+            return redirect()->route('adm_listPenjualanReward')
+                        ->with('message', 'Gagal, tidak ada yang di centang')
+                        ->with('messageclass', 'danger');
+        }
+        foreach($getRowID as $getID){
+            $dataUpdate = array(
+                'status' => 1,
+                'tuntas_at' => date('Y-m-d H:i:s'),
+                'submit_by' => $dataUser->id,
+                'submit_at' => date('Y-m-d H:i:s'),
+            );
+            $modelBonus->getUpdateBelanjaReward('id', $getID, $dataUpdate);
+        }
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => $request->method().' '.$request->path()
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
+        return redirect()->route('adm_listVPenjualanReward')
+                    ->with('message', 'Konfirmasi Reward Penjualan Vendor berhasil')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function postRejectVPenjualanReward(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = New Bonus;
+        $getID = $request->cekId;
+        $alesan = $request->reason;
+        $dataUpdate = array(
+            'status' => 2,
+            'reason' => $alesan,
+            'deleted_at' => date('Y-m-d H:i:s'),
+            'submit_by' => $dataUser->id,
+            'submit_at' => date('Y-m-d H:i:s'),
+        );
+        $modelBonus->getUpdateBelanjaReward('id', $getID, $dataUpdate);
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => $request->method().' '.$request->path()
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
+        return redirect()->route('adm_listVPenjualanReward')
+                    ->with('message', 'Data Reward Penjualan Vendor berhasil direject')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function getHistoryVPenjualanReward(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = New Bonus;
+        $getData = $modelBonus->getAdminHistoryVPenjualanReward();
+        return view('admin.member.history-reward-vpenjualan')
+                ->with('headerTitle', 'History Reward Penjualan Vendor')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    
+    
+    
+    //PPOB
+    
+    public function getMemberTestingCheck(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelMember = New Member;
+        $getDataAPI = $modelMember->getDataAPIMobilePulsa();
+        $username   = $getDataAPI->username;
+        $apiKey   = $getDataAPI->api_key;
+        $sign = md5($username.$apiKey.'pl');
+        $json = '{
+                    "commands" : "pricelist",
+                    "username" : "'.$username.'",
+                    "sign"     : "'.$sign.'", 
+                    "status" : "active"
+            }';
+        $url = $getDataAPI->master_url.'/v1/legacy/index/pulsa/telkomsel';
+        $cek = $modelMember->getAPIurlCheck($url, $json);
+        $arrayData = json_decode($cek, true);
+        dd($arrayData['data']);
+    }
+    
 
 }

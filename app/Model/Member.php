@@ -1050,6 +1050,40 @@ class Member extends Model {
         return $sql;
     }
     
+    public function getAPIurlCheck($url, $json){
+        $userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36';
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,TRUE);       
+        curl_setopt($ch,CURLOPT_CONNECTTIMEOUT,20);          
+        curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);
+        curl_setopt($ch, CURLOPT_FAILONERROR, TRUE);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+        curl_setopt($ch, CURLOPT_AUTOREFERER, TRUE);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 20);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        $json_response = curl_exec($ch);
+        curl_close($ch);
+        
+        if(empty($json_response)){
+            return null;
+        } else {
+            return $json_response;
+        }
+    }
+    
+    public function getDataAPIMobilePulsa(){
+        $data = (object) array(
+            'username' => '085782312323',
+            'api_key' => '1125e4e4b92d3424',
+            'master_url' => 'https://testprepaid.mobilepulsa.net'
+        );
+        return $data;
+    }
+    
     
     
 }

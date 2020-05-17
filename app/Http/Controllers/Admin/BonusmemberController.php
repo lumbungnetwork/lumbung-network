@@ -779,12 +779,12 @@ class BonusmemberController extends Controller {
         if($dataUser->package_id == null){
             return redirect()->route('m_newPackage');
         }
-        if($dataUser->is_stockist == 0){
+        if($dataUser->is_vendor == 0){
             return redirect()->route('mainDashboard');
         }
         $modelSales = New Sales;
         $modelBonus = new Bonus;
-        $getData = $modelSales->getStockistPenjualanMonthYear($dataUser->id, $request->month, $request->year);
+        $getData = $modelSales->getVendorPenjualanMonthYear($dataUser->id, $request->month, $request->year);
         $dataInsert = array(
             'user_id' => $dataUser->id,
             'reward' => $request->reward,
@@ -792,7 +792,7 @@ class BonusmemberController extends Controller {
             'year' => $request->year,
             'belanja_date' => $request->year.'-'.$request->month.'-01',
             'total_belanja' => $getData->month_sale_price,
-            'type' => 2
+            'type' => 4
         );
         $modelBonus->getInsertBelanjaReward($dataInsert);
         return redirect()->route('m_PenjualanReward')

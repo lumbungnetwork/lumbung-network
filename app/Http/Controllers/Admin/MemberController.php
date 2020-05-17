@@ -3024,6 +3024,20 @@ class MemberController extends Controller {
                             ->with('messageclass', 'success');
     }
     
+    public function getMyRequestPOBX($paket){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        return view('member.bonus.pobx')
+                ->with('headerTitle', 'Pin')
+                ->with('dataUser', $dataUser);
+    }
+    
     
     
     

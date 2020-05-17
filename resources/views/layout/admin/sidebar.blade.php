@@ -104,6 +104,12 @@
                             </a>
                          </li>
                          <li>
+                            <a href="{{ URL::to('/') }}/adm/list/vpenjualan-reward">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> Claim Vendor Penjualan Reward </span>
+                            </a>
+                        </li>
+                         <li>
                             <a href="{{ URL::to('/') }}/adm/history/wd">
                             <span class="sidebar-mini-icon">+</span>
                             <span class="sidebar-normal"> History Withdrawal </span>
@@ -137,6 +143,12 @@
                             <a href="{{ URL::to('/') }}/adm/history/wd-royalti">
                             <span class="sidebar-mini-icon">+</span>
                             <span class="sidebar-normal"> History Withdrawal Royalti</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ URL::to('/') }}/adm/history/vpenjualan-reward">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> History Vendor Penjualan Reward </span>
                             </a>
                         </li>
                     </ul>

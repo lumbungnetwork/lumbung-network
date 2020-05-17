@@ -1219,6 +1219,22 @@ class Sales extends Model {
         return $sql;
     }
     
+    public function getVendorPenjualanMonthYear($id, $month, $year){
+        $sql = DB::table('vmaster_sales')
+                    ->selectRaw('sum(vmaster_sales.total_price) as month_sale_price, '
+                            . 'DATE_FORMAT(vmaster_sales.sale_date, "%M-%Y") as monthly, YEAR(vmaster_sales.sale_date) as year, '
+                            . 'MONTH(vmaster_sales.sale_date) as month')
+                    ->where('vmaster_sales.vendor_id', '=', $id)
+                    ->where('vmaster_sales.status', '=', 2)
+                    ->whereMonth('vmaster_sales.sale_date', '=', $month)
+                    ->whereYear('vmaster_sales.sale_date', '=', $year)
+                    ->whereNull('vmaster_sales.deleted_at')
+                    ->groupBy('year', 'month')
+                    ->groupBy('monthly')
+                    ->first();
+        return $sql;
+    }
+    
     public function getMemberReqInputStockistYesterday(){
         $yesterday = date('Y-m-d',strtotime("-1 days"));
         $sql = DB::table('item_purchase_master')
