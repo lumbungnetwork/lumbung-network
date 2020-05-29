@@ -365,4 +365,17 @@ class Validation extends Model {
         return $canInsert;
     }
     
+    public function getCheckAddDeposit($request, $data){
+        $canInsert = (object) array('can' => true, 'pesan' => '');
+        if(!is_numeric($request->total_deposit)){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Nominal harus dalam angka');
+            return $canInsert;
+        }
+        if($request->total_deposit <= 0){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Nominal harus diatas 0');
+            return $canInsert;
+        }
+        return $canInsert;
+    }
+    
 }

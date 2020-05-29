@@ -133,6 +133,17 @@ Route::prefix('/')->group(function () {
         Route::post('/adm/reject-input-vstock', 'Admin\MasterAdminController@postRejectMemberInputVStock')->middleware('auth');
         Route::get('/adm/vendor/stock/{id}', 'Admin\MasterAdminController@getMemberVendorStock')->name('adm_memberVendorStock')->middleware('auth');
         Route::post('/adm/remove-vendor', 'Admin\MasterAdminController@postRemoveMemberVendor')->middleware('auth');
+        Route::get('/adm/list/isi-deposit', 'Admin\MasterAdminController@getAllRequestIsiDeposit')->name('adm_listIsiDeposit')->middleware('auth');
+        Route::post('/adm/confirm/isi-deposit', 'Admin\MasterAdminController@postConfirmTransactionIsiDeposit')->middleware('auth');
+        Route::post('/adm/reject/isi-deposit', 'Admin\MasterAdminController@postRejectTransactionIsiDeposit')->middleware('auth');
+        
+        
+        
+        //Test Api Digiflazz
+        Route::get('/adm/test/api-digiflazz', 'Admin\MasterAdminController@getMemberTestingCheck')->middleware('auth');
+        
+        
+        
         
 
         //Ajax
@@ -183,6 +194,8 @@ Route::prefix('/')->group(function () {
 //        Route::get('/ajax/adm/edit/stockist/{id}', 'Admin\AjaxController@getCekEditMemberStockist')->middleware('auth');
         Route::get('/ajax/adm/cek/req-input-vstock/{id}/{user_id}', 'Admin\AjaxController@getCekRequestMemberInputVStock')->middleware('auth');
         Route::get('/ajax/adm/reject/req-input-vstock/{id}/{user_id}', 'Admin\AjaxController@getCekRejectMemberInputVStock')->middleware('auth');
+        Route::get('/ajax/adm/cek/isi-deposit/{id}/{user_id}/{is_tron}', 'Admin\AjaxController@getCekIsiDepositTransactionById')->middleware('auth');
+        Route::get('/ajax/adm/reject/isi-deposit/{id}/{user_id}/{is_tron}', 'Admin\AjaxController@getRejectIsiDepositTransactionById')->middleware('auth');
         
 //        Route::get('/adm/daerah', 'Admin\MasterAdminController@getAllDaerah')->middleware('auth');
         ////////////////////////////////////////////////////////////////////////
@@ -334,6 +347,18 @@ Route::prefix('/')->group(function () {
         Route::get('/m/explorer/user', 'Admin\MemberController@getExplorerUser')->name('m_ExplorerUser')->middleware('auth');
         Route::get('/m/pobx/req-{paket}', 'Admin\MemberController@getMyRequestPOBX')->name('m_myReportRequestPulsa')->middleware('auth');
         
+         //Vendor Deposit
+        Route::get('/m/add/deposit', 'Admin\MemberController@getAddDeposit')->name('m_newDeposit')->middleware('auth');
+        Route::post('/m/add/deposit', 'Admin\MemberController@postAddDeposit')->middleware('auth');
+        Route::get('/m/list/deposit-transaction', 'Admin\MemberController@getListDepositTransactions')->name('m_listDepositTransactions')->middleware('auth');
+        Route::get('/m/add/deposit-transaction/{id}', 'Admin\MemberController@getAddDepositTransaction')->name('m_addDepositTransaction')->middleware('auth');
+        Route::post('/m/add/deposit-transaction', 'Admin\MemberController@postAddDepositTransaction')->middleware('auth');
+        Route::post('/m/reject/deposit-transaction', 'Admin\MemberController@postRejectDepositTransaction')->middleware('auth');
+//        Route::get('/m/pin/deposit-stock', 'Admin\MemberController@getMyDepositStock')->name('m_myDepositStock')->middleware('auth');
+        Route::get('/m/deposit/history', 'Admin\MemberController@getMyDepositHistory')->name('m_myDepositHistory')->middleware('auth');
+        Route::get('/m/tarik/deposit', 'Admin\MemberController@getTarikDeposit')->name('m_tarikDeposit')->middleware('auth');
+        Route::post('/m/tarik/deposit', 'Admin\MemberController@postTarikDeposit')->middleware('auth');
+        
         //Ajax
         Route::get('/m/cek/add-sponsor', 'Admin\AjaxmemberController@postCekAddSponsor')->middleware('auth');
         Route::get('/m/cek/add-package/{id_paket}/{setuju}', 'Admin\AjaxmemberController@getCekAddPackage')->middleware('auth');
@@ -385,4 +410,11 @@ Route::prefix('/')->group(function () {
         
         Route::get('/m/search/{type}', 'Admin\AjaxmemberController@getSearchByType')->middleware('auth');
         Route::get('/m/cek/pulsa', 'Admin\AjaxmemberController@getCekPOBX')->middleware('auth');
+        
+        Route::get('/m/cek/add-deposit', 'Admin\AjaxmemberController@postCekAddDeposit')->middleware('auth');
+        Route::get('/m/cek/add/deposit-transaction', 'Admin\AjaxmemberController@postCekAddDepositTransaction')->middleware('auth');
+        Route::get('/m/cek/reject/deposit-transaction', 'Admin\AjaxmemberController@postCekRejectDepositTransaction')->middleware('auth');
+        Route::get('/m/cek/tarik-deposit', 'Admin\AjaxmemberController@postCekTarikDeposit')->middleware('auth');
+        Route::get('/m/cek/add/tarik-transaction', 'Admin\AjaxmemberController@postCekAddTarikTransaction')->middleware('auth');
+        Route::get('/m/cek/reject/tarik-transaction', 'Admin\AjaxmemberController@postCekRejectTarikTransaction')->middleware('auth');
 });

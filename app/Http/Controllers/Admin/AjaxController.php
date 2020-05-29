@@ -550,6 +550,22 @@ class AjaxController extends Controller {
                 ->with('getData', $getData);
     }
     
+    public function getCekIsiDepositTransactionById($id, $user_id, $is_tron){
+        $modelSettingTrans = New Transaction;
+        $getData = $modelSettingTrans->getDetailDepositTransactionsMemberNew($id, $user_id, $is_tron);
+        return view('admin.ajax.transaction-isideposit')
+                ->with('headerTitle', 'Cek Transaksi')
+                ->with('getData', $getData);
+    }
+    
+    public function getRejectIsiDepositTransactionById($id, $user_id, $is_tron){
+        $modelSettingTrans = New Transaction;
+        $getData = $modelSettingTrans->getDetailRejectDepositTransactionsAdmin($id, $user_id, $is_tron);
+        return view('admin.ajax.reject-transaction-isideposit')
+                ->with('headerTitle', 'Reject Transaksi')
+                ->with('getData', $getData);
+    }
+    
     
       
     

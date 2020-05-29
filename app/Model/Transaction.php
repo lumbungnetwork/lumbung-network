@@ -224,5 +224,146 @@ class Transaction extends Model {
         return $return;
     }
     
+    public function getInsertDepositTransaction($data){
+        try {
+            $lastInsertedID = DB::table('deposit_transaction')->insertGetId($data);
+            $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
+        }
+        return $result;
+    }
+    
+    public function getUpdateDepositTransaction($fieldName, $name, $data){
+        try {
+            DB::table('deposit_transaction')->where($fieldName, '=', $name)->update($data);
+            $result = (object) array('status' => true, 'message' => null);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message);
+        }
+        return $result;
+    }
+    
+    public function getCodeDepositTransaction(){
+        $getTransCount = DB::table('deposit_transaction')->selectRaw('id')->whereDate('created_at', date('Y-m-d'))->count();
+        $tmp = $getTransCount+1;
+        $code = sprintf("%04s", $tmp);
+        return $code;
+    }
+    
+    public function getDepositTransactionsMember($data){
+        $sql = DB::table('deposit_transaction')
+                    ->where('user_id', '=', $data->id)
+                    ->get();
+        return $sql;
+    }
+    
+    public function getDetailDepositTransactionsMember($id, $data){
+        $sql = DB::table('deposit_transaction')
+                    ->where('id', '=', $id)
+                    ->where('user_id', '=', $data->id)
+                    ->first();
+        return $sql;
+    }
+    
+    public function getDetailDepositTransactionsMemberNew($id, $user_id, $isTron){
+        if($isTron == 0){
+            $sql = DB::table('deposit_transaction')
+                        ->join('users', 'deposit_transaction.user_id', '=', 'users.id')
+                        ->join('bank', 'deposit_transaction.bank_perusahaan_id', '=', 'bank.id')
+                        ->selectRaw('users.name, users.hp, users.user_code, '
+                                . 'deposit_transaction.transaction_code, deposit_transaction.type, deposit_transaction.price, deposit_transaction.status,'
+                                . 'deposit_transaction.created_at, deposit_transaction.unique_digit, deposit_transaction.user_id, deposit_transaction.id, deposit_transaction.is_tron, '
+                                . 'bank.bank_name, bank.account_name, bank.account_no')
+                        ->where('deposit_transaction.id', '=', $id)
+                        ->where('deposit_transaction.user_id', '=', $user_id)
+                        ->first();
+        } else {
+            $sql = DB::table('deposit_transaction')
+                        ->join('users', 'deposit_transaction.user_id', '=', 'users.id')
+                        ->join('tron', 'deposit_transaction.bank_perusahaan_id', '=', 'tron.id')
+                        ->selectRaw('users.name, users.hp, users.user_code, '
+                                . 'deposit_transaction.transaction_code, deposit_transaction.type, deposit_transaction.price, deposit_transaction.status,'
+                                . 'deposit_transaction.created_at, deposit_transaction.unique_digit, deposit_transaction.user_id, deposit_transaction.id, deposit_transaction.is_tron, '
+                                . 'tron.tron_name, tron.tron ')
+                        ->where('deposit_transaction.id', '=', $id)
+                        ->where('deposit_transaction.user_id', '=', $user_id)
+                        ->first();
+        }
+        return $sql;
+    }
+    
+    public function getDetailRejectDepositTransactionsAdmin($id, $user_id, $is_tron){
+        if($is_tron == 0){
+            $sql = DB::table('deposit_transaction')
+                        ->join('users', 'deposit_transaction.user_id', '=', 'users.id')
+                        ->selectRaw('users.name, users.hp, users.user_code, '
+                                . 'deposit_transaction.transaction_code, deposit_transaction.type, deposit_transaction.price, deposit_transaction.status,'
+                                . 'deposit_transaction.created_at, deposit_transaction.unique_digit, deposit_transaction.user_id, deposit_transaction.id, deposit_transaction.is_tron ')
+                        ->where('deposit_transaction.id', '=', $id)
+                        ->where('deposit_transaction.user_id', '=', $user_id)
+                        ->first();
+        } else {
+            $sql = DB::table('deposit_transaction')
+                        ->join('users', 'deposit_transaction.user_id', '=', 'users.id')
+                        ->join('tron', 'deposit_transaction.bank_perusahaan_id', '=', 'tron.id')
+                        ->selectRaw('users.name, users.hp, users.user_code, '
+                                . 'deposit_transaction.transaction_code, deposit_transaction.type, deposit_transaction.price, deposit_transaction.status,'
+                                . 'deposit_transaction.created_at, deposit_transaction.unique_digit, deposit_transaction.user_id, deposit_transaction.id, deposit_transaction.is_tron, '
+                                . 'tron.tron_name, tron.tron')
+                        ->where('deposit_transaction.id', '=', $id)
+                        ->where('deposit_transaction.user_id', '=', $user_id)
+                        ->first();
+        }
+        
+        return $sql;
+    }
+    
+    public function getTransactionsIsiDepositByAdmin(){
+        $sql = DB::table('deposit_transaction')
+                    ->join('users', 'deposit_transaction.user_id', '=', 'users.id')
+                    ->selectRaw('users.user_code, users.hp,  '
+                            . 'deposit_transaction.transaction_code, deposit_transaction.price, deposit_transaction.status,'
+                            . 'deposit_transaction.created_at, deposit_transaction.unique_digit, deposit_transaction.user_id, deposit_transaction.id, deposit_transaction.is_tron')
+                    ->where('deposit_transaction.type', '=', 1)
+                    ->where('deposit_transaction.status', '=', 1)
+                    ->orderBy('deposit_transaction.id', 'DESC')
+                    ->get();
+        $cek = null;
+        if(count($sql) > 0){
+            $cek = $sql;
+        }
+        return $cek;
+    }
+    
+    public function getDetailDepositTransactionsAdmin($id, $user_id){
+        $sql = DB::table('deposit_transaction')
+                        ->join('users', 'deposit_transaction.user_id', '=', 'users.id')
+                        ->join('bank', 'deposit_transaction.bank_perusahaan_id', '=', 'bank.id')
+                        ->selectRaw('users.name, users.hp, users.user_code, '
+                                . 'deposit_transaction.transaction_code, deposit_transaction.type, deposit_transaction.price, deposit_transaction.status,'
+                                . 'deposit_transaction.created_at, deposit_transaction.unique_digit, deposit_transaction.user_id, deposit_transaction.id, deposit_transaction.is_tron, '
+                                . 'bank.bank_name, bank.account_name, bank.account_no')
+                        ->where('deposit_transaction.id', '=', $id)
+                        ->where('deposit_transaction.user_id', '=', $user_id)
+                        ->where('deposit_transaction.status', '=', 1)
+                        ->first();
+        return $sql;
+    }
+    
+    public function getDetailRejectDepositTransactionsAdminByID($id, $user_id){
+        $sql = DB::table('deposit_transaction')
+                        ->join('users', 'deposit_transaction.user_id', '=', 'users.id')
+                        ->selectRaw('users.name, users.hp, users.user_code, '
+                                . 'deposit_transaction.transaction_code, deposit_transaction.type, deposit_transaction.price, deposit_transaction.status,'
+                                . 'deposit_transaction.created_at, deposit_transaction.unique_digit, deposit_transaction.user_id, deposit_transaction.id, deposit_transaction.is_tron')
+                        ->where('deposit_transaction.id', '=', $id)
+                        ->where('deposit_transaction.user_id', '=', $user_id)
+                        ->first();
+        return $sql;
+    }
+    
     
 }

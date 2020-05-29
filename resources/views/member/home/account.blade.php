@@ -179,7 +179,8 @@
                         <p>Produk Digital</p>
                         <div class="row">
                             <div class="col-3 mb-3">
-                                <a href="" class="text-decoration-none">
+                                <!--<a href="{{ URL::to('/') }}/m/add/deposit" class="text-decoration-none">-->
+                                <a href="#" class="text-decoration-none">
                                     <div class="rounded icon-ppob text-center">
                                         <div class="box-icon bg-green text-center">
                                             <i class="mdi mdi-cog-counterclockwise icon-menu"></i>
@@ -189,7 +190,8 @@
                                 </a>
                             </div>
                             <div class="col-3 mb-3">
-                                <a href="" class="text-decoration-none">
+                                <!--<a href="{{ URL::to('/') }}/m/tarik/deposit" class="text-decoration-none">-->
+                                <a href="#" class="text-decoration-none">
                                     <div class="rounded icon-ppob text-center">
                                         <div class="box-icon bg-green text-center">
                                             <i class="mdi mdi-logout-variant icon-menu"></i>
@@ -199,7 +201,8 @@
                                 </a>
                             </div>
                             <div class="col-3 mb-3">
-                                <a href="" class="text-decoration-none">
+                                <!--<a href="{{ URL::to('/') }}/m/deposit/history" class="text-decoration-none">-->
+                                <a href="#" class="text-decoration-none">
                                     <div class="rounded icon-ppob text-center">
                                         <div class="box-icon bg-green text-center">
                                             <i class="mdi mdi-history icon-menu"></i>
@@ -209,7 +212,8 @@
                                 </a>
                             </div>
                             <div class="col-3 mb-3">
-                                <a href="" class="text-decoration-none">
+                                <!--<a href="{{ URL::to('/') }}/m/list/deposit-transaction" class="text-decoration-none">-->
+                                <a href="#" class="text-decoration-none">
                                     <div class="rounded icon-ppob text-center">
                                         <div class="box-icon bg-green text-center">
                                             <i class="mdi mdi-bank-transfer icon-menu"></i>
@@ -218,9 +222,20 @@
                                     </div>
                                 </a>
                             </div>
+                            <?php
+                                $sum_deposit_masuk = 0;
+                                $sum_deposit_keluar = 0;
+                                if($dataDeposit->sum_deposit_masuk != null){
+                                    $sum_deposit_masuk = $dataDeposit->sum_deposit_masuk;
+                                }
+                                if($dataDeposit->sum_deposit_keluar != null){
+                                    $sum_deposit_keluar = $dataDeposit->sum_deposit_keluar;
+                                }
+                                $totalDeposit = $sum_deposit_masuk - $sum_deposit_keluar;
+                            ?>
                             <div class="col-12 mb-3">
                                 <p class="f-14">Saldo Deposit Vendor</p>
-                                <h6 class="text-warning"> Rp 0 </h6>
+                                <h6 class="text-warning"> Rp {{number_format($totalDeposit, 0, ',', '.')}}</h6>
                             </div>
                         </div>
                     </div>

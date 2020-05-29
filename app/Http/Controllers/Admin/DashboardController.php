@@ -262,7 +262,10 @@ class DashboardController extends Controller {
         if($dataUser->package_id == null){
             return redirect()->route('m_newPackage');
         }
+        $modelPin = new Pin;
+        $getTotalDeposit = $modelPin->getTotalDepositMember($dataUser);
         return view('member.home.account')
+                    ->with('dataDeposit', $getTotalDeposit)
                     ->with('dataUser', $dataUser);
     }
     

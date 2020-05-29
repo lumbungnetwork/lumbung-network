@@ -1077,9 +1077,9 @@ class Member extends Model {
     
     public function getDataAPIMobilePulsa(){
         $data = (object) array(
-            'username' => '085782312323',
-            'api_key' => '1125e4e4b92d3424',
-            'master_url' => 'https://testprepaid.mobilepulsa.net'
+            'username' => 'wekurugKvNdW',
+            'api_key' => 'dev-0815ad60-a0f3-11ea-9ccb-25dc8f4bbb19',
+            'master_url' => 'https://api.digiflazz.com'
         );
         return $data;
     }

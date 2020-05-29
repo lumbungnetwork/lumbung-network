@@ -1139,6 +1139,120 @@ class AjaxmemberController extends Controller {
                         ->with('check', $canInsert);
     }
     
+    public function postCekAddDeposit(Request $request){
+        $dataUser = Auth::user();
+        $modelValidasi = New Validation;
+        $canInsert = $modelValidasi->getCheckAddDeposit($request, $dataUser);
+        $data = (object) array(
+            'total_deposit' => $request->total_deposit
+        );
+        return view('member.ajax.confirm_add_deposit')
+                        ->with('check', $canInsert)
+                        ->with('data', $data);
+    }
+    
+    public function postCekAddDepositTransaction(Request $request){
+        $dataUser = Auth::user();
+        $modelBank = New Bank;
+        $modelTrans = New Transaction;
+        $separate = explode('_', $request->id_bank);
+        $getPerusahaanBank = null;
+        $cekType = null;
+        if(count($separate) == 2){
+            $cekType = $separate[0];
+            $bankId = $separate[1];
+            if($cekType == 0){
+                $getPerusahaanBank = $modelBank->getBankPerusahaanID($bankId);
+            } else {
+                $getPerusahaanBank = $modelBank->getTronPerusahaanID($bankId);
+            }
+        }
+        $getTrans = $modelTrans->getDetailDepositTransactionsMember($request->id_trans, $dataUser);
+        $data = (object) array('id_trans' => $request->id_trans);
+        return view('member.ajax.confirm_add_deposit_transaction')
+                        ->with('bankPerusahaan', $getPerusahaanBank)
+                        ->with('getTrans', $getTrans)
+                        ->with('cekType', $cekType)
+                        ->with('data', $data);
+    }
+    
+    public function postCekRejectDepositTransaction(Request $request){
+        $data = (object) array('id_trans' => $request->id_trans);
+        return view('member.ajax.confirm_reject_deposit_transaction')
+                        ->with('data', $data);
+    }
+    
+    public function postCekTarikDeposit(Request $request){
+        $dataUser = Auth::user();
+        $canInsert = (object) array('can' => true, 'pesan' => '');
+        if(!is_numeric($request->total_deposit)){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Nominal harus dalam angka');
+            return view('member.ajax.confirm_tarik_deposit')
+                        ->with('check', $canInsert)
+                        ->with('data', null);
+        }
+        if($request->total_deposit <= 0){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Nominal harus diatas 0');
+            return view('member.ajax.confirm_tarik_deposit')
+                        ->with('check', $canInsert)
+                        ->with('data', null);
+        }
+        $modelPin = new Pin;
+        $dataDeposit = $modelPin->getTotalDepositMember($dataUser);
+        $sum_deposit_masuk = 0;
+        $sum_deposit_keluar = 0;
+        if($dataDeposit->sum_deposit_masuk != null){
+            $sum_deposit_masuk = $dataDeposit->sum_deposit_masuk;
+        }
+        if($dataDeposit->sum_deposit_keluar != null){
+            $sum_deposit_keluar = $dataDeposit->sum_deposit_keluar;
+        }
+        $totalDeposit = $sum_deposit_masuk - $sum_deposit_keluar;
+        if($totalDeposit <  $request->total_deposit){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Anda tidak bisa tarik deposit. Saldo deposit kosong atau kurang');
+            return view('member.ajax.confirm_tarik_deposit')
+                        ->with('check', $canInsert)
+                        ->with('data', null);
+        }
+        $data = (object) array(
+            'total_deposit' => $request->total_deposit
+        );
+        return view('member.ajax.confirm_tarik_deposit')
+                        ->with('check', $canInsert)
+                        ->with('data', $data);
+    }
+    
+    public function postCekAddTarikTransaction(Request $request){
+        $dataUser = Auth::user();
+        $modelBank = New Bank;
+        $modelTrans = New Transaction;
+        $separate = explode('_', $request->id_bank);
+        $getPerusahaanBank = null;
+        $cekType = null;
+        if(count($separate) == 2){
+            $cekType = $separate[0];
+            $bankId = $separate[1];
+            if($cekType == 0){
+                $getPerusahaanBank = $modelBank->getBankPerusahaanID($bankId);
+            } else {
+                $getPerusahaanBank = $modelBank->getTronPerusahaanID($bankId);
+            }
+        }
+        $getTrans = $modelTrans->getDetailDepositTransactionsMember($request->id_trans, $dataUser);
+        $data = (object) array('id_trans' => $request->id_trans);
+        return view('member.ajax.confirm_add_tarik_transaction')
+                        ->with('bankPerusahaan', $getPerusahaanBank)
+                        ->with('getTrans', $getTrans)
+                        ->with('cekType', $cekType)
+                        ->with('data', $data);
+    }
+    
+    public function postCekRejectTarikTransaction(Request $request){
+        $data = (object) array('id_trans' => $request->id_trans);
+        return view('member.ajax.confirm_reject_tarik_transaction')
+                        ->with('data', $data);
+    }
+    
     public function getCekPOBX(Request $request){
         $dataUser = Auth::user();
         $modelValidasi = New Validation;

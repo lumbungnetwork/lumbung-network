@@ -102,5 +102,48 @@ class Pin extends Model {
         return $return;
     }
     
+    public function getInsertMemberDeposit($data){
+        try {
+            $lastInsertedID = DB::table('member_deposito')->insertGetId($data);
+            $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
+        }
+        return $result;
+    }
+    
+    public function getUpdateMemberDeposit($fieldName, $name, $data){
+        try {
+            DB::table('member_deposito')->where($fieldName, '=', $name)->update($data);
+            $result = (object) array('status' => true, 'message' => null);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message);
+        }
+        return $result;
+    }
+    
+    public function getMyHistoryDeposit($data){
+        $sql = DB::table('member_deposito')
+                    ->selectRaw('member_deposito.total_deposito, member_deposito.deposito_status,  '
+                            . 'member_deposito.created_at, member_deposito.transaction_code')
+                    ->where('member_deposito.user_id', '=', $data->id)
+                    ->orderBy('member_deposito.id', 'DESC')
+                    ->get();
+        return $sql;
+    }
+    
+    public function getTotalDepositMember($data){
+        $sql = DB::table('member_deposito')
+                    ->selectRaw('
+		sum(case when deposito_status = 0 then total_deposito else 0 end) as sum_deposit_masuk,
+		sum(case when deposito_status in (1, 2) then total_deposito else 0 end) as sum_deposit_keluar
+                    ')
+                    ->where('user_id', '=', $data->id)
+                    ->first();
+        return $sql;
+    }
+    
     
 }

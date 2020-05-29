@@ -3024,6 +3024,273 @@ class MemberController extends Controller {
                             ->with('messageclass', 'success');
     }
     
+    public function getAddDeposit(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->is_vendor == 0){
+            return redirect()->route('m_SearchVendor');
+        }
+        return view('member.digital.add-deposit')
+                ->with('headerTitle', 'Isi Deposit')
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postAddDeposit(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->is_vendor == 0){
+            return redirect()->route('m_SearchVendor');
+        }
+        $modelSettingTrans = New Transaction;
+        $code =$modelSettingTrans->getCodeDepositTransaction();
+        $rand = rand(101, 249);
+        $dataInsert = array(
+            'user_id' => $dataUser->id,
+            'transaction_code' => 'DTR'.date('Ymd').$dataUser->id.$code,
+            'price' => $request->total_deposit,
+            'unique_digit' => $rand,
+        );
+        $getIDTrans = $modelSettingTrans->getInsertDepositTransaction($dataInsert);
+        return redirect()->route('m_addDepositTransaction', [$getIDTrans->lastID])
+                    ->with('message', 'Pengajuan Deposit berhasil, silakan lakukan proses transfer')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function getListDepositTransactions(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->is_vendor == 0){
+            return redirect()->route('m_SearchVendor');
+        }
+        $modelSettingTrans = New Transaction;
+        $getAllTransaction = $modelSettingTrans->getDepositTransactionsMember($dataUser);
+        return view('member.digital.list-deposit')
+                ->with('getData', $getAllTransaction)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function getAddDepositTransaction($id){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->is_vendor == 0){
+            return redirect()->route('m_SearchVendor');
+        }
+        $modelTrans = New Transaction;
+        $modelBank = New Bank;
+        $getTrans = $modelTrans->getDetailDepositTransactionsMember($id, $dataUser);
+        if($getTrans == null){
+            return redirect()->route('mainDashboard');
+        }
+        $getPerusahaanTron = null;
+        if($getTrans->bank_perusahaan_id != null){
+            if($getTrans->is_tron == 0){
+                $getPerusahaanBank = $modelBank->getBankPerusahaanID($getTrans->bank_perusahaan_id);
+            } else {
+                $getPerusahaanBank = $modelBank->getTronPerusahaanID($getTrans->bank_perusahaan_id);
+            }
+        } else {
+            $getPerusahaanBank = $modelBank->getBankPerusahaan();
+            $getPerusahaanTron = $modelBank->getTronPerusahaan();
+        }
+        return view('member.digital.detail-deposit-trans')
+                ->with('headerTitle', 'Deposit Transaction')
+                ->with('bankPerusahaan', $getPerusahaanBank)
+                ->with('tronPerusahaan', $getPerusahaanTron)
+                ->with('getData', $getTrans)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postAddDepositTransaction(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+         if($dataUser->is_vendor == 0){
+            return redirect()->route('m_SearchVendor');
+        }
+        $modelSettingTrans = New Transaction;
+        $id_trans = $request->id_trans;
+        $dataUpdate = array(
+            'status' => 1,
+            'bank_perusahaan_id' => $request->bank_perusahaan_id,
+            'updated_at' => date('Y-m-d H:i:s'),
+            'is_tron' => $request->is_tron
+        );
+        $modelSettingTrans->getUpdateDepositTransaction('id', $id_trans, $dataUpdate);
+        return redirect()->route('m_listDepositTransactions')
+                    ->with('message', 'Konfirmasi transfer berhasil')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function postRejectDepositTransaction(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+         if($dataUser->is_vendor == 0){
+            return redirect()->route('m_SearchVendor');
+        }
+        if($request->reason == null){
+            return redirect()->route('m_addDepositTransaction', [$request->id_trans])
+                        ->with('message', 'Alasan harus diisi')
+                        ->with('messageclass', 'danger');
+        }
+        $modelSettingTrans = New Transaction;
+        $id_trans = $request->id_trans;
+        $dataUpdate = array(
+            'status' => 3,
+            'deleted_at' => date('Y-m-d H:i:s'),
+            'reason' => $request->reason
+        );
+        $modelSettingTrans->getUpdateDepositTransaction('id', $id_trans, $dataUpdate);
+        return redirect()->route('m_listDepositTransactions')
+                    ->with('message', 'Transaksi isi Deposit dibatalkan')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function getMyDepositHistory(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+         if($dataUser->is_vendor == 0){
+            return redirect()->route('m_SearchVendor');
+        }
+        $modelPin = new Pin;
+        $getHistoryDeposit = $modelPin->getMyHistoryDeposit($dataUser);
+//        $getTotalDeposit = $modelPin->getTotalDepositMember($dataUser);
+        return view('member.digital.deposit-history')
+                        ->with('getData', $getHistoryDeposit)
+                        ->with('dataUser', $dataUser);
+    }
+    
+        public function getTarikDeposit(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->is_vendor == 0){
+            return redirect()->route('m_SearchVendor');
+        }
+        return view('member.digital.tarik-deposit')
+                ->with('headerTitle', 'Tarik Deposit')
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postTarikDeposit(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->is_vendor == 0){
+            return redirect()->route('m_SearchVendor');
+        }
+        //cek depositnya ada berapa jika kurang maka tidak bisa
+        $modelSettingTrans = New Transaction;
+        $code =$modelSettingTrans->getCodeDepositTransaction();
+        $modelBank = New Bank;
+        $getMyActiveBank = $modelBank->getBankMemberActive($dataUser);
+        $id_bank = null;
+        if($getMyActiveBank != null){
+            $id_bank = $getMyActiveBank->id;
+        }
+        $dataInsert = array(
+            'type' => 2,
+            'user_id' => $dataUser->id,
+            'transaction_code' => 'TTR'.date('Ymd').$dataUser->id.$code,
+            'price' => $request->total_deposit,
+            'unique_digit' => 0,
+            'user_bank' => $id_bank
+        );
+        $getIDTrans = $modelSettingTrans->getInsertDepositTransaction($dataInsert);
+        return redirect()->route('m_addDepositTransaction', [$getIDTrans->lastID])
+                    ->with('message', 'Pengajuan Deposit berhasil, silakan lakukan proses transfer')
+                    ->with('messageclass', 'success');
+    }
+       
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     public function getMyRequestPOBX($paket){
         $dataUser = Auth::user();
         $onlyUser  = array(10);

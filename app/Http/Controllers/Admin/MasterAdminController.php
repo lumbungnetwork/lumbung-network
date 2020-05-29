@@ -2687,6 +2687,82 @@ class MasterAdminController extends Controller {
                 ->with('dataUser', $dataUser);
     }
     
+    public function getAllRequestIsiDeposit(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSettingTrans = New Transaction;
+        $getAllTransaction = $modelSettingTrans->getTransactionsIsiDepositByAdmin();
+        return view('admin.digital.list-req-deposit')
+                ->with('headerTitle', 'Transaksi Isi Deposit')
+                ->with('getData', $getAllTransaction)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postConfirmTransactionIsiDeposit(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $id = $request->cekId;
+        $user_id = $request->cekMemberId;
+        $modelSettingTrans = New Transaction;
+        $getData = $modelSettingTrans->getDetailDepositTransactionsAdmin($id, $user_id);
+        if($getData == null){
+            return redirect()->route('adm_listIsiDeposit')
+                ->with('message', 'Data tidak ditemukan')
+                ->with('messageclass', 'danger');
+        }
+        $memberDeposit = array(
+            'user_id' => $user_id,
+            'total_deposito' => $getData->price,
+            'transaction_code' => $getData->transaction_code,
+        );
+        $modelPin = New Pin;
+        $modelPin->getInsertMemberDeposit($memberDeposit);
+        $dataUpdate = array(
+            'status' => 2,
+            'tuntas_at' => date('Y-m-d H:i:s'),
+            'submit_by' => $dataUser->id,
+            'submit_at' => date('Y-m-d H:i:s'),
+        );
+        $modelSettingTrans->getUpdateDepositTransaction('id', $id, $dataUpdate);
+        return redirect()->route('adm_listIsiDeposit')
+                ->with('message', 'Berhasil konfirmasi isi deposit')
+                ->with('messageclass', 'success');
+    }
+    
+    public function postRejectTransactionIsiDeposit(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $id = $request->cekId;
+        $user_id = $request->cekMemberId;
+        $modelSettingTrans = New Transaction;
+        $getData = $modelSettingTrans->getDetailRejectDepositTransactionsAdminByID($id, $user_id);
+        if($getData == null){
+            return redirect()->route('adm_listIsiDeposit')
+                ->with('message', 'Data tidak ditemukan')
+                ->with('messageclass', 'danger');
+        }
+        $dataUpdate = array(
+            'status' => 3,
+            'deleted_at' => date('Y-m-d H:i:s'),
+            'reason' => $request->reason,
+            'submit_by' => $dataUser->id,
+            'submit_at' => date('Y-m-d H:i:s'),
+        );
+        $modelSettingTrans->getUpdateDepositTransaction('id', $id, $dataUpdate);
+        return redirect()->route('adm_listIsiDeposit')
+                    ->with('message', 'Transaksi dibatalkan')
+                    ->with('messageclass', 'success');
+    }
+    
     
     
     
@@ -2694,7 +2770,7 @@ class MasterAdminController extends Controller {
     
     public function getMemberTestingCheck(){
         $dataUser = Auth::user();
-        $onlyUser  = array(10);
+        $onlyUser  = array(1, 2, 3);
         if(!in_array($dataUser->user_type, $onlyUser)){
             return redirect()->route('mainDashboard');
         }
@@ -2702,17 +2778,16 @@ class MasterAdminController extends Controller {
         $getDataAPI = $modelMember->getDataAPIMobilePulsa();
         $username   = $getDataAPI->username;
         $apiKey   = $getDataAPI->api_key;
-        $sign = md5($username.$apiKey.'pl');
+        $sign = md5($username.$apiKey.'depo');
         $json = '{
-                    "commands" : "pricelist",
+                    "cmd" : "deposit",
                     "username" : "'.$username.'",
-                    "sign"     : "'.$sign.'", 
-                    "status" : "active"
+                    "sign" : "'.$sign.'", 
             }';
-        $url = $getDataAPI->master_url.'/v1/legacy/index/pulsa/telkomsel';
+        $url = $getDataAPI->master_url.'/v1/cek-saldo';
         $cek = $modelMember->getAPIurlCheck($url, $json);
         $arrayData = json_decode($cek, true);
-        dd($arrayData['data']);
+        dd($arrayData);
     }
     
 
