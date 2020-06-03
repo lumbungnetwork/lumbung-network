@@ -2778,13 +2778,9 @@ class MasterAdminController extends Controller {
         $getDataAPI = $modelMember->getDataAPIMobilePulsa();
         $username   = $getDataAPI->username;
         $apiKey   = $getDataAPI->api_key;
-        $sign = md5($username.$apiKey.'depo');
-        $json = '{
-                    "cmd" : "deposit",
-                    "username" : "'.$username.'",
-                    "sign" : "'.$sign.'", 
-            }';
-        $url = $getDataAPI->master_url.'/v1/cek-saldo';
+        $sign = md5($username.$apiKey.'pricelist');
+        $json = '{"cmd":"prepaid","username":"'.$username.'","sign":"'.$sign.'"}';
+        $url = $getDataAPI->master_url.'/v1/price-list';
         $cek = $modelMember->getAPIurlCheck($url, $json);
         $arrayData = json_decode($cek, true);
         dd($arrayData);
