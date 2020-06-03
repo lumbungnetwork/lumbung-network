@@ -2779,7 +2779,12 @@ class MasterAdminController extends Controller {
         $username   = $getDataAPI->username;
         $apiKey   = $getDataAPI->api_key;
         $sign = md5($username.$apiKey.'pricelist');
-        $json = '{"cmd":"prepaid","username":"'.$username.'","sign":"'.$sign.'"}';
+        $array = array(
+            'cmd' => 'prepaid',
+            'username' => $username,
+            'sign' => $sign
+        );
+        $json = json_encode($array);
         $url = $getDataAPI->master_url.'/v1/price-list';
         $cek = $modelMember->getAPIurlCheck($url, $json);
         $arrayData = json_decode($cek, true);

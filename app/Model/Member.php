@@ -1057,6 +1057,7 @@ class Member extends Model {
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
         curl_setopt($ch,CURLOPT_RETURNTRANSFER,TRUE);       
+        curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch,CURLOPT_CONNECTTIMEOUT,20);          
         curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);
         curl_setopt($ch, CURLOPT_FAILONERROR, TRUE);
