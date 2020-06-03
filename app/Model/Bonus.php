@@ -70,6 +70,26 @@ class Bonus extends Model {
         return $return;
     }
     
+    public function getCekNewBonusRoyaltiMax($id, $level, $maxBonus, $date){
+        $return = true;
+        if($id > 11){
+            $sql = DB::table('bonus_member')
+                        ->selectRaw('count(id) as total_max')
+                        ->where('user_id', '=', $id)
+                        ->where('type', '=', 3)
+                        ->whereDate('bonus_date', '>=', $date->startDay)
+                        ->whereDate('bonus_date', '<=', $date->endDay)
+                        ->where('level_id', '=', $level)
+                        ->first();
+            if($sql->total_max != null){
+                if($sql->total_max >= pow($maxBonus, $level)){
+                    $return = false;
+                }
+            }
+        }
+        return $return;
+    }
+    
     public function getBonusSponsor($data){
         $sql = DB::table('bonus_member')
                     ->join('users', 'bonus_member.from_user_id', '=', 'users.id')

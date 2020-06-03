@@ -4,10 +4,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 body {
+/*    background: url('../img/gradient-bg.png');
     background: url('../img/gradient-bg.png');
     background: url('../img/gradient-bg.png');
-    background: url('../img/gradient-bg.png');
-    background: url('../img/gradient-bg.png');
+    background: url('../img/gradient-bg.png');*/
+    background: -moz-linear-gradient(-45deg, rgba(255,255,255,1) 5%, rgba(255,221,89,1) 32%, rgba(200,247,175,1) 50%, rgba(179,255,63,1) 68%, rgba(255,255,255,1) 95%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(-45deg, rgba(255,255,255,1) 5%,rgba(255,221,89,1) 32%,rgba(200,247,175,1) 50%,rgba(179,255,63,1) 68%,rgba(255,255,255,1) 95%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(135deg, rgba(255,255,255,1) 5%,rgba(255,221,89,1) 32%,rgba(200,247,175,1) 50%,rgba(179,255,63,1) 68%,rgba(255,255,255,1) 95%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffffff',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
