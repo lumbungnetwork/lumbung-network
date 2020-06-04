@@ -287,7 +287,7 @@ class Transaction extends Model {
                         ->selectRaw('users.name, users.hp, users.user_code, '
                                 . 'deposit_transaction.transaction_code, deposit_transaction.type, deposit_transaction.price, deposit_transaction.status,'
                                 . 'deposit_transaction.created_at, deposit_transaction.unique_digit, deposit_transaction.user_id, deposit_transaction.id, deposit_transaction.is_tron, '
-                                . 'tron.tron_name, tron.tron ')
+                                . 'tron.tron_name, tron.tron, deposit_transaction.tron_transfer ')
                         ->where('deposit_transaction.id', '=', $id)
                         ->where('deposit_transaction.user_id', '=', $user_id)
                         ->first();
@@ -362,6 +362,52 @@ class Transaction extends Model {
                         ->where('deposit_transaction.id', '=', $id)
                         ->where('deposit_transaction.user_id', '=', $user_id)
                         ->first();
+        return $sql;
+    }
+    
+    public function getMyTotalTarikDeposit($data){
+        $sql = DB::table('deposit_transaction')
+                    ->selectRaw('sum(price) as deposit_keluar')
+                    ->where('user_id', '=', $data->id)
+                    ->where('type', '=', 2)
+                    ->whereIn('user_type', array(1, 2))
+                    ->first();
+        return $sql;
+    }
+    
+    public function getTransactionsTarikDepositByAdmin(){
+        $sql = DB::table('deposit_transaction')
+                    ->join('users', 'deposit_transaction.user_id', '=', 'users.id')
+                    ->leftJoin('bank', 'deposit_transaction.user_bank', '=', 'bank.id')
+                    ->selectRaw('users.user_code, users.hp, '
+                            . 'deposit_transaction.transaction_code, deposit_transaction.price, deposit_transaction.status,'
+                            . 'deposit_transaction.created_at, deposit_transaction.unique_digit, deposit_transaction.user_id, '
+                            . 'deposit_transaction.id, deposit_transaction.is_tron, users.tron as user_tron,'
+                            . 'bank.bank_name, bank.account_no, bank.account_name')
+                    ->where('deposit_transaction.type', '=', 2)
+                    ->where('deposit_transaction.status', '=', 1)
+                    ->orderBy('deposit_transaction.id', 'DESC')
+                    ->get();
+        $cek = null;
+        if(count($sql) > 0){
+            $cek = $sql;
+        }
+        return $cek;
+    }
+    
+    public function getTransactionsTarikDepositByAdminByID($id){
+        $sql = DB::table('deposit_transaction')
+                    ->join('users', 'deposit_transaction.user_id', '=', 'users.id')
+                    ->leftJoin('bank', 'deposit_transaction.user_bank', '=', 'bank.id')
+                    ->selectRaw('users.user_code, users.hp, '
+                            . 'deposit_transaction.transaction_code, deposit_transaction.price, deposit_transaction.status,'
+                            . 'deposit_transaction.created_at, deposit_transaction.unique_digit, deposit_transaction.user_id, '
+                            . 'deposit_transaction.id, deposit_transaction.is_tron, users.tron as user_tron,'
+                            . 'bank.bank_name, bank.account_no, bank.account_name')
+                    ->where('deposit_transaction.id', '=', $id)
+                    ->where('deposit_transaction.type', '=', 2)
+                    ->where('deposit_transaction.status', '=', 1)
+                    ->first();
         return $sql;
     }
     

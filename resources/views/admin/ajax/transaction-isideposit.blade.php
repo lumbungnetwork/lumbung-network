@@ -68,6 +68,14 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Transaksi Hash</label>
+                        <input type="text" class="form-control" readonly="" value="{{$getData->tron_transfer}}">
+                    </div>
+                </div>
+            </div>
             @endif
             <?php
                 $price = $getData->price + $getData->unique_digit;
@@ -85,7 +93,7 @@
                 </div>
                 <div class="col-md-5">
                     <div class="form-group">
-                        <label>Total Deposit</label>
+                        <label>Unik Digit</label>
                         <input type="text" readonly=""  class="form-control" value="Rp. {{number_format($getData->unique_digit, 0, ',', ',')}}">
                     </div>
                 </div>

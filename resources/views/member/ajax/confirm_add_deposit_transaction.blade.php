@@ -17,6 +17,17 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <?php
+                    $total = $getTrans->price + $getTrans->unique_digit;
+                ?>
+                <div class="col-md-12 col-xs-12">
+                    <div class="form-group">
+                        <label>Total Deposit</label>
+                        <input type="text" class="form-control" disabled="" value="Rp. {{number_format($total, 0, ',', '.')}}">
+                    </div>
+                </div>
+            </div>
             @if($cekType == 0)
             <div class="row">
                 <div class="col-md-6 col-xs-12">
@@ -58,18 +69,16 @@
                     </div>
                 </div>
             </div>
-            @endif
             <div class="row">
-                <?php
-                    $total = $getTrans->price + $getTrans->unique_digit;
-                ?>
                 <div class="col-md-12 col-xs-12">
                     <div class="form-group">
-                        <label>Total Deposit</label>
-                        <input type="text" class="form-control" disabled="" value="Rp. {{number_format($total, 0, ',', '.')}}">
+                        <label>Transaction Hash #</label>
+                        <textarea class="form-control" id="tron_transfer" rows="2" name="tron_transfer"></textarea>
                     </div>
                 </div>
             </div>
+            @endif
+            
         </form>    
     </div>
     <div class="modal-footer">

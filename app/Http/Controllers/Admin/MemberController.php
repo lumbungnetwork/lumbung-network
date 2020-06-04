@@ -3151,13 +3151,24 @@ class MemberController extends Controller {
          if($dataUser->is_vendor == 0){
             return redirect()->route('m_SearchVendor');
         }
+        $tron_transfer = null;
+        if($request->is_tron == 1){
+            if($request->tron_transfer == null){
+                return redirect()->route('m_addDepositTransaction', [$request->id_trans])
+                        ->with('message', 'Transaksi tron harus memasukkan Transaksi Hash')
+                        ->with('messageclass', 'danger');
+            }
+            $tron_transfer = $request->tron_transfer;
+        }
+        
         $modelSettingTrans = New Transaction;
         $id_trans = $request->id_trans;
         $dataUpdate = array(
             'status' => 1,
             'bank_perusahaan_id' => $request->bank_perusahaan_id,
             'updated_at' => date('Y-m-d H:i:s'),
-            'is_tron' => $request->is_tron
+            'is_tron' => $request->is_tron,
+            'tron_transfer' => $request->tron_transfer
         );
         $modelSettingTrans->getUpdateDepositTransaction('id', $id_trans, $dataUpdate);
         return redirect()->route('m_listDepositTransactions')
@@ -3236,8 +3247,11 @@ class MemberController extends Controller {
         if($dataUser->is_vendor == 0){
             return redirect()->route('m_SearchVendor');
         }
+        $modelBank = new Bank;
+        $getAllMyBank = $modelBank->getBankMember($dataUser);
         return view('member.digital.tarik-deposit')
                 ->with('headerTitle', 'Tarik Deposit')
+                ->with('getAllMyBank', $getAllMyBank)
                 ->with('dataUser', $dataUser);
     }
     
@@ -3259,23 +3273,18 @@ class MemberController extends Controller {
         //cek depositnya ada berapa jika kurang maka tidak bisa
         $modelSettingTrans = New Transaction;
         $code =$modelSettingTrans->getCodeDepositTransaction();
-        $modelBank = New Bank;
-        $getMyActiveBank = $modelBank->getBankMemberActive($dataUser);
-        $id_bank = null;
-        if($getMyActiveBank != null){
-            $id_bank = $getMyActiveBank->id;
-        }
         $dataInsert = array(
             'type' => 2,
             'user_id' => $dataUser->id,
             'transaction_code' => 'TTR'.date('Ymd').$dataUser->id.$code,
             'price' => $request->total_deposit,
             'unique_digit' => 0,
-            'user_bank' => $id_bank
+            'user_bank' => $request->user_bank,
+            'is_tron' => $request->is_tron
         );
-        $getIDTrans = $modelSettingTrans->getInsertDepositTransaction($dataInsert);
-        return redirect()->route('m_addDepositTransaction', [$getIDTrans->lastID])
-                    ->with('message', 'Pengajuan Deposit berhasil, silakan lakukan proses transfer')
+        $modelSettingTrans->getInsertDepositTransaction($dataInsert);
+        return redirect()->route('m_listDepositTransactions')
+                    ->with('message', 'Pengajuan Tark Deposit berhasil, tunggu konfirmasi admin')
                     ->with('messageclass', 'success');
     }
        

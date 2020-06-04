@@ -31,13 +31,46 @@
                                 {{  Session::get('message')    }} 
                             </div>
                         @endif
-                        
                         <div class="row">
                             <div class="col-xl-12 col-xs-12">
-                                    <fieldset class="form-group">
-                                        <label for="input_jml_deposit">Nominal Tarik Deposit</label>
-                                        <input type="text" class="form-control allownumericwithoutdecimal invalidpaste" id="input_jml_deposit" name="nominal_deposit" autocomplete="off">
-                                    </fieldset>
+                                <fieldset class="form-group">
+                                    <label for="input_jml_deposit">Metode Penarikan</label>
+                                    <address>
+                                        @if($getAllMyBank != null)
+                                            <?php $no = 1; ?>
+                                            @foreach($getAllMyBank as $rowBank)
+                                                <?php $no++; ?>
+                                                <div class="radio radio-primary">
+                                                    <input type="radio" name="radio" id="radio{{$no}}" value="0_{{$rowBank->id}}">
+                                                    <label for="radio{{$no}}">
+                                                        {{$rowBank->bank_name}} a/n <b>{{$rowBank->account_name}}</b>
+                                                        <br>
+                                                        {{$rowBank->account_no}}
+                                                    </label>
+                                                </div>
+                                            @endforeach
+                                        @endif
+
+                                        @if($dataUser->tron != null)
+                                            <div class="radio radio-primary">
+                                                <input type="radio" name="radio" id="radio" value="1_0">
+                                                <label for="radio">
+                                                    Transaksi Tron
+                                                    <br>
+                                                    <b>{{$dataUser->tron}}</b>
+                                                </label>
+                                            </div>
+                                        @endif
+                                    </address>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-12 col-xs-12">
+                                <fieldset class="form-group">
+                                    <label for="input_jml_deposit">Nominal Tarik Deposit</label>
+                                    <input type="text" class="form-control allownumericwithoutdecimal invalidpaste" id="input_jml_deposit" name="nominal_deposit" autocomplete="off">
+                                </fieldset>
                             </div>
                         </div>
                         <div class="row">
@@ -75,9 +108,10 @@
     <script>
        function inputSubmit(){
            var total_deposit = $("#input_jml_deposit").val();
+           var id_bank = $('input[name=radio]:checked').val(); 
             $.ajax({
                 type: "GET",
-                url: "{{ URL::to('/') }}/m/cek/tarik-deposit?total_deposit="+total_deposit,
+                url: "{{ URL::to('/') }}/m/cek/tarik-deposit?total_deposit="+total_deposit+"&id_bank="+id_bank,
                 success: function(url){
                     $("#confirmDetail" ).empty();
                     $("#confirmDetail").html(url);

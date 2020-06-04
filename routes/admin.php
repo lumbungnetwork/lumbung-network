@@ -136,7 +136,8 @@ Route::prefix('/')->group(function () {
         Route::get('/adm/list/isi-deposit', 'Admin\MasterAdminController@getAllRequestIsiDeposit')->name('adm_listIsiDeposit')->middleware('auth');
         Route::post('/adm/confirm/isi-deposit', 'Admin\MasterAdminController@postConfirmTransactionIsiDeposit')->middleware('auth');
         Route::post('/adm/reject/isi-deposit', 'Admin\MasterAdminController@postRejectTransactionIsiDeposit')->middleware('auth');
-        
+        Route::get('/adm/list/tarik-deposit', 'Admin\MasterAdminController@getAllRequestTarikDeposit')->name('adm_listTarikDeposit')->middleware('auth');
+        Route::post('/adm/confirm/tarik-deposit', 'Admin\MasterAdminController@postConfirmTransactionTarikDeposit')->middleware('auth');
         
         
         //Test Api Digiflazz
@@ -196,6 +197,7 @@ Route::prefix('/')->group(function () {
         Route::get('/ajax/adm/reject/req-input-vstock/{id}/{user_id}', 'Admin\AjaxController@getCekRejectMemberInputVStock')->middleware('auth');
         Route::get('/ajax/adm/cek/isi-deposit/{id}/{user_id}/{is_tron}', 'Admin\AjaxController@getCekIsiDepositTransactionById')->middleware('auth');
         Route::get('/ajax/adm/reject/isi-deposit/{id}/{user_id}/{is_tron}', 'Admin\AjaxController@getRejectIsiDepositTransactionById')->middleware('auth');
+        Route::get('/ajax/adm/cek/tarik-deposit/{id}/{user_id}/{is_tron}', 'Admin\AjaxController@getCekTarikDepositTransactionById')->middleware('auth');
         
 //        Route::get('/adm/daerah', 'Admin\MasterAdminController@getAllDaerah')->middleware('auth');
         ////////////////////////////////////////////////////////////////////////

@@ -1185,6 +1185,13 @@ class AjaxmemberController extends Controller {
     public function postCekTarikDeposit(Request $request){
         $dataUser = Auth::user();
         $canInsert = (object) array('can' => true, 'pesan' => '');
+        $separate = explode('_', $request->id_bank);
+        if(count($separate) != 2){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Pilih metode penarikan');
+            return view('member.ajax.confirm_tarik_deposit')
+                        ->with('check', $canInsert)
+                        ->with('data', null);
+        }
         if(!is_numeric($request->total_deposit)){
             $canInsert = (object) array('can' => false, 'pesan' => 'Nominal harus dalam angka');
             return view('member.ajax.confirm_tarik_deposit')
@@ -1197,15 +1204,25 @@ class AjaxmemberController extends Controller {
                         ->with('check', $canInsert)
                         ->with('data', null);
         }
+        $modelBank = New Bank;
+        $cekType = $separate[0];
+        $bankId = $separate[1];
+        if($cekType == 0){
+            $getUserBank = $modelBank->getBankMemberID($bankId, $dataUser);
+        } else {
+            $getUserBank = $dataUser;
+        }
         $modelPin = new Pin;
+        $modelTrans = New Transaction;
+        $getTransTarik = $modelTrans->getMyTotalTarikDeposit($dataUser);
         $dataDeposit = $modelPin->getTotalDepositMember($dataUser);
         $sum_deposit_masuk = 0;
         $sum_deposit_keluar = 0;
         if($dataDeposit->sum_deposit_masuk != null){
             $sum_deposit_masuk = $dataDeposit->sum_deposit_masuk;
         }
-        if($dataDeposit->sum_deposit_keluar != null){
-            $sum_deposit_keluar = $dataDeposit->sum_deposit_keluar;
+        if($getTransTarik->deposit_keluar != null){
+            $sum_deposit_keluar = $getTransTarik->deposit_keluar;
         }
         $totalDeposit = $sum_deposit_masuk - $sum_deposit_keluar;
         if($totalDeposit <  $request->total_deposit){
@@ -1219,6 +1236,8 @@ class AjaxmemberController extends Controller {
         );
         return view('member.ajax.confirm_tarik_deposit')
                         ->with('check', $canInsert)
+                        ->with('metode', $cekType)
+                        ->with('getUserBank', $getUserBank)
                         ->with('data', $data);
     }
     

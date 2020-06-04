@@ -1059,7 +1059,7 @@ class Member extends Model {
         curl_setopt($ch,CURLOPT_RETURNTRANSFER,TRUE);       
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch,CURLOPT_CONNECTTIMEOUT,20);          
-        curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);
+//        curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);
         curl_setopt($ch, CURLOPT_FAILONERROR, TRUE);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
         curl_setopt($ch, CURLOPT_AUTOREFERER, TRUE);
@@ -1077,6 +1077,8 @@ class Member extends Model {
     }
     
     public function getDataAPIMobilePulsa(){
+        // production 975e6ad1-4e40-55ba-a795-0f904296b8e3
+        // development dev-0815ad60-a0f3-11ea-9ccb-25dc8f4bbb19
         $data = (object) array(
             'username' => 'wekurugKvNdW',
             'api_key' => 'dev-0815ad60-a0f3-11ea-9ccb-25dc8f4bbb19',

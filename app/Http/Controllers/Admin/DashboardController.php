@@ -14,6 +14,7 @@ use App\Model\Package;
 use App\Model\Bonussetting;
 use App\Model\Sales;
 use App\Model\Pengiriman;
+use App\Model\Transaction;
 use App\Model\Membership;
 use Illuminate\Support\Facades\DB;
 
@@ -263,9 +264,12 @@ class DashboardController extends Controller {
             return redirect()->route('m_newPackage');
         }
         $modelPin = new Pin;
+        $modelTrans = New Transaction;
+        $getTransTarik = $modelTrans->getMyTotalTarikDeposit($dataUser);
         $getTotalDeposit = $modelPin->getTotalDepositMember($dataUser);
         return view('member.home.account')
                     ->with('dataDeposit', $getTotalDeposit)
+                    ->with('dataTarik', $getTransTarik)
                     ->with('dataUser', $dataUser);
     }
     

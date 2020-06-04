@@ -2763,6 +2763,52 @@ class MasterAdminController extends Controller {
                     ->with('messageclass', 'success');
     }
     
+    public function getAllRequestTarikDeposit(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelSettingTrans = New Transaction;
+        $getAllTransaction = $modelSettingTrans->getTransactionsTarikDepositByAdmin();
+        return view('admin.digital.list-tarik-deposit')
+                ->with('headerTitle', 'Transaksi Tarik Deposit')
+                ->with('getData', $getAllTransaction)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postConfirmTransactionTarikDeposit(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $getRowID = $request->id;
+        $modelSettingTrans = New Transaction;
+        foreach($getRowID as $getID){
+            $getData = $modelSettingTrans->getTransactionsTarikDepositByAdminByID($getID);
+            $memberDeposit = array(
+                'user_id' => $getData->user_id,
+                'total_deposito' => $getData->price,
+                'transaction_code' => $getData->transaction_code,
+                'deposito_status' => 1
+            );
+            $modelPin = New Pin;
+            $modelPin->getInsertMemberDeposit($memberDeposit);
+            $dataUpdate = array(
+                'status' => 2,
+                'tuntas_at' => date('Y-m-d H:i:s'),
+                'submit_by' => $dataUser->id,
+                'submit_at' => date('Y-m-d H:i:s'),
+            );
+            $modelSettingTrans->getUpdateDepositTransaction('id', $getID, $dataUpdate);
+        }
+        return redirect()->route('adm_listTarikDeposit')
+                ->with('message', 'Berhasil konfirmasi tarik deposit')
+                ->with('messageclass', 'success');
+    }
+    
+    
     
     
     
@@ -2778,14 +2824,29 @@ class MasterAdminController extends Controller {
         $getDataAPI = $modelMember->getDataAPIMobilePulsa();
         $username   = $getDataAPI->username;
         $apiKey   = $getDataAPI->api_key;
-        $sign = md5($username.$apiKey.'pricelist');
+        
+//        $sign = md5($username.$apiKey.'pricelist');
+//        $array = array(
+//            'cmd' => 'prepaid',
+//            'username' => $username,
+//            'sign' => $sign
+//        );
+//        $json = json_encode($array);
+//        $url = $getDataAPI->master_url.'/v1/price-list';
+        
+        $ref_id = 'test1';
+        $sign = md5($username.$apiKey.$ref_id);
         $array = array(
-            'cmd' => 'prepaid',
             'username' => $username,
-            'sign' => $sign
+            'buyer_sku_code' => 'xld10',
+            'customer_no' => '087800001230',
+            'ref_id' => $ref_id,
+            'sign' => $sign,
+            'testing' => true
         );
+        $url = $getDataAPI->master_url.'/v1/transaction';
         $json = json_encode($array);
-        $url = $getDataAPI->master_url.'/v1/price-list';
+        
         $cek = $modelMember->getAPIurlCheck($url, $json);
         $arrayData = json_decode($cek, true);
         dd($arrayData);
