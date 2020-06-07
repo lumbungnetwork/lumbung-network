@@ -145,5 +145,79 @@ class Pin extends Model {
         return $sql;
     }
     
+    public function getTotalDepositAll(){
+        $sql = DB::table('member_deposito')
+                    ->selectRaw('
+		sum(case when deposito_status = 0 then total_deposito else 0 end) as sum_deposit_masuk,
+		sum(case when deposito_status in (1, 2) then total_deposito else 0 end) as sum_deposit_keluar
+                    ')
+                    ->first();
+        $deposit_masuk = 0;
+        $deposit_keluar = 0;
+        if($sql->sum_deposit_masuk != null){
+            $deposit_masuk = $sql->sum_deposit_masuk;
+        }
+        if($sql->sum_deposit_keluar != null){
+            $deposit_keluar = $sql->sum_deposit_keluar;
+        }
+        $return = (object) array(
+            'sum_deposit_masuk' => $deposit_masuk,
+            'sum_deposit_keluar' => $deposit_keluar
+        );
+        return $return;
+        return $sql;
+    }
+    
+    public function getInsertMasterDeposit($data){
+        try {
+            $lastInsertedID = DB::table('master_deposit')->insertGetId($data);
+            $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
+        }
+        return $result;
+    }
+    
+    public function getUpdateMasterDeposit($fieldName, $name, $data){
+        try {
+            DB::table('master_deposit')->where($fieldName, '=', $name)->update($data);
+            $result = (object) array('status' => true, 'message' => null);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message);
+        }
+        return $result;
+    }
+    
+    public function getTotalMasterDepositAll(){
+        $sql = DB::table('master_deposit')
+                    ->selectRaw('
+		sum(case when type_deposit = 1 then total_deposit else 0 end) as sum_deposit_masuk,
+		sum(case when type_deposit in (2, 3) then total_deposit else 0 end) as sum_deposit_keluar
+                    ')
+                    ->first();
+        $deposit_masuk = 0;
+        $deposit_keluar = 0;
+        if($sql->sum_deposit_masuk != null){
+            $deposit_masuk = $sql->sum_deposit_masuk;
+        }
+        if($sql->sum_deposit_keluar != null){
+            $deposit_keluar = $sql->sum_deposit_keluar;
+        }
+        $return = (object) array(
+            'sum_deposit_masuk' => $deposit_masuk,
+            'sum_deposit_keluar' => $deposit_keluar
+        );
+        return $return;
+    }
+    
+    public function getCodeTransactionSystem(){
+        $getTransCount = DB::table('master_deposit')->selectRaw('id')->whereDate('created_at', date('Y-m-d'))->count();
+        $tmp = $getTransCount+1;
+        $code = sprintf("%04s", $tmp);
+        return 'TS'.$code.'_'.date('Ymd');
+    }
+    
     
 }

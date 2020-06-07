@@ -370,7 +370,7 @@ class Transaction extends Model {
                     ->selectRaw('sum(price) as deposit_keluar')
                     ->where('user_id', '=', $data->id)
                     ->where('type', '=', 2)
-                    ->whereIn('user_type', array(1, 2))
+                    ->whereIn('status', array(1, 2))
                     ->first();
         return $sql;
     }
@@ -411,5 +411,13 @@ class Transaction extends Model {
         return $sql;
     }
     
+    public function getTotalAllTarikDeposit(){
+        $sql = DB::table('deposit_transaction')
+                    ->selectRaw('sum(price) as deposit_keluar')
+                    ->where('type', '=', 2)
+                    ->where('status', '=', 2)
+                    ->first();
+        return $sql;
+    }
     
 }

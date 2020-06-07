@@ -179,7 +179,8 @@
                         <p>Produk Digital</p>
                         <div class="row">
                             <div class="col-3 mb-3">
-                                <a href="{{ URL::to('/') }}/m/add/deposit" class="text-decoration-none">
+                                <a href="#" class="text-decoration-none">
+                                <!--<a href="{{ URL::to('/') }}/m/add/deposit" class="text-decoration-none">-->
                                     <div class="rounded icon-ppob text-center">
                                         <div class="box-icon bg-green text-center">
                                             <i class="mdi mdi-cog-counterclockwise icon-menu"></i>
@@ -189,7 +190,8 @@
                                 </a>
                             </div>
                             <div class="col-3 mb-3">
-                                <a href="{{ URL::to('/') }}/m/tarik/deposit" class="text-decoration-none">
+                                <a href="#" class="text-decoration-none">
+                                <!--<a href="{{ URL::to('/') }}/m/tarik/deposit" class="text-decoration-none">-->
                                     <div class="rounded icon-ppob text-center">
                                         <div class="box-icon bg-green text-center">
                                             <i class="mdi mdi-logout-variant icon-menu"></i>
@@ -199,7 +201,8 @@
                                 </a>
                             </div>
                             <div class="col-3 mb-3">
-                                <a href="{{ URL::to('/') }}/m/deposit/history" class="text-decoration-none">
+                                <a href="#" class="text-decoration-none">
+                                <!--<a href="{{ URL::to('/') }}/m/deposit/history" class="text-decoration-none">-->
                                     <div class="rounded icon-ppob text-center">
                                         <div class="box-icon bg-green text-center">
                                             <i class="mdi mdi-history icon-menu"></i>
@@ -209,7 +212,8 @@
                                 </a>
                             </div>
                             <div class="col-3 mb-3">
-                                <a href="{{ URL::to('/') }}/m/list/deposit-transaction" class="text-decoration-none">
+                                <a href="#" class="text-decoration-none">
+                                <!--<a href="{{ URL::to('/') }}/m/list/deposit-transaction" class="text-decoration-none">-->
                                     <div class="rounded icon-ppob text-center">
                                         <div class="box-icon bg-green text-center">
                                             <i class="mdi mdi-bank-transfer icon-menu"></i>

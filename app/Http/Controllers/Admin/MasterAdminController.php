@@ -2693,11 +2693,18 @@ class MasterAdminController extends Controller {
         if(!in_array($dataUser->user_type, $onlyUser)){
             return redirect()->route('mainDashboard');
         }
-        $modelSettingTrans = New Transaction;
-        $getAllTransaction = $modelSettingTrans->getTransactionsIsiDepositByAdmin();
+        $modelPin = new Pin;
+        $modelTrans = New Transaction;
+        $getTotalDeposit = $modelPin->getTotalDepositAll();
+        $getTotalMasterDeposit = $modelPin->getTotalMasterDepositAll();
+        $getAllTransaction = $modelTrans->getTransactionsIsiDepositByAdmin();
+        $getAllTarikTransaction = $modelTrans->getTotalAllTarikDeposit();
         return view('admin.digital.list-req-deposit')
                 ->with('headerTitle', 'Transaksi Isi Deposit')
                 ->with('getData', $getAllTransaction)
+                ->with('getDataTarik', $getAllTarikTransaction)
+                ->with('localDeposit', $getTotalDeposit)
+                ->with('systemDeposit', $getTotalMasterDeposit)
                 ->with('dataUser', $dataUser);
     }
     
@@ -2805,6 +2812,54 @@ class MasterAdminController extends Controller {
         }
         return redirect()->route('adm_listTarikDeposit')
                 ->with('message', 'Berhasil konfirmasi tarik deposit')
+                ->with('messageclass', 'success');
+    }
+    
+    public function getTransferSystemDeposit(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        return view('admin.digital.transfer-deposit')
+                ->with('headerTitle', 'Transfer System Deposit')
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postTransferSystemDeposit(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelPin = new Pin;
+        $getCode = $modelPin->getCodeTransactionSystem();
+        $dataInsert = array(
+            'total_deposit' => $request->total_deposit,
+            'bank_name' => $request->bank_name,
+            'account_no' => $request->account_no,
+            'account_name' => $request->account_name,
+            'type_deposit' => 1,
+            'code' => $getCode
+        );
+        $modelPin->getInsertMasterDeposit($dataInsert);
+        //kirim email
+//        $dataEmail = array(
+//            'tgl_order' => date('d F Y'),
+//            'total_deposit' => $request->total_deposit,
+//            'bank_name' => $request->bank_name,
+//            'account_no' => $request->account_no,
+//            'account_name' => $request->account_name,
+//            'code' => $getCode
+//        );
+//        $emailSend = 'bernaandya@gmail.com';
+//        Mail::send('member.email.transfer_deposit', $dataEmail, function($message) use($emailSend){
+//            $message->to($emailSend, 'Konfirmasi Transfer Deposit Lumbung Network')
+//                    ->subject('Konfirmasi Transfer Deposit Lumbung Network');
+//        });
+        
+        return redirect()->route('adm_listTransferDeposit')
+                ->with('message', 'Berhasil konfirmasi transfer system deposit')
                 ->with('messageclass', 'success');
     }
     

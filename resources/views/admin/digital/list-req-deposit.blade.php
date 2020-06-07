@@ -22,6 +22,113 @@
     <?php //MENU CONTENT  ?>
     <div class="content">
         <div class="row">
+            <div class="col-lg-4">
+                <div class="card card-stats">
+                    <div class="card-body ">
+                        <div class="row">
+                            <div class="col-5 col-md-4">
+                                <div class="icon-big text-center icon-warning">
+                                    <i class="nc-icon nc-cloud-upload-94 text-success"></i>
+                                </div>
+                            </div>
+                            <?php
+                                $totalSystemDeposit = $systemDeposit->sum_deposit_masuk - $systemDeposit->sum_deposit_keluar;
+                            ?>
+                            <div class="col-7 col-md-8">
+                                <div class="numbers">
+                                    <p class="card-category">System Deposit</p>
+                                    <p class="card-title">Rp {{number_format($totalSystemDeposit, 0, ',', '.')}}
+                                    </p>
+                                    <p>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer ">
+                        <hr>
+                        <div class="stats">
+                            <a href="#"><i class="fa fa-refresh"></i> Transfer ke System</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card card-stats">
+                    <div class="card-body ">
+                        <div class="row">
+                            <div class="col-5 col-md-4">
+                                <div class="icon-big text-center icon-warning">
+                                    <i class="nc-icon nc-cloud-download-93 text-info"></i>
+                                </div>
+                            </div>
+                            <?php
+                                $sum_deposit_keluar = 0;
+                                if($getDataTarik->deposit_keluar != null){
+                                    $sum_deposit_keluar = $getDataTarik->deposit_keluar;
+                                }
+//                                $sum_deposit_keluar = $localDeposit->sum_deposit_keluar;
+                                $totalLocalDeposit = $localDeposit->sum_deposit_masuk - $localDeposit->sum_deposit_keluar;
+                            ?>
+                            
+                            <div class="col-7 col-md-8">
+                                <div class="numbers">
+                                    <p class="card-category">Lumbung Deposit</p>
+                                    <p class="card-title">Rp {{number_format($totalLocalDeposit, 0, ',', '.')}}
+                                    </p>
+                                    <p>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer ">
+                        <hr>
+                        <div class="stats">
+                            &nbsp;
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card card-stats">
+                    <div class="card-body ">
+                        <div class="row">
+                            <div class="col-5 col-md-4">
+                                <div class="icon-big text-center icon-warning">
+                                    <i class="nc-icon nc-share-66 text-danger"></i>
+                                </div>
+                            </div>
+                            <?php
+                                $sum_deposit_keluar = 0;
+                                if($getDataTarik->deposit_keluar != null){
+                                    $sum_deposit_keluar = $getDataTarik->deposit_keluar;
+                                }
+//                                $sum_deposit_keluar = $localDeposit->sum_deposit_keluar;
+//                                $totalLocalDeposit = $localDeposit->sum_deposit_masuk - $localDeposit->sum_deposit_keluar;
+                            ?>
+                            
+                            <div class="col-7 col-md-8">
+                                <div class="numbers">
+                                    <p class="card-category">Non Konfirm Tarik Deposit</p>
+                                    <p class="card-title">Rp {{number_format($sum_deposit_keluar, 0, ',', '.')}}
+                                    </p>
+                                    <p>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer ">
+                        <hr>
+                        <div class="stats">
+                            &nbsp;
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
