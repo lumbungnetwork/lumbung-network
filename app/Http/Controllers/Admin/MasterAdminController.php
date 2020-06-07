@@ -2880,6 +2880,20 @@ class MasterAdminController extends Controller {
         $username   = $getDataAPI->username;
         $apiKey   = $getDataAPI->api_key;
         
+//        $sign = md5($username.$apiKey.'depo');
+//        $array = array(
+//            'cmd' => 'deposit',
+//            'username' => $username,
+//            'sign' => $sign
+//        );
+//        $json = json_encode($array);
+//        $url = $getDataAPI->master_url.'/v1/cek-saldo';
+//        $return = array(
+//            'data' => array(
+//                'deposit' => 200067
+//            )
+//        );
+        
 //        $sign = md5($username.$apiKey.'pricelist');
 //        $array = array(
 //            'cmd' => 'prepaid',
@@ -2888,16 +2902,19 @@ class MasterAdminController extends Controller {
 //        );
 //        $json = json_encode($array);
 //        $url = $getDataAPI->master_url.'/v1/price-list';
+        // category => pulsa
+        // brand => TELKOMSEL
         
         $ref_id = 'test1';
         $sign = md5($username.$apiKey.$ref_id);
         $array = array(
             'username' => $username,
-            'buyer_sku_code' => 'xld10',
-            'customer_no' => '087800001230',
+            'buyer_sku_code' => 'T10',
+            'customer_no' => '081282477195',
             'ref_id' => $ref_id,
             'sign' => $sign,
-            'testing' => true
+            'testing' => true,
+            'msg' => 'testing dengan admin'
         );
         $url = $getDataAPI->master_url.'/v1/transaction';
         $json = json_encode($array);
