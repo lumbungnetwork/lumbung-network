@@ -219,5 +219,38 @@ class Pin extends Model {
         return 'TS'.$code.'_'.date('Ymd');
     }
     
+    public function getInsertPPOB($data){
+        try {
+            $lastInsertedID = DB::table('ppob')->insertGetId($data);
+            $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
+        }
+        return $result;
+    }
+    
+    public function getUpdatePPOB($fieldName, $name, $data){
+        try {
+            DB::table('ppob')->where($fieldName, '=', $name)->update($data);
+            $result = (object) array('status' => true, 'message' => null);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message);
+        }
+        return $result;
+    }
+    
+    public function getCodePPOBRef($type){
+        $getTransCount = DB::table('ppob')
+                ->selectRaw('id')
+                ->where('type', '=', $type)
+                ->whereDate('created_at', date('Y-m-d'))
+                ->count();
+        $tmp = $getTransCount+1;
+        $code = sprintf("%03s", $tmp);
+        return 'ref'.$type.'_'.$code.'_'.date('Ymd');
+    }
+    
     
 }

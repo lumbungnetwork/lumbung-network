@@ -2928,7 +2928,8 @@ class MasterAdminController extends Controller {
         $getDataAPI = $modelMember->getDataAPIMobilePulsa();
         $username   = $getDataAPI->username;
         $apiKey   = $getDataAPI->api_key;
-        $ref_id = 'test1';
+        $modelPin = new Pin;
+        $ref_id = $modelPin->getCodePPOBRef(1);
         $sign = md5($username.$apiKey.$ref_id);
         $array = array(
             'username' => $username,
@@ -2936,8 +2937,8 @@ class MasterAdminController extends Controller {
             'customer_no' => '081282477195',
             'ref_id' => $ref_id,
             'sign' => $sign,
-            'testing' => true,
-            'msg' => 'testing dengan admin'
+//            'testing' => true,
+//            'msg' => 'testing dengan admin'
         );
         $url = $getDataAPI->master_url.'/v1/transaction';
         $json = json_encode($array);
