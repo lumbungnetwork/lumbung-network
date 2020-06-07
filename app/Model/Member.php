@@ -1081,7 +1081,7 @@ class Member extends Model {
         // development dev-0815ad60-a0f3-11ea-9ccb-25dc8f4bbb19
         $data = (object) array(
             'username' => 'wekurugKvNdW',
-            'api_key' => '975e6ad1-4e40-55ba-a795-0f904296b8e3',
+            'api_key' => 'dev-0815ad60-a0f3-11ea-9ccb-25dc8f4bbb19',
             'master_url' => 'https://api.digiflazz.com'
         );
         return $data;

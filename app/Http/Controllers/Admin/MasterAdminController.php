@@ -2869,9 +2869,32 @@ class MasterAdminController extends Controller {
     
     //PPOB
     
-    public function getMemberTestingCheck(){
+    public function getMemberTestingCheckSaldo(){
         $dataUser = Auth::user();
-        $onlyUser  = array(1, 2, 3);
+        $onlyUser  = array(1);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelMember = New Member;
+        $getDataAPI = $modelMember->getDataAPIMobilePulsa();
+        $username   = $getDataAPI->username;
+        $apiKey   = $getDataAPI->api_key;
+        $sign = md5($username.$apiKey.'depo');
+        $array = array(
+            'cmd' => 'deposit',
+            'username' => $username,
+            'sign' => $sign
+        );
+        $json = json_encode($array);
+        $url = $getDataAPI->master_url.'/v1/cek-saldo';
+        $cek = $modelMember->getAPIurlCheck($url, $json);
+        $arrayData = json_decode($cek, true);
+        dd($arrayData);
+    }
+    
+    public function getMemberTestingCheckDaftarPulsa(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1);
         if(!in_array($dataUser->user_type, $onlyUser)){
             return redirect()->route('mainDashboard');
         }
@@ -2880,31 +2903,31 @@ class MasterAdminController extends Controller {
         $username   = $getDataAPI->username;
         $apiKey   = $getDataAPI->api_key;
         
-//        $sign = md5($username.$apiKey.'depo');
-//        $array = array(
-//            'cmd' => 'deposit',
-//            'username' => $username,
-//            'sign' => $sign
-//        );
-//        $json = json_encode($array);
-//        $url = $getDataAPI->master_url.'/v1/cek-saldo';
-//        $return = array(
-//            'data' => array(
-//                'deposit' => 200067
-//            )
-//        );
-        
-//        $sign = md5($username.$apiKey.'pricelist');
-//        $array = array(
-//            'cmd' => 'prepaid',
-//            'username' => $username,
-//            'sign' => $sign
-//        );
-//        $json = json_encode($array);
-//        $url = $getDataAPI->master_url.'/v1/price-list';
+        $sign = md5($username.$apiKey.'pricelist');
+        $array = array(
+            'cmd' => 'prepaid',
+            'username' => $username,
+            'sign' => $sign
+        );
+        $json = json_encode($array);
+        $url = $getDataAPI->master_url.'/v1/price-list';
         // category => pulsa
         // brand => TELKOMSEL
-        
+        $cek = $modelMember->getAPIurlCheck($url, $json);
+        $arrayData = json_decode($cek, true);
+        dd($arrayData);
+    }
+    
+    public function getMemberTestingCheckTopupPulsa(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelMember = New Member;
+        $getDataAPI = $modelMember->getDataAPIMobilePulsa();
+        $username   = $getDataAPI->username;
+        $apiKey   = $getDataAPI->api_key;
         $ref_id = 'test1';
         $sign = md5($username.$apiKey.$ref_id);
         $array = array(

@@ -143,7 +143,9 @@ Route::prefix('/')->group(function () {
         
         
         //Test Api Digiflazz
-        Route::get('/adm/test/api-digiflazz', 'Admin\MasterAdminController@getMemberTestingCheck')->middleware('auth');
+        Route::get('/adm/test-digiflazz/saldo', 'Admin\MasterAdminController@getMemberTestingCheckSaldo')->middleware('auth');
+        Route::get('/adm/test-digiflazz/daftar-pulsa', 'Admin\MasterAdminController@getMemberTestingCheckDaftarPulsa')->middleware('auth');
+        Route::get('/adm/test-digiflazz/top-pulsa', 'Admin\MasterAdminController@getMemberTestingCheckTopupPulsa')->middleware('auth');
         
         
         
