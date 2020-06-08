@@ -48,7 +48,7 @@
                     <div class="card-footer ">
                         <hr>
                         <div class="stats">
-                            <a href="#"><i class="fa fa-refresh"></i> Transfer ke System</a>
+                            <a href="/adm/transfer/system-deposit"><i class="fa fa-refresh"></i> Transfer ke System</a>
                         </div>
                     </div>
                 </div>

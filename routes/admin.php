@@ -11,6 +11,9 @@ Route::post('/forgot/passwd', 'FrontEnd\FrontEndController@postForgotPassword');
 Route::get('/auth/passwd/{code}/{email}', 'FrontEnd\FrontEndController@getAuthPassword')->name('passwdauth');
 Route::post('/auth/passwd', 'FrontEnd\FrontEndController@postAuthPassword');
 
+//Andya Berna approve System Deposit to Digiflazz
+Route::get('/approve/deposit', 'FrontEnd\FrontEndController@getAndyaBernaApproveDeposit')->name('passwdauth');
+
 Auth::routes();
 Route::prefix('/')->group(function () {
     

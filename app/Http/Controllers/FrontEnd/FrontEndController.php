@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Model\Member;
+use App\Model\Pin;
 
 class FrontEndController extends Controller {
 
@@ -109,6 +110,13 @@ class FrontEndController extends Controller {
                     ->with('message', 'Data Password telah anda reset. silakan login')
                     ->with('messageclass', 'success');
     }
+    
+    public function getAndyaBernaApproveDeposit(Request $request){
+        $modelPin = new Pin;
+        $getCode = $modelPin->getCodeTransactionSystem();
+    }
+    
+
 
 
 }
