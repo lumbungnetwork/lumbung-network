@@ -3287,6 +3287,26 @@ class MemberController extends Controller {
                     ->with('message', 'Pengajuan Tark Deposit berhasil, tunggu konfirmasi admin')
                     ->with('messageclass', 'success');
     }
+    
+    public function getBuyPPOB($type){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        //cek vendornya
+        //type 1 => Member beli pulsa
+        dd('here');
+        if($type == 1){
+            dd('masuk beli pulsa. list operator');
+        }
+        return redirect()->route('mainDashboard');
+        
+        
+    }
        
     
     

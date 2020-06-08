@@ -12,7 +12,7 @@ Route::get('/auth/passwd/{code}/{email}', 'FrontEnd\FrontEndController@getAuthPa
 Route::post('/auth/passwd', 'FrontEnd\FrontEndController@postAuthPassword');
 
 //Andya Berna approve System Deposit to Digiflazz
-Route::get('/approve/deposit', 'FrontEnd\FrontEndController@getAndyaBernaApproveDeposit')->name('passwdauth');
+Route::get('/approve/deposit/{code}', 'FrontEnd\FrontEndController@getAndyaBernaApproveDeposit')->name('passwdauth');
 
 Auth::routes();
 Route::prefix('/')->group(function () {
@@ -367,6 +367,8 @@ Route::prefix('/')->group(function () {
         Route::get('/m/deposit/history', 'Admin\MemberController@getMyDepositHistory')->name('m_myDepositHistory')->middleware('auth');
         Route::get('/m/tarik/deposit', 'Admin\MemberController@getTarikDeposit')->name('m_tarikDeposit')->middleware('auth');
         Route::post('/m/tarik/deposit', 'Admin\MemberController@postTarikDeposit')->middleware('auth');
+        
+        Route::get('/m/buy/{type}', 'Admin\MemberController@getBuyPPOB')->name('m_buyPPOB')->middleware('auth');
         
         //Ajax
         Route::get('/m/cek/add-sponsor', 'Admin\AjaxmemberController@postCekAddSponsor')->middleware('auth');

@@ -20,6 +20,7 @@ use App\Model\Transferwd;
 use App\Model\Bonus;
 use File;
 use App\Model\Sales;
+use Illuminate\Support\Facades\Mail;
 
 class MasterAdminController extends Controller {
 
@@ -2844,21 +2845,22 @@ class MasterAdminController extends Controller {
         );
         $modelPin->getInsertMasterDeposit($dataInsert);
         //kirim email
-//        $dataEmail = array(
-//            'tgl_order' => date('d F Y'),
-//            'total_deposit' => $request->total_deposit,
-//            'bank_name' => $request->bank_name,
-//            'account_no' => $request->account_no,
-//            'account_name' => $request->account_name,
-//            'code' => $getCode
-//        );
-//        $emailSend = 'bernaandya@gmail.com';
-//        Mail::send('member.email.transfer_deposit', $dataEmail, function($message) use($emailSend){
-//            $message->to($emailSend, 'Konfirmasi Transfer Deposit Lumbung Network')
-//                    ->subject('Konfirmasi Transfer Deposit Lumbung Network');
-//        });
+        $dataEmail = array(
+            'tgl_order' => date('d F Y'),
+            'total_deposit' => 'Rp '.number_format($request->total_deposit, 0, ',', '.'),
+            'bank_name' => $request->bank_name,
+            'account_no' => $request->account_no,
+            'account_name' => $request->account_name,
+            'code' => $getCode,
+            'dataLink' => 'approve/deposit/'.$getCode,
+        );
+        $emailSend = 'bernaandya@gmail.com';
+        Mail::send('member.email.transfer_deposit', $dataEmail, function($message) use($emailSend){
+            $message->to($emailSend, 'Konfirmasi Transfer Deposit Lumbung Network')
+                    ->subject('Konfirmasi Transfer Deposit Lumbung Network');
+        });
         
-        return redirect()->route('adm_listTransferDeposit')
+        return redirect()->route('adm_listIsiDeposit')
                 ->with('message', 'Berhasil konfirmasi transfer system deposit')
                 ->with('messageclass', 'success');
     }

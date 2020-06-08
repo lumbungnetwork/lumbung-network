@@ -111,9 +111,16 @@ class FrontEndController extends Controller {
                     ->with('messageclass', 'success');
     }
     
-    public function getAndyaBernaApproveDeposit(Request $request){
+    public function getAndyaBernaApproveDeposit($code){
         $modelPin = new Pin;
-        $getCode = $modelPin->getCodeTransactionSystem();
+        $dataUpdate = array(
+            'status' => 1,
+            'submit_at' => date('Y-m-d H:i:s')
+        );
+        $modelPin->getUpdateMasterDeposit('code', $code, $dataUpdate);
+        return redirect()->route('areaLogin')
+                    ->with('message', 'data approve deposit sistem berhasil')
+                    ->with('messageclass', 'success');
     }
     
 
