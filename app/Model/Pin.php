@@ -249,7 +249,7 @@ class Pin extends Model {
                 ->count();
         $tmp = $getTransCount+1;
         $code = sprintf("%03s", $tmp);
-        return 'ref'.$type.'_'.$code.'_'.date('Ymd');
+        return 'ref_'.$type.'_'.$code.'_'.date('Ymd');
     }
     
     
