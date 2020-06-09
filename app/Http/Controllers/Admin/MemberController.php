@@ -3288,6 +3288,64 @@ class MemberController extends Controller {
                     ->with('messageclass', 'success');
     }
     
+    public function getListOperator($type){
+        $dataUser = Auth::user();
+        $sessionUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+        return view('member.digital.list-operator')
+            ->with('headerTitle', 'List Operator')
+            ->with('dataUser', $dataUser);
+    }
+    
+    public function getDaftarHargaOperator($operator){
+        $dataUser = Auth::user();
+        $sessionUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+        $modelMember = New Member;
+        $getDataAPI = $modelMember->getDataAPIMobilePulsa();
+        $username   = $getDataAPI->username;
+        $apiKey   = $getDataAPI->api_key;
+        
+        $sign = md5($username.$apiKey.'pricelist');
+        $array = array(
+            'cmd' => 'prepaid',
+            'username' => $username,
+            'sign' => $sign
+        );
+        $json = json_encode($array);
+        $url = $getDataAPI->master_url.'/v1/price-list';
+        $cek = $modelMember->getAPIurlCheck($url, $json);
+        $arrayData = json_decode($cek, true);
+        dd($arrayData);
+        //category => pulsa
+        //brand => 1 => TELKOMSEL
+        $getData = null;
+//        if($operator == 1){
+//            
+//        }
+        return view('member.digital.daftar-harga-operator')
+            ->with('headerTitle', 'Daftar Harga Operator')
+            ->with('dataUser', $dataUser);
+    }
+    
     public function getBuyPPOB($type){
         $dataUser = Auth::user();
         $onlyUser  = array(10);
@@ -3320,19 +3378,19 @@ class MemberController extends Controller {
     
     
     
-    public function getMyRequestPOBX($paket){
-        $dataUser = Auth::user();
-        $onlyUser  = array(10);
-        if(!in_array($dataUser->user_type, $onlyUser)){
-            return redirect()->route('mainDashboard');
-        }
-        if($dataUser->package_id == null){
-            return redirect()->route('m_newPackage');
-        }
-        return view('member.bonus.pobx')
-                ->with('headerTitle', 'Pin')
-                ->with('dataUser', $dataUser);
-    }
+//    public function getMyRequestPOBX($paket){
+//        $dataUser = Auth::user();
+//        $onlyUser  = array(10);
+//        if(!in_array($dataUser->user_type, $onlyUser)){
+//            return redirect()->route('mainDashboard');
+//        }
+//        if($dataUser->package_id == null){
+//            return redirect()->route('m_newPackage');
+//        }
+//        return view('member.bonus.pobx')
+//                ->with('headerTitle', 'Pin')
+//                ->with('dataUser', $dataUser);
+//    }
     
     
     

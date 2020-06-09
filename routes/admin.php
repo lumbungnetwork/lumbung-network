@@ -148,7 +148,7 @@ Route::prefix('/')->group(function () {
         //Test Api Digiflazz
         Route::get('/adm/test-digiflazz/saldo', 'Admin\MasterAdminController@getMemberTestingCheckSaldo')->middleware('auth');
         Route::get('/adm/test-digiflazz/daftar-pulsa', 'Admin\MasterAdminController@getMemberTestingCheckDaftarPulsa')->middleware('auth');
-        Route::get('/adm/test-digiflazz/top-pulsa', 'Admin\MasterAdminController@getMemberTestingCheckTopupPulsa')->middleware('auth');
+        Route::get('/adm/test-digiflazz/top-pulsa/{buyer}/{hp}', 'Admin\MasterAdminController@getMemberTestingCheckTopupPulsa')->middleware('auth');
         
         
         
@@ -354,7 +354,7 @@ Route::prefix('/')->group(function () {
         
         Route::get('/m/explorer/statistic', 'Admin\MemberController@getExplorerStatistic')->name('m_ExplorerStatistic')->middleware('auth');
         Route::get('/m/explorer/user', 'Admin\MemberController@getExplorerUser')->name('m_ExplorerUser')->middleware('auth');
-        Route::get('/m/pobx/req-{paket}', 'Admin\MemberController@getMyRequestPOBX')->name('m_myReportRequestPulsa')->middleware('auth');
+//        Route::get('/m/pobx/req-{paket}', 'Admin\MemberController@getMyRequestPOBX')->name('m_myReportRequestPulsa')->middleware('auth');
         
          //Vendor Deposit
         Route::get('/m/add/deposit', 'Admin\MemberController@getAddDeposit')->name('m_newDeposit')->middleware('auth');
@@ -368,6 +368,8 @@ Route::prefix('/')->group(function () {
         Route::get('/m/tarik/deposit', 'Admin\MemberController@getTarikDeposit')->name('m_tarikDeposit')->middleware('auth');
         Route::post('/m/tarik/deposit', 'Admin\MemberController@postTarikDeposit')->middleware('auth');
         
+        Route::get('/m/list/operator/{type}', 'Admin\MemberController@getListOperator')->name('m_listOperator')->middleware('auth');
+        Route::get('/m/daftar-harga/{operator}', 'Admin\MemberController@getDaftarHargaOperator')->name('m_daftarHargaOperator')->middleware('auth');
         Route::get('/m/buy/{type}', 'Admin\MemberController@getBuyPPOB')->name('m_buyPPOB')->middleware('auth');
         
         //Ajax

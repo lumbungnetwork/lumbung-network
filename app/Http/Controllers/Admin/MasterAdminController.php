@@ -2920,7 +2920,7 @@ class MasterAdminController extends Controller {
         dd($arrayData);
     }
     
-    public function getMemberTestingCheckTopupPulsa(){
+    public function getMemberTestingCheckTopupPulsa($buyer, $hp){
         $dataUser = Auth::user();
         $onlyUser  = array(1);
         if(!in_array($dataUser->user_type, $onlyUser)){
@@ -2935,8 +2935,8 @@ class MasterAdminController extends Controller {
         $sign = md5($username.$apiKey.$ref_id);
         $array = array(
             'username' => $username,
-            'buyer_sku_code' => 'T1',
-            'customer_no' => '081282477195',
+            'buyer_sku_code' => $buyer,
+            'customer_no' => $hp,
             'ref_id' => $ref_id,
             'sign' => $sign,
 //            'testing' => true,
