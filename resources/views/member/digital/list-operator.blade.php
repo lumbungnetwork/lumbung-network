@@ -24,7 +24,7 @@
                     <div class="rounded-lg bg-white p-3 mb-3">
                         <div class="row">
                             <div class="col-4 mb-4">
-                                <a href="#" class="text-decoration-none">
+                                <a href="/m/daftar-harga/1" class="text-decoration-none">
                                     <div class="rounded icon-ppob text-center">
                                         <div class="box-icon bg-green text-center">
                                             <i class="mdi mdi-cellphone-android icon-menu" style="color: #e5131d;"></i>
@@ -34,7 +34,7 @@
                                 </a>
                             </div>
                             <div class="col-4 mb-4">
-                                <a href="#" class="text-decoration-none">
+                                <a href="/m/daftar-harga/2" class="text-decoration-none">
                                     <div class="rounded icon-ppob text-center">
                                         <div class="box-icon bg-green text-center">
                                             <i class="mdi mdi-cellphone-android icon-menu" style="color: #fcd401;"></i>
@@ -44,7 +44,7 @@
                                 </a>
                             </div>
                             <div class="col-4 mb-4">
-                                <a href="#" class="text-decoration-none">
+                                <a href="/m/daftar-harga/3" class="text-decoration-none">
                                     <div class="rounded icon-ppob text-center">
                                         <div class="box-icon bg-green text-center">
                                             <i class="mdi mdi-cellphone-android icon-menu" style="color: #164396;"></i>
@@ -56,7 +56,7 @@
                         </div>
                         <div class="row">
                             <div class="col-4 mb-4">
-                                <a href="#" class="text-decoration-none">
+                                <a href="/m/daftar-harga/5" class="text-decoration-none">
                                     <div class="rounded icon-ppob text-center">
                                         <div class="box-icon bg-green text-center">
                                             <i class="mdi mdi-cellphone-android icon-menu" style="color: #ff2082;"></i>
@@ -66,7 +66,7 @@
                                 </a>
                             </div>
                             <div class="col-4 mb-4">
-                                <a href="#" class="text-decoration-none">
+                                <a href="/m/daftar-harga/6" class="text-decoration-none">
                                     <div class="rounded icon-ppob text-center">
                                         <div class="box-icon bg-green text-center">
                                             <i class="mdi mdi-cellphone-android icon-menu" style="color: #ff1659;"></i>
@@ -76,12 +76,12 @@
                                 </a>
                             </div>
                             <div class="col-4 mb-4">
-                                <a href="#" class="text-decoration-none">
+                                <a href="/m/daftar-harga/4" class="text-decoration-none">
                                     <div class="rounded icon-ppob text-center">
                                         <div class="box-icon bg-green text-center">
                                             <i class="mdi mdi-cellphone-android icon-menu" style="color: #34cef9;"></i>
                                         </div>
-                                        <dd>By. U</dd>
+                                        <dd>Axis</dd>
                                     </div>
                                 </a>
                             </div>

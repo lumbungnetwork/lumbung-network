@@ -3308,7 +3308,6 @@ class MemberController extends Controller {
     
     public function getDaftarHargaOperator($operator){
         $dataUser = Auth::user();
-        $sessionUser = Auth::user();
         $onlyUser  = array(10);
         if(!in_array($dataUser->user_type, $onlyUser)){
             return redirect()->route('mainDashboard');
@@ -3334,15 +3333,117 @@ class MemberController extends Controller {
         $url = $getDataAPI->master_url.'/v1/price-list';
         $cek = $modelMember->getAPIurlCheck($url, $json);
         $arrayData = json_decode($cek, true);
-        dd($arrayData);
+//        dd($arrayData['data']);
         //category => pulsa
-        //brand => 1 => TELKOMSEL
-        $getData = null;
-//        if($operator == 1){
-//            
-//        }
+        //brand => 
+        //1 => TELKOMSEL
+        //2 => INDOSAT
+        //3 => XL
+        //4 => AXIS
+        //5 => TRI
+        //6 => SMART
+        $telkomsel = array();
+        $indosat = array();
+        $xl = array();
+        $axis = array();
+        $tri = array();
+        $smart = array();
+        foreach($arrayData['data'] as $row){
+            if($row['category'] == 'Pulsa'){
+                $price = $row['price'];
+                if($row['price'] <= 20000){
+                    $price = $row['price'] + 50;
+                }
+                if($row['price'] > 20000 && $row['price'] <= 40000){
+                    $price = $row['price'] + 75;
+                }
+                if($row['price'] > 40000){
+                    $price = $row['price'] + 100;
+                }
+                if($row['brand'] == 'TELKOMSEL'){
+                    $telkomsel[] = array(
+                        'buyer_sku_code' => $row['buyer_sku_code'],
+                        'desc' => $row['desc'],
+                        'real_price' => $row['price'],
+                        'price' => $price,
+                        'brand' => $row['brand'],
+                        'product_name' => $row['product_name']
+                    );
+                }
+                if($row['brand'] == 'INDOSAT'){
+                    $indosat[] = array(
+                        'buyer_sku_code' => $row['buyer_sku_code'],
+                        'desc' => $row['desc'],
+                        'real_price' => $row['price'],
+                        'price' => $price,
+                        'brand' => $row['brand'],
+                        'product_name' => $row['product_name']
+                    );
+                }
+                if($row['brand'] == 'XL'){
+                    $xl[] = array(
+                        'buyer_sku_code' => $row['buyer_sku_code'],
+                        'desc' => $row['desc'],
+                        'real_price' => $row['price'],
+                        'price' => $price,
+                        'brand' => $row['brand'],
+                        'product_name' => $row['product_name']
+                    );
+                }
+                if($row['brand'] == 'AXIS'){
+                    $axis[] = array(
+                        'buyer_sku_code' => $row['buyer_sku_code'],
+                        'desc' => $row['desc'],
+                        'real_price' => $row['price'],
+                        'price' => $price,
+                        'brand' => $row['brand'],
+                        'product_name' => $row['product_name']
+                    );
+                }
+                if($row['brand'] == 'TRI'){
+                    $tri[] = array(
+                        'buyer_sku_code' => $row['buyer_sku_code'],
+                        'desc' => $row['desc'],
+                        'real_price' => $row['price'],
+                        'price' => $price,
+                        'brand' => $row['brand'],
+                        'product_name' => $row['product_name']
+                    );
+                }
+                if($row['brand'] == 'SMART'){
+                    $smart[] = array(
+                        'buyer_sku_code' => $row['buyer_sku_code'],
+                        'desc' => $row['desc'],
+                        'real_price' => $row['price'],
+                        'price' => $price,
+                        'brand' => $row['brand'],
+                        'product_name' => $row['product_name']
+                    );
+                }
+            }
+        }
+        $daftarHarga = null;
+        if($operator == 1){
+            $daftarHarga = $telkomsel;
+        }
+        if($operator == 2){
+            $daftarHarga = $indosat;
+        }
+        if($operator == 3){
+            $daftarHarga = $xl;
+        }
+        if($operator == 4){
+            $daftarHarga = $axis;
+        }
+        if($operator == 5){
+            $daftarHarga = $tri;
+        }
+        if($operator == 6){
+            $daftarHarga = $smart;
+        }
         return view('member.digital.daftar-harga-operator')
             ->with('headerTitle', 'Daftar Harga Operator')
+            ->with('daftarHarga', $daftarHarga)
             ->with('dataUser', $dataUser);
     }
     
