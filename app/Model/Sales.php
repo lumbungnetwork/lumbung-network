@@ -1163,8 +1163,8 @@ class Sales extends Model {
                     ->whereNull('vmaster_sales.deleted_at')
                     ->groupBy('year', 'month')
                     ->groupBy('monthly')
-                    ->orderBy('month', 'DESC')
-                    ->orderBy('year', 'DESC')
+                    ->orderBy('year', 'ASC')
+                    ->orderBy('month', 'ASC')
                     ->get();
         $return = null;
         if(count($sql) > 0){

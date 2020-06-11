@@ -370,8 +370,12 @@ Route::prefix('/')->group(function () {
         
         Route::get('/m/list/operator/{type}', 'Admin\MemberController@getListOperator')->name('m_listOperator')->middleware('auth');
         Route::get('/m/daftar-harga/{operator}', 'Admin\MemberController@getDaftarHargaOperator')->name('m_daftarHargaOperator')->middleware('auth');
-        Route::get('/m/prepare/buy/ppob', 'Admin\MemberController@getPreparingBuyPPOB')->middleware('auth');
+//        Route::get('/m/prepare/buy/ppob', 'Admin\MemberController@getPreparingBuyPPOB')->middleware('auth');
         Route::post('/m/buy/ppob', 'Admin\MemberController@postBuyPPOB')->middleware('auth');
+        Route::get('/m/list/buy-ppob', 'Admin\MemberController@getListBuyPPOB')->middleware('auth');
+        Route::get('/m/detail/buy-ppob', 'Admin\MemberController@getDetailBuyPPOB')->middleware('auth');
+        Route::get('/m/vdetail/buy-ppob', 'Admin\MemberController@getVendorDetailBuyPPOB')->middleware('auth');
+        Route::post('/m/confirm/buy-ppob', 'Admin\MemberController@postConfirm')->middleware('auth');
         
         //Ajax
         Route::get('/m/cek/add-sponsor', 'Admin\AjaxmemberController@postCekAddSponsor')->middleware('auth');
@@ -431,4 +435,5 @@ Route::prefix('/')->group(function () {
         Route::get('/m/cek/tarik-deposit', 'Admin\AjaxmemberController@postCekTarikDeposit')->middleware('auth');
         Route::get('/m/cek/add/tarik-transaction', 'Admin\AjaxmemberController@postCekAddTarikTransaction')->middleware('auth');
         Route::get('/m/cek/reject/tarik-transaction', 'Admin\AjaxmemberController@postCekRejectTarikTransaction')->middleware('auth');
+        Route::get('/m/cek/buy/ppob', 'Admin\AjaxmemberController@postCekBuyPPOBHP')->middleware('auth');
 });

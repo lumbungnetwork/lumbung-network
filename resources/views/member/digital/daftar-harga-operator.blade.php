@@ -21,7 +21,6 @@
             </div>
             <div class="mt-min-10">
                 <div class="container">
-                    <form id="form-insert" method="GET" action="/m/prepare/buy/ppob">
                         <div class="rounded-lg bg-white p-3 mb-3">
                             <h6 class="mb-3">Isi Pulsa</h6>
                             @if ( Session::has('message') )
@@ -36,7 +35,7 @@
                                 <div class="col-xl-6">
                                     <fieldset class="form-group">
                                         <label for="user_name">Masukan No. HP Tujuan</label>
-                                        <input type="text" class="form-control" name="no_hp" id="get_id" autocomplete="off" placeholder="No. HP">
+                                        <input type="text" class="form-control" name="no_hp" id="no_hp" autocomplete="off" placeholder="No. HP">
                                     </fieldset>
                                 </div>
                                 <div class="col-xl-6">
@@ -69,7 +68,7 @@
                                                 <tr>
                                                     <td>{{$row['product_name']}}</td>
                                                     <td>{{$row['price']}}</td>
-                                                    <td><input type="radio" name="harga" id="radio" value="{{$row['buyer_sku_code']}}__{{$row['price']}}"></td>
+                                                    <td><input type="radio" name="harga" id="harga" value="{{$row['buyer_sku_code']}}__{{$row['price']}}__{{$row['brand']}}"></td>
                                                 </tr>
                                                 @endforeach
                                             </tbody>
@@ -86,7 +85,7 @@
 
                                     <div class="rounded-lg shadow-sm p-2">
                                         <div class="radio radio-primary">
-                                            <input type="radio" name="type_pay" id="radio1" value="1">
+                                            <input type="radio" id="type_pay" value="1">
                                             <label for="radio1">
                                                 Bayar via vendor terdekat <b>(COD)</b>
                                             </label>
@@ -94,7 +93,7 @@
                                     </div>
                                     <div class="rounded-lg shadow-sm p-2">
                                         <div class="radio radio-primary">
-                                            <input type="radio" name="type_pay" id="radio2" value="3">
+                                            <input type="radio" id="type_pay" value="3">
                                             <label for="radio2">
                                                 Bayar via eIDR (Direct)*
                                             </label>
@@ -109,11 +108,14 @@
                             <br>
                             <div class="row">
                                 <div class="col-xl-12">
-                                    <button type="submit" class="btn btn-success" >Lanjut</button>
+                                    <button type="submit" class="btn btn-success"  id="submitBtn" data-toggle="modal" data-target="#confirmSubmit" onClick="inputSubmit()">Submit</button>
+                                </div>
+                            </div>
+                            <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document" id="confirmDetail">
                                 </div>
                             </div>
                         </div>
-                    </form>
                 </div>
             </div>
             @include('layout.member.nav')
@@ -157,17 +159,13 @@
     </script>
     <script>
        function inputSubmit(){
-           var full_name = $("#full_name").val();
-           var gender = $("#gender").val();
-           var alamat = $("#alamat").val();
-           var kota = $("#kota").val();
-           var kecamatan = $("#kecamatan").val();
-           var kelurahan = $("#kelurahan").val();
-           var provinsi = $("#provinsi").val();
-           var kode_pos = $("#kode_pos").val();
+           var no_hp = $("#no_hp").val();
+           var vendor_id = $("#id_get_id").val();
+           var harga = $("#harga").val();
+           var type_pay = $("#type_pay").val();
             $.ajax({
                 type: "GET",
-                url: "{{ URL::to('/') }}/m/cek/add-profile?full_name="+full_name+"&gender="+gender+"&kota="+kota+"&provinsi="+provinsi+"&kecamatan="+kecamatan+"&kelurahan="+kelurahan+"&kode_pos="+kode_pos+"&alamat="+alamat ,
+                url: "{{ URL::to('/') }}/m/cek/buy/ppob?no_hp="+no_hp+"&vendor_id="+vendor_id+"&harga="+harga+"&type_pay="+type_pay,
                 success: function(url){
                     $("#confirmDetail" ).empty();
                     $("#confirmDetail").html(url);
@@ -178,6 +176,8 @@
         function confirmSubmit(){
             var dataInput = $("#form-add").serializeArray();
             $('#form-add').submit();
+            $('#tutupModal').remove();
+            $('#submit').remove();
         }
         
         $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {    
@@ -186,39 +186,6 @@
                 event.preventDefault();
             }
         });
-        
-        function getSearchKota(val) {
-            $.ajax({
-                type: "GET",
-                url: "{{ URL::to('/') }}/m/search/kota" + "?provinsi=" + val,
-                success: function(url){
-                        $( "#kota" ).empty();
-                        $("#kota").html(url);
-                }
-            });
-        }
-        
-        function getSearchKecamatan(val) {
-            $.ajax({
-                type: "GET",
-                url: "{{ URL::to('/') }}/m/search/kecamatan" + "?kota=" + val,
-                success: function(url){
-                        $( "#kecamatan" ).empty();
-                        $("#kecamatan").html(url);
-                }
-            });
-        }
-        
-        function getSearchKelurahan(val) {
-            $.ajax({
-                type: "GET",
-                url: "{{ URL::to('/') }}/m/search/kelurahan" + "?kecamatan=" + val,
-                success: function(url){
-                        $( "#kelurahan" ).empty();
-                        $("#kelurahan").html(url);
-                }
-            });
-        }
 
     </script>
 @stop

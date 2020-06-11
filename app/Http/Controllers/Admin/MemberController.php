@@ -3528,15 +3528,93 @@ class MemberController extends Controller {
         if($dataUser->package_id == null){
             return redirect()->route('m_newPackage');
         }
-        //cek vendornya
-        //type 1 => Member beli pulsa
-        dd($request);
-        if($type == 1){
-            dd('masuk beli pulsa. list operator');
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
         }
+        $modelPin = new Pin;
+        
+        if($request->type == 1){
+            $code = $modelPin->getCodePPOBRef($request->type);
+            $dataInsert = array(
+                'buy_metode' => $request->buy_method,
+                'user_id' => $dataUser->id,
+                'vendor_id' => $request->vendor_id,
+                'ppob_code' => $code,
+                'type' => $request->type,
+                'buyer_code' => $request->buyer_sku_code,
+                'product_name' => $request->brand,
+                'ppob_price' => $request->price,
+                'ppob_date' => date('Y-m-d')
+            );
+            $modelPin->getInsertPPOB($dataInsert);
+            return redirect()->route('m_listOperator', [1])
+                    ->with('message', 'Pembelian Isi pulsa berhasil, silakan hubungi vendor')
+                    ->with('messageclass', 'success');
+        }
+        dd('stop here');
         return redirect()->route('mainDashboard');
         
         
+    }
+    
+    public function getListBuyPPOB(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+        $modelPin = new Pin;
+    }
+    
+    public function getDetailBuyPPOB($id){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+        $modelPin = new Pin;
+    }
+    
+    public function getVendorDetailBuyPPOB($id){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+        $modelPin = new Pin;
+    }
+    
+    public function postConfirm(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+        $modelPin = new Pin;
     }
        
     

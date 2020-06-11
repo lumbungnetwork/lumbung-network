@@ -754,6 +754,9 @@ class BonusmemberController extends Controller {
                     if($cekCanClaim != null){
                         $can = 0;
                     }
+                    if($row->month_sale_price < 100000){ //100000
+                        $can = 0;
+                    }
                 }
                 $dataClaim[] = (object) array(
                     'month_sale_price' => $row->month_sale_price,
