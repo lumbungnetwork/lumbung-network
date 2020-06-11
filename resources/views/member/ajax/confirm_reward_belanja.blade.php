@@ -8,6 +8,9 @@
                 {{ csrf_field() }}
                 <?php
                     $kelipatan = floor(($data->month_sale_price/10000)/10) * 10;
+                    if($kelipatan > 50){
+                        $kelipatan = 50;
+                    }
                 ?>
                 <div class="row">
                     <div class="col-md-12 col-xs-12">
