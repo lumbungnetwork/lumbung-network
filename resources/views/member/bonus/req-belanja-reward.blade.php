@@ -55,10 +55,13 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            <?php
+                                                $maxReward = 10000;
+                                            ?>
                                             @if($getData != null)
                                                 @foreach($getData as $row)
                                                     <?php
-                                                        $kelipatan = floor(($row->month_sale_price/10000)/10) * 10;
+                                                        $kelipatan = floor(($row->month_sale_price/$maxReward)/10) * 10;
                                                         $reward = '--';
                                                         if($kelipatan > 0){
                                                             $reward = $kelipatan.' LMB';

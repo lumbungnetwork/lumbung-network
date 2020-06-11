@@ -370,7 +370,8 @@ Route::prefix('/')->group(function () {
         
         Route::get('/m/list/operator/{type}', 'Admin\MemberController@getListOperator')->name('m_listOperator')->middleware('auth');
         Route::get('/m/daftar-harga/{operator}', 'Admin\MemberController@getDaftarHargaOperator')->name('m_daftarHargaOperator')->middleware('auth');
-        Route::get('/m/buy/{type}', 'Admin\MemberController@getBuyPPOB')->name('m_buyPPOB')->middleware('auth');
+        Route::get('/m/prepare/buy/ppob', 'Admin\MemberController@getPreparingBuyPPOB')->middleware('auth');
+        Route::post('/m/buy/ppob', 'Admin\MemberController@postBuyPPOB')->middleware('auth');
         
         //Ajax
         Route::get('/m/cek/add-sponsor', 'Admin\AjaxmemberController@postCekAddSponsor')->middleware('auth');

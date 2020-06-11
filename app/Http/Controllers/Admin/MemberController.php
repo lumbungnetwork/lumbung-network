@@ -3447,7 +3447,79 @@ class MemberController extends Controller {
             ->with('dataUser', $dataUser);
     }
     
-    public function getBuyPPOB($type){
+    public function getPreparingBuyPPOB(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+        $no_hp = $request->no_hp;
+        $separate = explode('__', $request->harga);
+        $buyer_sku_code = $separate[0];
+        $price = $separate[1];
+        $buy_method = $request->type_pay;
+        $modelMember = New Member;
+        $getDataAPI = $modelMember->getDataAPIMobilePulsa();
+        $username   = $getDataAPI->username;
+        $apiKey   = $getDataAPI->api_key;
+        
+        $sign = md5($username.$apiKey.'pricelist');
+        $array = array(
+            'cmd' => 'prepaid',
+            'username' => $username,
+            'sign' => $sign
+        );
+        $json = json_encode($array);
+        $url = $getDataAPI->master_url.'/v1/price-list';
+        $cek = $modelMember->getAPIurlCheck($url, $json);
+        $arrayData = json_decode($cek, true);
+        $getData = array();
+        foreach($arrayData['data'] as $row){
+            if($row['buyer_sku_code'] == $buyer_sku_code){
+                $getData[] = array(
+                        'buyer_sku_code' => $row['buyer_sku_code'],
+                        'desc' => $row['desc'],
+                        'real_price' => $row['price'],
+                        'price' => $price,
+                        'brand' => $row['brand'],
+                        'product_name' => $row['product_name']
+                    );
+            }
+        }
+//        dd($getData[0]);
+        $getDataKelurahan = null;
+        $getDataKecamatan = null;
+        $getDataKota = null;
+        if($dataUser->kode_daerah != null){
+            $dataDaerah = explode('.', $dataUser->kode_daerah);
+            $kelurahan = $dataUser->kelurahan;
+            $kecamatan = $dataUser->kecamatan;
+            $kota = $dataUser->kota;
+            $getDataKelurahan = $modelMember->getSearchVendorUserByKelurahan($kelurahan, $kecamatan);
+            $getDataKecamatan = $modelMember->getSearchVendorUserByKecamatan($kecamatan, $kelurahan);
+            $getDataKota = $modelMember->getSearchUserVendorByKota($kota, $kecamatan, $kelurahan);
+        }
+        $cekRequestStockist = $modelMember->getCekRequestVendorExist($dataUser->id);
+//        dd($buy_method);
+        return view('member.digital.pilih-vendor')
+                ->with('headerTitle', 'Pilih Vendor')
+                ->with('daftarVendor', $getData[0])
+                ->with('getDataKelurahan', $getDataKelurahan)
+                ->with('getDataKecamatan', $getDataKecamatan)
+                ->with('getDataKota', $getDataKota)
+                ->with('cekRequest', $cekRequestStockist)
+                ->with('no_hp', $no_hp)
+                ->with('buy_method', $buy_method)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postBuyPPOB(Request $request){
         $dataUser = Auth::user();
         $onlyUser  = array(10);
         if(!in_array($dataUser->user_type, $onlyUser)){
@@ -3458,7 +3530,7 @@ class MemberController extends Controller {
         }
         //cek vendornya
         //type 1 => Member beli pulsa
-        dd('here');
+        dd($request);
         if($type == 1){
             dd('masuk beli pulsa. list operator');
         }
