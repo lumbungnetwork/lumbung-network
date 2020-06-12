@@ -384,6 +384,11 @@ Route::prefix('/')->group(function () {
         Route::get('/m/vdetail/buy-ppob/{id}', 'Admin\MemberController@getVendorDetailBuyPPOB')->middleware('auth');
         Route::post('/m/confirm/buy-ppob', 'Admin\MemberController@postConfirmBuyPPOB')->middleware('auth');
         
+        //vendor
+        Route::get('/m/list/vppob-transaction', 'Admin\MemberController@getListVendorPPOBTransactions')->name('m_listVendotPPOBTransactions')->middleware('auth');
+        Route::get('/m/detail/vppob/{id}', 'Admin\MemberController@getDetailVendorPPOB')->middleware('auth');
+        Route::post('/m/confirm/vppob', 'Admin\MemberController@postVendorConfirmPPOB')->middleware('auth');
+        
         //Ajax
         Route::get('/m/cek/add-sponsor', 'Admin\AjaxmemberController@postCekAddSponsor')->middleware('auth');
         Route::get('/m/cek/add-package/{id_paket}/{setuju}', 'Admin\AjaxmemberController@getCekAddPackage')->middleware('auth');

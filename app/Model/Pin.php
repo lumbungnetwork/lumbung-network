@@ -269,10 +269,31 @@ class Pin extends Model {
         return $return;
     }
     
+    public function getVendorTransactionPPOB($id){
+        $sql = DB::table('ppob')
+                    ->where('ppob.vendor_id', '=', $id)
+                    ->where('ppob.status', '=', 1)
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
     public function getMemberPembayaranPPOB($id, $data){
         $sql = DB::table('ppob')
                     ->where('ppob.id', '=', $id)
                     ->where('ppob.user_id', '=', $data->id)
+                    ->whereNull('ppob.deleted_at')
+                    ->first();
+        return $sql;
+    }
+    
+    public function getVendorPPOBDetail($id, $data){
+        $sql = DB::table('ppob')
+                    ->where('ppob.id', '=', $id)
+                    ->where('ppob.vendor_id', '=', $data->id)
                     ->whereNull('ppob.deleted_at')
                     ->first();
         return $sql;

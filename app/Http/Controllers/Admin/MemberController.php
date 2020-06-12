@@ -3556,7 +3556,7 @@ class MemberController extends Controller {
                 'ppob_code' => $code,
                 'type' => $request->type,
                 'buyer_code' => $request->buyer_sku_code,
-                'product_name' => $request->brand,
+                'product_name' => $request->no_hp,
                 'ppob_price' => $request->price,
                 'ppob_date' => date('Y-m-d'),
                 'harga_modal' => $request->harga_modal,
@@ -3690,6 +3690,119 @@ class MemberController extends Controller {
         $modelPin->getUpdatePPOB('id', $request->id, $dataUpdate);
         return redirect()->route('m_listPPOBTransaction')
                     ->with('message', 'konfirm pembelian pulsa berhasil, silakan hubungi vendor')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function getListVendorPPOBTransactions(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        $modelPin = new Pin;
+        $getData = $modelPin->getVendorTransactionPPOB($dataUser->id);
+        return view('member.digital.list_vendor_transaction')
+                ->with('headerTitle', 'List Transaksi')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function getDetailVendorPPOB($id){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+        $modelPin = new Pin;
+        $modelMember = New Member;
+        $getDataMaster = $modelPin->getVendorPPOBDetail($id, $dataUser);
+        $getMember = $modelMember->getUsers('id', $getDataMaster->user_id);
+        return view('member.digital.m_detail_vppob')
+                    ->with('headerTitle', 'Konfirmasi Transaksi')
+                    ->with('getDataMaster', $getDataMaster)
+                    ->with('getMember', $getMember)
+                    ->with('dataUser', $dataUser);
+    }
+    
+    public function postVendorConfirmPPOB(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+        //cek deposit cukup ga
+        $modelPin = new Pin;
+        $modelTrans = New Transaction;
+        $getDataMaster = $modelPin->getVendorPPOBDetail($request->ppob_id, $dataUser);
+        $getTransTarik = $modelTrans->getMyTotalTarikDeposit($dataUser);
+        $getTotalDeposit = $modelPin->getTotalDepositMember($dataUser);
+        $sum_deposit_masuk = 0;
+        $sum_deposit_keluar1 = 0;
+        $sum_deposit_keluar = 0;
+        if($getTotalDeposit->sum_deposit_masuk != null){
+            $sum_deposit_masuk = $getTotalDeposit->sum_deposit_masuk;
+        }
+        if($getTotalDeposit->sum_deposit_keluar != null){
+            $sum_deposit_keluar1 = $getTotalDeposit->sum_deposit_keluar;
+        }
+        if($getTransTarik->deposit_keluar != null){
+            $sum_deposit_keluar = $getTransTarik->deposit_keluar;
+        }
+        $totalDeposit = $sum_deposit_masuk - $sum_deposit_keluar - $sum_deposit_keluar1;
+        if($getDataMaster->harga_modal > $totalDeposit){
+            return redirect()->route('m_listVendotPPOBTransactions')
+                    ->with('message', 'tidak dapat dilanjutkan, deposit kurang')
+                    ->with('messageclass', 'danger');
+        }
+        $modelMember = New Member;
+        $getDataAPI = $modelMember->getDataAPIMobilePulsa();
+        $username   = $getDataAPI->username;
+        $apiKey   = $getDataAPI->api_key;
+        $ref_id = $getDataMaster->ppob_code;
+        $sign = md5($username.$apiKey.$ref_id);
+        $array = array(
+            'username' => $username,
+            'buyer_sku_code' => $getDataMaster->buyer_code,
+            'customer_no' => $getDataMaster->product_name,
+            'ref_id' => $ref_id,
+            'sign' => $sign,
+        );
+        $url = $getDataAPI->master_url.'/v1/transaction';
+        $json = json_encode($array);
+        
+        $cek = $modelMember->getAPIurlCheck($url, $json);
+        $arrayData = json_decode($cek, true);
+        $modelSettingTrans = New Transaction;
+        $code =$modelSettingTrans->getCodeDepositTransaction();
+        $memberDeposit = array(
+            'user_id' => $dataUser->id,
+            'total_deposito' => $request->harga_modal,
+            'transaction_code' => $getDataMaster->buyer_code.'-'.$ref_id,
+            'deposito_status' => 1
+        );
+        $modelPin->getInsertMemberDeposit($memberDeposit);
+        $dataUpdate = array(
+            'status' => 2,
+            'tuntas_at' => date('Y-m-d H:i:s')
+        );
+        $modelPin->getUpdatePPOB('id', $request->ppob_id, $dataUpdate);
+        return redirect()->route('m_listVendotPPOBTransactions')
+                    ->with('message', 'pulsa berhasil')
                     ->with('messageclass', 'success');
     }
        

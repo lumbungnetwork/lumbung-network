@@ -219,7 +219,7 @@
                                 </a>
                             </div>
                             <div class="col-2 mb-2">
-                                <a href="#" class="text-decoration-none">
+                                <a href="{{ URL::to('/') }}/m/list/vppob-transaction" class="text-decoration-none">
                                     <div class="rounded icon-ppob text-center">
                                         <div class="box-icon bg-green text-center">
                                             <i class="mdi mdi-bank-transfer icon-menu text-warning"></i>
@@ -230,14 +230,18 @@
                             </div>
                             <?php
                                 $sum_deposit_masuk = 0;
+                                $sum_deposit_keluar1 = 0;
                                 $sum_deposit_keluar = 0;
                                 if($dataDeposit->sum_deposit_masuk != null){
                                     $sum_deposit_masuk = $dataDeposit->sum_deposit_masuk;
                                 }
+                                if($dataDeposit->sum_deposit_keluar != null){
+                                    $sum_deposit_keluar1 = $dataDeposit->sum_deposit_keluar;
+                                }
                                 if($dataTarik->deposit_keluar != null){
                                     $sum_deposit_keluar = $dataTarik->deposit_keluar;
                                 }
-                                $totalDeposit = $sum_deposit_masuk - $sum_deposit_keluar;
+                                $totalDeposit = $sum_deposit_masuk - $sum_deposit_keluar - $sum_deposit_keluar1;
                             ?>
                             <div class="col-12 mb-3">
                                 <p class="f-14">Saldo Deposit Vendor</p>
