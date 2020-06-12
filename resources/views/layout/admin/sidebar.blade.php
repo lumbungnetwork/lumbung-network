@@ -109,6 +109,12 @@
                             <span class="sidebar-normal"> Claim Vendor Penjualan Reward </span>
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ URL::to('/') }}/adm/list/vbelanja-reward">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> Claim Vendor Belanja Reward </span>
+                            </a>
+                        </li>
                          <li>
                             <a href="{{ URL::to('/') }}/adm/history/wd">
                             <span class="sidebar-mini-icon">+</span>
@@ -149,6 +155,12 @@
                             <a href="{{ URL::to('/') }}/adm/history/vpenjualan-reward">
                             <span class="sidebar-mini-icon">+</span>
                             <span class="sidebar-normal"> History Vendor Penjualan Reward </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ URL::to('/') }}/adm/history/vbelanja-reward">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> History Vendor Belanja Reward </span>
                             </a>
                         </li>
                     </ul>

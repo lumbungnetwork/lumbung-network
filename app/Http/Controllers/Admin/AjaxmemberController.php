@@ -1139,6 +1139,22 @@ class AjaxmemberController extends Controller {
                         ->with('check', $canInsert);
     }
     
+    public function getCekConfirmVBelanjaReward(Request $request){
+        $dataUser = Auth::user();
+        $canInsert = (object) array('can' => true, 'pesan' => '');
+        if($dataUser->is_tron == 0){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum mengisi data alamat tron');
+            return view('member.ajax.confirm_reward_vbelanja')
+                        ->with('data', null)
+                        ->with('check', $canInsert);
+        }
+        $modelSales = New Sales;
+        $getData = $modelSales->getMemberVMasterSalesMonthYear($dataUser->id, $request->m, $request->y);
+         return view('member.ajax.confirm_reward_vbelanja')
+                        ->with('data', $getData)
+                        ->with('check', $canInsert);
+    }
+    
     public function postCekAddDeposit(Request $request){
         $dataUser = Auth::user();
         $modelValidasi = New Validation;

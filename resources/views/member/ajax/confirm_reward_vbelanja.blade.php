@@ -4,10 +4,10 @@
             <h5 class="modal-title" id="modalLabel">Konfirmasi Data</h5>
         </div>
         <div class="modal-body"  style="overflow-y: auto;max-height: 330px;">
-            <form id="form-add" method="POST" action="/m/request/penjualan-reward">
+            <form id="form-add" method="POST" action="/m/request/vbelanja-reward">
                 {{ csrf_field() }}
                 <?php
-                    $kelipatan = floor(($data->month_sale_price/10000)/10) * 2;
+                    $kelipatan = floor(($data->month_sale_price/10000)/10) * 10;
                     if($kelipatan > 50){
                         $kelipatan = 50;
                     }

@@ -62,6 +62,10 @@
                                                         $reward = '--';
                                                         if($kelipatan > 0){
                                                             $reward = $kelipatan.' LMB';
+                                                            if($kelipatan > 50){
+                                                                $kelipatan = 50;
+                                                                $reward = $kelipatan.' LMB';
+                                                            }
                                                         }
                                                     ?>
                                                     <tr>

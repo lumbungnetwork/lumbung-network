@@ -2688,6 +2688,95 @@ class MasterAdminController extends Controller {
                 ->with('dataUser', $dataUser);
     }
     
+    public function getAllVBelanjaReward(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = New Bonus;
+        $getData = $modelBonus->getAdminAllVendorBelanjaReward();
+        return view('admin.member.vbelanja-reward')
+                ->with('headerTitle', 'Claim Reward Belanja Vendor')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postCheckVBelanjaReward(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = New Bonus;
+        $getRowID = $request->id;
+        if($getRowID == null){
+            return redirect()->route('adm_listVBelanjaReward')
+                        ->with('message', 'Gagal, tidak ada yang di centang')
+                        ->with('messageclass', 'danger');
+        }
+        foreach($getRowID as $getID){
+            $dataUpdate = array(
+                'status' => 1,
+                'tuntas_at' => date('Y-m-d H:i:s'),
+                'submit_by' => $dataUser->id,
+                'submit_at' => date('Y-m-d H:i:s'),
+            );
+            $modelBonus->getUpdateBelanjaReward('id', $getID, $dataUpdate);
+        }
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => $request->method().' '.$request->path()
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
+        return redirect()->route('adm_listVBelanjaReward')
+                    ->with('message', 'Konfirmasi Reward Belanja Vendor berhasil')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function postRejectVBelanjaReward(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = New Bonus;
+        $getID = $request->cekId;
+        $alesan = $request->reason;
+        $dataUpdate = array(
+            'status' => 2,
+            'reason' => $alesan,
+            'deleted_at' => date('Y-m-d H:i:s'),
+            'submit_by' => $dataUser->id,
+            'submit_at' => date('Y-m-d H:i:s'),
+        );
+        $modelBonus->getUpdateBelanjaReward('id', $getID, $dataUpdate);
+        $modelAdmin = New Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => $request->method().' '.$request->path()
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
+        return redirect()->route('adm_listVBelanjaReward')
+                    ->with('message', 'Data Reward Belanja Vendor berhasil direject')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function getHistoryVBelanjaReward(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelBonus = New Bonus;
+        $getData = $modelBonus->getAdminHistoryVBelanjaReward();
+        return view('admin.member.history-reward-vbelanja')
+                ->with('headerTitle', 'History Reward Belanja Vendor')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
     public function getAllRequestIsiDeposit(){
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);

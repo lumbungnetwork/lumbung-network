@@ -710,17 +710,18 @@ class BonusmemberController extends Controller {
         }
         $modelSales = New Sales;
         $modelBonus = new Bonus;
-        $getData = $modelSales->getMemberMasterSalesMonthYear($dataUser->id, $request->month, $request->year);
+        $getData = $modelSales->getMemberVMasterSalesMonthYear($dataUser->id, $request->month, $request->year);
         $dataInsert = array(
             'user_id' => $dataUser->id,
             'reward' => $request->reward,
             'month' => $request->month,
             'year' => $request->year,
             'belanja_date' => $request->year.'-'.$request->month.'-01',
-            'total_belanja' => $getData->month_sale_price
+            'total_belanja' => $getData->month_sale_price,
+            'type' => 3
         );
         $modelBonus->getInsertBelanjaReward($dataInsert);
-        return redirect()->route('m_BelanjaReward')
+        return redirect()->route('m_VBelanjaReward')
                     ->with('message', 'Claim Reward Belanja berhasil')
                     ->with('messageclass', 'success');
     }
