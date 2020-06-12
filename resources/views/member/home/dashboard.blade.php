@@ -231,7 +231,7 @@
                     <div class="container mt-3 bg-light">
                         <div class="row">
                             <div class="col-3 px-3 mb-3">
-                                <a href="#" class="text-decoration-none">
+                                <a href="/m/list/operator/1" class="text-decoration-none">
                                     <div class="rounded icon-ppob p-1 text-center">
                                         <div class="box-icon bg-green text-center">
                                             <i class="mdi mdi-cellphone-android icon-menu"></i>

@@ -252,5 +252,31 @@ class Pin extends Model {
         return 'ref_'.$type.'_'.$code.'_'.date('Ymd');
     }
     
+    public function getMemberHistoryPPOB($id, $date){
+        $sql = DB::table('ppob')
+                    ->join('users', 'ppob.vendor_id', '=', 'users.id')
+                    ->selectRaw('ppob.ppob_date, users.user_code, ppob.ppob_price as sale_price, '
+                            . 'ppob.id, ppob.status, ppob.buy_metode')
+                    ->where('ppob.user_id', '=', $id)
+                    ->whereDate('ppob.ppob_date', '>=', $date->startDay)
+                    ->whereDate('ppob.ppob_date', '<=', $date->endDay)
+                    ->whereNull('ppob.deleted_at')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getMemberPembayaranPPOB($id, $data){
+        $sql = DB::table('ppob')
+                    ->where('ppob.id', '=', $id)
+                    ->where('ppob.user_id', '=', $data->id)
+                    ->whereNull('ppob.deleted_at')
+                    ->first();
+        return $sql;
+    }
+    
     
 }

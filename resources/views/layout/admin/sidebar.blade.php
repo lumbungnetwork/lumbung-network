@@ -305,12 +305,12 @@
                             <span class="sidebar-normal"> History Vendor Input Stock</span>
                             </a>
                         </li>
-<!--                        <li>
+                        <li>
                             <a href="{{ URL::to('/') }}/adm/list/isi-deposit">
                             <span class="sidebar-mini-icon">+</span>
                             <span class="sidebar-normal"> Isi Deposit</span>
                             </a>
-                        </li>-->
+                        </li>
                     </ul>
                 </div>
             </li>

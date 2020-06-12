@@ -3350,21 +3350,36 @@ class MemberController extends Controller {
         $smart = array();
         foreach($arrayData['data'] as $row){
             if($row['category'] == 'Pulsa'){
-                $price = $row['price'];
                 if($row['price'] <= 20000){
-                    $price = $row['price'] + 50;
+                    $priceAwal = $row['price'] + 50;
                 }
                 if($row['price'] > 20000 && $row['price'] <= 40000){
-                    $price = $row['price'] + 75;
+                    $priceAwal = $row['price'] + 85;
                 }
                 if($row['price'] > 40000){
-                    $price = $row['price'] + 100;
+                    $priceAwal = $row['price'] + 120;
+                }
+                $pricePersen = $priceAwal + ($priceAwal * 4 / 100);
+                $priceRound = round($pricePersen, -2);
+                $cek3digit = substr($priceRound, -3);
+                $cek = 500 - $cek3digit;
+                if($cek == 0){
+                    $price = $priceRound;
+                }
+                if($cek > 0 && $cek < 500){
+                    $price = $priceRound + $cek;
+                }
+                if($cek == 500){
+                    $price = $priceRound;
+                }
+                if($cek < 0){
+                    $price = $priceRound + (500 + $cek);
                 }
                 if($row['brand'] == 'TELKOMSEL'){
                     $telkomsel[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
                         'desc' => $row['desc'],
-                        'real_price' => $row['price'],
+                        'real_price' => $priceAwal,
                         'price' => $price,
                         'brand' => $row['brand'],
                         'product_name' => $row['product_name']
@@ -3532,7 +3547,6 @@ class MemberController extends Controller {
             return redirect()->route('mainDashboard');
         }
         $modelPin = new Pin;
-        
         if($request->type == 1){
             $code = $modelPin->getCodePPOBRef($request->type);
             $dataInsert = array(
@@ -3544,20 +3558,22 @@ class MemberController extends Controller {
                 'buyer_code' => $request->buyer_sku_code,
                 'product_name' => $request->brand,
                 'ppob_price' => $request->price,
-                'ppob_date' => date('Y-m-d')
+                'ppob_date' => date('Y-m-d'),
+                'harga_modal' => $request->harga_modal,
+                'message' => $request->message
             );
             $modelPin->getInsertPPOB($dataInsert);
-            return redirect()->route('m_listOperator', [1])
-                    ->with('message', 'Pembelian Isi pulsa berhasil, silakan hubungi vendor')
+            return redirect()->route('m_listPPOBTransaction')
+                    ->with('message', 'Proses pembelian pulsa berhasil, silakan hubungi vendor')
                     ->with('messageclass', 'success');
         }
+        
+        
         dd('stop here');
         return redirect()->route('mainDashboard');
-        
-        
     }
     
-    public function getListBuyPPOB(){
+    public function getListBuyPPOB(Request $request){
         $dataUser = Auth::user();
         $onlyUser  = array(10);
         if(!in_array($dataUser->user_type, $onlyUser)){
@@ -3566,10 +3582,34 @@ class MemberController extends Controller {
         if($dataUser->package_id == null){
             return redirect()->route('m_newPackage');
         }
-        if($dataUser->is_active == 0){
-            return redirect()->route('mainDashboard');
-        }
+        $modelSales = New Sales;
         $modelPin = new Pin;
+        $getMonth = $modelSales->getThisMonth();
+        if($request->month != null && $request->year != null) {
+            $start_day = date('Y-m-01', strtotime($request->year.'-'.$request->month));
+            $end_day = date('Y-m-t', strtotime($request->year.'-'.$request->month));
+            $text_month = date('F Y', strtotime($request->year.'-'.$request->month));
+            $getMonth = (object) array(
+                'startDay' => $start_day,
+                'endDay' => $end_day,
+                'textMonth' => $text_month
+            );
+        }
+        $getData = $modelPin->getMemberHistoryPPOB($dataUser->id, $getMonth);
+        $sum = 0;
+        if($getData != null){
+            foreach($getData as $row){
+                if($row->status == 2){
+                    $sum += $row->sale_price;
+                }
+            }
+        }
+        return view('member.digital.list_transaction')
+                ->with('headerTitle', 'List Transaksi')
+                ->with('getData', $getData)
+                ->with('sum', $sum)
+                ->with('getDate', $getMonth)
+                ->with('dataUser', $dataUser);
     }
     
     public function getDetailBuyPPOB($id){
@@ -3585,6 +3625,20 @@ class MemberController extends Controller {
             return redirect()->route('mainDashboard');
         }
         $modelPin = new Pin;
+        $modelMember = New Member;
+        $getDataMaster = $modelPin->getMemberPembayaranPPOB($id, $dataUser);
+        $getVendor = $dataUser;
+        if($dataUser->id != $getDataMaster->vendor_id){
+            $getVendor = $modelMember->getUsers('id', $getDataMaster->vendor_id);
+            if($getVendor->is_vendor == null){
+                return redirect()->route('mainDashboard');
+            }
+        }
+        return view('member.digital.m_buy_ppob')
+                    ->with('headerTitle', 'Pembayaran')
+                    ->with('getDataMaster', $getDataMaster)
+                    ->with('getVendor', $getVendor)
+                    ->with('dataUser', $dataUser);
     }
     
     public function getVendorDetailBuyPPOB($id){
@@ -3602,7 +3656,7 @@ class MemberController extends Controller {
         $modelPin = new Pin;
     }
     
-    public function postConfirm(Request $request){
+    public function postConfirmBuyPPOB(Request $request){
         $dataUser = Auth::user();
         $onlyUser  = array(10);
         if(!in_array($dataUser->user_type, $onlyUser)){
@@ -3615,6 +3669,28 @@ class MemberController extends Controller {
             return redirect()->route('mainDashboard');
         }
         $modelPin = new Pin;
+        $modelMember = new Member;
+        $getDataMaster = $modelPin->getMemberPembayaranPPOB($request->id, $dataUser);
+        if($getDataMaster == null){
+            return redirect()->route('mainDashboard');
+        }
+        $tron = null;
+        $tron_transfer = null;
+        if($request->tron_transfer != null){
+            $tron = $request->tron;
+            $tron_transfer = $request->tron_transfer;
+        }
+//        $getVendor = $modelMember->getUsers('id', $getDataMaster->vendor_id);
+        $dataUpdate = array(
+            'status' => 1,
+            'tron' => $tron,
+            'tron_transfer' => $tron_transfer,
+            'confirm_at' => date('Y-m-d H:i:s')
+        );
+        $modelPin->getUpdatePPOB('id', $request->id, $dataUpdate);
+        return redirect()->route('m_listPPOBTransaction')
+                    ->with('message', 'konfirm pembelian pulsa berhasil, silakan hubungi vendor')
+                    ->with('messageclass', 'success');
     }
        
     

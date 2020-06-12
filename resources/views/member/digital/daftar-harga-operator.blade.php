@@ -35,7 +35,7 @@
                                 <div class="col-xl-6">
                                     <fieldset class="form-group">
                                         <label for="user_name">Masukan No. HP Tujuan</label>
-                                        <input type="text" class="form-control" name="no_hp" id="no_hp" autocomplete="off" placeholder="No. HP">
+                                        <input type="text" class="form-control" name="no_hp" id="no_hp" autocomplete="off" placeholder="No. HP {{$daftarHarga[0]['brand']}}">
                                     </fieldset>
                                 </div>
                                 <div class="col-xl-6">
@@ -68,7 +68,7 @@
                                                 <tr>
                                                     <td>{{$row['product_name']}}</td>
                                                     <td>{{$row['price']}}</td>
-                                                    <td><input type="radio" name="harga" id="harga" value="{{$row['buyer_sku_code']}}__{{$row['price']}}__{{$row['brand']}}"></td>
+                                                    <td><input type="radio" name="harga" id="harga" value="{{$row['buyer_sku_code']}}__{{$row['price']}}__{{$row['brand']}}__{{$row['desc']}}__{{$row['real_price']}}"></td>
                                                 </tr>
                                                 @endforeach
                                             </tbody>
@@ -85,7 +85,7 @@
 
                                     <div class="rounded-lg shadow-sm p-2">
                                         <div class="radio radio-primary">
-                                            <input type="radio" id="type_pay" value="1">
+                                            <input type="radio" id="type_pay" name="type_pay" value="1">
                                             <label for="radio1">
                                                 Bayar via vendor terdekat <b>(COD)</b>
                                             </label>
@@ -93,7 +93,7 @@
                                     </div>
                                     <div class="rounded-lg shadow-sm p-2">
                                         <div class="radio radio-primary">
-                                            <input type="radio" id="type_pay" value="3">
+                                            <input type="radio" id="type_pay"  name="type_pay" value="3">
                                             <label for="radio2">
                                                 Bayar via eIDR (Direct)*
                                             </label>
@@ -161,8 +161,8 @@
        function inputSubmit(){
            var no_hp = $("#no_hp").val();
            var vendor_id = $("#id_get_id").val();
-           var harga = $("#harga").val();
-           var type_pay = $("#type_pay").val();
+           var harga = $('input[type=radio][name=harga]:checked').attr('value');
+           var type_pay = $('input[type=radio][name=type_pay]:checked').attr('value');
             $.ajax({
                 type: "GET",
                 url: "{{ URL::to('/') }}/m/cek/buy/ppob?no_hp="+no_hp+"&vendor_id="+vendor_id+"&harga="+harga+"&type_pay="+type_pay,

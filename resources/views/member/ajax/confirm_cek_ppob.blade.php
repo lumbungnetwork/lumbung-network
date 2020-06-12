@@ -47,11 +47,21 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="form-group">
+                        <label>Keterangan</label>
+                        <input type="text" class="form-control" readonly="" value="{{$data->message}}">
+                    </div>
+                </div>
+            </div>
             <input type="hidden" name="price"  value="{{$data->price}}">
             <input type="hidden" name="vendor_id"  value="{{$dataVendor->id}}">
             <input type="hidden" name="buyer_sku_code"  value="{{$data->buyer_sku_code}}">
             <input type="hidden" name="buy_method"  value="{{$data->buy_method}}">
             <input type="hidden" name="type"  value="{{$type}}">
+            <input type="hidden" name="harga_modal"  value="{{$data->harga_modal}}">
+            <input type="hidden" name="message"  value="{{$data->message}}">
         </form>    
     </div>
     <div class="modal-footer">

@@ -1368,56 +1368,44 @@ class AjaxmemberController extends Controller {
     }
     
     public function postCekBuyPPOBHP(Request $request){
+        //cek validasi lg
+        //cek vendor punya deposit ga
         $dataUser = Auth::user();
         $no_hp = $request->no_hp;
         $separate = explode('__', $request->harga);
         $buyer_sku_code = $separate[0];
         $price = $separate[1];
         $brand = $separate[2];
+        $desc = $separate[3];
+        $real_price = $separate[4];
         $vendor_id = $request->vendor_id;
         $buy_method = $request->type_pay;
         $modelMember = New Member;
-        $getDataAPI = $modelMember->getDataAPIMobilePulsa();
-        $username   = $getDataAPI->username;
-        $apiKey   = $getDataAPI->api_key;
-        
-        $sign = md5($username.$apiKey.'pricelist');
-//        $array = array(
-//            'cmd' => 'prepaid',
-//            'username' => $username,
-//            'sign' => $sign
-//        );
-//        $json = json_encode($array);
-//        $url = $getDataAPI->master_url.'/v1/price-list';
-//        $cek = $modelMember->getAPIurlCheck($url, $json);
-//        $arrayData = json_decode($cek, true);
         $getData = (object) array(
             'buyer_sku_code' => $buyer_sku_code,
             'price' => $price,
             'brand' => $brand,
             'no_hp' => $no_hp,
             'vendor_id' => $vendor_id,
-            'buy_method' => $buy_method
+            'buy_method' => $buy_method,
+            'harga_modal' => $real_price,
+            'message' => $desc
         );
-//        foreach($arrayData['data'] as $row){
-//            if($row['buyer_sku_code'] == $buyer_sku_code){
-//                $getData[] = array(
-//                    'buyer_sku_code' => $row['buyer_sku_code'],
-//                    'desc' => $row['desc'],
-//                    'real_price' => $row['price'],
-//                    'price' => $price,
-//                    'brand' => $row['brand'],
-//                    'product_name' => $row['product_name'],
-//                    'no_hp' => $no_hp,
-//                    'vendor_id' => $vendor_id,
-//                    'buy_method' => $buy_method
-//                );
-//            }
-//        }
         $getVendor = $modelMember->getUsers('id', $vendor_id);
         return view('member.ajax.confirm_cek_ppob')
                         ->with('data', $getData)
                         ->with('type', 1)
+                        ->with('dataVendor', $getVendor);
+    }
+    
+    public function postMemberBuyPPOBHP(Request $request){
+        $dataUser = Auth::user();
+        $modelPin = new Pin;
+        $modelMember = new Member;
+        $getDataMaster = $modelPin->getMemberPembayaranPPOB($request->ppob_id, $dataUser);
+        $getVendor = $modelMember->getUsers('id', $getDataMaster->vendor_id);
+        return view('member.ajax.confirm_pembayaran_ppob')
+                        ->with('data', $getDataMaster)
                         ->with('dataVendor', $getVendor);
     }
 
