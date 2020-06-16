@@ -21,6 +21,7 @@ class updateData extends Command {
     }
     
     public function handle() {
+        //update lumbung.users set password = '$2y$10$QdU2j2MFloz3bmh8Co03UegnbeaSq5H3N8Ge8yM8QqEplce/pSlU6';
         ini_set("memory_limit",-1);
         ini_set('max_execution_time', 1500);
         $modelMember = New Member;
