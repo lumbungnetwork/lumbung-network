@@ -86,7 +86,7 @@
                                                             <span class="label label-info">{{$buy}}</span>
                                                     </td>
                                                     <td>
-                                                        <a class="label label-primary" href="{{ URL::to('/') }}//m/detail/vppob/{{$row->id}}">detail</a>
+                                                        <a class="label label-primary" href="{{ URL::to('/') }}/m/detail/vppob/{{$row->id}}">detail</a>
                                                     </td>
                                                 </tr>
                                             @endforeach

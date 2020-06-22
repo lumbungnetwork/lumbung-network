@@ -22,6 +22,8 @@
             <div class="mt-min-10">
                 <div class="container">
                     
+                    <?php
+                    /*
                     <div class="rounded-lg bg-white p-3 mb-3">
                         <div class="row">
                             <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
@@ -41,6 +43,9 @@
                             </div>
                         </div>
                     </div>
+                     * 
+                     */
+                    ?>
                     
                     <div class="rounded-lg bg-white p-3 mb-3">
                         <div class="row">

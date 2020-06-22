@@ -299,5 +299,17 @@ class Pin extends Model {
         return $sql;
     }
     
+    public function getCekHpOn10Menit($hp){
+        $date = date('Y-m-d H:i:s');
+        $startTime = strtotime("-13 minutes", strtotime($date));
+        $tenMinute = date('Y-m-d H:i:s', $startTime);
+        $sql = DB::table('ppob')
+                    ->where('ppob.product_name', '=', $hp)
+                    ->where('ppob.created_at', '>', $tenMinute)
+                    ->whereNull('ppob.deleted_at')
+                    ->first();
+        return $sql;
+    }
+    
     
 }

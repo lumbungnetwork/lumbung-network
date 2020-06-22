@@ -30,7 +30,8 @@
         </form>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Tutup</button>
+        <button type="button" class="btn btn-secondary waves-effect" id="tutupModal" data-dismiss="modal">Tutup</button>
         <button type="button" class="btn btn-primary waves-effect waves-light" id="submit" onclick="confirmSubmit()">Submit</button>
+        <p style="display: none;" id="loading">Proses Loading (jangan di-refresh)....</p>
     </div>
 </div>

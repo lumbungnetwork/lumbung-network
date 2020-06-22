@@ -178,6 +178,7 @@
             $('#form-add').submit();
             $('#tutupModal').remove();
             $('#submit').remove();
+            $('#loading').show();
         }
         
         $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {    

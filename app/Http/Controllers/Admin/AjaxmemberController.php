@@ -1370,8 +1370,17 @@ class AjaxmemberController extends Controller {
     public function postCekBuyPPOBHP(Request $request){
         //cek validasi lg
         //cek vendor punya deposit ga
-        $dataUser = Auth::user();
+//        $dataUser = Auth::user();
         $no_hp = $request->no_hp;
+        $modelPin = new Pin;
+        //cek $no_hp ga boleh dalam 10 menit
+        $cekHP = $modelPin->getCekHpOn10Menit($no_hp);
+        if($cekHP != null){
+            return view('member.ajax.confirm_cek_ppob')
+                        ->with('data', null)
+                        ->with('type', 1)
+                        ->with('dataVendor', null);
+        }
         $separate = explode('__', $request->harga);
         $buyer_sku_code = $separate[0];
         $price = $separate[1];

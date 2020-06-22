@@ -181,6 +181,7 @@
                $('#form-add').submit();
                $('#tutupModal').remove();
                $('#submit').remove();
+               $('#loading').show();
             }
 
         </script>

@@ -1,3 +1,4 @@
+@if($data != null)
 <div class="modal-content">
     <div class="modal-header">
         <h5 class="modal-title" id="modalLabel">Konfirmasi Data</h5>
@@ -65,7 +66,23 @@
         </form>    
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Tutup</button>
+        <button type="button" class="btn btn-secondary waves-effect" id="tutupModal" data-dismiss="modal">Tutup</button>
         <button type="button" class="btn btn-primary waves-effect waves-light" id="submit" onclick="confirmSubmit()">Submit</button>
+        <p style="display: none;" id="loading">Proses Loading....</p>
     </div>
 </div>
+@endif
+
+@if($data == null)
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title" id="modalLabel">Konfirmasi Data</h5>
+    </div>
+    <div class="modal-body"  style="overflow-y: auto;max-height: 330px;">
+        <h5 class="text-danger">Nomor HP ini masih dalam rentang 10 menit.</h5> 
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary waves-effect" id="tutupModal" data-dismiss="modal">Tutup</button>
+    </div>
+</div>
+@endif

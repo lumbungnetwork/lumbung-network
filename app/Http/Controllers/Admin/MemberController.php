@@ -3597,13 +3597,13 @@ class MemberController extends Controller {
         }
         $getData = $modelPin->getMemberHistoryPPOB($dataUser->id, $getMonth);
         $sum = 0;
-        if($getData != null){
-            foreach($getData as $row){
-                if($row->status == 2){
-                    $sum += $row->sale_price;
-                }
-            }
-        }
+//        if($getData != null){
+//            foreach($getData as $row){
+//                if($row->status == 2){
+//                    $sum += $row->sale_price;
+//                }
+//            }
+//        }
         return view('member.digital.list_transaction')
                 ->with('headerTitle', 'List Transaksi')
                 ->with('getData', $getData)
