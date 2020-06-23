@@ -63,6 +63,23 @@
                 <div class="rounded-lg bg-white p-3 mb-3">
                     <div class="row">
                         <div class="col-sm-12">
+                            @if($getDataMaster->status == 2)
+                            <p class="card-text">Status</p>
+                            <div class="row" style="margin-bottom: 15px;">
+                                <div class="col-md-12">
+                                    <h5 class="label label-success">Tuntas</h5>
+                                </div>
+                            </div>
+                            @endif
+                            @if($getDataMaster->status == 3)
+                            <p class="card-text">Status</p>
+                            <div class="row" style="margin-bottom: 15px;">
+                                <div class="col-md-12">
+                                    <h5 class="label label-danger">Batal</h5>
+                                </div>
+                            </div>
+                            @endif
+                            
                             <p class="card-text">Metode Pembayaran</p>
                             <div class="row" style="margin-bottom: 15px;">
                                 <div class="col-md-12">
@@ -85,19 +102,32 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xl-12">
+                                <div class="col-md-12">
+                                    @if($getDataMaster->status == 0)
+                                        <a class="btn btn-dark" href="{{ URL::to('/') }}/m/list/vppob-transaction">Kembali</a>
+                                        <button type="submit" class="btn btn-danger"  id="submitBtn" data-toggle="modal" data-target="#rejectSubmit" onClick="rejectSubmit()">Batal</button>
+                                    @endif
                                     @if($getDataMaster->status == 1)
-                                        <form method="POST" action="/m/confirm/vppob">
+                                        <a class="btn btn-dark" href="{{ URL::to('/') }}/m/list/vppob-transaction">Kembali</a>
+                                        <button type="submit" class="btn btn-danger"  id="submitBtn" data-toggle="modal" data-target="#rejectSubmit" onClick="rejectSubmit()">Batal</button>
+                                        &nbsp;
+                                        <form method="POST" action="/m/confirm/vppob" style="display: contents;">
                                             {{ csrf_field() }}
                                             <input type="hidden" name="ppob_id" value="{{$getDataMaster->id}}">
                                             <input type="hidden" name="harga_modal" value="{{$getDataMaster->harga_modal}}">
-                                            <a class="btn btn-dark" href="{{ URL::to('/') }}/m/list/vppob-transaction">Kembali</a>
                                             <button type="submit" class="btn btn-success" id="submitBtn">Konfirmasi</button>
                                         </form>
                                     @endif
-                                    @if($getDataMaster->status != 1)
+                                    @if($getDataMaster->status == 2)
                                         <a class="btn btn-dark" href="{{ URL::to('/') }}/m/list/vppob-transaction">Kembali</a>
                                     @endif
+                                    @if($getDataMaster->status == 3)
+                                        <a class="btn btn-dark" href="{{ URL::to('/') }}/m/list/vppob-transaction">Kembali</a>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="modal fade" id="rejectSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document" id="rejectDetail">
                                 </div>
                             </div>
                         </div>
@@ -126,4 +156,23 @@
 @section('javascript')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
     <script src="{{ asset('asset_new/js/sidebar.js') }}"></script>
+    <script>
+           function rejectSubmit(){
+                 $.ajax({
+                     type: "GET",
+                     url: "{{ URL::to('/') }}/m/cek/reject/buy-ppob?id_ppob="+{{$getDataMaster->id}},
+                     success: function(url){
+                         $("#rejectDetail" ).empty();
+                         $("#rejectDetail").html(url);
+                     }
+                 });
+           }
+
+            function confirmSubmit(){
+                var dataInput = $("#form-add").serializeArray();
+                $('#form-add').submit();
+                $('#tutupModal').remove();
+                $('#submit').remove();
+            }
+    </script>
 @stop

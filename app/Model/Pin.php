@@ -272,7 +272,8 @@ class Pin extends Model {
     public function getVendorTransactionPPOB($id){
         $sql = DB::table('ppob')
                     ->where('ppob.vendor_id', '=', $id)
-                    ->where('ppob.status', '=', 1)
+//                    ->where('ppob.status', '=', 1)
+                    ->orderBy('id', 'DESC')
                     ->get();
         $return = null;
         if(count($sql) > 0){
@@ -294,7 +295,7 @@ class Pin extends Model {
         $sql = DB::table('ppob')
                     ->where('ppob.id', '=', $id)
                     ->where('ppob.vendor_id', '=', $data->id)
-                    ->whereNull('ppob.deleted_at')
+//                    ->whereNull('ppob.deleted_at')
                     ->first();
         return $sql;
     }

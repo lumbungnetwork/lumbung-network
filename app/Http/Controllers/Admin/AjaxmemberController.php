@@ -1417,6 +1417,14 @@ class AjaxmemberController extends Controller {
                         ->with('data', $getDataMaster)
                         ->with('dataVendor', $getVendor);
     }
+    
+    public function postRejectBuyPPOBHP(Request $request){
+        $dataUser = Auth::user();
+        $id_ppob = $request->id_ppob;
+        return view('member.ajax.reject_pembayaran_ppob')
+                        ->with('id_ppob', $id_ppob)
+                        ->with('dataUser', $dataUser);
+    }
 
     
     

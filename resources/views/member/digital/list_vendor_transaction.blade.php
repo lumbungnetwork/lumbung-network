@@ -54,11 +54,15 @@
                                                     $label = 'info';
                                                     if($row->status == 1){
                                                         $status = 'proses vendor';
-                                                        $label = 'info';
+                                                        $label = 'warning';
                                                     }
                                                     if($row->status == 2){
                                                         $status = 'tuntas';
                                                         $label = 'success';
+                                                    }
+                                                    if($row->status == 3){
+                                                        $status = 'batal';
+                                                        $label = 'danger';
                                                     }
                                                     if($row->status == 10){
                                                         $status = 'batal';

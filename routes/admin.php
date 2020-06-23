@@ -388,6 +388,7 @@ Route::prefix('/')->group(function () {
         Route::get('/m/list/vppob-transaction', 'Admin\MemberController@getListVendorPPOBTransactions')->name('m_listVendotPPOBTransactions')->middleware('auth');
         Route::get('/m/detail/vppob/{id}', 'Admin\MemberController@getDetailVendorPPOB')->middleware('auth');
         Route::post('/m/confirm/vppob', 'Admin\MemberController@postVendorConfirmPPOB')->middleware('auth');
+        Route::post('/m/reject/vppob', 'Admin\MemberController@postVendorRejectPPOB')->middleware('auth');
         
         //Ajax
         Route::get('/m/cek/add-sponsor', 'Admin\AjaxmemberController@postCekAddSponsor')->middleware('auth');
@@ -450,4 +451,5 @@ Route::prefix('/')->group(function () {
         Route::get('/m/cek/reject/tarik-transaction', 'Admin\AjaxmemberController@postCekRejectTarikTransaction')->middleware('auth');
         Route::get('/m/cek/buy/ppob', 'Admin\AjaxmemberController@postCekBuyPPOBHP')->middleware('auth');
         Route::get('/m/cek/member-buy', 'Admin\AjaxmemberController@postMemberBuyPPOBHP')->middleware('auth');
+        Route::get('/m/cek/reject/buy-ppob', 'Admin\AjaxmemberController@postRejectBuyPPOBHP')->middleware('auth');
 });

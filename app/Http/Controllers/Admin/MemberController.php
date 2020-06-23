@@ -3548,6 +3548,7 @@ class MemberController extends Controller {
         }
         $modelPin = new Pin;
         if($request->type == 1){
+            //cek saldo vendor
             $code = $modelPin->getCodePPOBRef($request->type);
             $dataInsert = array(
                 'buy_metode' => $request->buy_method,
@@ -3799,6 +3800,30 @@ class MemberController extends Controller {
         $dataUpdate = array(
             'status' => 2,
             'tuntas_at' => date('Y-m-d H:i:s')
+        );
+        $modelPin->getUpdatePPOB('id', $request->ppob_id, $dataUpdate);
+        return redirect()->route('m_listVendotPPOBTransactions')
+                    ->with('message', 'pulsa berhasil')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function postVendorRejectPPOB(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+        $modelPin = new Pin;
+        $dataUpdate = array(
+            'status' => 3,
+            'reason' => $request->reason,
+            'deleted_at' => date('Y-m-d H:i:s')
         );
         $modelPin->getUpdatePPOB('id', $request->ppob_id, $dataUpdate);
         return redirect()->route('m_listVendotPPOBTransactions')
