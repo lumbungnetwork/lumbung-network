@@ -377,6 +377,7 @@ Route::prefix('/')->group(function () {
         
         Route::get('/m/list/operator/{type}', 'Admin\MemberController@getListOperator')->name('m_listOperator')->middleware('auth');
         Route::get('/m/daftar-harga/{operator}', 'Admin\MemberController@getDaftarHargaOperator')->name('m_daftarHargaOperator')->middleware('auth');
+        Route::get('/m/daftar-harga/data/{operator}', 'Admin\MemberController@getDaftarHargaDataOperator')->name('m_daftarHargaDataOperator')->middleware('auth');
 //        Route::get('/m/prepare/buy/ppob', 'Admin\MemberController@getPreparingBuyPPOB')->middleware('auth');
         Route::post('/m/buy/ppob', 'Admin\MemberController@postBuyPPOB')->middleware('auth');
         Route::get('/m/list/buy-ppob', 'Admin\MemberController@getListBuyPPOB')->name('m_listPPOBTransaction')->middleware('auth');

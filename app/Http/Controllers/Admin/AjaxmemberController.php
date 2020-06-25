@@ -1401,9 +1401,10 @@ class AjaxmemberController extends Controller {
             'message' => $desc
         );
         $getVendor = $modelMember->getUsers('id', $vendor_id);
+        $type = $request->type;
         return view('member.ajax.confirm_cek_ppob')
                         ->with('data', $getData)
-                        ->with('type', 1)
+                        ->with('type', $type)
                         ->with('dataVendor', $getVendor);
     }
     

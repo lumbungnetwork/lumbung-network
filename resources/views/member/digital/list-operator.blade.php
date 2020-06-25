@@ -19,6 +19,7 @@
                     </div>
                 </nav>
             </div>
+            @if($type == 1)
             <div class="mt-min-10">
                 <div class="container">
                     <div class="rounded-lg bg-white p-3 mb-3">
@@ -89,6 +90,79 @@
                     </div>
                 </div>
             </div>
+            @endif
+            @if($type == 2)
+            <div class="mt-min-10">
+                <div class="container">
+                    <div class="rounded-lg bg-white p-3 mb-3">
+                        <div class="row">
+                            <div class="col-4 mb-4">
+                                <a href="/m/daftar-harga/data/1" class="text-decoration-none">
+                                    <div class="rounded icon-ppob text-center">
+                                        <div class="box-icon bg-green text-center">
+                                            <i class="mdi mdi-cellphone-android icon-menu" style="color: #e5131d;"></i>
+                                        </div>
+                                        <dd>Telkomsel</dd>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-4 mb-4">
+                                <a href="/m/daftar-harga/data/2" class="text-decoration-none">
+                                    <div class="rounded icon-ppob text-center">
+                                        <div class="box-icon bg-green text-center">
+                                            <i class="mdi mdi-cellphone-android icon-menu" style="color: #fcd401;"></i>
+                                        </div>
+                                        <dd>Indosat</dd>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-4 mb-4">
+                                <a href="/m/daftar-harga/data/3" class="text-decoration-none">
+                                    <div class="rounded icon-ppob text-center">
+                                        <div class="box-icon bg-green text-center">
+                                            <i class="mdi mdi-cellphone-android icon-menu" style="color: #164396;"></i>
+                                        </div>
+                                        <dd>XL</dd>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 mb-4">
+                                <a href="/m/daftar-harga/data/5" class="text-decoration-none">
+                                    <div class="rounded icon-ppob text-center">
+                                        <div class="box-icon bg-green text-center">
+                                            <i class="mdi mdi-cellphone-android icon-menu" style="color: #ff2082;"></i>
+                                        </div>
+                                        <dd>Tri</dd>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-4 mb-4">
+                                <a href="/m/daftar-harga/data/6" class="text-decoration-none">
+                                    <div class="rounded icon-ppob text-center">
+                                        <div class="box-icon bg-green text-center">
+                                            <i class="mdi mdi-cellphone-android icon-menu" style="color: #ff1659;"></i>
+                                        </div>
+                                        <dd>Smartfren</dd>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-4 mb-4">
+                                <a href="/m/daftar-harga/data/4" class="text-decoration-none">
+                                    <div class="rounded icon-ppob text-center">
+                                        <div class="box-icon bg-green text-center">
+                                            <i class="mdi mdi-cellphone-android icon-menu" style="color: #34cef9;"></i>
+                                        </div>
+                                        <dd>Axis</dd>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
             @include('layout.member.nav')
         </div>
         <div class="overlay"></div>

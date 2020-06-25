@@ -177,11 +177,12 @@
              }
 
             function confirmSubmit(){
-               var dataInput = $("#form-add").serializeArray();
-               $('#form-add').submit();
-               $('#tutupModal').remove();
-               $('#submit').remove();
-               $('#loading').show();
+                var dataInput = $("#form-add").serializeArray();
+                $('#form-add').submit();
+                $('#form-add').remove();
+                $('#loading').show();
+                $('#tutupModal').remove();
+                $('#submit').remove();
             }
 
         </script>

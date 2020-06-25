@@ -3290,7 +3290,6 @@ class MemberController extends Controller {
     
     public function getListOperator($type){
         $dataUser = Auth::user();
-        $sessionUser = Auth::user();
         $onlyUser  = array(10);
         if(!in_array($dataUser->user_type, $onlyUser)){
             return redirect()->route('mainDashboard');
@@ -3303,6 +3302,7 @@ class MemberController extends Controller {
         }
         return view('member.digital.list-operator')
             ->with('headerTitle', 'List Operator')
+            ->with('type', $type)
             ->with('dataUser', $dataUser);
     }
     
@@ -3462,6 +3462,162 @@ class MemberController extends Controller {
             ->with('dataUser', $dataUser);
     }
     
+    public function getDaftarHargaDataOperator($operator){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+        $modelMember = New Member;
+        $getDataAPI = $modelMember->getDataAPIMobilePulsa();
+        $username   = $getDataAPI->username;
+        $apiKey   = $getDataAPI->api_key;
+        
+        $sign = md5($username.$apiKey.'pricelist');
+        $array = array(
+            'cmd' => 'prepaid',
+            'username' => $username,
+            'sign' => $sign
+        );
+        $json = json_encode($array);
+        $url = $getDataAPI->master_url.'/v1/price-list';
+        $cek = $modelMember->getAPIurlCheck($url, $json);
+        $arrayData = json_decode($cek, true);
+//        dd($arrayData['data']);
+        //category => pulsa
+        //brand => 
+        //1 => TELKOMSEL
+        //2 => INDOSAT
+        //3 => XL
+        //4 => AXIS
+        //5 => TRI
+        //6 => SMART
+        $telkomsel = array();
+        $indosat = array();
+        $xl = array();
+        $axis = array();
+        $tri = array();
+        $smart = array();
+        foreach($arrayData['data'] as $row){
+            if($row['category'] == 'Data'){
+                if($row['price'] <= 20000){
+                    $priceAwal = $row['price'] + 50;
+                }
+                if($row['price'] > 20000 && $row['price'] <= 40000){
+                    $priceAwal = $row['price'] + 85;
+                }
+                if($row['price'] > 40000){
+                    $priceAwal = $row['price'] + 120;
+                }
+                $pricePersen = $priceAwal + ($priceAwal * 4 / 100);
+                $priceRound = round($pricePersen, -2);
+                $cek3digit = substr($priceRound, -3);
+                $cek = 500 - $cek3digit;
+                if($cek == 0){
+                    $price = $priceRound;
+                }
+                if($cek > 0 && $cek < 500){
+                    $price = $priceRound + $cek;
+                }
+                if($cek == 500){
+                    $price = $priceRound;
+                }
+                if($cek < 0){
+                    $price = $priceRound + (500 + $cek);
+                }
+                if($row['brand'] == 'TELKOMSEL'){
+                    $telkomsel[] = array(
+                        'buyer_sku_code' => $row['buyer_sku_code'],
+                        'desc' => $row['desc'],
+                        'real_price' => $priceAwal,
+                        'price' => $price,
+                        'brand' => $row['brand'],
+                        'product_name' => $row['product_name']
+                    );
+                }
+                if($row['brand'] == 'INDOSAT'){
+                    $indosat[] = array(
+                        'buyer_sku_code' => $row['buyer_sku_code'],
+                        'desc' => $row['desc'],
+                        'real_price' => $row['price'],
+                        'price' => $price,
+                        'brand' => $row['brand'],
+                        'product_name' => $row['product_name']
+                    );
+                }
+                if($row['brand'] == 'XL'){
+                    $xl[] = array(
+                        'buyer_sku_code' => $row['buyer_sku_code'],
+                        'desc' => $row['desc'],
+                        'real_price' => $row['price'],
+                        'price' => $price,
+                        'brand' => $row['brand'],
+                        'product_name' => $row['product_name']
+                    );
+                }
+                if($row['brand'] == 'AXIS'){
+                    $axis[] = array(
+                        'buyer_sku_code' => $row['buyer_sku_code'],
+                        'desc' => $row['desc'],
+                        'real_price' => $row['price'],
+                        'price' => $price,
+                        'brand' => $row['brand'],
+                        'product_name' => $row['product_name']
+                    );
+                }
+                if($row['brand'] == 'TRI'){
+                    $tri[] = array(
+                        'buyer_sku_code' => $row['buyer_sku_code'],
+                        'desc' => $row['desc'],
+                        'real_price' => $row['price'],
+                        'price' => $price,
+                        'brand' => $row['brand'],
+                        'product_name' => $row['product_name']
+                    );
+                }
+                if($row['brand'] == 'SMART'){
+                    $smart[] = array(
+                        'buyer_sku_code' => $row['buyer_sku_code'],
+                        'desc' => $row['desc'],
+                        'real_price' => $row['price'],
+                        'price' => $price,
+                        'brand' => $row['brand'],
+                        'product_name' => $row['product_name']
+                    );
+                }
+            }
+        }
+        $daftarHarga = null;
+        if($operator == 1){
+            $daftarHarga = $telkomsel;
+        }
+        if($operator == 2){
+            $daftarHarga = $indosat;
+        }
+        if($operator == 3){
+            $daftarHarga = $xl;
+        }
+        if($operator == 4){
+            $daftarHarga = $axis;
+        }
+        if($operator == 5){
+            $daftarHarga = $tri;
+        }
+        if($operator == 6){
+            $daftarHarga = $smart;
+        }
+        return view('member.digital.daftar-hargadata-operator')
+            ->with('headerTitle', 'Daftar Harga Data Operator')
+            ->with('daftarHarga', $daftarHarga)
+            ->with('dataUser', $dataUser);
+    }
+    
     public function getPreparingBuyPPOB(Request $request){
         $dataUser = Auth::user();
         $onlyUser  = array(10);
@@ -3566,6 +3722,27 @@ class MemberController extends Controller {
             $modelPin->getInsertPPOB($dataInsert);
             return redirect()->route('m_listPPOBTransaction')
                     ->with('message', 'Proses pembelian pulsa berhasil, silakan hubungi vendor')
+                    ->with('messageclass', 'success');
+        }
+         if($request->type == 2){
+            //cek saldo vendor
+            $code = $modelPin->getCodePPOBRef($request->type);
+            $dataInsert = array(
+                'buy_metode' => $request->buy_method,
+                'user_id' => $dataUser->id,
+                'vendor_id' => $request->vendor_id,
+                'ppob_code' => $code,
+                'type' => $request->type,
+                'buyer_code' => $request->buyer_sku_code,
+                'product_name' => $request->no_hp,
+                'ppob_price' => $request->price,
+                'ppob_date' => date('Y-m-d'),
+                'harga_modal' => $request->harga_modal,
+                'message' => $request->message
+            );
+            $modelPin->getInsertPPOB($dataInsert);
+            return redirect()->route('m_listPPOBTransaction')
+                    ->with('message', 'Proses pembelian paket data berhasil, silakan hubungi vendor')
                     ->with('messageclass', 'success');
         }
         
@@ -3788,8 +3965,8 @@ class MemberController extends Controller {
         
         $cek = $modelMember->getAPIurlCheck($url, $json);
         $arrayData = json_decode($cek, true);
-        $modelSettingTrans = New Transaction;
-        $code =$modelSettingTrans->getCodeDepositTransaction();
+//        $modelSettingTrans = New Transaction;
+//        $code =$modelSettingTrans->getCodeDepositTransaction();
         $memberDeposit = array(
             'user_id' => $dataUser->id,
             'total_deposito' => $request->harga_modal,

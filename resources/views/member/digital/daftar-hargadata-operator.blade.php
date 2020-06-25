@@ -22,7 +22,7 @@
             <div class="mt-min-10">
                 <div class="container">
                         <div class="rounded-lg bg-white p-3 mb-3">
-                            <h6 class="mb-3">Isi Pulsa</h6>
+                            <h6 class="mb-3">Isi Paket Data</h6>
                             @if ( Session::has('message') )
                                 <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible fade in" role="alert">
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">

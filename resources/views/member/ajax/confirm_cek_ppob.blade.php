@@ -4,6 +4,17 @@
         <h5 class="modal-title" id="modalLabel">Konfirmasi Data</h5>
     </div>
     <div class="modal-body"  style="overflow-y: auto;max-height: 330px;">
+        <div class="row" id="loading" style="display:none;">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <h5 class="text-danger" style="display: block;text-align: center;">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </h5>
+                </div>
+            </div>
+        </div>
         <form id="form-add" method="POST" action="/m/buy/ppob">
             {{ csrf_field() }}
             <div class="row">
@@ -68,7 +79,6 @@
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary waves-effect" id="tutupModal" data-dismiss="modal">Tutup</button>
         <button type="button" class="btn btn-primary waves-effect waves-light" id="submit" onclick="confirmSubmit()">Submit</button>
-        <p style="display: none;" id="loading">Proses Loading....</p>
     </div>
 </div>
 @endif
