@@ -3648,8 +3648,8 @@ class MemberController extends Controller {
         $daftarHargaPLN = array();
         foreach($arrayData['data'] as $row){
             if($row['category'] == 'PLN'){
-                $priceAwal = $row['price'] + 200;
-                $price = $priceAwal + 5000;
+                $priceAwal = $row['price'] + 220;
+                $price = $priceAwal + 3000;
                 if($row['brand'] == 'PLN'){
                     $daftarHargaPLN[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
