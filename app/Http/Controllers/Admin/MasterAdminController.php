@@ -3058,8 +3058,8 @@ class MasterAdminController extends Controller {
         $sign = md5($username.$apiKey.$ref_id);
         $array = array(
             'username' => $username,
-            'buyer_sku_code' => $modelPin->buyer_code,
-            'customer_no' => $modelPin->product_name,
+            'buyer_sku_code' => $getData->buyer_code,
+            'customer_no' => $getData->product_name,
             'ref_id' => $ref_id,
             'sign' => $sign,
 //            'testing' => true,
