@@ -3020,7 +3020,8 @@ class MasterAdminController extends Controller {
         $username   = $getDataAPI->username;
         $apiKey   = $getDataAPI->api_key;
         $modelPin = new Pin;
-        $ref_id = $modelPin->getCodePPOBRef(1);
+        $rand = rand(11, 99);
+        $ref_id = $rand.$modelPin->getCodePPOBRef(1);
         $sign = md5($username.$apiKey.$ref_id);
         $array = array(
             'username' => $username,
