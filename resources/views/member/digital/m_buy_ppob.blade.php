@@ -60,13 +60,14 @@
                 <div class="rounded-lg bg-white p-3 mb-3">
                     <div class="row">
                         <div class="col-sm-12 rounded-lg shadow-sm p-2">
+                            <a class="label label-primary" href="/m/update/status-ppob/{{$getDataMaster->id}}">cek status klik disini</a>
                             @if($getDataMaster->return_buy != null)
                             <?php
                                 $arrayData = json_decode($getDataMaster->return_buy, true);
                                 $data = $arrayData['data'];
                             ?>
                             <p class="card-text">Pesan</p> 
-                            <a class="label label-primary" href="/m/update/status-ppob/{{$getDataMaster->id}}">status klik disini</a>
+                            
                             <div class="row" style="margin-bottom: 15px;">
                                 <div class="col-md-12">
                                     <b>Kode</b>
