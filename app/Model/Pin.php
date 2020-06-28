@@ -300,6 +300,13 @@ class Pin extends Model {
         return $sql;
     }
     
+    public function getStatusPPOBDetail($id){
+        $sql = DB::table('ppob')
+                    ->where('ppob.id', '=', $id)
+                    ->first();
+        return $sql;
+    }
+    
     public function getCekHpOn10Menit($hp){
         $date = date('Y-m-d H:i:s');
         $startTime = strtotime("-13 minutes", strtotime($date));

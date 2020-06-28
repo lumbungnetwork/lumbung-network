@@ -3649,22 +3649,7 @@ class MemberController extends Controller {
         foreach($arrayData['data'] as $row){
             if($row['category'] == 'PLN'){
                 $priceAwal = $row['price'] + 200;
-                $pricePersen = $priceAwal + ($priceAwal * 4 / 100);
-                $priceRound = round($pricePersen, -2);
-                $cek3digit = substr($priceRound, -3);
-                $cekDigit = 500 - $cek3digit;
-                if($cekDigit == 0){
-                    $price = $priceRound;
-                }
-                if($cekDigit > 0 && $cekDigit < 500){
-                    $price = $priceRound + $cekDigit;
-                }
-                if($cekDigit == 500){
-                    $price = $priceRound;
-                }
-                if($cekDigit < 0){
-                    $price = $priceRound + (500 + $cekDigit);
-                }
+                $price = $priceAwal + 5000;
                 if($row['brand'] == 'PLN'){
                     $daftarHargaPLN[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
@@ -4084,6 +4069,7 @@ class MemberController extends Controller {
         return redirect()->route('m_listVendotPPOBTransactions')
                     ->with('message', 'pulsa berhasil')
                     ->with('messageclass', 'success');
+
     }
     
     public function postVendorRejectPPOB(Request $request){

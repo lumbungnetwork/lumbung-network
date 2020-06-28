@@ -154,6 +154,7 @@ Route::prefix('/')->group(function () {
         Route::get('/adm/test-digiflazz/saldo', 'Admin\MasterAdminController@getMemberTestingCheckSaldo')->middleware('auth');
         Route::get('/adm/test-digiflazz/daftar-pulsa', 'Admin\MasterAdminController@getMemberTestingCheckDaftarPulsa')->middleware('auth');
         Route::get('/adm/test-digiflazz/top-pulsa/{buyer}/{hp}', 'Admin\MasterAdminController@getMemberTestingCheckTopupPulsa')->middleware('auth');
+        Route::get('/adm/test-digiflazz/cek-status/{id}', 'Admin\MasterAdminController@getMemberTestingCheckStatus')->middleware('auth');
         
         
         

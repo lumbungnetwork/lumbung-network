@@ -3042,5 +3042,36 @@ class MasterAdminController extends Controller {
         }
     }
     
+    public function getMemberTestingCheckStatus($id){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelPin = new Pin;
+        $modelMember = New Member;
+        $getDataAPI = $modelMember->getDataAPIMobilePulsa();
+        $username   = $getDataAPI->username;
+        $apiKey   = $getDataAPI->api_key;
+        $getData = $modelPin->getStatusPPOBDetail($id);
+        $ref_id = $getData->ppob_code;
+        $sign = md5($username.$apiKey.$ref_id);
+        $array = array(
+            'username' => $username,
+            'buyer_sku_code' => $modelPin->buyer_code,
+            'customer_no' => $modelPin->product_name,
+            'ref_id' => $ref_id,
+            'sign' => $sign,
+//            'testing' => true,
+//            'msg' => 'testing dengan admin'
+        );
+        $url = $getDataAPI->master_url.'/v1/transaction';
+        $json = json_encode($array);
+        
+        $cek = $modelMember->getAPIurlCheck($url, $json);
+        $arrayData = json_decode($cek, true);
+        dd($arrayData);
+    }
+    
 
 }
