@@ -3905,6 +3905,52 @@ class MemberController extends Controller {
                     ->with('dataUser', $dataUser);
     }
     
+    public function getUpdateStatusPPOB($id){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+        $modelPin = new Pin;
+        $modelMember = New Member;
+        $getDataAPI = $modelMember->getDataAPIMobilePulsa();
+        $username   = $getDataAPI->username;
+        $apiKey   = $getDataAPI->api_key;
+        $getData = $modelPin->getStatusPPOBDetail($id);
+        $ref_id = $getData->ppob_code;
+        $sign = md5($username.$apiKey.$ref_id);
+        $array = array(
+            'username' => $username,
+            'buyer_sku_code' => $getData->buyer_code,
+            'customer_no' => $getData->product_name,
+            'ref_id' => $ref_id,
+            'sign' => $sign,
+        );
+        $url = $getDataAPI->master_url.'/v1/transaction';
+        $json = json_encode($array);
+        $cek = $modelMember->getAPIurlCheck($url, $json);
+        $arrayData = json_decode($cek, true);
+        if($arrayData['data']['rc'] == '00'){
+            $dataUpdate = array(
+                'return_buy' => $cek
+            );
+            $modelPin->getUpdatePPOB('id', $id, $dataUpdate);
+            return redirect()->route('m_detailPPOBMemberTransaction', [$id])
+                    ->with('message', 'update status berhasil')
+                    ->with('messageclass', 'success');
+        }
+        return redirect()->route('m_detailPPOBMemberTransaction', [$id])
+                    ->with('message', 'update status gagal')
+                    ->with('messageclass', 'danger');
+        
+    }
+    
     public function getVendorDetailBuyPPOB($id){
         $dataUser = Auth::user();
         $onlyUser  = array(10);

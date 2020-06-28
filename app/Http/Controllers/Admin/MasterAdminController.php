@@ -3037,9 +3037,7 @@ class MasterAdminController extends Controller {
         
         $cek = $modelMember->getAPIurlCheck($url, $json);
         $arrayData = json_decode($cek, true);
-        if($arrayData['data']['rc'] == '00'){
-            dd($arrayData);
-        }
+        dd($arrayData);
     }
     
     public function getMemberTestingCheckStatus($id, $cek){
