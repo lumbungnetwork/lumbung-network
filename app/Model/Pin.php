@@ -255,7 +255,7 @@ class Pin extends Model {
     public function getMemberHistoryPPOB($id, $date){
         $sql = DB::table('ppob')
                     ->join('users', 'ppob.vendor_id', '=', 'users.id')
-                    ->selectRaw('ppob.ppob_date, users.user_code, ppob.ppob_price as sale_price, '
+                    ->selectRaw('ppob.ppob_date, users.user_code, ppob.ppob_price as sale_price, ppob.type, '
                             . 'ppob.id, ppob.status, ppob.buy_metode')
                     ->where('ppob.user_id', '=', $id)
                     ->whereDate('ppob.ppob_date', '>=', $date->startDay)

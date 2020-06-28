@@ -111,6 +111,7 @@
                                             <th>Nominal (Rp.)</th>
                                             <th>Status</th>
                                             <th>Pembayaran</th>
+                                            <th>Type</th>
                                             <th>###</th>
                                         </tr>
                                     </thead>
@@ -144,6 +145,13 @@
                                                     if($row->buy_metode == 3){
                                                         $buy = 'eIDR';
                                                     }
+                                                    $type = 'Pulsa';
+                                                    if($row->type == 2){
+                                                        $type = 'Paket Data';
+                                                    }
+                                                    if($row->type == 3){
+                                                        $type = 'PLN';
+                                                    }
                                                 ?>
                                                 <tr>
                                                     <td>{{$no}}</td>
@@ -156,6 +164,7 @@
                                                     <td>
                                                             <span class="label label-info">{{$buy}}</span>
                                                     </td>
+                                                    <td>{{$type}}</td>
                                                     <td>
                                                         <a class="label label-primary" href="{{ URL::to('/') }}/m/detail/buy-ppob/{{$row->id}}">detail</a>
                                                     </td>

@@ -3618,6 +3618,71 @@ class MemberController extends Controller {
             ->with('dataUser', $dataUser);
     }
     
+    public function getDaftarHargaPLNPrepaid(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+        $modelMember = New Member;
+        $getDataAPI = $modelMember->getDataAPIMobilePulsa();
+        $username   = $getDataAPI->username;
+        $apiKey   = $getDataAPI->api_key;
+        
+        $sign = md5($username.$apiKey.'pricelist');
+        $array = array(
+            'cmd' => 'prepaid',
+            'username' => $username,
+            'sign' => $sign
+        );
+        $json = json_encode($array);
+        $url = $getDataAPI->master_url.'/v1/price-list';
+        $cek = $modelMember->getAPIurlCheck($url, $json);
+        $arrayData = json_decode($cek, true);
+        $daftarHargaPLN = array();
+        foreach($arrayData['data'] as $row){
+            if($row['category'] == 'PLN'){
+                $priceAwal = $row['price'] + 200;
+                $pricePersen = $priceAwal + ($priceAwal * 4 / 100);
+                $priceRound = round($pricePersen, -2);
+                $cek3digit = substr($priceRound, -3);
+                $cekDigit = 500 - $cek3digit;
+                if($cekDigit == 0){
+                    $price = $priceRound;
+                }
+                if($cekDigit > 0 && $cekDigit < 500){
+                    $price = $priceRound + $cekDigit;
+                }
+                if($cekDigit == 500){
+                    $price = $priceRound;
+                }
+                if($cekDigit < 0){
+                    $price = $priceRound + (500 + $cekDigit);
+                }
+                if($row['brand'] == 'PLN'){
+                    $daftarHargaPLN[] = array(
+                        'buyer_sku_code' => $row['buyer_sku_code'],
+                        'desc' => $row['desc'],
+                        'real_price' => $priceAwal,
+                        'price' => $price,
+                        'brand' => $row['brand'],
+                        'product_name' => $row['product_name']
+                    );
+                }
+            }
+        }
+        return view('member.digital.daftar-hargapln')
+            ->with('headerTitle', 'Daftar Harga PLN')
+            ->with('daftarHarga', $daftarHargaPLN)
+            ->with('dataUser', $dataUser);
+    }
+    
     public function getPreparingBuyPPOB(Request $request){
         $dataUser = Auth::user();
         $onlyUser  = array(10);
@@ -3746,6 +3811,28 @@ class MemberController extends Controller {
                     ->with('messageclass', 'success');
         }
         
+        if($request->type == 3){
+            //cek saldo vendor
+            $code = $modelPin->getCodePPOBRef($request->type);
+            $dataInsert = array(
+                'buy_metode' => $request->buy_method,
+                'user_id' => $dataUser->id,
+                'vendor_id' => $request->vendor_id,
+                'ppob_code' => $code,
+                'type' => $request->type,
+                'buyer_code' => $request->buyer_sku_code,
+                'product_name' => $request->no_hp,
+                'ppob_price' => $request->price,
+                'ppob_date' => date('Y-m-d'),
+                'harga_modal' => $request->harga_modal,
+                'message' => $request->message
+            );
+            $modelPin->getInsertPPOB($dataInsert);
+            return redirect()->route('m_listPPOBTransaction')
+                    ->with('message', 'Proses pembelian paket data berhasil, silakan hubungi vendor')
+                    ->with('messageclass', 'success');
+        }
+        
         
         dd('stop here');
         return redirect()->route('mainDashboard');
@@ -3789,6 +3876,20 @@ class MemberController extends Controller {
                 ->with('getDate', $getMonth)
                 ->with('dataUser', $dataUser);
     }
+    
+//    array:1 [
+//        "data" => array:9 [
+//          "ref_id" => "ref_1_001_20200628"
+//          "customer_no" => "081282477195"
+//          "buyer_sku_code" => "T1"
+//          "message" => "Transaksi Pending"
+//          "status" => "Pending"
+//          "rc" => "03"
+//          "buyer_last_saldo" => 683545
+//          "sn" => ""
+//          "price" => 1355
+//        ]
+//    ]
     
     public function getDetailBuyPPOB($id){
         $dataUser = Auth::user();
@@ -3976,7 +4077,8 @@ class MemberController extends Controller {
         $modelPin->getInsertMemberDeposit($memberDeposit);
         $dataUpdate = array(
             'status' => 2,
-            'tuntas_at' => date('Y-m-d H:i:s')
+            'tuntas_at' => date('Y-m-d H:i:s'),
+            'return_buy' => $cek
         );
         $modelPin->getUpdatePPOB('id', $request->ppob_id, $dataUpdate);
         return redirect()->route('m_listVendotPPOBTransactions')

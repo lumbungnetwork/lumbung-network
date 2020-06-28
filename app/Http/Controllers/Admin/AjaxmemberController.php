@@ -1372,13 +1372,40 @@ class AjaxmemberController extends Controller {
         //cek vendor punya deposit ga
 //        $dataUser = Auth::user();
         $no_hp = $request->no_hp;
+        if($no_hp == null){
+            return view('member.ajax.confirm_cek_ppob')
+                        ->with('data', null)
+                        ->with('message', 'Anda tidak memasukan nomor')
+                        ->with('dataVendor', null);
+        }
+        $vendor_id = $request->vendor_id;
+        if($vendor_id == null){
+            return view('member.ajax.confirm_cek_ppob')
+                        ->with('data', null)
+                        ->with('message', 'Anda tidak memilih Vendor')
+                        ->with('dataVendor', null);
+        }
+        if($request->harga == 'undefined'){
+            return view('member.ajax.confirm_cek_ppob')
+                        ->with('data', null)
+                        ->with('message', 'Anda tidak memilih harga')
+                        ->with('dataVendor', null);
+        }
+        $buy_method = $request->type_pay;
+        if($buy_method == 'undefined'){
+            return view('member.ajax.confirm_cek_ppob')
+                        ->with('data', null)
+                        ->with('message', 'Anda tidak memilih jenis pembayaran')
+                        ->with('dataVendor', null);
+        }
+        
         $modelPin = new Pin;
         //cek $no_hp ga boleh dalam 10 menit
         $cekHP = $modelPin->getCekHpOn10Menit($no_hp);
         if($cekHP != null){
             return view('member.ajax.confirm_cek_ppob')
                         ->with('data', null)
-                        ->with('type', 1)
+                        ->with('message', 'Nomor HP ini masih dalam rentang 10 menit.')
                         ->with('dataVendor', null);
         }
         $separate = explode('__', $request->harga);
@@ -1387,8 +1414,7 @@ class AjaxmemberController extends Controller {
         $brand = $separate[2];
         $desc = $separate[3];
         $real_price = $separate[4];
-        $vendor_id = $request->vendor_id;
-        $buy_method = $request->type_pay;
+        
         $modelMember = New Member;
         $getData = (object) array(
             'buyer_sku_code' => $buyer_sku_code,

@@ -17,10 +17,16 @@
         </div>
         <form id="form-add" method="POST" action="/m/buy/ppob">
             {{ csrf_field() }}
+            <?php
+                $textProductName = 'No HP';
+                if($type == 3){
+                    $textProductName = 'No. PLN'  ;
+                }
+            ?>
             <div class="row">
                 <div class="col-md-5 col-xs-12">
                     <div class="form-group">
-                        <label>No. HP</label>
+                        <label>{{$textProductName}}</label>
                         <input type="text" class="form-control" readonly="" name="no_hp" value="{{$data->no_hp}}">
                     </div>
                 </div>
@@ -89,7 +95,7 @@
         <h5 class="modal-title" id="modalLabel">Konfirmasi Data</h5>
     </div>
     <div class="modal-body"  style="overflow-y: auto;max-height: 330px;">
-        <h5 class="text-danger">Nomor HP ini masih dalam rentang 10 menit.</h5> 
+        <h5 class="text-danger">{{$message}}</h5> 
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary waves-effect" id="tutupModal" data-dismiss="modal">Tutup</button>
