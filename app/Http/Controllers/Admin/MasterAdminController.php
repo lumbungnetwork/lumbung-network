@@ -3042,7 +3042,7 @@ class MasterAdminController extends Controller {
         }
     }
     
-    public function getMemberTestingCheckStatus($id){
+    public function getMemberTestingCheckStatus($id, $cek){
         $dataUser = Auth::user();
         $onlyUser  = array(1);
         if(!in_array($dataUser->user_type, $onlyUser)){
@@ -3065,6 +3065,9 @@ class MasterAdminController extends Controller {
 //            'testing' => true,
 //            'msg' => 'testing dengan admin'
         );
+        if($cek == 1){
+            dd($array);
+        }
         $url = $getDataAPI->master_url.'/v1/transaction';
         $json = json_encode($array);
         
