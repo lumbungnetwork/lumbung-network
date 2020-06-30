@@ -132,6 +132,7 @@ class DashboardController extends Controller {
         );
         $getDataMemberBuy = $modelSales->getMemberSalesBuy($dataUser->id);
         $getDataVendorMemberBuy = $modelSales->getMemberVSalesBuy($dataUser->id);
+        $getDataVendorPPOBMemberBuy = $modelSales->getMemberVPPOB($dataUser->id);
         $getMonth = $modelSales->getThisMonth();
         $getData = $modelSales->getMemberMasterSalesHistory($dataUser->id, $getMonth);
         $getDataVSales = $modelSales->getMemberVMasterSalesHistory($dataUser->id, $getMonth);
@@ -159,6 +160,7 @@ class DashboardController extends Controller {
                     ->with('dataMy', $dataMy)
                     ->with('getDataMemberBuy', $getDataMemberBuy)
                     ->with('getDataVendorMemberBuy', $getDataVendorMemberBuy)
+                    ->with('getDataVendorPPOBMemberBuy', $getDataVendorPPOBMemberBuy)
                     ->with('sum', $sum)
                     ->with('vsum', $vsum)
                     ->with('dataUser', $dataUser);
@@ -298,10 +300,12 @@ class DashboardController extends Controller {
         }
         $getDataMemberBuy = $modelSales->getMemberSalesBuy($dataUser->id);
         $getDataVendorMemberBuy = $modelSales->getMemberVSalesBuy($dataUser->id);
+        $getDataVendorPPOBMemberBuy = $modelSales->getMemberVPPOB($dataUser->id);
         return view('member.home.notification')
                     ->with('dataOrder', $getCheckNewOrder)
                     ->with('getDataMemberBuy', $getDataMemberBuy)
                     ->with('getDataVendorMemberBuy', $getDataVendorMemberBuy)
+                    ->with('getDataVendorPPOBMemberBuy', $getDataVendorPPOBMemberBuy)
                     ->with('dataUser', $dataUser);
     }
     

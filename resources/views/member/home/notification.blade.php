@@ -55,6 +55,18 @@
                             </div>
                         </div>
                         @endif
+                        @if($getDataVendorPPOBMemberBuy != null)
+                        <div class="alert alert-warning" role="alert">
+                            <div class="row">
+                                <div class="col-9">
+                                    Konﬁrmasi Vendor PPOB ({{count($getDataVendorPPOBMemberBuy)}})
+                                </div>
+                                <div class="col-3"> 
+                                    <a href="{{ URL::to('/') }}/m/list/vppob-transaction" class="btn btn-sm btn-success rounded-pill"> Action </a>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
                     </div>
 
                 </div>

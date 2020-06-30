@@ -1039,6 +1039,22 @@ class Sales extends Model {
         return $return;
     }
     
+    public function getMemberVPPOB($id){
+        $sql = DB::table('ppob')
+                    ->join('users', 'ppob.user_id', '=', 'users.id')
+                    ->selectRaw('ppob.ppob_date, users.user_code, ppob.ppob_price as sale_price, '
+                            . 'ppob.id, ppob.status, ppob.buy_metode')
+                    ->where('ppob.vendor_id', '=', $id)
+                    ->where('ppob.status', '=', 1)
+                    ->whereNull('ppob.deleted_at')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
     public function getMemberMasterSalesMonthly($id){
         $start_day = date("Y-m-01");
         $sql = DB::table('master_sales')

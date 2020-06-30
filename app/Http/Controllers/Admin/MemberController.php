@@ -3783,8 +3783,8 @@ class MemberController extends Controller {
                 'harga_modal' => $request->harga_modal,
                 'message' => $request->message
             );
-            $modelPin->getInsertPPOB($dataInsert);
-            return redirect()->route('m_listPPOBTransaction')
+            $newPPOB = $modelPin->getInsertPPOB($dataInsert);
+            return redirect()->route('m_detailPPOBMemberTransaction', [$newPPOB->lastID])
                     ->with('message', 'Proses pembelian pulsa berhasil, silakan hubungi vendor')
                     ->with('messageclass', 'success');
         }
@@ -3804,8 +3804,8 @@ class MemberController extends Controller {
                 'harga_modal' => $request->harga_modal,
                 'message' => $request->message
             );
-            $modelPin->getInsertPPOB($dataInsert);
-            return redirect()->route('m_listPPOBTransaction')
+            $newPPOB = $modelPin->getInsertPPOB($dataInsert);
+            return redirect()->route('m_detailPPOBMemberTransaction', [$newPPOB->lastID])
                     ->with('message', 'Proses pembelian paket data berhasil, silakan hubungi vendor')
                     ->with('messageclass', 'success');
         }
@@ -3826,9 +3826,9 @@ class MemberController extends Controller {
                 'harga_modal' => $request->harga_modal,
                 'message' => $request->message
             );
-            $modelPin->getInsertPPOB($dataInsert);
-            return redirect()->route('m_listPPOBTransaction')
-                    ->with('message', 'Proses pembelian paket data berhasil, silakan hubungi vendor')
+            $newPPOB = $modelPin->getInsertPPOB($dataInsert);
+            return redirect()->route('m_detailPPOBMemberTransaction', [$newPPOB->lastID])
+                    ->with('message', 'Proses pembelian token PLN berhasil, silakan hubungi vendor')
                     ->with('messageclass', 'success');
         }
         
