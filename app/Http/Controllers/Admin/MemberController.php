@@ -3648,8 +3648,22 @@ class MemberController extends Controller {
         $daftarHargaPLN = array();
         foreach($arrayData['data'] as $row){
             if($row['category'] == 'PLN'){
-                $priceAwal = $row['price'] + 220;
-                $price = $priceAwal + 3000;
+                $priceAwal = $row['price'];
+                $price3000 = $priceAwal + 3000;
+                $cek3digit = substr($price3000, -3);
+                $cek = 500 - $cek3digit;
+                if($cek == 0){
+                    $price = $price3000;
+                }
+                if($cek > 0 && $cek < 500){
+                    $price = $price3000 + $cek;
+                }
+                if($cek == 500){
+                    $price = $price3000;
+                }
+                if($cek < 0){
+                    $price = $price3000 + (500 + $cek);
+                }
                 if($row['brand'] == 'PLN'){
                     $daftarHargaPLN[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
