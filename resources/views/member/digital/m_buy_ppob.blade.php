@@ -60,7 +60,9 @@
                 <div class="rounded-lg bg-white p-3 mb-3">
                     <div class="row">
                         <div class="col-sm-12 rounded-lg shadow-sm p-2">
-                            <a class="label label-primary" href="/m/update/status-ppob/{{$getDataMaster->id}}">cek status klik disini</a>
+                            @if($getDataMaster->status == 2)
+                                <a class="label label-primary" href="/m/update/status-ppob/{{$getDataMaster->id}}">cek status klik disini</a>
+                            @endif
                             @if($getDataMaster->return_buy != null)
                             <?php
                                 $arrayData = json_decode($getDataMaster->return_buy, true);
