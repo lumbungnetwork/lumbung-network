@@ -3649,7 +3649,7 @@ class MemberController extends Controller {
         foreach($arrayData['data'] as $row){
             if($row['category'] == 'PLN'){
                 $priceAwal = $row['price'];
-                $price3000 = $priceAwal + 3000;
+                $price3000 = $priceAwal + 2000;
                 $cek3digit = substr($price3000, -3);
                 $cek = 500 - $cek3digit;
                 if($cek == 0){

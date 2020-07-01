@@ -271,9 +271,11 @@ class Pin extends Model {
     
     public function getVendorTransactionPPOB($id){
         $sql = DB::table('ppob')
+                    ->join('users', 'ppob.user_id', '=', 'users.id')
+                    ->selectRaw('ppob.*, users.user_code, users.email')
                     ->where('ppob.vendor_id', '=', $id)
 //                    ->where('ppob.status', '=', 1)
-                    ->orderBy('id', 'DESC')
+                    ->orderBy('ppob.id', 'DESC')
                     ->get();
         $return = null;
         if(count($sql) > 0){

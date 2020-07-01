@@ -38,6 +38,7 @@
                                         <tr>
                                             <th>No.</th>
                                             <th>Tanggal</th>
+                                            <th>Pembeli</th>
                                             <th>Nominal (Rp.)</th>
                                             <th>Status</th>
                                             <th>Pembayaran</th>
@@ -89,7 +90,8 @@
                                                 ?>
                                                 <tr>
                                                     <td>{{$no}}</td>
-                                                    <td>{{date('d-m-Y', strtotime($row->ppob_date))}}</td>
+                                                    <td>{{date('d-m-Y H:i', strtotime($row->created_at))}}</td>
+                                                    <td>{{$row->user_code}}</td>
                                                     <td>{{number_format($row->ppob_price, 0, ',', ',')}}</td>
                                                     <td>
                                                             <span class="label label-{{$label}}">{{$status}}</span>
