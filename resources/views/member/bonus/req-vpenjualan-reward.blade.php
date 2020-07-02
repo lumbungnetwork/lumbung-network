@@ -62,7 +62,7 @@
                                         @if($getData != null)
                                             @foreach($getData as $row)
                                                 <?php
-                                                    $kelipatan = floor(($row->month_sale_price/$maxReward)*0.01);
+                                                    $kelipatan = $row->month_sale_price / $maxReward * 0.01;
                                                     $reward = '--';
                                                     if($kelipatan > 0){
                                                         $reward = $kelipatan.' LMB';

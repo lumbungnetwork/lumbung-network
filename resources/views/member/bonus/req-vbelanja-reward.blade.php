@@ -58,7 +58,7 @@
                                             @if($getData != null)
                                                 @foreach($getData as $row)
                                                     <?php
-                                                        $kelipatan = $row->month_sale_price / 1000 * 0.01;
+                                                        $kelipatan = $row->month_sale_price / 1000 * 0.02;
                                                         $reward = '--';
                                                         if($kelipatan > 0){
                                                             $reward = $kelipatan.' LMB';

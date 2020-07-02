@@ -7,7 +7,7 @@
             <form id="form-add" method="POST" action="/m/vendor/penjualan-reward">
                 {{ csrf_field() }}
                 <?php
-                    $kelipatan = floor(($data->month_sale_price/1000)*0.01);
+                    $kelipatan = $data->month_sale_price / 1000 * 0.01;
                     if($kelipatan > 50){
                         $kelipatan = 50;
                     }

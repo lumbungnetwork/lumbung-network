@@ -7,7 +7,7 @@
             <form id="form-add" method="POST" action="/m/request/vbelanja-reward">
                 {{ csrf_field() }}
                 <?php
-                    $kelipatan = $data->month_sale_price/1000 * 0.01;
+                    $kelipatan = $data->month_sale_price / 1000 * 0.02;
                     if($kelipatan > 50){
                         $kelipatan = 50;
                     }
