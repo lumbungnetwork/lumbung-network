@@ -134,6 +134,14 @@ class Pin extends Model {
         return $sql;
     }
     
+    public function getJagaGaBolehDuaKali($trans_code){
+        $sql = DB::table('member_deposito')
+                    ->selectRaw('id')
+                    ->where('transaction_code', '=', $trans_code)
+                    ->first();
+        return $sql;
+    }
+    
     public function getTotalDepositMember($data){
         $sql = DB::table('member_deposito')
                     ->selectRaw('
@@ -317,6 +325,15 @@ class Pin extends Model {
                     ->where('ppob.product_name', '=', $hp)
                     ->where('ppob.created_at', '>', $tenMinute)
                     ->whereNull('ppob.deleted_at')
+                    ->first();
+        return $sql;
+    }
+    
+    public function getPPOBFly($vendor_id){
+        $sql = DB::table('ppob')
+                    ->selectRaw('sum(harga_modal) as deposit_out')
+                    ->where('vendor_id', '=', $vendor_id)
+                    ->whereIn('status', array(0, 1))
                     ->first();
         return $sql;
     }

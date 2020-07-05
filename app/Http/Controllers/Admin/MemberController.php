@@ -4087,8 +4087,8 @@ class MemberController extends Controller {
         if($getTransTarik->deposit_keluar != null){
             $sum_deposit_keluar = $getTransTarik->deposit_keluar;
         }
-        $totalDeposit = $sum_deposit_masuk - $sum_deposit_keluar - $sum_deposit_keluar1;
-        if($getDataMaster->harga_modal > $totalDeposit){
+        $totalDeposit = $sum_deposit_masuk - $sum_deposit_keluar - $sum_deposit_keluar1 - $getDataMaster->harga_modal;
+        if($totalDeposit < 0){
             return redirect()->route('m_listVendotPPOBTransactions')
                     ->with('message', 'tidak dapat dilanjutkan, deposit kurang')
                     ->with('messageclass', 'danger');
@@ -4110,22 +4110,27 @@ class MemberController extends Controller {
         $json = json_encode($array);
         
         $cek = $modelMember->getAPIurlCheck($url, $json);
-        $arrayData = json_decode($cek, true);
+//        $arrayData = json_decode($cek, true);
 //        $modelSettingTrans = New Transaction;
 //        $code =$modelSettingTrans->getCodeDepositTransaction();
-        $memberDeposit = array(
-            'user_id' => $dataUser->id,
-            'total_deposito' => $request->harga_modal,
-            'transaction_code' => $getDataMaster->buyer_code.'-'.$ref_id,
-            'deposito_status' => 1
-        );
-        $modelPin->getInsertMemberDeposit($memberDeposit);
+        
         $dataUpdate = array(
             'status' => 2,
             'tuntas_at' => date('Y-m-d H:i:s'),
             'return_buy' => $cek
         );
         $modelPin->getUpdatePPOB('id', $request->ppob_id, $dataUpdate);
+        $cek = $modelPin->getJagaGaBolehDuaKali($getDataMaster->buyer_code.'-'.$ref_id);
+        if($cek == null){
+            $memberDeposit = array(
+                'user_id' => $dataUser->id,
+                'total_deposito' => $request->harga_modal,
+                'transaction_code' => $getDataMaster->buyer_code.'-'.$ref_id,
+                'deposito_status' => 1
+            );
+            $modelPin->getInsertMemberDeposit($memberDeposit);
+        }
+        
         return redirect()->route('m_listVendotPPOBTransactions')
                     ->with('message', 'pulsa berhasil')
                     ->with('messageclass', 'success');
@@ -4152,7 +4157,7 @@ class MemberController extends Controller {
         );
         $modelPin->getUpdatePPOB('id', $request->ppob_id, $dataUpdate);
         return redirect()->route('m_listVendotPPOBTransactions')
-                    ->with('message', 'pulsa berhasil')
+                    ->with('message', 'Transaksi berhasil dibatalkan')
                     ->with('messageclass', 'success');
     }
        

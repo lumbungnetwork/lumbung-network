@@ -1067,8 +1067,8 @@ class Sales extends Model {
                     ->whereNull('master_sales.deleted_at')
                     ->groupBy('year', 'month')
                     ->groupBy('monthly')
-                    ->orderBy('year', 'ASC')
-                    ->orderBy('month', 'ASC')
+                    ->orderBy('year', 'DESC')
+                    ->orderBy('month', 'DESC')
                     ->get();
         $return = null;
         if(count($sql) > 0){
