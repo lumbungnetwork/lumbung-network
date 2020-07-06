@@ -3052,12 +3052,13 @@ class MasterAdminController extends Controller {
         $username   = $getDataAPI->username;
         $apiKey   = $getDataAPI->api_key;
         $getData = $modelPin->getStatusPPOBDetail($id);
-        $ref_id = $getData->ppob_code;
+        $ref_id = uniqid();// $getData->ppob_code;
         $sign = md5($username.$apiKey.$ref_id);
         $array = array(
+            'commands' => 'inq-pasca',
             'username' => $username,
-            'buyer_sku_code' => $getData->buyer_code,
-            'customer_no' => $getData->product_name,
+            'buyer_sku_code' => 'pln', //$getData->buyer_code,
+            'customer_no' => '0001772358478', //$getData->product_name,
             'ref_id' => $ref_id,
             'sign' => $sign,
 //            'testing' => true,
