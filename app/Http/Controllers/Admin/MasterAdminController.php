@@ -2983,7 +2983,7 @@ class MasterAdminController extends Controller {
         dd($arrayData);
     }
     
-    public function getMemberTestingCheckDaftarPulsa(){
+    public function getMemberTestingCheckDaftarPulsa($cmd){
         $dataUser = Auth::user();
         $onlyUser  = array(1);
         if(!in_array($dataUser->user_type, $onlyUser)){
@@ -2996,7 +2996,7 @@ class MasterAdminController extends Controller {
         
         $sign = md5($username.$apiKey.'pricelist');
         $array = array(
-            'cmd' => 'prepaid',
+            'cmd' => $cmd,
             'username' => $username,
             'sign' => $sign
         );
