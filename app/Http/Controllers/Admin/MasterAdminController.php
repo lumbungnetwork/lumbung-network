@@ -3057,7 +3057,7 @@ class MasterAdminController extends Controller {
         $array = array(
             'commands' => 'inq-pasca',
             'username' => $username,
-            'buyer_sku_code' => 'pln', //$getData->buyer_code,
+            'buyer_sku_code' => 'BPJS', //$getData->buyer_code,
             'customer_no' => '0001772358478', //$getData->product_name,
             'ref_id' => $ref_id,
             'sign' => $sign,
