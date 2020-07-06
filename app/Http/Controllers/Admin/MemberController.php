@@ -4160,6 +4160,65 @@ class MemberController extends Controller {
                     ->with('message', 'Transaksi berhasil dibatalkan')
                     ->with('messageclass', 'success');
     }
+    
+    public function getPPOBPascabayar($type){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+        return view('member.digital.pasca-input_no')
+                    ->with('headerTitle', 'Cek Tagihan')
+                    ->with('type', $type)
+                    ->with('dataUser', $dataUser);
+    }
+    
+    public function getPPOBPascabayarCekTagihan(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+        $buyer_sku_code = 'BPJS';
+        if($request->type == 2){
+            $buyer_sku_code = 'PLNPOST';
+        }
+        $modelMember = New Member;
+        $modelPin = New Pin;
+        $getDataAPI = $modelMember->getDataAPIMobilePulsa();
+        $username   = $getDataAPI->username;
+        $apiKey   = $getDataAPI->api_key;
+        $ref_id = uniqid();//$modelPin->getCodePPOBRef($request->type);
+        $sign = md5($username.$apiKey.$ref_id);
+        $array = array(
+            'commands' => 'inq-pasca',
+            'username' => $username,
+            'buyer_sku_code' => $buyer_sku_code,
+            'customer_no' => $request->customer_no,
+            'ref_id' => $ref_id,
+            'sign' => $sign,
+        );
+        $url = $getDataAPI->master_url.'/v1/transaction';
+        $json = json_encode($array);
+        $cek = $modelMember->getAPIurlCheck($url, $json);
+        $getData = json_decode($cek, true);
+        return view('member.digital.pasca-cek_tagihan')
+                    ->with('getData', $getData['data'])
+                    ->with('type', $request->type)
+                    ->with('dataUser', $dataUser);
+    }
        
     
     
