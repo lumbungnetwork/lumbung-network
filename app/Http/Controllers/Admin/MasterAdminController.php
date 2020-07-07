@@ -3136,7 +3136,6 @@ class MasterAdminController extends Controller {
             'ref_id' => $getDataMaster->ppob_code,
             'sign' => $sign,
         );
-        dd($array);
         $url = $getDataAPI->master_url.'/v1/transaction';
         $json = json_encode($array);
         $cek = $modelMember->getAPIurlCheck($url, $json);
