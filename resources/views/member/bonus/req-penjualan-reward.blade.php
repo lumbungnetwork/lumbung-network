@@ -63,8 +63,8 @@
                                                         $reward = '--';
                                                         if($kelipatan > 0){
                                                             $reward = $kelipatan.' LMB';
-                                                            if($kelipatan > 50){
-                                                                $kelipatan = 50;
+                                                            if($kelipatan > 100){
+                                                                $kelipatan = 100;
                                                                 $reward = $kelipatan.' LMB';
                                                             }
                                                         }

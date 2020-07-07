@@ -3116,18 +3116,27 @@ class MasterAdminController extends Controller {
             return redirect()->route('mainDashboard');
         }
         $modelMember = New Member;
+        $modelPin = new Pin;
+        $modelTrans = New Transaction;
+        $getDataMaster = $modelPin->getStatusPPOBDetail($request->id);
+        if($getDataMaster == null){
+            dd('empty');
+        }
+        if($getDataMaster->status != 2){
+            dd('stop here');
+        }
         $getDataAPI = $modelMember->getDataAPIMobilePulsa();
         $username   = $getDataAPI->username;
         $apiKey   = $getDataAPI->api_key;
-        $sign = md5($username.$apiKey.$request->ref);
+        $sign = md5($username.$apiKey.$getDataMaster->ppob_code);
         $array = array(
             'username' => $username,
-            'buyer_sku_code' => $request->buyer,
-            'customer_no' => $request->no,
-            'ref_id' => $request->ref,
+            'buyer_sku_code' => $getDataMaster->buyer_code,
+            'customer_no' => $getDataMaster->product_name,
+            'ref_id' => $getDataMaster->ppob_code,
             'sign' => $sign,
         );
-
+        dd($array);
         $url = $getDataAPI->master_url.'/v1/transaction';
         $json = json_encode($array);
         $cek = $modelMember->getAPIurlCheck($url, $json);
