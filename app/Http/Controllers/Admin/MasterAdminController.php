@@ -3119,12 +3119,13 @@ class MasterAdminController extends Controller {
         $getDataAPI = $modelMember->getDataAPIMobilePulsa();
         $username   = $getDataAPI->username;
         $apiKey   = $getDataAPI->api_key;
+        $sign = md5($username.$apiKey.$request->ref);
         $array = array(
             'username' => $username,
             'buyer_sku_code' => $request->buyer,
             'customer_no' => $request->no,
             'ref_id' => $request->ref,
-            'sign' => $request->sign,
+            'sign' => $sign,
         );
 
         $url = $getDataAPI->master_url.'/v1/transaction';
