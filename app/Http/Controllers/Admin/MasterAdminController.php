@@ -3021,7 +3021,7 @@ class MasterAdminController extends Controller {
         $apiKey   = $getDataAPI->api_key;
         $modelPin = new Pin;
         $rand = rand(11, 99);
-        $ref_id = $rand.$modelPin->getCodePPOBRef(1);
+        $ref_id = uniqid(); //$rand.$modelPin->getCodePPOBRef(1);
         $sign = md5($username.$apiKey.$ref_id);
         $array = array(
             'username' => $username,
@@ -3034,10 +3034,38 @@ class MasterAdminController extends Controller {
         );
         $url = $getDataAPI->master_url.'/v1/transaction';
         $json = json_encode($array);
-        
         $cek = $modelMember->getAPIurlCheck($url, $json);
         $arrayData = json_decode($cek, true);
-        dd($arrayData);
+        
+        if($arrayData['data']['rc'] == '00'){
+            $dataUpdate = array(
+                'status' => 2,
+                'tuntas_at' => date('Y-m-d H:i:s'),
+                'return_buy' => $cek,
+                'vendor_approve' => 2,
+                'potong_saldo' => 1,
+                'digiflazz_status' => 'Tuntas'
+            );
+            dd($dataUpdate);
+        }
+        
+        if($arrayData['data']['rc'] == '03'){
+            $dataUpdate = array(
+                'vendor_approve' => 1,
+                'vendor_cek' => $cek,
+                'potong_saldo' => 0,
+                'digiflazz_status' => 'Pending'
+            );
+            dd($dataUpdate);
+        }
+        
+        $dataUpdate = array(
+            'vendor_approve' => 3,
+            'vendor_cek' => $cek,
+            'potong_saldo' => 0,
+            'digiflazz_status' => 'Gagal'
+        );
+        dd($dataUpdate);
     }
     
     public function getMemberTestingCheckStatus($id, $cek){
