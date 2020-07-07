@@ -124,6 +124,19 @@ class Pin extends Model {
         return $result;
     }
     
+    public function getDeleteMemberDeposit($id){
+        try {
+            DB::table('member_deposito')
+                    ->where('id', '=', $id)
+                    ->delete();
+            $result = (object) array('status' => true, 'message' => null);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message);
+        }
+        return $result;
+    }
+    
     public function getMyHistoryDeposit($data){
         $sql = DB::table('member_deposito')
                     ->selectRaw('member_deposito.total_deposito, member_deposito.deposito_status,  '

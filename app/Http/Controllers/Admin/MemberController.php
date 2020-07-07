@@ -4110,30 +4110,56 @@ class MemberController extends Controller {
         $json = json_encode($array);
         
         $cek = $modelMember->getAPIurlCheck($url, $json);
-//        $arrayData = json_decode($cek, true);
+        $arrayData = json_decode($cek, true);
 //        $modelSettingTrans = New Transaction;
 //        $code =$modelSettingTrans->getCodeDepositTransaction();
         
-        $dataUpdate = array(
-            'status' => 2,
-            'tuntas_at' => date('Y-m-d H:i:s'),
-            'return_buy' => $cek
-        );
-        $modelPin->getUpdatePPOB('id', $request->ppob_id, $dataUpdate);
-        $cek = $modelPin->getJagaGaBolehDuaKali($getDataMaster->buyer_code.'-'.$ref_id);
-        if($cek == null){
-            $memberDeposit = array(
-                'user_id' => $dataUser->id,
-                'total_deposito' => $request->harga_modal,
-                'transaction_code' => $getDataMaster->buyer_code.'-'.$ref_id,
-                'deposito_status' => 1
+        if($arrayData['data']['rc'] == '00'){
+            $dataUpdate = array(
+                'status' => 2,
+                'tuntas_at' => date('Y-m-d H:i:s'),
+                'return_buy' => $cek,
+                'vendor_approve' => 2
             );
-            $modelPin->getInsertMemberDeposit($memberDeposit);
+            $modelPin->getUpdatePPOB('id', $request->ppob_id, $dataUpdate);
+            $cekDuaKali = $modelPin->getJagaGaBolehDuaKali($getDataMaster->buyer_code.'-'.$ref_id);
+            if($cekDuaKali == null){
+                $memberDeposit = array(
+                    'user_id' => $dataUser->id,
+                    'total_deposito' => $request->harga_modal,
+                    'transaction_code' => $getDataMaster->buyer_code.'-'.$ref_id,
+                    'deposito_status' => 1
+                );
+                $modelPin->getInsertMemberDeposit($memberDeposit);
+            }
+            return redirect()->route('m_listVendotPPOBTransactions')
+                        ->with('message', 'transaksi berhasil')
+                        ->with('messageclass', 'success');
         }
         
-        return redirect()->route('m_listVendotPPOBTransactions')
-                    ->with('message', 'pulsa berhasil')
-                    ->with('messageclass', 'success');
+        if($arrayData['data']['rc'] == '03'){
+            $dataUpdate = array(
+                'vendor_cek' => $cek
+            );
+            $modelPin->getUpdatePPOB('id', $request->ppob_id, $dataUpdate);
+            return redirect()->route('m_listVendotPPOBTransactions')
+                        ->with('message', 'transaksi sedang pending, tunggu beberapa saat. Kemudian cek status di halaman transaksi digital')
+                        ->with('messageclass', 'warning');
+        }
+        
+        if($arrayData['data']['rc'] != '00' && $arrayData['data']['rc'] != '03'){
+            $dataUpdate = array(
+                'status' => 3,
+                'deleted_at' => date('Y-m-d H:i:s'),
+                'return_buy' => $cek,
+                'vendor_approve' => 3,
+                'vendor_cek' => $cek
+            );
+            $modelPin->getUpdatePPOB('id', $request->ppob_id, $dataUpdate);
+            return redirect()->route('m_listVendotPPOBTransactions')
+                        ->with('message', 'transaksi gagal')
+                        ->with('messageclass', 'danger');
+        }
 
     }
     
@@ -4159,6 +4185,109 @@ class MemberController extends Controller {
         return redirect()->route('m_listVendotPPOBTransactions')
                     ->with('message', 'Transaksi berhasil dibatalkan')
                     ->with('messageclass', 'success');
+    }
+    
+    public function getCekStatusTransaksiApi($id){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+        $modelPin = new Pin;
+        $modelTrans = New Transaction;
+        $modelMember = New Member;
+        $getDataMaster = $modelPin->getVendorPPOBDetail($id, $dataUser);
+        if($getDataMaster == null){
+            return redirect()->route('m_listVendotPPOBTransactions')
+                    ->with('message', 'Tidak ada data')
+                    ->with('messageclass', 'danger');
+        }
+        if($getDataMaster->status != 2){
+            return redirect()->route('m_listVendotPPOBTransactions')
+                    ->with('message', 'transaksi vendor belum tuntas')
+                    ->with('messageclass', 'danger');
+        }
+        if($getDataMaster->vendor_approve != 0){
+            return redirect()->route('m_listVendotPPOBTransactions')
+                    ->with('message', 'Tidak ada data')
+                    ->with('messageclass', 'danger');
+        }
+        $getDataAPI = $modelMember->getDataAPIMobilePulsa();
+        $username   = $getDataAPI->username;
+        $apiKey   = $getDataAPI->api_key;
+        $sign = md5($username.$apiKey.$getDataMaster->ppob_code);
+        $array = array(
+            'username' => $username,
+            'buyer_sku_code' => $getDataMaster->buyer_code,
+            'customer_no' => $getDataMaster->product_name,
+            'ref_id' => $getDataMaster->ppob_code,
+            'sign' => $sign,
+        );
+        $url = $getDataAPI->master_url.'/v1/transaction';
+        $json = json_encode($array);
+        $cek = $modelMember->getAPIurlCheck($url, $json);
+        $arrayData = json_decode($cek, true);
+
+        if($arrayData != null){
+            if($arrayData['data']['rc'] == '00'){
+                $dataUpdate = array(
+                    'status' => 2,
+                    'tuntas_at' => date('Y-m-d H:i:s'),
+                    'return_buy' => $cek,
+                    'vendor_approve' => 2
+                );
+                $modelPin->getUpdatePPOB('id', $getDataMaster->id, $dataUpdate);
+                $cekDuaKali = $modelPin->getJagaGaBolehDuaKali($getDataMaster->buyer_code.'-'.$getDataMaster->ppob_code);
+                if($cekDuaKali == null){
+                    $memberDeposit = array(
+                        'user_id' => $dataUser->id,
+                        'total_deposito' => $getDataMaster->harga_modal,
+                        'transaction_code' => $getDataMaster->buyer_code.'-'.$getDataMaster->ppob_code,
+                        'deposito_status' => 1
+                    );
+                    $modelPin->getInsertMemberDeposit($memberDeposit);
+                }
+                return redirect()->route('m_listVendotPPOBTransactions')
+                            ->with('message', 'transaksi berhasil')
+                            ->with('messageclass', 'success');
+            }
+
+            if($arrayData['data']['rc'] == '03'){
+                return redirect()->route('m_listVendotPPOBTransactions')
+                            ->with('message', 'transaksi sedang pending, tunggu beberapa saat. Kemudian cek status di halaman transaksi digital')
+                            ->with('messageclass', 'warning');
+            }
+
+            if($arrayData['data']['rc'] != '00' && $arrayData['data']['rc'] != '03'){
+                $dataUpdate = array(
+                    'status' => 3,
+                    'deleted_at' => date('Y-m-d H:i:s'),
+                    'return_buy' => $cek,
+                    'vendor_approve' => 3,
+                    'vendor_cek' => $cek
+                );
+                $modelPin->getUpdatePPOB('id', $getDataMaster->id, $dataUpdate);
+                $cekDepositGagal = $modelPin->getJagaGaBolehDuaKali($getDataMaster->buyer_code.'-'.$getDataMaster->ppob_code);
+                if($cekDepositGagal != null){
+                    $modelPin->getDeleteMemberDeposit($cekDepositGagal->id);
+                }
+                return redirect()->route('m_listVendotPPOBTransactions')
+                            ->with('message', 'terjadi kesalahan pada transaksi, saldo dikembalikan')
+                            ->with('messageclass', 'success');
+            }
+        }
+        return redirect()->route('m_listVendotPPOBTransactions')
+                            ->with('message', 'tidak ada data transaksi, kesalahan pada api')
+                            ->with('messageclass', 'danger');
+        
+        
+        
     }
     
     public function getPPOBPascabayar($type){
@@ -4219,6 +4348,8 @@ class MemberController extends Controller {
                     ->with('type', $request->type)
                     ->with('dataUser', $dataUser);
     }
+    
+    
        
     
     

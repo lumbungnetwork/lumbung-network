@@ -399,6 +399,7 @@ Route::prefix('/')->group(function () {
         Route::get('/m/detail/vppob/{id}', 'Admin\MemberController@getDetailVendorPPOB')->middleware('auth');
         Route::post('/m/confirm/vppob', 'Admin\MemberController@postVendorConfirmPPOB')->middleware('auth');
         Route::post('/m/reject/vppob', 'Admin\MemberController@postVendorRejectPPOB')->middleware('auth');
+        Route::get('/m/cek-status/transaction/{id}', 'Admin\MemberController@getCekStatusTransaksiApi')->middleware('auth');
         
         //Ajax
         Route::get('/m/cek/add-sponsor', 'Admin\AjaxmemberController@postCekAddSponsor')->middleware('auth');
