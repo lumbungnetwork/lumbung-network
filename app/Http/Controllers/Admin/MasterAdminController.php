@@ -3044,7 +3044,9 @@ class MasterAdminController extends Controller {
                 'return_buy' => $cek,
                 'vendor_approve' => 2,
                 'potong_saldo' => 1,
-                'digiflazz_status' => 'Tuntas'
+                'digiflazz_status' => 'Tuntas',
+                'buyer_sku_code' => $buyer,
+                'customer_no' => $hp,
             );
             dd($dataUpdate);
         }
@@ -3054,7 +3056,9 @@ class MasterAdminController extends Controller {
                 'vendor_approve' => 1,
                 'vendor_cek' => $cek,
                 'potong_saldo' => 0,
-                'digiflazz_status' => 'Pending'
+                'digiflazz_status' => 'Pending',
+                'buyer_sku_code' => $buyer,
+                'customer_no' => $hp,
             );
             dd($dataUpdate);
         }
@@ -3063,7 +3067,9 @@ class MasterAdminController extends Controller {
             'vendor_approve' => 3,
             'vendor_cek' => $cek,
             'potong_saldo' => 0,
-            'digiflazz_status' => 'Gagal'
+            'digiflazz_status' => 'Gagal',
+            'buyer_sku_code' => $buyer,
+            'customer_no' => $hp,
         );
         dd($dataUpdate);
     }
@@ -3098,6 +3104,31 @@ class MasterAdminController extends Controller {
         $url = $getDataAPI->master_url.'/v1/transaction';
         $json = json_encode($array);
         
+        $cek = $modelMember->getAPIurlCheck($url, $json);
+        $arrayData = json_decode($cek, true);
+        dd($arrayData);
+    }
+    
+    public function getMemberNewTestingCheckStatus(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelMember = New Member;
+        $getDataAPI = $modelMember->getDataAPIMobilePulsa();
+        $username   = $getDataAPI->username;
+        $apiKey   = $getDataAPI->api_key;
+        $array = array(
+            'username' => $username,
+            'buyer_sku_code' => $request->buyer,
+            'customer_no' => $request->no,
+            'ref_id' => $request->ref,
+            'sign' => $request->sign,
+        );
+
+        $url = $getDataAPI->master_url.'/v1/transaction';
+        $json = json_encode($array);
         $cek = $modelMember->getAPIurlCheck($url, $json);
         $arrayData = json_decode($cek, true);
         dd($arrayData);
