@@ -19,17 +19,96 @@
                     </div>
                 </nav>
             </div>
+            <?php
+            $nama = 'BPJS';
+            if($type == 2){
+                $nama = 'PLN';
+            }
+            if($type == 3){
+                $nama = 'PDAM';
+            }
+            ?>
             <div class="mt-min-10">
                 <div class="container">
+                    
                     <div class="rounded-lg bg-white p-3 mb-3">
-                            <div class="row">
-                                <div class="col-xs-12 col-md-12 col-lg-12 col-xl-12">
-                                    <div class="card-box ">
-                                        <?php print_r($getData); ?>
+                        <h6 class="mb-3">Pembayaran {{$nama}}</h6>
+                        @if ( Session::has('message') )
+                            <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible fade in" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                                {{  Session::get('message')    }} 
+                            </div>
+                        @endif
+                        <div class="row">
+                            <div class="col-xl-6">
+                                <fieldset class="form-group">
+                                    <label for="customer_no">No Customer</label>
+                                    <input type="text" class="form-control" name="customer_no" id="customer_no" autocomplete="off" value="{{$getData['customer_no']}}">
+                                </fieldset>
+                            </div>
+                            <div class="col-xl-6">
+                                <fieldset class="form-group">
+                                    <label for="user_name">Masukkan Username Vendor Tujuan Belanja Anda:</label>
+                                    <input type="text" class="form-control" id="get_id" name="user_name" autocomplete="off">
+                                    <input type="hidden" name="get_id" id="id_get_id">
+                                    <ul class="typeahead dropdown-menu" style="max-height: 120px; overflow: auto;border: 1px solid #ddd;width: 96%;margin-left: 11px;" id="get_id-box"></ul>
+                                </fieldset>
+                            </div>
+                        </div>    
+                    </div>
+                    
+                    @if($getData['rc'] == '00')
+                    <div class="rounded-lg bg-white p-3 mb-3">
+                        <div class="row">
+                            <div class="col-xs-12 col-md-12 col-lg-12 col-xl-12">
+                                <fieldset class="form-group">
+                                    <label for="ppob_price">Biaya</label>
+                                    <input type="text" class="form-control" name="ppob_price" id="ppob_price" autocomplete="off" value="{{$getData['selling_price'] + 1500}}">
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="rounded-lg bg-white p-3 mb-3">
+                        <div class="row">
+                            <div class="col-xl-12 col-xs-12">
+
+                                <div class="rounded-lg shadow-sm p-2">
+                                    <div class="radio radio-primary">
+                                        <input type="radio" id="type_pay" name="type_pay" value="1">
+                                        <label for="radio1">
+                                            Bayar via vendor terdekat <b>(COD)</b>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="rounded-lg shadow-sm p-2">
+                                    <div class="radio radio-primary">
+                                        <input type="radio" id="type_pay"  name="type_pay" value="3">
+                                        <label for="radio2">
+                                            Bayar via eIDR (Direct)*
+                                        </label>
+                                        <br>
+                                        <small>
+                                                Pembayaran via eIDR akan ditambah Rp. 1000, sebagai kontribusi langsung ke deviden LMB
+                                            </small>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-xl-12">
+                                <button type="submit" class="btn btn-success"  id="submitBtn" data-toggle="modal" data-target="#confirmSubmit" onClick="inputSubmit()">Submit</button>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document" id="confirmDetail">
+                            </div>
+                        </div>
+                    </div>
+                    @endif
                 </div>
             </div>
             @include('layout.member.nav')
@@ -51,4 +130,59 @@
 @section('javascript')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
     <script src="{{ asset('asset_new/js/sidebar.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $("#get_id").keyup(function(){
+                $.ajax({
+                    type: "GET",
+                    url: "{{ URL::to('/') }}/m/cek/usercode-vendor" + "?name=" + $(this).val() ,
+                    success: function(data){
+                        $("#get_id-box").show();
+                        $("#get_id-box").html(data);
+                    }
+                });
+            });
+        });
+        function selectUsername(val) {
+            var valNew = val.split("____");
+            $("#get_id").val(valNew[1]);
+            $("#id_get_id").val(valNew[0]);
+            $("#get_id-box").hide();
+        }
+    </script>
+    @if($getData['rc'] == '00')
+    <script>
+       function inputSubmit(){
+           var customer_no = $("#customer_no").val();
+           var vendor_id = $("#id_get_id").val();
+           var harga = $('input[type=radio][name=harga]:checked').attr('value');
+           var type_pay = $('input[type=radio][name=type_pay]:checked').attr('value');
+            $.ajax({
+                type: "GET",
+                url: "{{ URL::to('/') }}/m/cek/buy/ppob-pasca?no_hp="+customer_no+"&vendor_id="+vendor_id+"&harga="+harga+"&type_pay="+type_pay+"&type=3",
+                success: function(url){
+                    $("#confirmDetail" ).empty();
+                    $("#confirmDetail").html(url);
+                }
+            });
+        }
+        
+        function confirmSubmit(){
+            var dataInput = $("#form-add").serializeArray();
+            $('#form-add').submit();
+            $('#form-add').remove();
+            $('#loading').show();
+            $('#tutupModal').remove();
+            $('#submit').remove();
+        }
+        
+        $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {    
+           $(this).val($(this).val().replace(/[^\d].+/, ""));
+            if ((event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+        });
+
+    </script>
+    @endif
 @stop

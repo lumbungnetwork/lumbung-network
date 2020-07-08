@@ -463,4 +463,5 @@ Route::prefix('/')->group(function () {
         Route::get('/m/cek/buy/ppob', 'Admin\AjaxmemberController@postCekBuyPPOBHP')->middleware('auth');
         Route::get('/m/cek/member-buy', 'Admin\AjaxmemberController@postMemberBuyPPOBHP')->middleware('auth');
         Route::get('/m/cek/reject/buy-ppob', 'Admin\AjaxmemberController@postRejectBuyPPOBHP')->middleware('auth');
+        Route::get('/m/cek/buy/ppob-pasca', 'Admin\AjaxmemberController@postCekBuyPPOBPasca')->middleware('auth');
 });

@@ -4292,16 +4292,16 @@ class MemberController extends Controller {
     
     public function getPPOBPascabayar($type){
         $dataUser = Auth::user();
-        $onlyUser  = array(10);
-        if(!in_array($dataUser->user_type, $onlyUser)){
-            return redirect()->route('mainDashboard');
-        }
-        if($dataUser->package_id == null){
-            return redirect()->route('m_newPackage');
-        }
-        if($dataUser->is_active == 0){
-            return redirect()->route('mainDashboard');
-        }
+//        $onlyUser  = array(10);
+//        if(!in_array($dataUser->user_type, $onlyUser)){
+//            return redirect()->route('mainDashboard');
+//        }
+//        if($dataUser->package_id == null){
+//            return redirect()->route('m_newPackage');
+//        }
+//        if($dataUser->is_active == 0){
+//            return redirect()->route('mainDashboard');
+//        }
         return view('member.digital.pasca-input_no')
                     ->with('headerTitle', 'Cek Tagihan')
                     ->with('type', $type)
@@ -4310,16 +4310,16 @@ class MemberController extends Controller {
     
     public function getPPOBPascabayarCekTagihan(Request $request){
         $dataUser = Auth::user();
-        $onlyUser  = array(10);
-        if(!in_array($dataUser->user_type, $onlyUser)){
-            return redirect()->route('mainDashboard');
-        }
-        if($dataUser->package_id == null){
-            return redirect()->route('m_newPackage');
-        }
-        if($dataUser->is_active == 0){
-            return redirect()->route('mainDashboard');
-        }
+//        $onlyUser  = array(10);
+//        if(!in_array($dataUser->user_type, $onlyUser)){
+//            return redirect()->route('mainDashboard');
+//        }
+//        if($dataUser->package_id == null){
+//            return redirect()->route('m_newPackage');
+//        }
+//        if($dataUser->is_active == 0){
+//            return redirect()->route('mainDashboard');
+//        }
         $buyer_sku_code = 'BPJS';
         if($request->type == 2){
             $buyer_sku_code = 'PLNPOST';

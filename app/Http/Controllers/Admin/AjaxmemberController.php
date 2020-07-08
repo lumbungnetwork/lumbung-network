@@ -1464,6 +1464,103 @@ class AjaxmemberController extends Controller {
                         ->with('dataVendor', $getVendor);
     }
     
+    public function postCekBuyPPOBPasca(Request $request){
+        //cek validasi lg
+        //cek vendor punya deposit ga
+        $dataUser = Auth::user();
+        $no_hp = $request->no_hp;
+        if($no_hp == null){
+            return view('member.ajax.confirm_cek_ppob')
+                        ->with('data', null)
+                        ->with('message', 'Anda tidak memasukan nomor')
+                        ->with('dataVendor', null);
+        }
+        $vendor_id = $request->vendor_id;
+        $dataVendor = (object) array(
+            'id' => $vendor_id
+        );
+        if($vendor_id == null){
+            return view('member.ajax.confirm_cek_ppob')
+                        ->with('data', null)
+                        ->with('message', 'Anda tidak memilih Vendor')
+                        ->with('dataVendor', null);
+        }
+        if($request->harga == 'undefined'){
+            return view('member.ajax.confirm_cek_ppob')
+                        ->with('data', null)
+                        ->with('message', 'Anda tidak memilih harga')
+                        ->with('dataVendor', null);
+        }
+        $buy_method = $request->type_pay;
+        if($buy_method == 'undefined'){
+            return view('member.ajax.confirm_cek_ppob')
+                        ->with('data', null)
+                        ->with('message', 'Anda tidak memilih jenis pembayaran')
+                        ->with('dataVendor', null);
+        }
+        
+        $modelPin = new Pin;
+        $modelTrans = New Transaction;
+        //cek $no_hp ga boleh dalam 10 menit
+        $cekHP = $modelPin->getCekHpOn10Menit($no_hp);
+        if($cekHP != null){
+            return view('member.ajax.confirm_cek_ppob')
+                        ->with('data', null)
+                        ->with('message', 'Nomor HP ini masih dalam rentang 10 menit.')
+                        ->with('dataVendor', null);
+        }
+        $separate = explode('__', $request->harga);
+        $buyer_sku_code = $separate[0];
+        $price = $separate[1];
+        $brand = $separate[2];
+        $desc = $separate[3];
+        $real_price = $separate[4];
+        $getTransTarik = $modelTrans->getMyTotalTarikDeposit($dataVendor);
+        $getTotalDeposit = $modelPin->getTotalDepositMember($dataVendor);
+        $getTotalPPOBOut = $modelPin->getPPOBFly($vendor_id);
+        $sum_deposit_masuk = 0;
+        $sum_deposit_keluar1 = 0;
+        $sum_deposit_keluar = 0;
+        $sum_ppob_keluar = 0;
+        if($getTotalDeposit->sum_deposit_masuk != null){
+            $sum_deposit_masuk = $getTotalDeposit->sum_deposit_masuk;
+        }
+        if($getTotalDeposit->sum_deposit_keluar != null){
+            $sum_deposit_keluar1 = $getTotalDeposit->sum_deposit_keluar;
+        }
+        if($getTransTarik->deposit_keluar != null){
+            $sum_deposit_keluar = $getTransTarik->deposit_keluar;
+        }
+        if($getTotalPPOBOut->deposit_out != null){
+            $sum_ppob_keluar = $getTotalPPOBOut->deposit_out;
+        }
+        $totalDeposit = $sum_deposit_masuk - $sum_deposit_keluar - $sum_deposit_keluar1 - $sum_ppob_keluar - $real_price;
+        if($totalDeposit < 0){
+            return view('member.ajax.confirm_cek_ppob')
+                        ->with('data', null)
+                        ->with('message', 'tidak dapat dilanjutkan, saldo vendor kurang')
+                        ->with('dataVendor', null);
+        }
+        
+        $modelMember = New Member;
+        $getData = (object) array(
+            'buyer_sku_code' => $buyer_sku_code,
+            'price' => $price,
+            'brand' => $brand,
+            'no_hp' => $no_hp,
+            'vendor_id' => $vendor_id,
+            'buy_method' => $buy_method,
+            'harga_modal' => $real_price,
+            'message' => $desc
+        );
+        $getVendor = $modelMember->getUsers('id', $vendor_id);
+        $type = $request->type;
+        return view('member.ajax.confirm_cek_ppob')
+                        ->with('data', $getData)
+                        ->with('type', $type)
+                        ->with('dataVendor', $getVendor);
+    }
+    
     public function postMemberBuyPPOBHP(Request $request){
         $dataUser = Auth::user();
         $modelPin = new Pin;
