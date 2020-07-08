@@ -33,12 +33,12 @@
                     
                     <div class="rounded-lg bg-white p-3 mb-3">
                         <h6 class="mb-3">Pembayaran {{$nama}}</h6>
-                        @if ( Session::has('message') )
-                            <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible fade in" role="alert">
+                        @if($getData['rc'] != '00')
+                            <div class="alert alert-danger alert-dismissible fade in" role="alert">
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">×</span>
                                 </button>
-                                {{  Session::get('message')    }} 
+                                {{ $getData['message'] }}
                             </div>
                         @endif
                         <div class="row">
@@ -77,8 +77,6 @@
                         </div>
                     </div>
                     <input type="hidden" value="{{$getData['selling_price'] + $getData['admin'] + 1500}}" id="harga">
-                    <input type="hidden" value="{{$getData['price'] + $getData['admin']}}" id="price">
-                    <input type="hidden" value="{{$getData['ref_id']}}" id="ref_id">
                     <div class="rounded-lg bg-white p-3 mb-3">
                         <div class="row">
                             <div class="col-xl-12 col-xs-12">
@@ -167,7 +165,7 @@
            var type_pay = $('input[type=radio][name=type_pay]:checked').attr('value');
             $.ajax({
                 type: "GET",
-                url: "{{ URL::to('/') }}/m/cek/buy/ppob-pasca?no_hp="+customer_no+"&vendor_id="+vendor_id+"&harga="+harga+"&type_pay="+type_pay+"&type=3",
+                url: "{{ URL::to('/') }}/m/cek/buy/ppob-pasca?no_hp="+customer_no+"&vendor_id="+vendor_id+"&harga="+{{$getData['selling_price'] + $getData['admin'] + 1500}}+"&type_pay="+type_pay+"&type={{$type}}"+"&ref_id="+{{$getData['ref_id']}}+"&price="+{{$getData['price'] + $getData['admin']}}+"&customer_no="+{{$getData['customer_no']}},
                 success: function(url){
                     $("#confirmDetail" ).empty();
                     $("#confirmDetail").html(url);
