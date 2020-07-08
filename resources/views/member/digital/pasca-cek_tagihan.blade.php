@@ -62,15 +62,23 @@
                     @if($getData['rc'] == '00')
                     <div class="rounded-lg bg-white p-3 mb-3">
                         <div class="row">
-                            <div class="col-xs-12 col-md-12 col-lg-12 col-xl-12">
+                            <div class="col-xs-8 col-md-12 col-lg-12 col-xl-12">
                                 <fieldset class="form-group">
-                                    <label for="ppob_price">Biaya</label>
-                                    <input type="text" class="form-control" name="ppob_price" id="ppob_price" autocomplete="off" value="{{$getData['selling_price'] + 1500}}">
+                                    <label>Nama Pelanggan</label>
+                                    <input type="text" class="form-control" autocomplete="off" value="{{$getData['customer_name']}}">
+                                </fieldset>
+                            </div>
+                            <div class="col-xs-4 col-md-12 col-lg-12 col-xl-12">
+                                <fieldset class="form-group">
+                                    <label>Biaya</label>
+                                    <input type="text" class="form-control" autocomplete="off" value="Rp. {{$getData['selling_price'] + $getData['admin'] + 1500}}">
                                 </fieldset>
                             </div>
                         </div>
                     </div>
-                    
+                    <input type="hidden" value="{{$getData['selling_price'] + $getData['admin'] + 1500}}" id="harga">
+                    <input type="hidden" value="{{$getData['price'] + $getData['admin']}}" id="price">
+                    <input type="hidden" value="{{$getData['ref_id']}}" id="ref_id">
                     <div class="rounded-lg bg-white p-3 mb-3">
                         <div class="row">
                             <div class="col-xl-12 col-xs-12">
