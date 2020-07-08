@@ -3832,6 +3832,27 @@ class MemberController extends Controller {
                     ->with('messageclass', 'success');
         }
         
+        if($request->type == 4){
+            //cek saldo vendor
+            $dataInsert = array(
+                'buy_metode' => $request->buy_method,
+                'user_id' => $dataUser->id,
+                'vendor_id' => $request->vendor_id,
+                'ppob_code' => $request->ref_id,
+                'type' => $request->type,
+                'buyer_code' => $request->buyer_sku_code,
+                'product_name' => $request->no_hp,
+                'ppob_price' => $request->price,
+                'ppob_date' => date('Y-m-d'),
+                'harga_modal' => $request->harga_modal,
+                'message' => $request->message
+            );
+            $newPPOB = $modelPin->getInsertPPOB($dataInsert);
+            return redirect()->route('m_detailPPOBMemberTransaction', [$newPPOB->lastID])
+                    ->with('message', 'Proses pembayaran BPJS berhasil, silakan hubungi vendor')
+                    ->with('messageclass', 'success');
+        }
+        
         
         dd('stop here');
         return redirect()->route('mainDashboard');
@@ -4013,7 +4034,7 @@ class MemberController extends Controller {
         );
         $modelPin->getUpdatePPOB('id', $request->id, $dataUpdate);
         return redirect()->route('m_listPPOBTransaction')
-                    ->with('message', 'konfirm pembelian pulsa berhasil, silakan hubungi vendor')
+                    ->with('message', 'konfirm pembelian berhasil, silakan hubungi vendor')
                     ->with('messageclass', 'success');
     }
     
@@ -4099,16 +4120,57 @@ class MemberController extends Controller {
         $apiKey   = $getDataAPI->api_key;
         $ref_id = $getDataMaster->ppob_code;
         $sign = md5($username.$apiKey.$ref_id);
-        $array = array(
-            'username' => $username,
-            'buyer_sku_code' => $getDataMaster->buyer_code,
-            'customer_no' => $getDataMaster->product_name,
-            'ref_id' => $ref_id,
-            'sign' => $sign,
-        );
+        
+        if($getDataMaster->type == 1){
+            $array = array(
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $ref_id,
+                'sign' => $sign,
+            );
+        }
+        if($getDataMaster->type == 2){
+            $array = array(
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $ref_id,
+                'sign' => $sign,
+            );
+        }
+        if($getDataMaster->type == 3){
+            $array = array(
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $ref_id,
+                'sign' => $sign,
+            );
+        }
+        if($getDataMaster->type == 4){
+            $array = array(
+                'commands' => 'pay-pasca',
+                'username' => $username,
+                'buyer_sku_code' => 'BPJS',
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $ref_id,
+                'sign' => $sign,
+            );
+        }
+        if($getDataMaster->type == 5){
+            $array = array(
+                'commands' => 'pay-pasca',
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $ref_id,
+                'sign' => $sign,
+            );
+        }
+
         $url = $getDataAPI->master_url.'/v1/transaction';
         $json = json_encode($array);
-        
         $cek = $modelMember->getAPIurlCheck($url, $json);
         $arrayData = json_decode($cek, true);
 //        $modelSettingTrans = New Transaction;
@@ -4222,13 +4284,45 @@ class MemberController extends Controller {
         $username   = $getDataAPI->username;
         $apiKey   = $getDataAPI->api_key;
         $sign = md5($username.$apiKey.$getDataMaster->ppob_code);
-        $array = array(
-            'username' => $username,
-            'buyer_sku_code' => $getDataMaster->buyer_code,
-            'customer_no' => $getDataMaster->product_name,
-            'ref_id' => $getDataMaster->ppob_code,
-            'sign' => $sign,
-        );
+        
+        if($getDataMaster->type == 1){
+            $array = array(
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $getDataMaster->ppob_code,
+                'sign' => $sign,
+            );
+        }
+        if($getDataMaster->type == 2){
+            $array = array(
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $getDataMaster->ppob_code,
+                'sign' => $sign,
+            );
+        }
+        if($getDataMaster->type == 3){
+            $array = array(
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $getDataMaster->ppob_code,
+                'sign' => $sign,
+            );
+        }
+        if($getDataMaster->type == 4){
+            $array = array(
+                'commands' => 'status-pasca',
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $getDataMaster->ppob_code,
+                'sign' => $sign,
+            );
+        }
+        
         $url = $getDataAPI->master_url.'/v1/transaction';
         $json = json_encode($array);
         $cek = $modelMember->getAPIurlCheck($url, $json);
@@ -4292,16 +4386,19 @@ class MemberController extends Controller {
     
     public function getPPOBPascabayar($type){
         $dataUser = Auth::user();
-//        $onlyUser  = array(10);
-//        if(!in_array($dataUser->user_type, $onlyUser)){
-//            return redirect()->route('mainDashboard');
-//        }
-//        if($dataUser->package_id == null){
-//            return redirect()->route('m_newPackage');
-//        }
-//        if($dataUser->is_active == 0){
-//            return redirect()->route('mainDashboard');
-//        }
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+        if($type > 1){
+            return redirect()->route('mainDashboard');
+        }
         return view('member.digital.pasca-input_no')
                     ->with('headerTitle', 'Cek Tagihan')
                     ->with('type', $type)
@@ -4310,16 +4407,16 @@ class MemberController extends Controller {
     
     public function getPPOBPascabayarCekTagihan(Request $request){
         $dataUser = Auth::user();
-//        $onlyUser  = array(10);
-//        if(!in_array($dataUser->user_type, $onlyUser)){
-//            return redirect()->route('mainDashboard');
-//        }
-//        if($dataUser->package_id == null){
-//            return redirect()->route('m_newPackage');
-//        }
-//        if($dataUser->is_active == 0){
-//            return redirect()->route('mainDashboard');
-//        }
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
         $buyer_sku_code = 'BPJS';
         $typePPOB = 4;
         if($request->type == 2){
@@ -4345,6 +4442,11 @@ class MemberController extends Controller {
         $json = json_encode($array);
         $cek = $modelMember->getAPIurlCheck($url, $json);
         $getData = json_decode($cek, true);
+        if($getData == null){
+            return redirect()->route('m_ppobPascabayar', [$request->type])
+                            ->with('message', 'data tidak ditemukan')
+                            ->with('messageclass', 'danger');
+        }
         return view('member.digital.pasca-cek_tagihan')
                     ->with('getData', $getData['data'])
                     ->with('buyer_sku_code', $buyer_sku_code)

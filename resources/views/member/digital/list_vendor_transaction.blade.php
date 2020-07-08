@@ -88,6 +88,12 @@
                                                     if($row->type == 3){
                                                         $type = 'PLN';
                                                     }
+                                                    if($row->type == 4){
+                                                        $type = 'BPJS';
+                                                    }
+                                                    if($row->type == 5){
+                                                        $type = 'PLN Pascabayar';
+                                                    }
                                                 ?>
                                                 <tr>
                                                     <td>{{$no}}</td>

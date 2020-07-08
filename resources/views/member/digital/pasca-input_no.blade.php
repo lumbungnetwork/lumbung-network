@@ -23,6 +23,14 @@
                 <div class="container">
                     <div class="rounded-lg bg-white p-3 mb-3">
                         <h6 class="mb-3">Cek Tagihan Pascabayar</h6>
+                        @if ( Session::has('message') )
+                            <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                                {{  Session::get('message')    }} 
+                            </div>
+                        @endif
                         <form method="GET" action="/m/cek/tagihan/pascabayar" style="display: contents;">
                             {{ csrf_field() }}
                             <?php

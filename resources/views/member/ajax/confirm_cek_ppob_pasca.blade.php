@@ -26,9 +26,9 @@
                 }
             ?>
             <div class="row">
-                <div class="col-md-5 col-xs-12">
+                <div class="col-md-12 col-xs-12">
                     <div class="form-group">
-                        <label>{{$textProductName}}</label>
+                        <label>No {{$textProductName}}</label>
                         <input type="text" class="form-control" readonly="" name="no_hp" value="{{$data->no_hp}}">
                     </div>
                 </div>
