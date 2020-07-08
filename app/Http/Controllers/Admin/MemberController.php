@@ -4321,15 +4321,17 @@ class MemberController extends Controller {
 //            return redirect()->route('mainDashboard');
 //        }
         $buyer_sku_code = 'BPJS';
+        $typePPOB = 4;
         if($request->type == 2){
             $buyer_sku_code = 'PLNPOST';
+            $typePPOB = 5;
         }
         $modelMember = New Member;
         $modelPin = New Pin;
         $getDataAPI = $modelMember->getDataAPIMobilePulsa();
         $username   = $getDataAPI->username;
         $apiKey   = $getDataAPI->api_key;
-        $ref_id = uniqid();//$modelPin->getCodePPOBRef($request->type);
+        $ref_id = $modelPin->getCodePPOBRef($typePPOB);
         $sign = md5($username.$apiKey.$ref_id);
         $array = array(
             'commands' => 'inq-pasca',
@@ -4345,6 +4347,7 @@ class MemberController extends Controller {
         $getData = json_decode($cek, true);
         return view('member.digital.pasca-cek_tagihan')
                     ->with('getData', $getData['data'])
+                    ->with('buyer_sku_code', $buyer_sku_code)
                     ->with('type', $request->type)
                     ->with('dataUser', $dataUser);
     }

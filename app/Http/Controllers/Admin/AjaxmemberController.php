@@ -1470,7 +1470,7 @@ class AjaxmemberController extends Controller {
         $dataUser = Auth::user();
         $no_hp = $request->no_hp;
         if($no_hp == null){
-            return view('member.ajax.confirm_cek_ppob')
+            return view('member.ajax.confirm_cek_ppob_pasca')
                         ->with('data', null)
                         ->with('message', 'Anda tidak memasukan nomor')
                         ->with('dataVendor', null);
@@ -1480,20 +1480,20 @@ class AjaxmemberController extends Controller {
             'id' => $vendor_id
         );
         if($vendor_id == null){
-            return view('member.ajax.confirm_cek_ppob')
+            return view('member.ajax.confirm_cek_ppob_pasca')
                         ->with('data', null)
                         ->with('message', 'Anda tidak memilih Vendor')
                         ->with('dataVendor', null);
         }
         if($request->harga == 'undefined'){
-            return view('member.ajax.confirm_cek_ppob')
+            return view('member.ajax.confirm_cek_ppob_pasca')
                         ->with('data', null)
                         ->with('message', 'Anda tidak memilih harga')
                         ->with('dataVendor', null);
         }
         $buy_method = $request->type_pay;
         if($buy_method == 'undefined'){
-            return view('member.ajax.confirm_cek_ppob')
+            return view('member.ajax.confirm_cek_ppob_pasca')
                         ->with('data', null)
                         ->with('message', 'Anda tidak memilih jenis pembayaran')
                         ->with('dataVendor', null);
@@ -1504,17 +1504,14 @@ class AjaxmemberController extends Controller {
         //cek $no_hp ga boleh dalam 10 menit
         $cekHP = $modelPin->getCekHpOn10Menit($no_hp);
         if($cekHP != null){
-            return view('member.ajax.confirm_cek_ppob')
+            return view('member.ajax.confirm_cek_ppob_pasca')
                         ->with('data', null)
                         ->with('message', 'Nomor HP ini masih dalam rentang 10 menit.')
                         ->with('dataVendor', null);
         }
-        $separate = explode('__', $request->harga);
-        $buyer_sku_code = $separate[0];
-        $price = $separate[1];
-        $brand = $separate[2];
-        $desc = $separate[3];
-        $real_price = $separate[4];
+        $buyer_sku_code = $request->buyer_sku_code;
+        $price = $request->harga;
+        $real_price = $request->price;
         $getTransTarik = $modelTrans->getMyTotalTarikDeposit($dataVendor);
         $getTotalDeposit = $modelPin->getTotalDepositMember($dataVendor);
         $getTotalPPOBOut = $modelPin->getPPOBFly($vendor_id);
@@ -1536,7 +1533,7 @@ class AjaxmemberController extends Controller {
         }
         $totalDeposit = $sum_deposit_masuk - $sum_deposit_keluar - $sum_deposit_keluar1 - $sum_ppob_keluar - $real_price;
         if($totalDeposit < 0){
-            return view('member.ajax.confirm_cek_ppob')
+            return view('member.ajax.confirm_cek_ppob_pasca')
                         ->with('data', null)
                         ->with('message', 'tidak dapat dilanjutkan, saldo vendor kurang')
                         ->with('dataVendor', null);
@@ -1546,16 +1543,16 @@ class AjaxmemberController extends Controller {
         $getData = (object) array(
             'buyer_sku_code' => $buyer_sku_code,
             'price' => $price,
-            'brand' => $brand,
             'no_hp' => $no_hp,
             'vendor_id' => $vendor_id,
             'buy_method' => $buy_method,
             'harga_modal' => $real_price,
-            'message' => $desc
+            'message' => 'Pembayaran BPJS',
+            'ref_id' => $request->ref_id
         );
         $getVendor = $modelMember->getUsers('id', $vendor_id);
         $type = $request->type;
-        return view('member.ajax.confirm_cek_ppob')
+        return view('member.ajax.confirm_cek_ppob_pasca')
                         ->with('data', $getData)
                         ->with('type', $type)
                         ->with('dataVendor', $getVendor);

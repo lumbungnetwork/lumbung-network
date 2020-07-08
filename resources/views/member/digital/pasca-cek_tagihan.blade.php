@@ -44,10 +44,11 @@
                         <div class="row">
                             <div class="col-xl-6">
                                 <fieldset class="form-group">
-                                    <label for="customer_no">No Customer</label>
-                                    <input type="text" class="form-control" name="customer_no" id="customer_no" autocomplete="off" value="{{$getData['customer_no']}}">
+                                    <label>No Customer</label>
+                                    <input type="text" class="form-control"  autocomplete="off" value="{{$getData['customer_no']}}">
                                 </fieldset>
                             </div>
+                            @if($getData['rc'] == '00')
                             <div class="col-xl-6">
                                 <fieldset class="form-group">
                                     <label for="user_name">Masukkan Username Vendor Tujuan Belanja Anda:</label>
@@ -56,8 +57,10 @@
                                     <ul class="typeahead dropdown-menu" style="max-height: 120px; overflow: auto;border: 1px solid #ddd;width: 96%;margin-left: 11px;" id="get_id-box"></ul>
                                 </fieldset>
                             </div>
+                            @endif
                         </div>    
                     </div>
+                    
                     
                     @if($getData['rc'] == '00')
                     <div class="rounded-lg bg-white p-3 mb-3">
@@ -76,7 +79,6 @@
                             </div>
                         </div>
                     </div>
-                    <input type="hidden" value="{{$getData['selling_price'] + $getData['admin'] + 1500}}" id="harga">
                     <div class="rounded-lg bg-white p-3 mb-3">
                         <div class="row">
                             <div class="col-xl-12 col-xs-12">
@@ -159,13 +161,11 @@
     @if($getData['rc'] == '00')
     <script>
        function inputSubmit(){
-           var customer_no = $("#customer_no").val();
            var vendor_id = $("#id_get_id").val();
-           var harga = $('input[type=radio][name=harga]:checked').attr('value');
            var type_pay = $('input[type=radio][name=type_pay]:checked').attr('value');
             $.ajax({
                 type: "GET",
-                url: "{{ URL::to('/') }}/m/cek/buy/ppob-pasca?no_hp="+customer_no+"&vendor_id="+vendor_id+"&harga="+{{$getData['selling_price'] + $getData['admin'] + 1500}}+"&type_pay="+type_pay+"&type={{$type}}"+"&ref_id="+{{$getData['ref_id']}}+"&price="+{{$getData['price'] + $getData['admin']}}+"&customer_no="+{{$getData['customer_no']}},
+                url: "{{ URL::to('/') }}/m/cek/buy/ppob-pasca?no_hp={{$getData['customer_no']}}&vendor_id="+vendor_id+"&harga={{$getData['selling_price'] + $getData['admin'] + 1500}}&type_pay="+type_pay+"&type={{$type}}"+"&ref_id={{$getData['ref_id']}}&price={{$getData['price'] + $getData['admin']}}&customer_no={{$getData['customer_no']}}",
                 success: function(url){
                     $("#confirmDetail" ).empty();
                     $("#confirmDetail").html(url);
@@ -190,5 +190,5 @@
         });
 
     </script>
-    @endif
+    @endif 
 @stop
