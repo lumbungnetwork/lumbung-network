@@ -34,7 +34,7 @@
                     <div class="rounded-lg bg-white p-3 mb-3">
                         <h6 class="mb-3">Pembayaran {{$nama}}</h6>
                         @if($getData['rc'] != '00')
-                            <div class="alert alert-danger alert-dismissible fade in" role="alert">
+                            <div class="alert alert-danger alert-dismissible" role="alert">
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">×</span>
                                 </button>
