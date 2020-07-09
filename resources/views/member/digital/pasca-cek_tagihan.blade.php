@@ -25,7 +25,7 @@
                 $nama = 'PLN';
             }
             if($type == 3){
-                $nama = 'PDAM';
+                $nama = 'HP Pascabayar';
             }
             ?>
             <div class="mt-min-10">

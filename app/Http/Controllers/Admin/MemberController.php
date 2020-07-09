@@ -4423,6 +4423,10 @@ class MemberController extends Controller {
             $buyer_sku_code = 'PLNPOST';
             $typePPOB = 5;
         }
+        if($request->type == 3){
+            $buyer_sku_code = $request->buyer_sku_code;
+            $typePPOB = 6;
+        }
         $modelMember = New Member;
         $modelPin = New Pin;
         $getDataAPI = $modelMember->getDataAPIMobilePulsa();
@@ -4443,7 +4447,7 @@ class MemberController extends Controller {
         $cek = $modelMember->getAPIurlCheck($url, $json);
         $getData = json_decode($cek, true);
         if($getData == null){
-            return redirect()->route('m_ppobPascabayar', [$request->type])
+            return redirect()->route('mainDashboard')
                             ->with('message', 'data tidak ditemukan')
                             ->with('messageclass', 'danger');
         }
@@ -4451,6 +4455,70 @@ class MemberController extends Controller {
                     ->with('getData', $getData['data'])
                     ->with('buyer_sku_code', $buyer_sku_code)
                     ->with('type', $request->type)
+                    ->with('dataUser', $dataUser);
+    }
+    
+    public function getPPOBHPPascabayar(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+        $modelMember = New Member;
+        $getDataAPI = $modelMember->getDataAPIMobilePulsa();
+        $username   = $getDataAPI->username;
+        $apiKey   = $getDataAPI->api_key;
+        $sign = md5($username.$apiKey.'pricelist');
+        $array = array(
+            'cmd' => 'pasca',
+            'username' => $username,
+            'sign' => $sign
+        );
+        $json = json_encode($array);
+        $url = $getDataAPI->master_url.'/v1/price-list';
+        $cek = $modelMember->getAPIurlCheck($url, $json);
+        $arrayData = json_decode($cek, true);
+        $data = array();
+        foreach($arrayData['data'] as $row){
+            if($row['brand'] == 'HP PASCABAYAR'){
+                $data[] = array(
+                    'buyer_sku_code' => $row['buyer_sku_code'],
+                    'admin' => $row['admin'],
+                    'commission' => $row['commission'],
+                    'brand' => $row['brand'],
+                    'product_name' => $row['product_name']
+                );
+            }
+        }
+        return view('member.digital.daftar-hp_pascabayar')
+            ->with('headerTitle', 'Daftar HP Pascabayar')
+            ->with('data', $data)
+            ->with('dataUser', $dataUser);
+    }
+    
+    public function getDetailPPOBHpPascabayar($sku, Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+        return view('member.digital.hp-pasca-input_no')
+                    ->with('headerTitle', 'Cek Tagihan')
+                    ->with('type', 3)
+                    ->with('buyer_sku_code', $sku)
+                    ->with('product_name', $request->product_name)
                     ->with('dataUser', $dataUser);
     }
     
