@@ -1538,8 +1538,18 @@ class AjaxmemberController extends Controller {
 //                        ->with('message', 'tidak dapat dilanjutkan, saldo vendor kurang')
 //                        ->with('dataVendor', null);
 //        }
-        
+        $type = $request->type;
         $modelMember = New Member;
+        $typeName = 'Pembayaran BPJS';
+        if($type == 5){
+            $typeName = 'Pembayaran PLN Pascabayar';
+        }
+        if($type == 6){
+            $typeName = 'Pembayaran HP Pascabayar';
+        }
+        if($type == 7){
+            $typeName = 'Pembayaran TELKOM PTSN';
+        }
         $getData = (object) array(
             'buyer_sku_code' => $buyer_sku_code,
             'price' => $price,
@@ -1547,11 +1557,10 @@ class AjaxmemberController extends Controller {
             'vendor_id' => $vendor_id,
             'buy_method' => $buy_method,
             'harga_modal' => $real_price,
-            'message' => 'Pembayaran BPJS',
+            'message' => $typeName,
             'ref_id' => $request->ref_id
         );
         $getVendor = $modelMember->getUsers('id', $vendor_id);
-        $type = $request->type;
         return view('member.ajax.confirm_cek_ppob_pasca')
                         ->with('data', $getData)
                         ->with('type', $type)

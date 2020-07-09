@@ -94,6 +94,12 @@
                                                     if($row->type == 5){
                                                         $type = 'PLN Pascabayar';
                                                     }
+                                                    if($row->type == 6){
+                                                        $type = 'HP Pascabayar';
+                                                    }
+                                                    if($row->type == 7){
+                                                        $type = 'TELKOM PSTN';
+                                                    }
                                                 ?>
                                                 <tr>
                                                     <td>{{$no}}</td>

@@ -3853,9 +3853,72 @@ class MemberController extends Controller {
                     ->with('messageclass', 'success');
         }
         
+        if($request->type == 5){
+            //cek saldo vendor
+            $dataInsert = array(
+                'buy_metode' => $request->buy_method,
+                'user_id' => $dataUser->id,
+                'vendor_id' => $request->vendor_id,
+                'ppob_code' => $request->ref_id,
+                'type' => $request->type,
+                'buyer_code' => $request->buyer_sku_code,
+                'product_name' => $request->no_hp,
+                'ppob_price' => $request->price,
+                'ppob_date' => date('Y-m-d'),
+                'harga_modal' => $request->harga_modal,
+                'message' => $request->message
+            );
+            $newPPOB = $modelPin->getInsertPPOB($dataInsert);
+            return redirect()->route('m_detailPPOBMemberTransaction', [$newPPOB->lastID])
+                    ->with('message', 'Proses pembayaran PLN Pascabayar berhasil, silakan hubungi vendor')
+                    ->with('messageclass', 'success');
+        }
         
-        dd('stop here');
-        return redirect()->route('mainDashboard');
+        if($request->type == 6){
+            //cek saldo vendor
+            $dataInsert = array(
+                'buy_metode' => $request->buy_method,
+                'user_id' => $dataUser->id,
+                'vendor_id' => $request->vendor_id,
+                'ppob_code' => $request->ref_id,
+                'type' => $request->type,
+                'buyer_code' => $request->buyer_sku_code,
+                'product_name' => $request->no_hp,
+                'ppob_price' => $request->price,
+                'ppob_date' => date('Y-m-d'),
+                'harga_modal' => $request->harga_modal,
+                'message' => $request->message
+            );
+            $newPPOB = $modelPin->getInsertPPOB($dataInsert);
+            return redirect()->route('m_detailPPOBMemberTransaction', [$newPPOB->lastID])
+                    ->with('message', 'Proses pembayaran HP Pascabayar berhasil, silakan hubungi vendor')
+                    ->with('messageclass', 'success');
+        }
+        
+        if($request->type == 7){
+            //cek saldo vendor
+            $dataInsert = array(
+                'buy_metode' => $request->buy_method,
+                'user_id' => $dataUser->id,
+                'vendor_id' => $request->vendor_id,
+                'ppob_code' => $request->ref_id,
+                'type' => $request->type,
+                'buyer_code' => $request->buyer_sku_code,
+                'product_name' => $request->no_hp,
+                'ppob_price' => $request->price,
+                'ppob_date' => date('Y-m-d'),
+                'harga_modal' => $request->harga_modal,
+                'message' => $request->message
+            );
+            $newPPOB = $modelPin->getInsertPPOB($dataInsert);
+            return redirect()->route('m_detailPPOBMemberTransaction', [$newPPOB->lastID])
+                    ->with('message', 'Proses pembayaran Telkom PTSN berhasil, silakan hubungi vendor')
+                    ->with('messageclass', 'success');
+        }
+        
+        return redirect()->route('mainDashboard')
+                ->with('message', 'Proses gagal, terjadi kesalahan pada sistem')
+                ->with('messageclass', 'danger');
     }
     
     public function getListBuyPPOB(Request $request){
@@ -4396,7 +4459,7 @@ class MemberController extends Controller {
         if($dataUser->is_active == 0){
             return redirect()->route('mainDashboard');
         }
-        if($type > 1){
+        if($type > 4){
             return redirect()->route('mainDashboard');
         }
         return view('member.digital.pasca-input_no')
@@ -4407,16 +4470,16 @@ class MemberController extends Controller {
     
     public function getPPOBPascabayarCekTagihan(Request $request){
         $dataUser = Auth::user();
-//        $onlyUser  = array(10);
-//        if(!in_array($dataUser->user_type, $onlyUser)){
-//            return redirect()->route('mainDashboard');
-//        }
-//        if($dataUser->package_id == null){
-//            return redirect()->route('m_newPackage');
-//        }
-//        if($dataUser->is_active == 0){
-//            return redirect()->route('mainDashboard');
-//        }
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
         $buyer_sku_code = 'BPJS';
         $typePPOB = 4;
         if($request->type == 2){
@@ -4426,6 +4489,10 @@ class MemberController extends Controller {
         if($request->type == 3){
             $buyer_sku_code = $request->buyer_sku_code;
             $typePPOB = 6;
+        }
+        if($request->type == 4){
+            $buyer_sku_code = 'TELKOM';
+            $typePPOB = 7;
         }
         $modelMember = New Member;
         $modelPin = New Pin;
@@ -4460,16 +4527,16 @@ class MemberController extends Controller {
     
     public function getPPOBHPPascabayar(){
         $dataUser = Auth::user();
-//        $onlyUser  = array(10);
-//        if(!in_array($dataUser->user_type, $onlyUser)){
-//            return redirect()->route('mainDashboard');
-//        }
-//        if($dataUser->package_id == null){
-//            return redirect()->route('m_newPackage');
-//        }
-//        if($dataUser->is_active == 0){
-//            return redirect()->route('mainDashboard');
-//        }
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
         $modelMember = New Member;
         $getDataAPI = $modelMember->getDataAPIMobilePulsa();
         $username   = $getDataAPI->username;
@@ -4504,16 +4571,16 @@ class MemberController extends Controller {
     
     public function getDetailPPOBHpPascabayar($sku, Request $request){
         $dataUser = Auth::user();
-//        $onlyUser  = array(10);
-//        if(!in_array($dataUser->user_type, $onlyUser)){
-//            return redirect()->route('mainDashboard');
-//        }
-//        if($dataUser->package_id == null){
-//            return redirect()->route('m_newPackage');
-//        }
-//        if($dataUser->is_active == 0){
-//            return redirect()->route('mainDashboard');
-//        }
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
         return view('member.digital.hp-pasca-input_no')
                     ->with('headerTitle', 'Cek Tagihan')
                     ->with('type', 3)
