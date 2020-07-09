@@ -4407,16 +4407,16 @@ class MemberController extends Controller {
     
     public function getPPOBPascabayarCekTagihan(Request $request){
         $dataUser = Auth::user();
-        $onlyUser  = array(10);
-        if(!in_array($dataUser->user_type, $onlyUser)){
-            return redirect()->route('mainDashboard');
-        }
-        if($dataUser->package_id == null){
-            return redirect()->route('m_newPackage');
-        }
-        if($dataUser->is_active == 0){
-            return redirect()->route('mainDashboard');
-        }
+//        $onlyUser  = array(10);
+//        if(!in_array($dataUser->user_type, $onlyUser)){
+//            return redirect()->route('mainDashboard');
+//        }
+//        if($dataUser->package_id == null){
+//            return redirect()->route('m_newPackage');
+//        }
+//        if($dataUser->is_active == 0){
+//            return redirect()->route('mainDashboard');
+//        }
         $buyer_sku_code = 'BPJS';
         $typePPOB = 4;
         if($request->type == 2){
@@ -4460,16 +4460,16 @@ class MemberController extends Controller {
     
     public function getPPOBHPPascabayar(){
         $dataUser = Auth::user();
-        $onlyUser  = array(10);
-        if(!in_array($dataUser->user_type, $onlyUser)){
-            return redirect()->route('mainDashboard');
-        }
-        if($dataUser->package_id == null){
-            return redirect()->route('m_newPackage');
-        }
-        if($dataUser->is_active == 0){
-            return redirect()->route('mainDashboard');
-        }
+//        $onlyUser  = array(10);
+//        if(!in_array($dataUser->user_type, $onlyUser)){
+//            return redirect()->route('mainDashboard');
+//        }
+//        if($dataUser->package_id == null){
+//            return redirect()->route('m_newPackage');
+//        }
+//        if($dataUser->is_active == 0){
+//            return redirect()->route('mainDashboard');
+//        }
         $modelMember = New Member;
         $getDataAPI = $modelMember->getDataAPIMobilePulsa();
         $username   = $getDataAPI->username;
@@ -4504,16 +4504,16 @@ class MemberController extends Controller {
     
     public function getDetailPPOBHpPascabayar($sku, Request $request){
         $dataUser = Auth::user();
-        $onlyUser  = array(10);
-        if(!in_array($dataUser->user_type, $onlyUser)){
-            return redirect()->route('mainDashboard');
-        }
-        if($dataUser->package_id == null){
-            return redirect()->route('m_newPackage');
-        }
-        if($dataUser->is_active == 0){
-            return redirect()->route('mainDashboard');
-        }
+//        $onlyUser  = array(10);
+//        if(!in_array($dataUser->user_type, $onlyUser)){
+//            return redirect()->route('mainDashboard');
+//        }
+//        if($dataUser->package_id == null){
+//            return redirect()->route('m_newPackage');
+//        }
+//        if($dataUser->is_active == 0){
+//            return redirect()->route('mainDashboard');
+//        }
         return view('member.digital.hp-pasca-input_no')
                     ->with('headerTitle', 'Cek Tagihan')
                     ->with('type', 3)
