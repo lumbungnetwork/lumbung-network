@@ -4231,6 +4231,26 @@ class MemberController extends Controller {
                 'sign' => $sign,
             );
         }
+        if($getDataMaster->type == 6){
+            $array = array(
+                'commands' => 'pay-pasca',
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $ref_id,
+                'sign' => $sign,
+            );
+        }
+        if($getDataMaster->type == 7){
+            $array = array(
+                'commands' => 'pay-pasca',
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $ref_id,
+                'sign' => $sign,
+            );
+        }
 
         $url = $getDataAPI->master_url.'/v1/transaction';
         $json = json_encode($array);
@@ -4521,7 +4541,7 @@ class MemberController extends Controller {
         return view('member.digital.pasca-cek_tagihan')
                     ->with('getData', $getData['data'])
                     ->with('buyer_sku_code', $buyer_sku_code)
-                    ->with('type', $request->type)
+                    ->with('type', $typePPOB)
                     ->with('dataUser', $dataUser);
     }
     
@@ -4586,6 +4606,23 @@ class MemberController extends Controller {
                     ->with('type', 3)
                     ->with('buyer_sku_code', $sku)
                     ->with('product_name', $request->product_name)
+                    ->with('dataUser', $dataUser);
+    }
+    
+    public function getListTagihanPascabayar(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+        return view('member.digital.list-tagihan_pascabayar')
+                    ->with('headerTitle', 'List Pascabayar')
                     ->with('dataUser', $dataUser);
     }
     

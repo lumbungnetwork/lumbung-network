@@ -39,7 +39,7 @@
                                 $nama = 'PLN';
                             }
                             if($type == 3){
-                                $nama = 'PDAM';
+                                $nama = 'HP Pascabayar';
                             }
                             if($type == 4){
                                 $nama = 'TELKOM PSTN';

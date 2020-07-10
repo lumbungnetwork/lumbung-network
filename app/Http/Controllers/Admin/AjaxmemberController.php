@@ -1532,12 +1532,12 @@ class AjaxmemberController extends Controller {
             $sum_ppob_keluar = $getTotalPPOBOut->deposit_out;
         }
         $totalDeposit = $sum_deposit_masuk - $sum_deposit_keluar - $sum_deposit_keluar1 - $sum_ppob_keluar - $real_price;
-//        if($totalDeposit < 0){
-//            return view('member.ajax.confirm_cek_ppob_pasca')
-//                        ->with('data', null)
-//                        ->with('message', 'tidak dapat dilanjutkan, saldo vendor kurang')
-//                        ->with('dataVendor', null);
-//        }
+        if($totalDeposit < 0){
+            return view('member.ajax.confirm_cek_ppob_pasca')
+                        ->with('data', null)
+                        ->with('message', 'tidak dapat dilanjutkan, saldo vendor kurang')
+                        ->with('dataVendor', null);
+        }
         $type = $request->type;
         $modelMember = New Member;
         $typeName = 'Pembayaran BPJS';
