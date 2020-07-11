@@ -270,7 +270,7 @@ class Pin extends Model {
                 ->count();
         $tmp = $getTransCount+1;
         $code = sprintf("%03s", $tmp);
-        $rand = rand(101, 849);
+        $rand = rand(1010, 8499);
         return 'ref_'.$type.'_'.$code.'_'.date('Ymd').$rand;
     }
     

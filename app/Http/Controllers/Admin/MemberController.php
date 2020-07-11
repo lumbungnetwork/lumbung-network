@@ -4034,7 +4034,7 @@ class MemberController extends Controller {
         $json = json_encode($array);
         $cek = $modelMember->getAPIurlCheck($url, $json);
         $arrayData = json_decode($cek, true);
-        if($arrayData['data']['rc'] == '00'){
+        if($arrayData['data']['status'] == 'Sukses'){
             $dataUpdate = array(
                 'return_buy' => $cek
             );
@@ -4259,7 +4259,7 @@ class MemberController extends Controller {
 //        $modelSettingTrans = New Transaction;
 //        $code =$modelSettingTrans->getCodeDepositTransaction();
         
-        if($arrayData['data']['rc'] == '00'){
+        if($arrayData['data']['status'] == 'Sukses'){
             $dataUpdate = array(
                 'status' => 2,
                 'tuntas_at' => date('Y-m-d H:i:s'),
@@ -4282,7 +4282,7 @@ class MemberController extends Controller {
                         ->with('messageclass', 'success');
         }
         
-        if($arrayData['data']['rc'] == '03'){
+        if($arrayData['data']['status'] == 'Pending'){
             $dataUpdate = array(
                 'vendor_cek' => $cek
             );
@@ -4292,7 +4292,7 @@ class MemberController extends Controller {
                         ->with('messageclass', 'warning');
         }
         
-        if($arrayData['data']['rc'] != '00' && $arrayData['data']['rc'] != '03'){
+        if($arrayData['data']['status'] == 'Gagal'){
             $dataUpdate = array(
                 'status' => 3,
                 'deleted_at' => date('Y-m-d H:i:s'),
@@ -4412,7 +4412,7 @@ class MemberController extends Controller {
         $arrayData = json_decode($cek, true);
 
         if($arrayData != null){
-            if($arrayData['data']['rc'] == '00'){
+            if($arrayData['data']['status'] == 'Sukses'){
                 $dataUpdate = array(
                     'status' => 2,
                     'tuntas_at' => date('Y-m-d H:i:s'),
@@ -4435,13 +4435,13 @@ class MemberController extends Controller {
                             ->with('messageclass', 'success');
             }
 
-            if($arrayData['data']['rc'] == '03'){
+            if($arrayData['data']['status'] == 'Pending'){
                 return redirect()->route('m_listVendotPPOBTransactions')
                             ->with('message', 'transaksi sedang pending, tunggu beberapa saat. Kemudian cek status di halaman transaksi digital')
                             ->with('messageclass', 'warning');
             }
 
-            if($arrayData['data']['rc'] != '00' && $arrayData['data']['rc'] != '03'){
+            if($arrayData['data']['status'] == 'Gagal'){
                 $dataUpdate = array(
                     'status' => 3,
                     'deleted_at' => date('Y-m-d H:i:s'),
