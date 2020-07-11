@@ -3143,7 +3143,7 @@ class MasterAdminController extends Controller {
         dd($arrayData);
     }
     
-    public function getUpdateTransaction($id){
+    public function getUpdateTransaction($id, $lihat){
         $dataUser = Auth::user();
         $onlyUser  = array(1);
         if(!in_array($dataUser->user_type, $onlyUser)){
@@ -3228,7 +3228,9 @@ class MasterAdminController extends Controller {
         $json = json_encode($array);
         $cek = $modelMember->getAPIurlCheck($url, $json);
         $arrayData = json_decode($cek, true);
-//        dd($arrayData);
+        if($lihat == 1){
+            dd($arrayData);
+        }
         if($arrayData['data']['status'] == 'Sukses'){
             $dataUpdate1 = array(
                 'status' => 2,

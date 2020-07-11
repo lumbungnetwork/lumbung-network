@@ -156,7 +156,7 @@ Route::prefix('/')->group(function () {
         Route::get('/adm/test-digiflazz/top-pulsa/{buyer}/{hp}', 'Admin\MasterAdminController@getMemberTestingCheckTopupPulsa')->middleware('auth');
         Route::get('/adm/test-digiflazz/cek-status/{id}/{cek}', 'Admin\MasterAdminController@getMemberTestingCheckStatus')->middleware('auth');
         Route::get('/adm/test-digiflazz/status', 'Admin\MasterAdminController@getMemberNewTestingCheckStatus')->middleware('auth');
-        Route::get('/adm/update-transaction/{id}', 'Admin\MasterAdminController@getUpdateTransaction')->middleware('auth');
+        Route::get('/adm/update-transaction/{id}/{lihat}', 'Admin\MasterAdminController@getUpdateTransaction')->middleware('auth');
         
         
         
