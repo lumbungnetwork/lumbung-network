@@ -3228,7 +3228,7 @@ class MasterAdminController extends Controller {
         $json = json_encode($array);
         $cek = $modelMember->getAPIurlCheck($url, $json);
         $arrayData = json_decode($cek, true);
-        dd($arrayData);
+//        dd($arrayData);
         if($arrayData['data']['status'] == 'Sukses'){
             $dataUpdate1 = array(
                 'status' => 2,
