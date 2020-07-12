@@ -263,6 +263,21 @@ class Pin extends Model {
     }
     
     public function getCodePPOBRef($type){
+        $charsetlower = "abcdefghijklmnopqrstuvwxyz";
+        $key_lower = '';
+        for ($i = 0; $i < 3; $i++) {
+            $key_lower .= $charsetlower[(mt_rand(0, strlen($charsetlower) - 1))];
+        }
+        
+        $charsetnumber = "1234567890";
+        $key_number = '';
+        for ($i = 0; $i < 3; $i++) {
+            $key_number .= $charsetnumber[(mt_rand(0, strlen($charsetnumber) - 1))];
+        }
+
+        $charset = $key_lower.$key_number;
+        $rand = str_shuffle($charset);
+        
         $getTransCount = DB::table('ppob')
                 ->selectRaw('id')
                 ->where('type', '=', $type)
@@ -270,7 +285,6 @@ class Pin extends Model {
                 ->count();
         $tmp = $getTransCount+1;
         $code = sprintf("%03s", $tmp);
-        $rand = rand(1010, 8499);
         return 'ref_'.$type.'_'.$code.'_'.date('Ymd').$rand;
     }
     

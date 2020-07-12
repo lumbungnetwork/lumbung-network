@@ -34,8 +34,8 @@
                             <div class="row">
                                 <div class="col-xl-6">
                                     <fieldset class="form-group">
-                                        <label for="user_name">Masukan No. HP Tujuan</label>
-                                        <input type="text" class="form-control" name="no_hp" id="no_hp" autocomplete="off" placeholder="No. HP">
+                                        <label for="user_name">Masukan No. {{$operatorName}} Tujuan</label>
+                                        <input type="text" class="form-control" name="no_hp" id="no_hp" autocomplete="off" placeholder="No.  {{$operatorName}}">
                                     </fieldset>
                                 </div>
                                 <div class="col-xl-6">
@@ -165,7 +165,7 @@
            var type_pay = $('input[type=radio][name=type_pay]:checked').attr('value');
             $.ajax({
                 type: "GET",
-                url: "{{ URL::to('/') }}/m/cek/buy/ppob?no_hp="+no_hp+"&vendor_id="+vendor_id+"&harga="+harga+"&type_pay="+type_pay+"&type=2",
+                url: "{{ URL::to('/') }}/m/cek/buy/ppob?no_hp="+no_hp+"&vendor_id="+vendor_id+"&harga="+harga+"&type_pay="+type_pay+"&type={{$tipe}}",
                 success: function(url){
                     $("#confirmDetail" ).empty();
                     $("#confirmDetail").html(url);

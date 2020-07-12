@@ -34,6 +34,16 @@
                                     </div>
                                 </a>
                             </div>
+                            <div class="col-6 mb-6">
+                                <a href="/m/emoney/1" class="text-decoration-none">
+                                    <div class="rounded icon-ppob text-center">
+                                        <div class="box-icon bg-green text-center">
+                                            <i class="mdi mdi-cellphone-arrow-down icon-menu" style="color: #4c2a86;"></i>
+                                        </div>
+                                        <dd>OVO</dd>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>

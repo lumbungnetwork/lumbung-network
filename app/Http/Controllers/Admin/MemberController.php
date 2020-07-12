@@ -3595,27 +3595,121 @@ class MemberController extends Controller {
         }
         $daftarHarga = null;
         if($operator == 1){
-            $daftarHarga = $telkomsel;
+            if(!empty($telkomsel)){
+                $daftarHarga = $telkomsel;
+            }
         }
         if($operator == 2){
-            $daftarHarga = $indosat;
+            if(!empty($indosat)){
+                $daftarHarga = $indosat;
+            }
         }
         if($operator == 3){
-            $daftarHarga = $xl;
+            if(!empty($xl)){
+                $daftarHarga = $xl;
+            }
         }
         if($operator == 4){
-            $daftarHarga = $axis;
+            if(!empty($axis)){
+                $daftarHarga = $axis;
+            }
         }
         if($operator == 5){
-            $daftarHarga = $tri;
+            if(!empty($tri)){
+                $daftarHarga = $tri;
+            }
         }
         if($operator == 6){
-            $daftarHarga = $smart;
+            if(!empty($smart)){
+                $daftarHarga = $smart;
+            }
+        }
+        if($daftarHarga == null){
+            return redirect()->route('mainDashboard')
+                    ->with('message', 'Tidak ada data')
+                    ->with('messageclass', 'danger');
         }
         return view('member.digital.daftar-hargadata-operator')
             ->with('headerTitle', 'Daftar Harga Data Operator')
             ->with('daftarHarga', $daftarHarga)
             ->with('dataUser', $dataUser);
+    }
+    
+    public function getEmoneyByOperator($operator){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+        $modelMember = New Member;
+        $getDataAPI = $modelMember->getDataAPIMobilePulsa();
+        $username   = $getDataAPI->username;
+        $apiKey   = $getDataAPI->api_key;
+        
+        $sign = md5($username.$apiKey.'pricelist');
+        $array = array(
+            'cmd' => 'prepaid',
+            'username' => $username,
+            'sign' => $sign
+        );
+        $json = json_encode($array);
+        $url = $getDataAPI->master_url.'/v1/price-list';
+        $cek = $modelMember->getAPIurlCheck($url, $json);
+        $arrayData = json_decode($cek, true);
+//        dd($arrayData['data']);
+        //category => E-Money
+        //brand => 1 => OVO
+        $ovo = array();
+        foreach($arrayData['data'] as $row){
+            if($row['category'] == 'E-Money'){
+                $priceAwal = $row['price'];
+                $pricePersen = $priceAwal + ($priceAwal * 4 / 100);
+                $priceRound = round($pricePersen, -2);
+                $cek3digit = substr($priceRound, -3);
+                $cek = 500 - $cek3digit;
+                if($cek == 0){
+                    $price = $priceRound;
+                }
+                if($cek > 0 && $cek < 500){
+                    $price = $priceRound + $cek;
+                }
+                if($cek == 500){
+                    $price = $priceRound;
+                }
+                if($cek < 0){
+                    $price = $priceRound + (500 + $cek);
+                }
+                if($row['brand'] == 'OVO'){
+                    $ovo[] = array(
+                        'buyer_sku_code' => $row['buyer_sku_code'],
+                        'desc' => $row['desc'],
+                        'real_price' => $priceAwal,
+                        'price' => $price,
+                        'brand' => $row['brand'],
+                        'product_name' => $row['product_name']
+                    );
+                }
+            }
+        }
+        $daftarHarga = null;
+        $operatorName = null;
+        $tipe = null;
+        if($operator == 1){
+            $daftarHarga = $ovo;
+            $operatorName = 'OVO';
+            $tipe = 8;
+        }
+        return view('member.digital.harga-emoney')
+                ->with('daftarHarga', $daftarHarga)
+                ->with('operatorName', $operatorName)
+                ->with('tipe', $tipe)
+                ->with('dataUser', $dataUser);
     }
     
     public function getDaftarHargaPLNPrepaid(){
@@ -3913,6 +4007,27 @@ class MemberController extends Controller {
             $newPPOB = $modelPin->getInsertPPOB($dataInsert);
             return redirect()->route('m_detailPPOBMemberTransaction', [$newPPOB->lastID])
                     ->with('message', 'Proses pembayaran Telkom PTSN berhasil, silakan hubungi vendor')
+                    ->with('messageclass', 'success');
+        }
+        
+        if($request->type == 8){
+            //cek saldo vendor
+            $dataInsert = array(
+                'buy_metode' => $request->buy_method,
+                'user_id' => $dataUser->id,
+                'vendor_id' => $request->vendor_id,
+                'ppob_code' => $request->ref_id,
+                'type' => $request->type,
+                'buyer_code' => $request->buyer_sku_code,
+                'product_name' => $request->no_hp,
+                'ppob_price' => $request->price,
+                'ppob_date' => date('Y-m-d'),
+                'harga_modal' => $request->harga_modal,
+                'message' => $request->message
+            );
+            $newPPOB = $modelPin->getInsertPPOB($dataInsert);
+            return redirect()->route('m_detailPPOBMemberTransaction', [$newPPOB->lastID])
+                    ->with('message', 'Proses pembayaran E-money OVO berhasil, silakan hubungi vendor')
                     ->with('messageclass', 'success');
         }
         
@@ -4251,6 +4366,15 @@ class MemberController extends Controller {
                 'sign' => $sign,
             );
         }
+        if($getDataMaster->type == 8){
+            $array = array(
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $ref_id,
+                'sign' => $sign,
+            );
+        }
 
         $url = $getDataAPI->master_url.'/v1/transaction';
         $json = json_encode($array);
@@ -4305,6 +4429,10 @@ class MemberController extends Controller {
                         ->with('message', 'transaksi gagal')
                         ->with('messageclass', 'danger');
         }
+        
+        return redirect()->route('m_listVendotPPOBTransactions')
+                        ->with('message', 'tidak ada data')
+                        ->with('messageclass', 'danger');
 
     }
     

@@ -100,6 +100,9 @@
                                                     if($row->type == 7){
                                                         $type = 'TELKOM PSTN';
                                                     }
+                                                    if($row->type == 8){
+                                                        $type = 'OVO';
+                                                    }
                                                 ?>
                                                 <tr>
                                                     <td>{{$no}}</td>

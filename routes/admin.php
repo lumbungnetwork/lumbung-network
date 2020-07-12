@@ -397,6 +397,7 @@ Route::prefix('/')->group(function () {
         Route::get('/m/list/hp-pascabayar', 'Admin\MemberController@getPPOBHPPascabayar')->name('m_ppobHPPascabayar')->middleware('auth');
         Route::get('/m/detail/hp-pascabayar/{sku}', 'Admin\MemberController@getDetailPPOBHpPascabayar')->name('m_detailppobHpPascabayar')->middleware('auth');
         Route::get('/m/list/tagihan-pascabayar', 'Admin\MemberController@getListTagihanPascabayar')->name('m_TagihanPascabayar')->middleware('auth');
+        Route::get('/m/emoney/{operator}', 'Admin\MemberController@getEmoneyByOperator')->name('m_emoneyOperator')->middleware('auth');
         
         //vendor
         Route::get('/m/list/vppob-transaction', 'Admin\MemberController@getListVendorPPOBTransactions')->name('m_listVendotPPOBTransactions')->middleware('auth');
