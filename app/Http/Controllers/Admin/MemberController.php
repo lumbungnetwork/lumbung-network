@@ -3879,7 +3879,7 @@ class MemberController extends Controller {
             );
             $newPPOB = $modelPin->getInsertPPOB($dataInsert);
             return redirect()->route('m_detailPPOBMemberTransaction', [$newPPOB->lastID])
-                    ->with('message', 'Proses pembelian pulsa berhasil, silakan hubungi vendor')
+                    ->with('message', 'Periksa kembali Order anda di bawah ini, lalu Konfirmasi')
                     ->with('messageclass', 'success');
         }
          if($request->type == 2){
@@ -3900,7 +3900,7 @@ class MemberController extends Controller {
             );
             $newPPOB = $modelPin->getInsertPPOB($dataInsert);
             return redirect()->route('m_detailPPOBMemberTransaction', [$newPPOB->lastID])
-                    ->with('message', 'Proses pembelian paket data berhasil, silakan hubungi vendor')
+                    ->with('message', 'Periksa kembali Order anda di bawah ini, lalu Konfirmasi')
                     ->with('messageclass', 'success');
         }
         
@@ -3922,7 +3922,7 @@ class MemberController extends Controller {
             );
             $newPPOB = $modelPin->getInsertPPOB($dataInsert);
             return redirect()->route('m_detailPPOBMemberTransaction', [$newPPOB->lastID])
-                    ->with('message', 'Proses pembelian token PLN berhasil, silakan hubungi vendor')
+                    ->with('message', 'Periksa kembali Order anda di bawah ini, lalu Konfirmasi')
                     ->with('messageclass', 'success');
         }
         
@@ -3943,7 +3943,7 @@ class MemberController extends Controller {
             );
             $newPPOB = $modelPin->getInsertPPOB($dataInsert);
             return redirect()->route('m_detailPPOBMemberTransaction', [$newPPOB->lastID])
-                    ->with('message', 'Proses pembayaran BPJS berhasil, silakan hubungi vendor')
+                    ->with('message', 'Periksa kembali Order anda di bawah ini, lalu Konfirmasi')
                     ->with('messageclass', 'success');
         }
         
@@ -3964,7 +3964,7 @@ class MemberController extends Controller {
             );
             $newPPOB = $modelPin->getInsertPPOB($dataInsert);
             return redirect()->route('m_detailPPOBMemberTransaction', [$newPPOB->lastID])
-                    ->with('message', 'Proses pembayaran PLN Pascabayar berhasil, silakan hubungi vendor')
+                    ->with('message', 'Periksa kembali Order anda di bawah ini, lalu Konfirmasi')
                     ->with('messageclass', 'success');
         }
         
@@ -3985,7 +3985,7 @@ class MemberController extends Controller {
             );
             $newPPOB = $modelPin->getInsertPPOB($dataInsert);
             return redirect()->route('m_detailPPOBMemberTransaction', [$newPPOB->lastID])
-                    ->with('message', 'Proses pembayaran HP Pascabayar berhasil, silakan hubungi vendor')
+                    ->with('message', 'Periksa kembali Order anda di bawah ini, lalu Konfirmasi')
                     ->with('messageclass', 'success');
         }
         
@@ -4006,7 +4006,7 @@ class MemberController extends Controller {
             );
             $newPPOB = $modelPin->getInsertPPOB($dataInsert);
             return redirect()->route('m_detailPPOBMemberTransaction', [$newPPOB->lastID])
-                    ->with('message', 'Proses pembayaran Telkom PTSN berhasil, silakan hubungi vendor')
+                    ->with('message', 'Periksa kembali Order anda di bawah ini, lalu Konfirmasi')
                     ->with('messageclass', 'success');
         }
         
@@ -4027,7 +4027,7 @@ class MemberController extends Controller {
             );
             $newPPOB = $modelPin->getInsertPPOB($dataInsert);
             return redirect()->route('m_detailPPOBMemberTransaction', [$newPPOB->lastID])
-                    ->with('message', 'Proses pembayaran E-money OVO berhasil, silakan hubungi vendor')
+                    ->with('message', 'Periksa kembali Order anda di bawah ini, lalu Konfirmasi')
                     ->with('messageclass', 'success');
         }
         

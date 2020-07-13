@@ -60,7 +60,15 @@
                                     @if($getData != null)
                                         <?php $no = 0; ?>
                                         @foreach($getData as $row)
-                                        <?php $no++; ?>
+                                        <?php 
+                                        $no++; 
+                                        $kelipatan = $row->total_belanja / 1000 * 0.02;
+                                        $reward = $kelipatan;
+                                        if($kelipatan > 50){
+                                            $kelipatan = 50;
+                                            $reward = $kelipatan;
+                                        }
+                                        ?>
                                             <tr>
                                                 <td><input type="checkbox" name="id[]" value="{{$row->id}}"></td>
                                                 <td>{{$no}}</td>
@@ -68,7 +76,7 @@
                                                 <td>{{$row->tron}}</td>
                                                 <td>{{$row->monthly}}</td>
                                                 <td>{{date('d M Y', strtotime($row->created_at))}}</td>
-                                                <td>{{$row->reward}}</td>
+                                                <td>{{$reward}}</td>
                                                 <td>
                                                     <a rel="tooltip"  data-toggle="modal" data-target="#popUp" class="text-danger" href="{{ URL::to('/') }}/ajax/adm/cek/reject-vbelanja-reward/{{$row->id}}">reject</a>
                                                 </td>
