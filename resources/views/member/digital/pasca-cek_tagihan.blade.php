@@ -21,11 +21,14 @@
             </div>
             <?php
             $nama = 'BPJS';
-            if($type == 2){
+            if($type == 5){
                 $nama = 'PLN';
             }
-            if($type == 3){
+            if($type == 6){
                 $nama = 'HP Pascabayar';
+            }
+            if($type == 7){
+                $nama = 'Telkom PTSN';
             }
             ?>
             <div class="mt-min-10">
@@ -74,7 +77,7 @@
                             <div class="col-xs-4 col-md-12 col-lg-12 col-xl-12">
                                 <fieldset class="form-group">
                                     <label>Biaya</label>
-                                    <input type="text" class="form-control" autocomplete="off" value="Rp. {{$getData['selling_price'] + $getData['admin'] + 1500}}">
+                                    <input type="text" class="form-control" autocomplete="off" value="Rp. {{$getData['selling_price']}}">
                                 </fieldset>
                             </div>
                         </div>
@@ -165,7 +168,7 @@
            var type_pay = $('input[type=radio][name=type_pay]:checked').attr('value');
             $.ajax({
                 type: "GET",
-                url: "{{ URL::to('/') }}/m/cek/buy/ppob-pasca?no_hp={{$getData['customer_no']}}&vendor_id="+vendor_id+"&harga={{$getData['selling_price'] + $getData['admin'] + 1600}}&type_pay="+type_pay+"&type={{$type}}&ref_id={{$getData['ref_id']}}&price={{$getData['price'] + $getData['admin']}}&customer_no={{$getData['customer_no']}}&buyer_sku_code={{$buyer_sku_code}}",
+                url: "{{ URL::to('/') }}/m/cek/buy/ppob-pasca?no_hp={{$getData['customer_no']}}&vendor_id="+vendor_id+"&harga={{$getData['selling_price']}}&type_pay="+type_pay+"&type={{$type}}&ref_id={{$getData['ref_id']}}&price={{$getData['price']}}&customer_no={{$getData['customer_no']}}&buyer_sku_code={{$buyer_sku_code}}",
                 success: function(url){
                     $("#confirmDetail" ).empty();
                     $("#confirmDetail").html(url);
