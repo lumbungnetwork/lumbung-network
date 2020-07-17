@@ -22,6 +22,11 @@ use App\Model\Membership;
 use App\Model\Sales;
 use App\Model\Transferwd;
 
+//1.  Kartu Halo 1500
+//2.  PLN 500
+//3.  Telkom 1000
+//4.  Finance (Cicilan) 1000
+
 class MemberController extends Controller {
     
     public function __construct(){
@@ -3350,14 +3355,11 @@ class MemberController extends Controller {
         $smart = array();
         foreach($arrayData['data'] as $row){
             if($row['category'] == 'Pulsa'){
-                if($row['price'] <= 20000){
+                if($row['price'] <= 40000){
                     $priceAwal = $row['price'] + 50;
                 }
-                if($row['price'] > 20000 && $row['price'] <= 40000){
-                    $priceAwal = $row['price'] + 85;
-                }
                 if($row['price'] > 40000){
-                    $priceAwal = $row['price'] + 120;
+                    $priceAwal = $row['price'] + 70;
                 }
                 $pricePersen = $priceAwal + ($priceAwal * 4 / 100);
                 $priceRound = round($pricePersen, -2);
@@ -3379,7 +3381,7 @@ class MemberController extends Controller {
                     $telkomsel[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
                         'desc' => $row['desc'],
-                        'real_price' => $priceAwal,
+                        'real_price' => ($row['price'] + ($row['price'] * 2 / 100)),
                         'price' => $price,
                         'brand' => $row['brand'],
                         'product_name' => $row['product_name']
@@ -3389,7 +3391,7 @@ class MemberController extends Controller {
                     $indosat[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
                         'desc' => $row['desc'],
-                        'real_price' => $row['price'],
+                        'real_price' => ($row['price'] + ($row['price'] * 2 / 100)),
                         'price' => $price,
                         'brand' => $row['brand'],
                         'product_name' => $row['product_name']
@@ -3399,7 +3401,7 @@ class MemberController extends Controller {
                     $xl[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
                         'desc' => $row['desc'],
-                        'real_price' => $row['price'],
+                        'real_price' => ($row['price'] + ($row['price'] * 2 / 100)),
                         'price' => $price,
                         'brand' => $row['brand'],
                         'product_name' => $row['product_name']
@@ -3409,7 +3411,7 @@ class MemberController extends Controller {
                     $axis[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
                         'desc' => $row['desc'],
-                        'real_price' => $row['price'],
+                        'real_price' => ($row['price'] + ($row['price'] * 2 / 100)),
                         'price' => $price,
                         'brand' => $row['brand'],
                         'product_name' => $row['product_name']
@@ -3419,7 +3421,7 @@ class MemberController extends Controller {
                     $tri[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
                         'desc' => $row['desc'],
-                        'real_price' => $row['price'],
+                        'real_price' => ($row['price'] + ($row['price'] * 2 / 100)),
                         'price' => $price,
                         'brand' => $row['brand'],
                         'product_name' => $row['product_name']
@@ -3429,7 +3431,7 @@ class MemberController extends Controller {
                     $smart[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
                         'desc' => $row['desc'],
-                        'real_price' => $row['price'],
+                        'real_price' => ($row['price'] + ($row['price'] * 2 / 100)),
                         'price' => $price,
                         'brand' => $row['brand'],
                         'product_name' => $row['product_name']
@@ -3506,16 +3508,13 @@ class MemberController extends Controller {
         $smart = array();
         foreach($arrayData['data'] as $row){
             if($row['category'] == 'Data'){
-                if($row['price'] <= 20000){
+                if($row['price'] <= 40000){
                     $priceAwal = $row['price'] + 50;
                 }
-                if($row['price'] > 20000 && $row['price'] <= 40000){
-                    $priceAwal = $row['price'] + 85;
-                }
                 if($row['price'] > 40000){
-                    $priceAwal = $row['price'] + 120;
+                    $priceAwal = $row['price'] + 70;
                 }
-                $pricePersen = $priceAwal + ($priceAwal * 4 / 100);
+                $pricePersen = $priceAwal + ($priceAwal * 4 / 100); //jadi 2 dari 4
                 $priceRound = round($pricePersen, -2);
                 $cek3digit = substr($priceRound, -3);
                 $cek = 500 - $cek3digit;
@@ -3535,7 +3534,7 @@ class MemberController extends Controller {
                     $telkomsel[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
                         'desc' => $row['desc'],
-                        'real_price' => $priceAwal,
+                        'real_price' => ($row['price'] + ($row['price'] * 2 / 100)),
                         'price' => $price,
                         'brand' => $row['brand'],
                         'product_name' => $row['product_name']
@@ -3545,7 +3544,7 @@ class MemberController extends Controller {
                     $indosat[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
                         'desc' => $row['desc'],
-                        'real_price' => $row['price'],
+                        'real_price' => ($row['price'] + ($row['price'] * 2 / 100)),
                         'price' => $price,
                         'brand' => $row['brand'],
                         'product_name' => $row['product_name']
@@ -3555,7 +3554,7 @@ class MemberController extends Controller {
                     $xl[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
                         'desc' => $row['desc'],
-                        'real_price' => $row['price'],
+                        'real_price' => ($row['price'] + ($row['price'] * 2 / 100)),
                         'price' => $price,
                         'brand' => $row['brand'],
                         'product_name' => $row['product_name']
@@ -3565,7 +3564,7 @@ class MemberController extends Controller {
                     $axis[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
                         'desc' => $row['desc'],
-                        'real_price' => $row['price'],
+                        'real_price' => ($row['price'] + ($row['price'] * 2 / 100)),
                         'price' => $price,
                         'brand' => $row['brand'],
                         'product_name' => $row['product_name']
@@ -3575,7 +3574,7 @@ class MemberController extends Controller {
                     $tri[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
                         'desc' => $row['desc'],
-                        'real_price' => $row['price'],
+                        'real_price' => ($row['price'] + ($row['price'] * 2 / 100)),
                         'price' => $price,
                         'brand' => $row['brand'],
                         'product_name' => $row['product_name']
@@ -3585,7 +3584,7 @@ class MemberController extends Controller {
                     $smart[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
                         'desc' => $row['desc'],
-                        'real_price' => $row['price'],
+                        'real_price' => ($row['price'] + ($row['price'] * 2 / 100)),
                         'price' => $price,
                         'brand' => $row['brand'],
                         'product_name' => $row['product_name']
@@ -3689,7 +3688,7 @@ class MemberController extends Controller {
                     $ovo[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
                         'desc' => $row['desc'],
-                        'real_price' => $priceAwal,
+                        'real_price' => ($row['price'] + ($row['price'] * 2 / 100)),
                         'price' => $price,
                         'brand' => $row['brand'],
                         'product_name' => $row['product_name']
@@ -3743,7 +3742,7 @@ class MemberController extends Controller {
         foreach($arrayData['data'] as $row){
             if($row['category'] == 'PLN'){
                 $priceAwal = $row['price'];
-                $price3000 = $priceAwal + 2000;
+                $price3000 = $priceAwal + 1050;
                 $cek3digit = substr($price3000, -3);
                 $cek = 500 - $cek3digit;
                 if($cek == 0){
@@ -3762,7 +3761,7 @@ class MemberController extends Controller {
                     $daftarHargaPLN[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
                         'desc' => $row['desc'],
-                        'real_price' => $priceAwal,
+                        'real_price' => ($row['price'] + 4050),
                         'price' => $price,
                         'brand' => $row['brand'],
                         'product_name' => $row['product_name']
@@ -4395,7 +4394,7 @@ class MemberController extends Controller {
             if($cekDuaKali == null){
                 $memberDeposit = array(
                     'user_id' => $dataUser->id,
-                    'total_deposito' => $request->harga_modal,
+                    'total_deposito' => $request->harga_modal, //tambahin 2%
                     'transaction_code' => $getDataMaster->buyer_code.'-'.$ref_id,
                     'deposito_status' => 1
                 );
@@ -4526,6 +4525,45 @@ class MemberController extends Controller {
         if($getDataMaster->type == 4){
             $array = array(
                 'commands' => 'status-pasca',
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $getDataMaster->ppob_code,
+                'sign' => $sign,
+            );
+        }
+        if($getDataMaster->type == 5){
+            $array = array(
+                'commands' => 'status-pasca',
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $getDataMaster->ppob_code,
+                'sign' => $sign,
+            );
+        }
+        if($getDataMaster->type == 6){
+            $array = array(
+                'commands' => 'status-pasca',
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $getDataMaster->ppob_code,
+                'sign' => $sign,
+            );
+        }
+        if($getDataMaster->type == 7){
+            $array = array(
+                'commands' => 'status-pasca',
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $getDataMaster->ppob_code,
+                'sign' => $sign,
+            );
+        }
+        if($getDataMaster->type == 8){
+            $array = array(
                 'username' => $username,
                 'buyer_sku_code' => $getDataMaster->buyer_code,
                 'customer_no' => $getDataMaster->product_name,
