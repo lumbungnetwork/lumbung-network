@@ -311,6 +311,12 @@
                             <span class="sidebar-normal"> Isi Deposit</span>
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ URL::to('/') }}/adm/list/tarik-deposit">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> Tarik Deposit</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </li>
