@@ -2954,6 +2954,21 @@ class MasterAdminController extends Controller {
                 ->with('messageclass', 'success');
     }
     
+    public function getAllTransactionDeposit(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelTrans = New Transaction;
+        $getAllTransaction = $modelTrans->getHistoryTransactionsDepositByAdmin();
+//        dd($getAllTransaction);
+        return view('admin.digital.history-transaksi-deposit')
+                ->with('headerTitle', 'History Transaksi Deposit')
+                ->with('getData', $getAllTransaction)
+                ->with('dataUser', $dataUser);
+    }
+    
     
     
     

@@ -148,6 +148,7 @@ Route::prefix('/')->group(function () {
         Route::post('/adm/confirm/tarik-deposit', 'Admin\MasterAdminController@postConfirmTransactionTarikDeposit')->middleware('auth');
         Route::get('/adm/transfer/system-deposit', 'Admin\MasterAdminController@getTransferSystemDeposit')->name('adm_listTransferDeposit')->middleware('auth');
         Route::post('/adm/transfer/system-deposit', 'Admin\MasterAdminController@postTransferSystemDeposit')->middleware('auth');
+        Route::get('/adm/history/deposit', 'Admin\MasterAdminController@getAllTransactionDeposit')->name('adm_historyDeposit')->middleware('auth');
         
         
         //Test Api Digiflazz

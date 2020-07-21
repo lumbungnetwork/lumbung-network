@@ -420,4 +420,23 @@ class Transaction extends Model {
         return $sql;
     }
     
+    public function getHistoryTransactionsDepositByAdmin(){
+        $sql = DB::table('deposit_transaction')
+                    ->join('users', 'deposit_transaction.user_id', '=', 'users.id')
+                    ->leftJoin('bank', 'deposit_transaction.user_bank', '=', 'bank.id')
+                    ->selectRaw('users.user_code, users.hp, users.tron as user_tron, '
+                            . 'deposit_transaction.transaction_code, deposit_transaction.price, deposit_transaction.status,'
+                            . 'deposit_transaction.created_at, deposit_transaction.unique_digit, deposit_transaction.user_id, deposit_transaction.id, '
+                            . 'deposit_transaction.is_tron, deposit_transaction.type,  deposit_transaction.user_bank, deposit_transaction.bank_perusahaan_id,'
+                            . 'deposit_transaction.tron_transfer, deposit_transaction.tuntas_at, '
+                            . 'bank.bank_name, bank.account_no, bank.account_name')
+                    ->orderBy('deposit_transaction.id', 'DESC')
+                    ->get();
+        $cek = null;
+        if(count($sql) > 0){
+            $cek = $sql;
+        }
+        return $cek;
+    }
+    
 }
