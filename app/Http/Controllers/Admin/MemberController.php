@@ -3761,7 +3761,7 @@ class MemberController extends Controller {
                     $daftarHargaPLN[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
                         'desc' => $row['desc'],
-                        'real_price' => ($row['price'] + 4050),
+                        'real_price' => $row['price'],
                         'price' => $price,
                         'brand' => $row['brand'],
                         'product_name' => $row['product_name']
