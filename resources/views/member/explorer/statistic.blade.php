@@ -39,15 +39,23 @@
                                     <h6 class="text-warning">Rp {{number_format($total_wd, 0, ',', '.')}}</h6>
                                 </div>
                             </div>
-                            <div class="col-4 mb-3">
+                            <div class="col-6 mb-3">
                                 <div class="rounded-lg shadow-sm p-2">
                                     <p>
-                                        Belanja Member
+                                        Belanja Member Stockist
                                     </p>
                                     <h6 class="text-warning">Rp {{number_format($dataAll->total_sales, 0, ',', '.')}}</h6>
                                 </div>
                             </div>
-                            <div class="col-4 mb-3">
+                            <div class="col-6 mb-3">
+                                <div class="rounded-lg shadow-sm p-2">
+                                    <p>
+                                        Belanja Member Vendor
+                                    </p>
+                                    <h6 class="text-warning">Rp {{number_format(($dataAll->total_vsales + $dataAll->total_ppob), 0, ',', '.')}}</h6>
+                                </div>
+                            </div>
+                            <div class="col-6 mb-3">
                                 <div class="rounded-lg shadow-sm p-2">
                                     <p>
                                         LMB Diklaim
@@ -55,7 +63,7 @@
                                     <h6 class="text-warning">Rp {{number_format($dataAll->lmb_claim, 0, ',', '.')}}</h6>
                                 </div>
                             </div>
-                            <div class="col-4 mb-3">
+                            <div class="col-6 mb-3">
                                 <div class="rounded-lg shadow-sm p-2">
                                     <p>
                                         Devidend LMB
@@ -89,19 +97,23 @@
                                                 <td>{{number_format($dataAll_month->total_aktifasi, 0, ',', '.')}}</td>
                                             </tr>
                                             <tr>
-                                                <td>Bonus Dibayarkan (Rp)</td>
-                                                <td>{{number_format($total_wd_lastmonth, 0, ',', '.')}}</td>
+                                                <td>Bonus Dibayarkan</td>
+                                                <td>Rp. {{number_format($total_wd_lastmonth, 0, ',', '.')}}</td>
                                             </tr>
                                             <tr class="table-active">
                                                 <td>Koin LMB Diklaim</td>
                                                 <td>{{number_format($dataAll_month->lmb_claim, 0, ',', '.')}}</td>
                                             </tr>
                                             <tr>
-                                                <td>Belanja Member (Rp)</td>
-                                                <td>{{number_format($dataAll_month->total_sales, 0, ',', '.')}}</td>
+                                                <td>Belanja Member (Stockist)</td>
+                                                <td>Rp {{number_format($dataAll_month->total_sales, 0, ',', '.')}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Belanja Member (Vendor)</td>
+                                                <td>Rp. {{number_format(($dataAll_month->total_vsales + $dataAll_month->total_ppob), 0, ',', '.')}}</td>
                                             </tr>
                                             <tr class="table-active">
-                                                <td>Dividend LMB (Rp)</td>
+                                                <td>Dividend LMB</td>
                                                 <td>{{number_format($deviden_lmb_lastmonth, 0, ',', '.')}}</td>
                                             </tr>
                                         </tbody>

@@ -2153,6 +2153,8 @@ class MemberController extends Controller {
         $total_aktifasi = $modelMember->getAllMember();
         $totalWD = $modelWD->getTotalDiTransferAll();
         $getSales = $modelSales->getSalesAllHistory();
+        $getVSales = $modelSales->getVSalesAllHistory();
+        $getPPOB = $modelSales->getPPOBAllHistory();
         $getAllShopLMB = $modelBonus->getAllClaimLMB();
         $getAllClaimLMB = $modelBonus->getAllClaimRewardLMB();
         $sum = 0;
@@ -2165,6 +2167,8 @@ class MemberController extends Controller {
             'total_wd' => $totalWD->total_wd,
             'fee_tuntas' => $totalWD->fee_tuntas,
             'total_sales' => $getSales->total_sales,
+            'total_vsales' => $getVSales->total_sales,
+            'total_ppob' => $getPPOB->total_sales,
             'lmb_claim' => $lmb_claim
         );
         
@@ -2176,6 +2180,8 @@ class MemberController extends Controller {
         $total_aktifasi_date = $modelMember->getAllMemberLastMonth($last_month);
         $totalWD_date = $modelWD->getTotalDiTransferAllLastMonth($last_month);
         $getSales_date = $modelSales->getSalesAllHistoryLastMonth($last_month);
+        $getVSales_date = $modelSales->getVSalesAllHistoryLastMonth($last_month);
+        $getPPOB_date = $modelSales->getPPOBAllHistoryLastMonth($last_month);
         $getAllShopLMB_date = $modelBonus->getAllClaimLMBLastMonth($last_month);
         $getAllClaimLMB_date = $modelBonus->getAllClaimRewardLMBLastMonth($last_month);
         $sum_date = 0;
@@ -2188,6 +2194,8 @@ class MemberController extends Controller {
             'total_wd' => $totalWD_date->total_wd,
             'fee_tuntas' => $totalWD_date->fee_tuntas,
             'total_sales' => $getSales_date->total_sales,
+            'total_vsales' => $getVSales_date->total_sales,
+            'total_ppob' => $getPPOB_date->total_sales,
             'lmb_claim' => $lmb_claim_date
         );
         return view('member.explorer.statistic')

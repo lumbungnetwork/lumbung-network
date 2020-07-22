@@ -432,6 +432,23 @@ class Sales extends Model {
         return $return;
     }
     
+    public function getMembePPOBSalesHistory($id, $date){
+        $sql = DB::table('ppob')
+                    ->join('users', 'ppob.vendor_id', '=', 'users.id')
+                    ->selectRaw('ppob.ppob_date, users.user_code, ppob.ppob_price as sale_price, '
+                            . 'ppob.id, ppob.status, ppob.buy_metode')
+                    ->where('ppob.user_id', '=', $id)
+                    ->whereDate('ppob.ppob_date', '>=', $date->startDay)
+                    ->whereDate('ppob.ppob_date', '<=', $date->endDay)
+                    ->whereNull('ppob.deleted_at')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
     public function getCronrSalesHistoryMonth($date){
         $sql = DB::table('master_sales')
                     ->selectRaw('master_sales.user_id as id, sum(master_sales.total_price) as month_sale_price')
@@ -1296,6 +1313,24 @@ class Sales extends Model {
         return $sql;
     }
     
+    public function getVSalesAllHistory(){
+        $sql = DB::table('vmaster_sales')
+                    ->selectRaw('sum(vmaster_sales.total_price) as total_sales')
+                    ->where('vmaster_sales.status', '=', 2)
+                    ->whereNull('vmaster_sales.deleted_at')
+                    ->first();
+        return $sql;
+    }
+    
+    public function getPPOBAllHistory(){
+        $sql = DB::table('ppob')
+                    ->selectRaw('sum(ppob.ppob_price) as total_sales')
+                    ->where('ppob.status', '=', 2)
+                    ->whereNull('ppob.deleted_at')
+                    ->first();
+        return $sql;
+    }
+    
     public function getSalesAllHistoryByID($data){
         $sql = DB::table('master_sales')
                     ->selectRaw('sum(master_sales.total_price) as total_sales')
@@ -1353,6 +1388,28 @@ class Sales extends Model {
                     ->whereDate('master_sales.sale_date', '>=', $date->start_day)
                     ->whereDate('master_sales.sale_date', '<=', $date->end_day)
                     ->whereNull('master_sales.deleted_at')
+                    ->first();
+        return $sql;
+    }
+    
+    public function getVSalesAllHistoryLastMonth($date){
+        $sql = DB::table('vmaster_sales')
+                    ->selectRaw('sum(vmaster_sales.total_price) as total_sales')
+                    ->where('vmaster_sales.status', '=', 2)
+                    ->whereDate('vmaster_sales.sale_date', '>=', $date->start_day)
+                    ->whereDate('vmaster_sales.sale_date', '<=', $date->end_day)
+                    ->whereNull('vmaster_sales.deleted_at')
+                    ->first();
+        return $sql;
+    }
+    
+    public function getPPOBAllHistoryLastMonth($date){
+        $sql = DB::table('ppob')
+                    ->selectRaw('sum(ppob.ppob_price) as total_sales')
+                    ->where('ppob.status', '=', 2)
+                    ->whereDate('ppob.ppob_date', '>=', $date->start_day)
+                    ->whereDate('ppob.ppob_date', '<=', $date->end_day)
+                    ->whereNull('ppob.deleted_at')
                     ->first();
         return $sql;
     }
