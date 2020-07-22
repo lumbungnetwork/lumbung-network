@@ -421,16 +421,49 @@ class Transaction extends Model {
     }
     
     public function getHistoryTransactionsDepositByAdmin(){
-        $sql = DB::table('deposit_transaction')
+        $sql1 = DB::table('deposit_transaction')
                     ->join('users', 'deposit_transaction.user_id', '=', 'users.id')
-                    ->leftJoin('bank', 'deposit_transaction.user_bank', '=', 'bank.id')
-                    ->selectRaw('users.user_code, users.hp, users.tron as user_tron, '
+                    ->join('users as a', 'deposit_transaction.submit_by', '=', 'a.id')
+                    ->leftJoin('bank', 'deposit_transaction.bank_perusahaan_id', '=', 'bank.id')
+                    ->selectRaw('users.user_code, users.hp, '
                             . 'deposit_transaction.transaction_code, deposit_transaction.price, deposit_transaction.status,'
                             . 'deposit_transaction.created_at, deposit_transaction.unique_digit, deposit_transaction.user_id, deposit_transaction.id, '
                             . 'deposit_transaction.is_tron, deposit_transaction.type,  deposit_transaction.user_bank, deposit_transaction.bank_perusahaan_id,'
                             . 'deposit_transaction.tron_transfer, deposit_transaction.tuntas_at, '
-                            . 'bank.bank_name, bank.account_no, bank.account_name')
+                            . 'CONCAT(bank.bank_name, bank.account_no, bank.account_name) as buy_metode,'
+                            . 'a.user_code as submit_name, deposit_transaction.submit_by ')
                     ->orderBy('deposit_transaction.id', 'DESC')
+                    ->where('deposit_transaction.is_tron', '=', 0);
+        $sql2 = DB::table('deposit_transaction')
+                    ->join('users', 'deposit_transaction.user_id', '=', 'users.id')
+                    ->join('users as a', 'deposit_transaction.submit_by', '=', 'a.id')
+                    ->leftJoin('tron', 'deposit_transaction.bank_perusahaan_id', '=', 'tron.id')
+                    ->selectRaw('users.user_code, users.hp, '
+                            . 'deposit_transaction.transaction_code, deposit_transaction.price, deposit_transaction.status,'
+                            . 'deposit_transaction.created_at, deposit_transaction.unique_digit, deposit_transaction.user_id, deposit_transaction.id, '
+                            . 'deposit_transaction.is_tron, deposit_transaction.type,  deposit_transaction.user_bank, deposit_transaction.bank_perusahaan_id,'
+                            . 'deposit_transaction.tron_transfer, deposit_transaction.tuntas_at, '
+                            . 'tron.tron as buy_metode, a.user_code as submit_name, deposit_transaction.submit_by')
+                    ->orderBy('deposit_transaction.id', 'DESC')
+                    ->where('deposit_transaction.is_tron', '=', 1)
+                    ->union($sql1)
+                    ->orderBy('id', 'DESC')
+                    ->get();
+        return $sql2;
+    }
+    
+    public function getHistoryTransactionsDepositByAdminTron(){
+        $sql = DB::table('deposit_transaction')
+                    ->join('users', 'deposit_transaction.user_id', '=', 'users.id')
+                    ->leftJoin('tron', 'deposit_transaction.bank_perusahaan_id', '=', 'tron.id')
+                    ->selectRaw('users.user_code, users.hp, '
+                            . 'deposit_transaction.transaction_code, deposit_transaction.price, deposit_transaction.status,'
+                            . 'deposit_transaction.created_at, deposit_transaction.unique_digit, deposit_transaction.user_id, deposit_transaction.id, '
+                            . 'deposit_transaction.is_tron, deposit_transaction.type,  deposit_transaction.user_bank, deposit_transaction.bank_perusahaan_id,'
+                            . 'deposit_transaction.tron_transfer, deposit_transaction.tuntas_at, '
+                            . 'tron.tron')
+                    ->orderBy('deposit_transaction.id', 'DESC')
+                    ->where('deposit_transaction.is_tron', '=', 1)
                     ->get();
         $cek = null;
         if(count($sql) > 0){

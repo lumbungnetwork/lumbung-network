@@ -45,29 +45,29 @@
                                         <th>Type</th>
                                         <th>Status</th>
                                         <th>EIDR/Bank</th>
-                                        <th>TRON/No Rek</th>
-                                        <th>Nama Rek</th>
+                                        <th>TRON/Detail Bank</th>
                                         <th>Tgl Buat</th>
                                         <th>JML Deposit</th>
+                                        <th>By Admin</th>
                                     </tr>
                                 </thead>
                                 
                                 <tbody>
-                                    @if($getData != null)
+                                    @if($getAllTransaction != null)
                                         <?php 
                                         $no = 0; 
                                         ?>
-                                        @foreach($getData as $row)
+                                        @foreach($getAllTransaction as $row)
                                         <?php 
                                             $no++;
                                             $price = $row->price;
-                                            $is_tron = 'eIDR';
-                                            $tron = $row->user_tron;
-                                            $nama_rek = '-';
-                                            if($row->is_tron == 0){
-                                                $is_tron = $row->bank_name;
-                                                $tron = $row->account_no;
-                                                $nama_rek = $row->account_name;
+                                            $buy_metode = '-';
+                                            if($row->buy_metode != null){
+                                                $buy_metode = $row->buy_metode;
+                                            }
+                                            $typePay = 'Bank';
+                                            if($row->is_tron == 1){
+                                                $typePay = 'EIDR';
                                             }
                                             $type = 'Isi Deposit';
                                             if($row->type == 2){
@@ -87,6 +87,10 @@
                                                 $status = 'batal';
                                                 $label = 'danger';
                                             }
+                                            $name = $row->submit_name;
+                                            if($row->submit_by == 1){
+                                                $name = 'Master Admin';
+                                            }
                                         ?>
                                             <tr>
                                                 <td>{{$no}}</td>
@@ -95,15 +99,16 @@
                                                 <td>
                                                     <span class="badge badge-pill badge-{{$label}}">{{$status}}</span>
                                                 </td>
-                                                <td>{{$is_tron}}</td>
-                                                <td>{{$tron}}</td>
-                                                <td>{{$nama_rek}}</td>
+                                                <td>{{$typePay}}</td>
+                                                <td>{{$buy_metode}}</td>
                                                 <td>{{date('d M Y', strtotime($row->created_at))}}</td>
                                                 <td>{{number_format($price, 0, ',', ',')}}</td>
-                                                
+                                                <td>{{$name}}</td>
                                             </tr>
                                         @endforeach
                                     @endif
+                                    
+                                    
                                 </tbody>
                             </table>
                         </div>
@@ -137,10 +142,6 @@
                 }],
                 dom: 'Bfrtip',
                 "deferRender": true,
-                columnDefs: [{ 
-                    orderable: false, 
-                    targets: 0,
-                }],
                 buttons: [
                     {
                         extend: 'excelHtml5',

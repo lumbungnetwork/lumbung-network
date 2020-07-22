@@ -2965,7 +2965,7 @@ class MasterAdminController extends Controller {
 //        dd($getAllTransaction);
         return view('admin.digital.history-transaksi-deposit')
                 ->with('headerTitle', 'History Transaksi Deposit')
-                ->with('getData', $getAllTransaction)
+                ->with('getAllTransaction', $getAllTransaction)
                 ->with('dataUser', $dataUser);
     }
     
