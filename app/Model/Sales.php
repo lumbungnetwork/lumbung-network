@@ -449,6 +449,38 @@ class Sales extends Model {
         return $return;
     }
     
+    public function getMembePPOBSalesHistoryPulsaData($id, $date){
+        $sql = DB::table('ppob')
+                    ->join('users', 'ppob.vendor_id', '=', 'users.id')
+                    ->selectRaw('ppob.ppob_date, users.user_code, ppob.ppob_price as sale_price, '
+                            . 'ppob.id, ppob.status, ppob.buy_metode')
+                    ->where('ppob.user_id', '=', $id)
+                    ->where('ppob.type', '<=', 2)
+                    ->whereDate('ppob.ppob_date', '>=', $date->startDay)
+                    ->whereDate('ppob.ppob_date', '<=', $date->endDay)
+                    ->whereNull('ppob.deleted_at')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getMembePPOBSalesHistorySelainPulsaData($id, $date){
+        $sql = DB::table('ppob')
+                    ->join('users', 'ppob.vendor_id', '=', 'users.id')
+                    ->selectRaw('count(ppob.id) as total_ppob')
+                    ->where('ppob.user_id', '=', $id)
+                    ->where('ppob.type', '>', 2)
+                    ->where('ppob.status', '=', 2)
+                    ->whereDate('ppob.ppob_date', '>=', $date->startDay)
+                    ->whereDate('ppob.ppob_date', '<=', $date->endDay)
+                    ->whereNull('ppob.deleted_at')
+                    ->first();
+        return $sql;
+    }
+    
     public function getCronrSalesHistoryMonth($date){
         $sql = DB::table('master_sales')
                     ->selectRaw('master_sales.user_id as id, sum(master_sales.total_price) as month_sale_price')

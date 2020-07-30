@@ -76,7 +76,7 @@
                                 <input type="hidden" class="form-control allownumericwithoutdecimal invalidpaste" id="input_jml_pin" name="total_pin" autocomplete="off" value ="1">
                                 <button type="submit" class="btn btn-success"  id="submitBtn" data-toggle="modal" data-target="#confirmSubmit" onClick="inputSubmit()">Resubscribe</button>
                             </div>
-                            <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                            <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true" data-backdrop="false">
                                 <div class="modal-dialog" role="document" id="confirmDetail">
                                 </div>
                             </div>

@@ -46,7 +46,7 @@
                                         </div>
                                     </div>
                                     @endforeach
-                                    <div class="modal fade" id="upgradePackage" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                                    <div class="modal fade" id="upgradePackage" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true" data-backdrop="false">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                                 

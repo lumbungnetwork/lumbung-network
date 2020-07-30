@@ -162,7 +162,7 @@ class BonusmemberController extends Controller {
             'admin_fee' => $request->admin_fee
         );
         $modelWD->getInsertWD($dataInsert);
-        return redirect()->route('m_myBonusSaldo')
+        return redirect()->route('mainWallet')
                     ->with('message', 'request Withdraw berhasil')
                     ->with('messageclass', 'success');
     }
@@ -252,7 +252,7 @@ class BonusmemberController extends Controller {
             'admin_fee' => $request->admin_fee
         );
         $modelWD->getInsertWD($dataInsert);
-        return redirect()->route('m_myBonusSaldo')
+        return redirect()->route('mainWallet')
                     ->with('message', 'request Withdraw berhasil')
                     ->with('messageclass', 'success');
     }
@@ -308,7 +308,7 @@ class BonusmemberController extends Controller {
             'is_tron' => 1
         );
         $modelWD->getInsertWD($dataInsert);
-        return redirect()->route('m_requestWDeIDR')
+        return redirect()->route('mainWallet')
                     ->with('message', 'request Konversi eIDR berhasil')
                     ->with('messageclass', 'success');
     }

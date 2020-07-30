@@ -136,7 +136,8 @@ class DashboardController extends Controller {
         $getMonth = $modelSales->getThisMonth();
         $getData = $modelSales->getMemberMasterSalesHistory($dataUser->id, $getMonth);
         $getDataVSales = $modelSales->getMemberVMasterSalesHistory($dataUser->id, $getMonth);
-        $getDataPPOB = $modelSales->getMembePPOBSalesHistory($dataUser->id, $getMonth);
+        $getDataPPOBPulsaData = $modelSales->getMembePPOBSalesHistoryPulsaData($dataUser->id, $getMonth);
+        $getDataPPOBSelainPulsaData = $modelSales->getMembePPOBSalesHistorySelainPulsaData($dataUser->id, $getMonth);
         $sum = 0;
         if($getData != null){
             foreach($getData as $row){
@@ -154,14 +155,16 @@ class DashboardController extends Controller {
             }
         }
         $ppobSum = 0;
-        if($getDataPPOB != null){
-            foreach($getDataPPOB as $rowppob){
+        if($getDataPPOBPulsaData != null){
+            foreach($getDataPPOBPulsaData as $rowppob){
                 if($rowppob->status == 2){
                     $ppobSum += $rowppob->sale_price;
                 }
             }
         }
-        $belanjaVendor = $vsum + $ppobSum;
+        $ppobSumSelainPulsaData = $getDataPPOBSelainPulsaData->total_ppob * 2500;
+        $belanjaVendor = $vsum + $ppobSum + $ppobSumSelainPulsaData;
+//        dd($vsum);
         return view('member.home.dashboard')
                     ->with('headerTitle', 'Dashboard')
                     ->with('dataOrder', $getCheckNewOrder)

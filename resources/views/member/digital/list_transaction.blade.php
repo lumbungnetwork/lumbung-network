@@ -152,6 +152,27 @@
                                                     if($row->type == 3){
                                                         $type = 'PLN';
                                                     }
+                                                    if($row->type == 8){
+                                                        $type = 'OVO';
+                                                    }
+                                                    
+//                                                    if($row->type == 4){
+//                                                        $type = 'PLN Pascabayar';
+//                                                    }
+//                                                    if($row->type == 5){
+//                                                        $type = 'TELKOM PSTN';
+//                                                    }
+//                                                    if($row->type == 6){
+//                                                        $type = 'HP Pascabayar';
+//                                                    }
+//                                                    if($row->type == 7){
+//                                                        $type = 'BPJS';
+//                                                    }
+                                                    
+                                                    if($row->type > 3 && $row->type < 8){
+                                                        $type = $row->message;
+                                                    }
+                                                    
                                                 ?>
                                                 <tr>
                                                     <td>{{$no}}</td>

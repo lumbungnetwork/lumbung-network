@@ -60,7 +60,7 @@
                     </div>
                 </div>
             </div>
-            <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true" data-backdrop="false">
                 <div class="modal-dialog" role="document" id="confirmDetail">
                 </div>
             </div>

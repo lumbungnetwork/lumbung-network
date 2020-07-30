@@ -4674,6 +4674,7 @@ class MemberController extends Controller {
         if($dataUser->is_active == 0){
             return redirect()->route('mainDashboard');
         }
+        //1 BPJS. 2 PLN, 3 Hp Pasca, 4 TELKOM PSTN
         $buyer_sku_code = 'BPJS';
         $typePPOB = 4;
         if($request->type == 2){

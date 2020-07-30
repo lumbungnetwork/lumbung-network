@@ -292,7 +292,7 @@ class Pin extends Model {
         $sql = DB::table('ppob')
                     ->join('users', 'ppob.vendor_id', '=', 'users.id')
                     ->selectRaw('ppob.ppob_date, users.user_code, ppob.ppob_price as sale_price, ppob.type, '
-                            . 'ppob.id, ppob.status, ppob.buy_metode')
+                            . 'ppob.id, ppob.status, ppob.buy_metode, ppob.message')
                     ->where('ppob.user_id', '=', $id)
                     ->whereDate('ppob.ppob_date', '>=', $date->startDay)
                     ->whereDate('ppob.ppob_date', '<=', $date->endDay)
