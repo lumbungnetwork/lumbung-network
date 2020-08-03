@@ -32,22 +32,13 @@
                                 </div>
                             @endif
                             <div class="row">
-                                <div class="col-xl-6">
+                                <div class="col-xl-12 col-xs-12">
                                     <fieldset class="form-group">
                                         <label for="user_name">Masukan No. Token Listrik</label>
                                         <input type="text" class="form-control" name="no_hp" id="no_hp" autocomplete="off" placeholder="No. {{$daftarHarga[0]['brand']}}">
                                     </fieldset>
                                 </div>
-                                <div class="col-xl-6">
-                                    <fieldset class="form-group">
-                                        <label for="user_name">Masukkan Username Vendor Tujuan Belanja Anda:</label>
-                                        <input type="text" class="form-control" id="get_id" name="user_name" autocomplete="off">
-                                        <input type="hidden" name="get_id" id="id_get_id">
-                                        <ul class="typeahead dropdown-menu" style="max-height: 120px; overflow: auto;border: 1px solid #ddd;width: 96%;margin-left: 11px;" id="get_id-box"></ul>
-                                    </fieldset>
-                                </div>
                             </div>    
-                            
                         </div>
 
                         @if($daftarHarga != null)
@@ -81,6 +72,14 @@
 
                         <div class="rounded-lg bg-white p-3 mb-3">
                             <div class="row">
+                                <div class="col-xl-12 col-xs-12">
+                                    <fieldset class="form-group">
+                                        <label for="user_name">Masukkan Username Vendor Tujuan Belanja Anda:</label>
+                                        <input type="text" class="form-control" id="get_id" name="user_name" autocomplete="off">
+                                        <input type="hidden" name="get_id" id="id_get_id">
+                                        <ul class="typeahead dropdown-menu" style="max-height: 120px; overflow: auto;border: 1px solid #ddd;width: 96%;margin-left: 11px;" id="get_id-box"></ul>
+                                    </fieldset>
+                                </div>
                                 <div class="col-xl-12 col-xs-12">
 
                                     <div class="rounded-lg shadow-sm p-2">

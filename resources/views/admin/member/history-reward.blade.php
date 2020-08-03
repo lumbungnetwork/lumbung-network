@@ -88,7 +88,7 @@
                                     @endif
                                 </tbody>
                             </table>
-                             <div class="modal fade" id="popUp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                             <div class="modal fade" id="popUp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="false">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content"></div>
                                 </div>
