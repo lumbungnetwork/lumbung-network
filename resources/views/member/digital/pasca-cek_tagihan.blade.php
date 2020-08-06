@@ -171,7 +171,7 @@
         }
         if($type == 6){
             $nama = 'HP Pascabayar';
-            $selling_price = $getData['selling_price'] + 1500;
+            $selling_price = $getData['selling_price'] + 1000;
         }
         if($type == 7){
             $nama = 'Telkom PTSN';

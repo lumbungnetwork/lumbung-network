@@ -3389,7 +3389,7 @@ class MemberController extends Controller {
                     $telkomsel[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
                         'desc' => $row['desc'],
-                        'real_price' => ($row['price'] + ($row['price'] * 2 / 100)),
+                        'real_price' => ($row['price'] + ($price * 2 / 100)),
                         'price' => $price,
                         'brand' => $row['brand'],
                         'product_name' => $row['product_name']
@@ -3399,7 +3399,7 @@ class MemberController extends Controller {
                     $indosat[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
                         'desc' => $row['desc'],
-                        'real_price' => ($row['price'] + ($row['price'] * 2 / 100)),
+                        'real_price' => ($row['price'] + ($price * 2 / 100)),
                         'price' => $price,
                         'brand' => $row['brand'],
                         'product_name' => $row['product_name']
@@ -3409,7 +3409,7 @@ class MemberController extends Controller {
                     $xl[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
                         'desc' => $row['desc'],
-                        'real_price' => ($row['price'] + ($row['price'] * 2 / 100)),
+                        'real_price' => ($row['price'] + ($price * 2 / 100)),
                         'price' => $price,
                         'brand' => $row['brand'],
                         'product_name' => $row['product_name']
@@ -3419,7 +3419,7 @@ class MemberController extends Controller {
                     $axis[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
                         'desc' => $row['desc'],
-                        'real_price' => ($row['price'] + ($row['price'] * 2 / 100)),
+                        'real_price' => ($row['price'] + ($price * 2 / 100)),
                         'price' => $price,
                         'brand' => $row['brand'],
                         'product_name' => $row['product_name']
@@ -3429,7 +3429,7 @@ class MemberController extends Controller {
                     $tri[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
                         'desc' => $row['desc'],
-                        'real_price' => ($row['price'] + ($row['price'] * 2 / 100)),
+                        'real_price' => ($row['price'] + ($price * 2 / 100)),
                         'price' => $price,
                         'brand' => $row['brand'],
                         'product_name' => $row['product_name']
@@ -3439,7 +3439,7 @@ class MemberController extends Controller {
                     $smart[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
                         'desc' => $row['desc'],
-                        'real_price' => ($row['price'] + ($row['price'] * 2 / 100)),
+                        'real_price' => ($row['price'] + ($price * 2 / 100)),
                         'price' => $price,
                         'brand' => $row['brand'],
                         'product_name' => $row['product_name']
@@ -3542,7 +3542,7 @@ class MemberController extends Controller {
                     $telkomsel[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
                         'desc' => $row['desc'],
-                        'real_price' => ($row['price'] + ($row['price'] * 2 / 100)),
+                        'real_price' => ($row['price'] + ($price * 2 / 100)),
                         'price' => $price,
                         'brand' => $row['brand'],
                         'product_name' => $row['product_name']
@@ -3552,7 +3552,7 @@ class MemberController extends Controller {
                     $indosat[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
                         'desc' => $row['desc'],
-                        'real_price' => ($row['price'] + ($row['price'] * 2 / 100)),
+                        'real_price' => ($row['price'] + ($price * 2 / 100)),
                         'price' => $price,
                         'brand' => $row['brand'],
                         'product_name' => $row['product_name']
@@ -3562,7 +3562,7 @@ class MemberController extends Controller {
                     $xl[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
                         'desc' => $row['desc'],
-                        'real_price' => ($row['price'] + ($row['price'] * 2 / 100)),
+                        'real_price' => ($row['price'] + ($price * 2 / 100)),
                         'price' => $price,
                         'brand' => $row['brand'],
                         'product_name' => $row['product_name']
@@ -3572,7 +3572,7 @@ class MemberController extends Controller {
                     $axis[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
                         'desc' => $row['desc'],
-                        'real_price' => ($row['price'] + ($row['price'] * 2 / 100)),
+                        'real_price' => ($row['price'] + ($price * 2 / 100)),
                         'price' => $price,
                         'brand' => $row['brand'],
                         'product_name' => $row['product_name']
@@ -3582,7 +3582,7 @@ class MemberController extends Controller {
                     $tri[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
                         'desc' => $row['desc'],
-                        'real_price' => ($row['price'] + ($row['price'] * 2 / 100)),
+                        'real_price' => ($row['price'] + ($price * 2 / 100)),
                         'price' => $price,
                         'brand' => $row['brand'],
                         'product_name' => $row['product_name']
@@ -3592,7 +3592,7 @@ class MemberController extends Controller {
                     $smart[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
                         'desc' => $row['desc'],
-                        'real_price' => ($row['price'] + ($row['price'] * 2 / 100)),
+                        'real_price' => ($row['price'] + ($price * 2 / 100)),
                         'price' => $price,
                         'brand' => $row['brand'],
                         'product_name' => $row['product_name']
@@ -3696,7 +3696,7 @@ class MemberController extends Controller {
                     $ovo[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
                         'desc' => $row['desc'],
-                        'real_price' => ($row['price'] + ($row['price'] * 2 / 100)),
+                        'real_price' => ($row['price'] + ($price * 2 / 100)),
                         'price' => $price,
                         'brand' => $row['brand'],
                         'product_name' => $row['product_name']
@@ -3765,11 +3765,12 @@ class MemberController extends Controller {
                 if($cek < 0){
                     $price = $price3000 + (500 + $cek);
                 }
+                $real_price = $price - 1445;
                 if($row['brand'] == 'PLN'){
                     $daftarHargaPLN[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
                         'desc' => $row['desc'],
-                        'real_price' => $row['price'],
+                        'real_price' => $real_price, //$row['price'],
                         'price' => $price,
                         'brand' => $row['brand'],
                         'product_name' => $row['product_name']
@@ -3987,7 +3988,7 @@ class MemberController extends Controller {
                 'product_name' => $request->no_hp,
                 'ppob_price' => $request->price,
                 'ppob_date' => date('Y-m-d'),
-                'harga_modal' => $request->harga_modal,
+                'harga_modal' => ($request->harga_modal - 1500),
                 'message' => $request->message
             );
             $newPPOB = $modelPin->getInsertPPOB($dataInsert);
@@ -4008,7 +4009,7 @@ class MemberController extends Controller {
                 'product_name' => $request->no_hp,
                 'ppob_price' => $request->price,
                 'ppob_date' => date('Y-m-d'),
-                'harga_modal' => $request->harga_modal,
+                'harga_modal' => ($request->harga_modal - 700),
                 'message' => $request->message
             );
             $newPPOB = $modelPin->getInsertPPOB($dataInsert);
