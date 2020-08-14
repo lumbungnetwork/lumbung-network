@@ -150,6 +150,11 @@ Route::prefix('/')->group(function () {
         Route::post('/adm/transfer/system-deposit', 'Admin\MasterAdminController@postTransferSystemDeposit')->middleware('auth');
         Route::get('/adm/history/deposit', 'Admin\MasterAdminController@getAllTransactionDeposit')->name('adm_historyDeposit')->middleware('auth');
         
+        Route::get('/adm/list/ppob-transaction/eidr', 'Admin\MasterAdminController@getListVendorPPOBTransactionsEiDR')->name('adm_listVendotPPOBTransactionsEiDR')->middleware('auth');
+        Route::get('/adm/ppob-transaction/eidr/{id}', 'Admin\MasterAdminController@geDetailVendorPPOBTransactionsEiDR')->middleware('auth');
+        Route::post('/adm/approve/ppob-transaction/eidr', 'Admin\MasterAdminController@postApprovePPOBTransactionsEiDR')->middleware('auth');
+        Route::post('/adm/reject/ppob-transaction/eidr', 'Admin\MasterAdminController@postRejectPPOBTransactionsEiDR')->middleware('auth');
+        Route::get('/adm/cek-status/ppob-transaction/{id}', 'Admin\MasterAdminController@getPPOBTransactionsAPI')->middleware('auth');
         
         //Test Api Digiflazz
         Route::get('/adm/test-digiflazz/saldo', 'Admin\MasterAdminController@getMemberTestingCheckSaldo')->middleware('auth');
@@ -216,6 +221,7 @@ Route::prefix('/')->group(function () {
         Route::get('/ajax/adm/cek/isi-deposit/{id}/{user_id}/{is_tron}', 'Admin\AjaxController@getCekIsiDepositTransactionById')->middleware('auth');
         Route::get('/ajax/adm/reject/isi-deposit/{id}/{user_id}/{is_tron}', 'Admin\AjaxController@getRejectIsiDepositTransactionById')->middleware('auth');
         Route::get('/ajax/adm/cek/tarik-deposit/{id}/{user_id}/{is_tron}', 'Admin\AjaxController@getCekTarikDepositTransactionById')->middleware('auth');
+        Route::get('/ajax/adm/cek/ppob-transaction/{id}/{type}', 'Admin\AjaxController@getCekPPOBTransactionById')->middleware('auth');
         
 //        Route::get('/adm/daerah', 'Admin\MasterAdminController@getAllDaerah')->middleware('auth');
         ////////////////////////////////////////////////////////////////////////

@@ -123,9 +123,11 @@
                                                         <a class="label label-primary" href="{{ URL::to('/') }}/m/detail/vppob/{{$row->id}}">detail</a>
                                                     </td>
                                                     <td>
-                                                        @if($row->status == 2)
-                                                            @if($row->vendor_approve == 0)
-                                                            <a class="label label-warning" href="{{ URL::to('/') }}/m/cek-status/transaction/{{$row->id}}" title="cek disini untuk memeriksa status transaksi">cek</a>
+                                                        @if($row->buy_metode == 1)
+                                                            @if($row->status == 2)
+                                                                @if($row->vendor_approve == 0)
+                                                                <a class="label label-warning" href="{{ URL::to('/') }}/m/cek-status/transaction/{{$row->id}}" title="cek disini untuk memeriksa status transaksi">cek</a>
+                                                                @endif
                                                             @endif
                                                         @endif
                                                     </td>

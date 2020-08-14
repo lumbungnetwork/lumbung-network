@@ -15,6 +15,7 @@ use App\Model\Bonus;
 use App\Model\Member;
 use App\Model\Bonussetting;
 use App\Model\Sales;
+use App\Model\Pin;
 
 class AjaxController extends Controller {
 
@@ -583,6 +584,15 @@ class AjaxController extends Controller {
         $getData = $modelSettingTrans->getDetailRejectDepositTransactionsAdmin($id, $user_id, $is_tron);
         return view('admin.ajax.reject-transaction-isideposit')
                 ->with('headerTitle', 'Reject Transaksi')
+                ->with('getData', $getData);
+    }
+    
+    public function getCekPPOBTransactionById($id, $type){
+        $modelPin = new Pin;
+        $getData = $modelPin->getAdminDetailTransactionPPOBEiDR($id);
+        return view('admin.ajax.cek-transaksi-ppob')
+                ->with('headerTitle', 'Detail Transaksi')
+                ->with('type', $type)
                 ->with('getData', $getData);
     }
     

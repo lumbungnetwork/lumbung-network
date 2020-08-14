@@ -323,6 +323,12 @@
                             <span class="sidebar-normal"> History Deposit</span>
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ URL::to('/') }}/adm/list/ppob-transaction/eidr">
+                            <span class="sidebar-mini-icon">+</span>
+                            <span class="sidebar-normal"> PPOB eIDR</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </li>

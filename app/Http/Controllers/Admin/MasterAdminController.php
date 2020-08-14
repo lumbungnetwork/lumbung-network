@@ -2969,6 +2969,398 @@ class MasterAdminController extends Controller {
                 ->with('dataUser', $dataUser);
     }
     
+    public function getListVendorPPOBTransactionsEiDR(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelPin = new Pin;
+        $getData = $modelPin->getAdminTransactionPPOBEiDR();
+//        dd($getData);
+        return view('admin.digital.transaksi-eidr')
+                ->with('headerTitle', 'Transaksi eIDR')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function geDetailVendorPPOBTransactionsEiDR($id){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelPin = new Pin;
+        $getData = $modelPin->getAdminDetailTransactionPPOBEiDR($id);
+//        dd($getData);
+        return view('admin.digital.detail-transaksi-eidr')
+                ->with('headerTitle', 'Detail Transaksi eIDR')
+                ->with('getData', $getData)
+                ->with('dataUser', $dataUser);
+    }
+    
+    public function postApprovePPOBTransactionsEiDR(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelPin = new Pin;
+        $modelMember = New Member;
+        //cek deposit cukup ga
+        $modelTrans = New Transaction;
+        $getDataMaster = $modelPin->getAdminDetailTransactionPPOBEiDR($request->ppob_id);
+        $dataVendor =  $modelMember->getUsers('id', $getDataMaster->vendor_id);
+        $getTransTarik = $modelTrans->getMyTotalTarikDeposit($dataVendor);
+        $getTotalDeposit = $modelPin->getTotalDepositMember($dataVendor);
+        $sum_deposit_masuk = 0;
+        $sum_deposit_keluar1 = 0;
+        $sum_deposit_keluar = 0;
+        if($getTotalDeposit->sum_deposit_masuk != null){
+            $sum_deposit_masuk = $getTotalDeposit->sum_deposit_masuk;
+        }
+        if($getTotalDeposit->sum_deposit_keluar != null){
+            $sum_deposit_keluar1 = $getTotalDeposit->sum_deposit_keluar;
+        }
+        if($getTransTarik->deposit_keluar != null){
+            $sum_deposit_keluar = $getTransTarik->deposit_keluar;
+        }
+        $totalDeposit = $sum_deposit_masuk - $sum_deposit_keluar - $sum_deposit_keluar1 - $getDataMaster->harga_modal;
+        if($totalDeposit < 0){
+            return redirect()->route('adm_listVendotPPOBTransactionsEiDR')
+                    ->with('message', 'tidak dapat dilanjutkan, deposit kurang')
+                    ->with('messageclass', 'danger');
+        }
+        $getDataAPI = $modelMember->getDataAPIMobilePulsa();
+        $username   = $getDataAPI->username;
+        $apiKey   = $getDataAPI->api_key;
+        $ref_id = $getDataMaster->ppob_code;
+        $sign = md5($username.$apiKey.$ref_id);
+        
+        if($getDataMaster->type == 1){
+            $array = array(
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $ref_id,
+                'sign' => $sign,
+            );
+        }
+        if($getDataMaster->type == 2){
+            $array = array(
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $ref_id,
+                'sign' => $sign,
+            );
+        }
+        if($getDataMaster->type == 3){
+            $array = array(
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $ref_id,
+                'sign' => $sign,
+            );
+        }
+        if($getDataMaster->type == 4){
+            $array = array(
+                'commands' => 'pay-pasca',
+                'username' => $username,
+                'buyer_sku_code' => 'BPJS',
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $ref_id,
+                'sign' => $sign,
+            );
+        }
+        if($getDataMaster->type == 5){
+            $array = array(
+                'commands' => 'pay-pasca',
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $ref_id,
+                'sign' => $sign,
+            );
+        }
+        if($getDataMaster->type == 6){
+            $array = array(
+                'commands' => 'pay-pasca',
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $ref_id,
+                'sign' => $sign,
+            );
+        }
+        if($getDataMaster->type == 7){
+            $array = array(
+                'commands' => 'pay-pasca',
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $ref_id,
+                'sign' => $sign,
+            );
+        }
+        if($getDataMaster->type == 8){
+            $array = array(
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $ref_id,
+                'sign' => $sign,
+            );
+        }
+
+        $url = $getDataAPI->master_url.'/v1/transaction';
+        $json = json_encode($array);
+        $cek = $modelMember->getAPIurlCheck($url, $json);
+        $arrayData = json_decode($cek, true);
+//        $modelSettingTrans = New Transaction;
+//        $code =$modelSettingTrans->getCodeDepositTransaction();
+        
+        if($arrayData['data']['status'] == 'Sukses'){
+            $dataUpdate = array(
+                'status' => 2,
+                'tuntas_at' => date('Y-m-d H:i:s'),
+                'return_buy' => $cek,
+                'vendor_approve' => 2
+            );
+            $modelPin->getUpdatePPOB('id', $request->ppob_id, $dataUpdate);
+            $cekDuaKali = $modelPin->getJagaGaBolehDuaKali($getDataMaster->buyer_code.'-'.$ref_id);
+            if($cekDuaKali == null){
+                $memberDeposit = array(
+                    'user_id' => $dataVendor->id,
+                    'total_deposito' => $getDataMaster->harga_modal, //tambahin 2%
+                    'transaction_code' => $getDataMaster->buyer_code.'-'.$ref_id,
+                    'deposito_status' => 1
+                );
+                $modelPin->getInsertMemberDeposit($memberDeposit);
+            }
+            return redirect()->route('adm_listVendotPPOBTransactionsEiDR')
+                        ->with('message', 'transaksi berhasil')
+                        ->with('messageclass', 'success');
+        }
+        
+        if($arrayData['data']['status'] == 'Pending'){
+            $dataUpdate = array(
+                'vendor_cek' => $cek
+            );
+            $modelPin->getUpdatePPOB('id', $request->ppob_id, $dataUpdate);
+            return redirect()->route('adm_listVendotPPOBTransactionsEiDR')
+                        ->with('message', 'transaksi sedang pending, tunggu beberapa saat. Kemudian cek status di halaman transaksi digital')
+                        ->with('messageclass', 'warning');
+        }
+        
+        if($arrayData['data']['status'] == 'Gagal'){
+            $dataUpdate = array(
+                'status' => 3,
+                'deleted_at' => date('Y-m-d H:i:s'),
+                'return_buy' => $cek,
+                'vendor_approve' => 3,
+                'vendor_cek' => $cek
+            );
+            $modelPin->getUpdatePPOB('id', $request->ppob_id, $dataUpdate);
+            return redirect()->route('adm_listVendotPPOBTransactionsEiDR')
+                        ->with('message', 'transaksi gagal')
+                        ->with('messageclass', 'danger');
+        }
+        
+        return redirect()->route('adm_listVendotPPOBTransactionsEiDR')
+                        ->with('message', 'tidak ada data')
+                        ->with('messageclass', 'danger');
+        
+    }
+    
+    public function postRejectPPOBTransactionsEiDR(Request $request){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelPin = new Pin;
+        $dataUpdate = array(
+            'status' => 3,
+            'reason' => $request->reason,
+            'deleted_at' => date('Y-m-d H:i:s')
+        );
+        $modelPin->getUpdatePPOB('id', $request->ppob_id, $dataUpdate);
+        return redirect()->route('adm_listVendotPPOBTransactionsEiDR')
+                    ->with('message', 'Transaksi  dibatalkan')
+                    ->with('messageclass', 'success');
+    }
+    
+    public function getPPOBTransactionsAPI($id){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelPin = new Pin;
+        $getData = $modelPin->getAdminDetailTransactionPPOBEiDR($id);
+        $modelTrans = New Transaction;
+        $modelMember = New Member;
+        $dataVendor =  $modelMember->getUsers('id', $getData->vendor_id);
+        $getDataMaster = $modelPin->getVendorPPOBDetail($id, $dataVendor);
+        if($getDataMaster == null){
+            return redirect()->route('adm_listVendotPPOBTransactionsEiDR')
+                    ->with('message', 'Tidak ada data')
+                    ->with('messageclass', 'danger');
+        }
+        if($getDataMaster->status != 2){
+            return redirect()->route('adm_listVendotPPOBTransactionsEiDR')
+                    ->with('message', 'transaksi vendor belum tuntas')
+                    ->with('messageclass', 'danger');
+        }
+        if($getDataMaster->vendor_approve != 0){
+            return redirect()->route('adm_listVendotPPOBTransactionsEiDR')
+                    ->with('message', 'Tidak ada data')
+                    ->with('messageclass', 'danger');
+        }
+        $getDataAPI = $modelMember->getDataAPIMobilePulsa();
+        $username   = $getDataAPI->username;
+        $apiKey   = $getDataAPI->api_key;
+        $sign = md5($username.$apiKey.$getDataMaster->ppob_code);
+        
+        if($getDataMaster->type == 1){
+            $array = array(
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $getDataMaster->ppob_code,
+                'sign' => $sign,
+            );
+        }
+        if($getDataMaster->type == 2){
+            $array = array(
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $getDataMaster->ppob_code,
+                'sign' => $sign,
+            );
+        }
+        if($getDataMaster->type == 3){
+            $array = array(
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $getDataMaster->ppob_code,
+                'sign' => $sign,
+            );
+        }
+        if($getDataMaster->type == 4){
+            $array = array(
+                'commands' => 'status-pasca',
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $getDataMaster->ppob_code,
+                'sign' => $sign,
+            );
+        }
+        if($getDataMaster->type == 5){
+            $array = array(
+                'commands' => 'status-pasca',
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $getDataMaster->ppob_code,
+                'sign' => $sign,
+            );
+        }
+        if($getDataMaster->type == 6){
+            $array = array(
+                'commands' => 'status-pasca',
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $getDataMaster->ppob_code,
+                'sign' => $sign,
+            );
+        }
+        if($getDataMaster->type == 7){
+            $array = array(
+                'commands' => 'status-pasca',
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $getDataMaster->ppob_code,
+                'sign' => $sign,
+            );
+        }
+        if($getDataMaster->type == 8){
+            $array = array(
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $getDataMaster->ppob_code,
+                'sign' => $sign,
+            );
+        }
+        
+        $url = $getDataAPI->master_url.'/v1/transaction';
+        $json = json_encode($array);
+        $cek = $modelMember->getAPIurlCheck($url, $json);
+        $arrayData = json_decode($cek, true);
+
+        if($arrayData != null){
+            if($arrayData['data']['status'] == 'Sukses'){
+                $dataUpdate = array(
+                    'status' => 2,
+                    'tuntas_at' => date('Y-m-d H:i:s'),
+                    'return_buy' => $cek,
+                    'vendor_approve' => 2
+                );
+                $modelPin->getUpdatePPOB('id', $getDataMaster->id, $dataUpdate);
+                $cekDuaKali = $modelPin->getJagaGaBolehDuaKali($getDataMaster->buyer_code.'-'.$getDataMaster->ppob_code);
+                if($cekDuaKali == null){
+                    $memberDeposit = array(
+                        'user_id' => $dataVendor->id,
+                        'total_deposito' => $getDataMaster->harga_modal,
+                        'transaction_code' => $getDataMaster->buyer_code.'-'.$getDataMaster->ppob_code,
+                        'deposito_status' => 1
+                    );
+                    $modelPin->getInsertMemberDeposit($memberDeposit);
+                }
+                return redirect()->route('adm_listVendotPPOBTransactionsEiDR')
+                            ->with('message', 'transaksi berhasil')
+                            ->with('messageclass', 'success');
+            }
+
+            if($arrayData['data']['status'] == 'Pending'){
+                return redirect()->route('adm_listVendotPPOBTransactionsEiDR')
+                            ->with('message', 'transaksi sedang pending, tunggu beberapa saat. Kemudian cek status di halaman transaksi digital')
+                            ->with('messageclass', 'warning');
+            }
+
+            if($arrayData['data']['status'] == 'Gagal'){
+                $dataUpdate = array(
+                    'status' => 3,
+                    'deleted_at' => date('Y-m-d H:i:s'),
+                    'return_buy' => $cek,
+                    'vendor_approve' => 3,
+                    'vendor_cek' => $cek
+                );
+                $modelPin->getUpdatePPOB('id', $getDataMaster->id, $dataUpdate);
+                $cekDepositGagal = $modelPin->getJagaGaBolehDuaKali($getDataMaster->buyer_code.'-'.$getDataMaster->ppob_code);
+                if($cekDepositGagal != null){
+                    $modelPin->getDeleteMemberDeposit($cekDepositGagal->id);
+                }
+                return redirect()->route('adm_listVendotPPOBTransactionsEiDR')
+                            ->with('message', 'terjadi kesalahan pada transaksi, saldo dikembalikan')
+                            ->with('messageclass', 'success');
+            }
+        }
+        return redirect()->route('adm_listVendotPPOBTransactionsEiDR')
+                            ->with('message', 'tidak ada data transaksi, kesalahan pada api')
+                            ->with('messageclass', 'danger');
+        
+        
+    }
+    
     
     
     

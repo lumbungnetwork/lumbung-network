@@ -320,6 +320,34 @@ class Pin extends Model {
         return $return;
     }
     
+    public function getAdminTransactionPPOBEiDR(){
+        $sql = DB::table('ppob')
+                    ->join('users as a', 'ppob.user_id', '=', 'a.id')
+                    ->join('users as b', 'ppob.vendor_id', '=', 'b.id')
+                    ->selectRaw('ppob.*, a.user_code as user_code_pembeli, b.user_code user_code_vendor')
+                    ->where('ppob.status', '=', 1)
+                    ->where('ppob.buy_metode', '=', 3)
+                    ->orderBy('ppob.id', 'DESC')
+                    ->get();
+        $return = null;
+        if(count($sql) > 0){
+            $return = $sql;
+        }
+        return $return;
+    }
+    
+    public function getAdminDetailTransactionPPOBEiDR($id){
+        $sql = DB::table('ppob')
+                    ->join('users as a', 'ppob.user_id', '=', 'a.id')
+                    ->join('users as b', 'ppob.vendor_id', '=', 'b.id')
+                    ->selectRaw('ppob.*, a.user_code as user_code_pembeli, b.user_code user_code_vendor')
+                    ->where('ppob.id', '=', $id)
+                    ->where('ppob.status', '=', 1)
+                    ->where('ppob.buy_metode', '=', 3)
+                    ->first();
+        return $sql;
+    }
+    
     public function getMemberPembayaranPPOB($id, $data){
         $sql = DB::table('ppob')
                     ->where('ppob.id', '=', $id)
