@@ -4114,9 +4114,12 @@ class MemberController extends Controller {
         $getDataMaster = $modelPin->getMemberPembayaranPPOB($id, $dataUser);
         $getVendor = $dataUser;
         if($dataUser->id != $getDataMaster->vendor_id){
-            $getVendor = $modelMember->getUsers('id', $getDataMaster->vendor_id);
-            if($getVendor->is_vendor == null){
-                return redirect()->route('mainDashboard');
+            $getVendor = null;
+            if($getDataMaster->buy_metode == 1){
+                $getVendor = $modelMember->getUsers('id', $getDataMaster->vendor_id);
+                if($getVendor->is_vendor == null){
+                    return redirect()->route('mainDashboard');
+                }
             }
         }
         return view('member.digital.m_buy_ppob')

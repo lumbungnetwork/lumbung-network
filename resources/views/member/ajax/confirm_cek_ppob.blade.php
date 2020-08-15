@@ -57,6 +57,7 @@
                     </div>
                 </div>
             </div>
+            @if($data->buy_method == 1)
             <div class="row">
                 <div class="col-md-12 col-xs-12">
                     <div class="form-group">
@@ -65,6 +66,17 @@
                     </div>
                 </div>
             </div>
+            @endif
+            @if($data->buy_method == 3)
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="form-group">
+                        <label>Vendor</label>
+                        <input type="text" class="form-control" readonly="" value="Direct">
+                    </div>
+                </div>
+            </div>
+            @endif
             <div class="row">
                 <div class="col-md-12 col-xs-12">
                     <div class="form-group">

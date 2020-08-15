@@ -1378,7 +1378,17 @@ class AjaxmemberController extends Controller {
                         ->with('message', 'Anda tidak memasukan nomor')
                         ->with('dataVendor', null);
         }
+        $buy_method = $request->type_pay;
+        if($buy_method == 'undefined'){
+            return view('member.ajax.confirm_cek_ppob')
+                        ->with('data', null)
+                        ->with('message', 'Anda tidak memilih jenis pembayaran')
+                        ->with('dataVendor', null);
+        }
         $vendor_id = $request->vendor_id;
+        if($buy_method == 3){
+            $vendor_id = 1;
+        }
         $dataVendor = (object) array(
             'id' => $vendor_id
         );
@@ -1392,13 +1402,6 @@ class AjaxmemberController extends Controller {
             return view('member.ajax.confirm_cek_ppob')
                         ->with('data', null)
                         ->with('message', 'Anda tidak memilih harga')
-                        ->with('dataVendor', null);
-        }
-        $buy_method = $request->type_pay;
-        if($buy_method == 'undefined'){
-            return view('member.ajax.confirm_cek_ppob')
-                        ->with('data', null)
-                        ->with('message', 'Anda tidak memilih jenis pembayaran')
                         ->with('dataVendor', null);
         }
         
@@ -1418,31 +1421,33 @@ class AjaxmemberController extends Controller {
         $brand = $separate[2];
         $desc = $separate[3];
         $real_price = $separate[4];
-        $getTransTarik = $modelTrans->getMyTotalTarikDeposit($dataVendor);
-        $getTotalDeposit = $modelPin->getTotalDepositMember($dataVendor);
-        $getTotalPPOBOut = $modelPin->getPPOBFly($vendor_id);
-        $sum_deposit_masuk = 0;
-        $sum_deposit_keluar1 = 0;
-        $sum_deposit_keluar = 0;
-        $sum_ppob_keluar = 0;
-        if($getTotalDeposit->sum_deposit_masuk != null){
-            $sum_deposit_masuk = $getTotalDeposit->sum_deposit_masuk;
-        }
-        if($getTotalDeposit->sum_deposit_keluar != null){
-            $sum_deposit_keluar1 = $getTotalDeposit->sum_deposit_keluar;
-        }
-        if($getTransTarik->deposit_keluar != null){
-            $sum_deposit_keluar = $getTransTarik->deposit_keluar;
-        }
-        if($getTotalPPOBOut->deposit_out != null){
-            $sum_ppob_keluar = $getTotalPPOBOut->deposit_out;
-        }
-        $totalDeposit = $sum_deposit_masuk - $sum_deposit_keluar - $sum_deposit_keluar1 - $sum_ppob_keluar - $real_price;
-        if($totalDeposit < 0){
-            return view('member.ajax.confirm_cek_ppob')
-                        ->with('data', null)
-                        ->with('message', 'tidak dapat dilanjutkan, saldo vendor kurang')
-                        ->with('dataVendor', null);
+        if($buy_method == 1){
+            $getTransTarik = $modelTrans->getMyTotalTarikDeposit($dataVendor);
+            $getTotalDeposit = $modelPin->getTotalDepositMember($dataVendor);
+            $getTotalPPOBOut = $modelPin->getPPOBFly($vendor_id);
+            $sum_deposit_masuk = 0;
+            $sum_deposit_keluar1 = 0;
+            $sum_deposit_keluar = 0;
+            $sum_ppob_keluar = 0;
+            if($getTotalDeposit->sum_deposit_masuk != null){
+                $sum_deposit_masuk = $getTotalDeposit->sum_deposit_masuk;
+            }
+            if($getTotalDeposit->sum_deposit_keluar != null){
+                $sum_deposit_keluar1 = $getTotalDeposit->sum_deposit_keluar;
+            }
+            if($getTransTarik->deposit_keluar != null){
+                $sum_deposit_keluar = $getTransTarik->deposit_keluar;
+            }
+            if($getTotalPPOBOut->deposit_out != null){
+                $sum_ppob_keluar = $getTotalPPOBOut->deposit_out;
+            }
+            $totalDeposit = $sum_deposit_masuk - $sum_deposit_keluar - $sum_deposit_keluar1 - $sum_ppob_keluar - $real_price;
+            if($totalDeposit < 0){
+                return view('member.ajax.confirm_cek_ppob')
+                            ->with('data', null)
+                            ->with('message', 'tidak dapat dilanjutkan, saldo vendor kurang')
+                            ->with('dataVendor', null);
+            }
         }
         
         $modelMember = New Member;
@@ -1572,7 +1577,12 @@ class AjaxmemberController extends Controller {
         $modelPin = new Pin;
         $modelMember = new Member;
         $getDataMaster = $modelPin->getMemberPembayaranPPOB($request->ppob_id, $dataUser);
-        $getVendor = $modelMember->getUsers('id', $getDataMaster->vendor_id);
+        $getVendor = (object) array(
+                'tron' => 'TDtvo2jCoRftmRgzjkwMxekh8jqWLdDHNB'
+            );
+        if($getDataMaster->buy_metode == 1){
+            $getVendor = $modelMember->getUsers('id', $getDataMaster->vendor_id);
+        } 
         return view('member.ajax.confirm_pembayaran_ppob')
                         ->with('data', $getDataMaster)
                         ->with('dataVendor', $getVendor);

@@ -172,12 +172,15 @@
                                                     if($row->type > 3 && $row->type < 8){
                                                         $type = $row->message;
                                                     }
-                                                    
+                                                    $siVendor = 'Admin';
+                                                    if($row->vendor_id != 1){
+                                                        $siVendor = $row->user_code;
+                                                    }
                                                 ?>
                                                 <tr>
                                                     <td>{{$no}}</td>
                                                     <td>{{date('d-m-Y', strtotime($row->ppob_date))}}</td>
-                                                    <td>{{$row->user_code}}</td>
+                                                    <td>{{$siVendor}}</td>
                                                     <td>{{number_format($row->sale_price, 0, ',', ',')}}</td>
                                                     <td>
                                                             <span class="label label-{{$label}}">{{$status}}</span>

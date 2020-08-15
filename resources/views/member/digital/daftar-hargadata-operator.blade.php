@@ -73,7 +73,7 @@
 
                         <div class="rounded-lg bg-white p-3 mb-3">
                             <div class="row">
-                                <div class="col-xl-12 col-xs-12">
+                                <div class="col-xl-12 col-xs-12" id="vendor_name">
                                     <fieldset class="form-group">
                                         <label for="user_name">Masukkan Username Vendor Tujuan Belanja Anda:</label>
                                         <input type="text" class="form-control" id="get_id" name="user_name" autocomplete="off">
@@ -85,7 +85,7 @@
 
                                     <div class="rounded-lg shadow-sm p-2">
                                         <div class="radio radio-primary">
-                                            <input type="radio" id="type_pay" name="type_pay" value="1">
+                                            <input type="radio" id="type_pay" name="type_pay" value="1" class="cod">
                                             <label for="radio1">
                                                 Bayar via vendor terdekat <b>(COD)</b>
                                             </label>
@@ -93,7 +93,7 @@
                                     </div>
                                     <div class="rounded-lg shadow-sm p-2">
                                         <div class="radio radio-primary">
-                                            <input type="radio" id="type_pay"  name="type_pay" value="3">
+                                            <input type="radio" id="type_pay"  name="type_pay" value="3" class="eidr">
                                             <label for="radio2">
                                                 Bayar via eIDR (Direct)*
                                             </label>
@@ -189,5 +189,13 @@
             }
         });
 
+        $('#vendor_name').show();
+        $(".cod").click(function() {
+          $('#vendor_name').show();
+        });
+
+        $(".eidr").click(function() {
+          $('#vendor_name').hide();
+        });
     </script>
 @stop

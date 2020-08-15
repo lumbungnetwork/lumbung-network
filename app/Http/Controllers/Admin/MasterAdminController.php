@@ -3010,27 +3010,27 @@ class MasterAdminController extends Controller {
         //cek deposit cukup ga
         $modelTrans = New Transaction;
         $getDataMaster = $modelPin->getAdminDetailTransactionPPOBEiDR($request->ppob_id);
-        $dataVendor =  $modelMember->getUsers('id', $getDataMaster->vendor_id);
-        $getTransTarik = $modelTrans->getMyTotalTarikDeposit($dataVendor);
-        $getTotalDeposit = $modelPin->getTotalDepositMember($dataVendor);
-        $sum_deposit_masuk = 0;
-        $sum_deposit_keluar1 = 0;
-        $sum_deposit_keluar = 0;
-        if($getTotalDeposit->sum_deposit_masuk != null){
-            $sum_deposit_masuk = $getTotalDeposit->sum_deposit_masuk;
-        }
-        if($getTotalDeposit->sum_deposit_keluar != null){
-            $sum_deposit_keluar1 = $getTotalDeposit->sum_deposit_keluar;
-        }
-        if($getTransTarik->deposit_keluar != null){
-            $sum_deposit_keluar = $getTransTarik->deposit_keluar;
-        }
-        $totalDeposit = $sum_deposit_masuk - $sum_deposit_keluar - $sum_deposit_keluar1 - $getDataMaster->harga_modal;
-        if($totalDeposit < 0){
-            return redirect()->route('adm_listVendotPPOBTransactionsEiDR')
-                    ->with('message', 'tidak dapat dilanjutkan, deposit kurang')
-                    ->with('messageclass', 'danger');
-        }
+//        $dataVendor =  $modelMember->getUsers('id', $getDataMaster->vendor_id);
+//        $getTransTarik = $modelTrans->getMyTotalTarikDeposit($dataVendor);
+//        $getTotalDeposit = $modelPin->getTotalDepositMember($dataVendor);
+//        $sum_deposit_masuk = 0;
+//        $sum_deposit_keluar1 = 0;
+//        $sum_deposit_keluar = 0;
+//        if($getTotalDeposit->sum_deposit_masuk != null){
+//            $sum_deposit_masuk = $getTotalDeposit->sum_deposit_masuk;
+//        }
+//        if($getTotalDeposit->sum_deposit_keluar != null){
+//            $sum_deposit_keluar1 = $getTotalDeposit->sum_deposit_keluar;
+//        }
+//        if($getTransTarik->deposit_keluar != null){
+//            $sum_deposit_keluar = $getTransTarik->deposit_keluar;
+//        }
+//        $totalDeposit = $sum_deposit_masuk - $sum_deposit_keluar - $sum_deposit_keluar1 - $getDataMaster->harga_modal;
+//        if($totalDeposit < 0){
+//            return redirect()->route('adm_listVendotPPOBTransactionsEiDR')
+//                    ->with('message', 'tidak dapat dilanjutkan, deposit kurang')
+//                    ->with('messageclass', 'danger');
+//        }
         $getDataAPI = $modelMember->getDataAPIMobilePulsa();
         $username   = $getDataAPI->username;
         $apiKey   = $getDataAPI->api_key;
@@ -3129,16 +3129,16 @@ class MasterAdminController extends Controller {
                 'vendor_approve' => 2
             );
             $modelPin->getUpdatePPOB('id', $request->ppob_id, $dataUpdate);
-            $cekDuaKali = $modelPin->getJagaGaBolehDuaKali($getDataMaster->buyer_code.'-'.$ref_id);
-            if($cekDuaKali == null){
-                $memberDeposit = array(
-                    'user_id' => $dataVendor->id,
-                    'total_deposito' => $getDataMaster->harga_modal, //tambahin 2%
-                    'transaction_code' => $getDataMaster->buyer_code.'-'.$ref_id,
-                    'deposito_status' => 1
-                );
-                $modelPin->getInsertMemberDeposit($memberDeposit);
-            }
+//            $cekDuaKali = $modelPin->getJagaGaBolehDuaKali($getDataMaster->buyer_code.'-'.$ref_id);
+//            if($cekDuaKali == null){
+//                $memberDeposit = array(
+//                    'user_id' => $dataVendor->id,
+//                    'total_deposito' => $getDataMaster->harga_modal, //tambahin 2%
+//                    'transaction_code' => $getDataMaster->buyer_code.'-'.$ref_id,
+//                    'deposito_status' => 1
+//                );
+//                $modelPin->getInsertMemberDeposit($memberDeposit);
+//            }
             return redirect()->route('adm_listVendotPPOBTransactionsEiDR')
                         ->with('message', 'transaksi berhasil')
                         ->with('messageclass', 'success');

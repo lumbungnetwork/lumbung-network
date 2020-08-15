@@ -79,6 +79,7 @@
                             </div>
                             @endif
                             <p class="card-text">Vendor</p>
+                            @if($getVendor != null)
                             <div class="row" style="margin-bottom: 15px;">
                                 <div class="col-md-12">
                                     <b>{{$getVendor->user_code}}</b>
@@ -87,6 +88,12 @@
                                     {{$getVendor->hp}}
                                 </div>
                             </div>
+                            @endif
+                            @if($getVendor == null)
+                                <div class="col-md-12">
+                                    <b>Direct</b>
+                                </div>
+                            @endif
                         </div>
                     </div>
                     <div class="row">
