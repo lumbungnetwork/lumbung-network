@@ -49,6 +49,7 @@
                                                 <th>Kode Transaksi</th>
                                                 <th>Tgl</th>
                                                 <th>Total Deposit</th>
+                                                <th>Type</th>
                                                 <th>Status</th>
                                                 <th>###</th>
                                             </tr>
@@ -73,15 +74,22 @@
                                                     $status = 'tuntas';
                                                     $label = 'success';
                                                 }
+                                                $type = 'Deposit';
+                                                if($row->type == 2){
+                                                    $type = 'Tarik';
+                                                }
                                                 ?>
                                             <tr>
                                                 <td>{{$no}}</td>
                                                 <td>{{$row->transaction_code}}</td>
                                                 <td>{{date('d F Y', strtotime($row->created_at))}}</td>
                                                 <td>{{number_format($row->price, 0, ',', ',')}}</td>
+                                                <td>{{$type}}</td>
                                                 <td><label class="label label-{{$label}}">{{$status}}</label></td>
                                                 <td>
+                                                    @if($row->type == 1)
                                                     <a rel="tooltip" title="View" class="text-primary" href="{{ URL::to('/') }}/m/add/deposit-transaction/{{$row->id}}">detail</a>
+                                                    @endif
                                                 </td>
                                             </tr>
                                             @endforeach

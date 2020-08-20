@@ -3293,7 +3293,8 @@ class MemberController extends Controller {
             'price' => $request->total_deposit,
             'unique_digit' => 0,
             'user_bank' => $request->user_bank,
-            'is_tron' => $request->is_tron
+            'is_tron' => $request->is_tron,
+            'status' => 1
         );
         $modelSettingTrans->getInsertDepositTransaction($dataInsert);
         return redirect()->route('m_listDepositTransactions')
