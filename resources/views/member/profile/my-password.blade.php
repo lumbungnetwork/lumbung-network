@@ -32,6 +32,15 @@
                         @endif
                         
                         <div class="row">
+                            <div class="col-xl-12 col-xs-12">
+                                <fieldset class="form-group">
+                                    <label for="password">Konfirmasi Password Lama</label>
+                                    <input type="password" class="form-control" id="old_password" name="old_password" autocomplete="off">
+                                </fieldset>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
                             <div class="col-xl-6 col-xs-12">
                                 <fieldset class="form-group">
                                     <label for="password">Password</label>
@@ -81,9 +90,10 @@
        function inputSubmit(){
            var password = $("#password").val();
            var repassword = $("#repassword").val();
+           var old_password = $("#old_password").val();
             $.ajax({
                 type: "GET",
-                url: "{{ URL::to('/') }}/m/cek/edit-password?&password="+password+"&repassword="+repassword,
+                url: "{{ URL::to('/') }}/m/cek/edit-password?&password="+password+"&repassword="+repassword+"&old_password="+old_password,
                 success: function(url){
                     $("#confirmDetail" ).empty();
                     $("#confirmDetail").html(url);

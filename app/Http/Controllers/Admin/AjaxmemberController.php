@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Model\Pinsetting;
 use App\Model\Package;
 use App\Model\Member;
@@ -907,6 +908,22 @@ class AjaxmemberController extends Controller {
     public function getCekEditPassword(Request $request){
         $dataUser = Auth::user();
         $canInsert = (object) array('can' => true, 'pesan' => '');
+        if($request->old_password == null){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Password Lama harus diisii');
+            return view('member.ajax.confirm_edit_password')
+                        ->with('dataRequest', null)
+                        ->with('check', $canInsert);
+        }
+        $cekOld = false;
+        if (Hash::check($request->old_password, $dataUser->password)) {
+            $cekOld = true;
+        }
+        if($cekOld == false){
+            $canInsert = (object) array('can' => false, 'pesan' => 'Password lama tidak sama');
+            return view('member.ajax.confirm_edit_password')
+                        ->with('dataRequest', null)
+                        ->with('check', $canInsert);
+        }
         if($request->password == null){
             $canInsert = (object) array('can' => false, 'pesan' => 'Password harus diisii');
             return view('member.ajax.confirm_edit_password')
