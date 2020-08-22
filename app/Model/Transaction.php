@@ -370,7 +370,8 @@ class Transaction extends Model {
                     ->selectRaw('sum(price) as deposit_keluar')
                     ->where('user_id', '=', $data->id)
                     ->where('type', '=', 2)
-                    ->whereIn('status', array(1, 2))
+//                    ->whereIn('status', array(1, 2))
+                    ->where('status', '=', 1)
                     ->first();
         return $sql;
     }
