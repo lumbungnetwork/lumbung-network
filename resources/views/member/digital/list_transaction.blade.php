@@ -191,6 +191,11 @@
                                                     <td>{{$type}}</td>
                                                     <td>
                                                         <a class="label label-primary" href="{{ URL::to('/') }}/m/detail/buy-ppob/{{$row->id}}">detail</a>
+                                                        @if($row->type > 3 && $row->type < 8)
+                                                        @if($row->status == 2)
+                                                        <a class="label label-primary" href="{{ URL::to('/') }}/m/invoice/ppob/{{$row->id}}">pdf</a>
+                                                        @endif
+                                                        @endif
                                                     </td>
                                                 </tr>
                                             @endforeach

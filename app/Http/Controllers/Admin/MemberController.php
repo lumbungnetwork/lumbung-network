@@ -4130,6 +4130,38 @@ class MemberController extends Controller {
                     ->with('dataUser', $dataUser);
     }
     
+    public function getDetailInvoicePPOB($id){
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        if($dataUser->package_id == null){
+            return redirect()->route('m_newPackage');
+        }
+        if($dataUser->is_active == 0){
+            return redirect()->route('mainDashboard');
+        }
+        $modelPin = new Pin;
+        $modelMember = New Member;
+        $getDataMaster = $modelPin->getMemberPembayaranPPOB($id, $dataUser);
+        $getVendor = $dataUser;
+        if($dataUser->id != $getDataMaster->vendor_id){
+            $getVendor = null;
+            if($getDataMaster->buy_metode == 1){
+                $getVendor = $modelMember->getUsers('id', $getDataMaster->vendor_id);
+                if($getVendor->is_vendor == null){
+                    return redirect()->route('mainDashboard');
+                }
+            }
+        }
+//        dd($getDataMaster);
+        return view('member.digital.m_pdf_ppob')
+                    ->with('getDataMaster', $getDataMaster)
+                    ->with('getVendor', $getVendor)
+                    ->with('dataUser', $dataUser);
+    }
+    
     public function getUpdateStatusPPOB($id){
         $dataUser = Auth::user();
         $onlyUser  = array(10);
