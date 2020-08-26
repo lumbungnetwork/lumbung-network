@@ -128,9 +128,9 @@
                                             {{$getDataMaster->ppob_code}}
                                         </td>
                                         <td>
-                                            Vendor: {{$getVendor->user_code}}
+                                            Vendor: {{$dataUser->user_code}}
                                             <br>
-                                            Buyer: {{$dataUser->user_code}}
+                                            Buyer: {{$getMember->user_code}}
                                         </td>
                                     </tr>
                                 </tbody>

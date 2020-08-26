@@ -121,6 +121,12 @@
                                                     <td>{{$type}}</td>
                                                     <td>
                                                         <a class="label label-primary" href="{{ URL::to('/') }}/m/detail/vppob/{{$row->id}}">detail</a>
+                                                        @if($row->status == 2)
+                                                            &nbsp;
+                                                            @if($row->type > 2 && $row->type < 8)
+                                                                <a class="label label-warning" href="{{ URL::to('/') }}/m/vinvoice/ppob/{{$row->id}}">pdf</a>
+                                                            @endif
+                                                        @endif
                                                     </td>
                                                     <td>
                                                         @if($row->buy_metode == 1)

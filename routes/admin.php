@@ -399,6 +399,7 @@ Route::prefix('/')->group(function () {
         Route::post('/m/confirm/buy-ppob', 'Admin\MemberController@postConfirmBuyPPOB')->middleware('auth');
         Route::get('/m/update/status-ppob/{id}', 'Admin\MemberController@getUpdateStatusPPOB')->middleware('auth');
         Route::get('/m/invoice/ppob/{id}', 'Admin\MemberController@getDetailInvoicePPOB')->name('m_detailPPOBInvoice')->middleware('auth');
+        Route::get('/m/vinvoice/ppob/{id}', 'Admin\MemberController@getDetailVendorInvoicePPOB')->name('m_detailVPPOBInvoice')->middleware('auth');
         //PPOB Pasca
         Route::get('/m/detail/pascabayar/{type}', 'Admin\MemberController@getPPOBPascabayar')->name('m_ppobPascabayar')->middleware('auth');
         Route::get('/m/cek/tagihan/pascabayar', 'Admin\MemberController@getPPOBPascabayarCekTagihan')->name('m_ppobPascabayarCekTagihan')->middleware('auth');
