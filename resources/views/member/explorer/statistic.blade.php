@@ -69,7 +69,8 @@
                                         Devidend LMB
                                     </p>
                                     <?php
-                                        $deviden_lmb = (20 / 100 * $dataAll->total_aktifasi * 100000) + ($dataAll->total_sales * 1 / 100);
+                                        $tambahan16persen =  ($dataAll->total_vsales + $dataAll->total_ppob) * 1.6 / 100;
+                                        $deviden_lmb = (20 / 100 * $dataAll->total_aktifasi * 100000) + ($dataAll->total_sales * 1 / 100) + $tambahan16persen;
                                     ?>
                                     <h6 class="text-warning">Rp {{number_format($deviden_lmb, 0, ',', '.')}}</h6>
                                 </div>
@@ -79,8 +80,9 @@
                     <div class="rounded-lg bg-white p-3 mb-3">
                         <h6 class="mb-3">Bulan Lalu</h6>
                             <?php
-                                $total_wd_lastmonth = $dataAll->total_wd + $dataAll_month->fee_tuntas;
-                                $deviden_lmb_lastmonth = (20 / 100 * $dataAll_month->total_aktifasi * 100000) + ($dataAll_month->total_sales * 1 / 100);
+                                $total_wd_lastmonth = $dataAll_month->total_wd + $dataAll_month->fee_tuntas;
+                                $tambahan16persen_lastmonth =  ($dataAll_month->total_vsales + $dataAll_month->total_ppob) * 1.6 / 100;
+                                $deviden_lmb_lastmonth = (20 / 100 * $dataAll_month->total_aktifasi * 100000) + ($dataAll_month->total_sales * 1 / 100) + $tambahan16persen_lastmonth;
                             ?>
                         <div class="row">
                             <div class="col-xs-12 col-md-12 col-lg-12 col-xl-12">
