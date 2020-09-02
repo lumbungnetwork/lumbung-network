@@ -1128,14 +1128,54 @@ class Sales extends Model {
     
     public function getMemberVendorMasterSalesMonthly($id){
         $start_day = date("Y-m-01");
-        $sql = DB::table('vmaster_sales')
-                    ->selectRaw('sum(vmaster_sales.total_price) as month_sale_price, '
-                            . 'DATE_FORMAT(vmaster_sales.sale_date, "%M-%Y") as monthly, YEAR(vmaster_sales.sale_date) as year, '
-                            . 'MONTH(vmaster_sales.sale_date) as month')
-                    ->where('vmaster_sales.user_id', '=', $id)
-                    ->where('vmaster_sales.status', '=', 2)
-                    ->whereDate('vmaster_sales.sale_date', '<', $start_day)
-                    ->whereNull('vmaster_sales.deleted_at')
+//        $sql = DB::table('vmaster_sales')
+//                    ->selectRaw('sum(vmaster_sales.total_price) as month_sale_price, '
+//                            . 'DATE_FORMAT(vmaster_sales.sale_date, "%M-%Y") as monthly, YEAR(vmaster_sales.sale_date) as year, '
+//                            . 'MONTH(vmaster_sales.sale_date) as month')
+//                    ->where('vmaster_sales.user_id', '=', $id)
+//                    ->where('vmaster_sales.status', '=', 2)
+//                    ->whereDate('vmaster_sales.sale_date', '<', $start_day)
+//                    ->whereNull('vmaster_sales.deleted_at')
+//                    ->groupBy('year', 'month')
+//                    ->groupBy('monthly')
+//                    ->orderBy('year', 'ASC')
+//                    ->orderBy('month', 'ASC')
+//                    ->get();
+        $sql = "select sum(sales.sale_price) as month_sale_price, DATE_FORMAT(sales.sale_date, '%M-%Y') as monthly, YEAR(sales.sale_date) as year, "
+                . "MONTH(sales.sale_date) as month "
+                . "from "
+                . "(select vmaster_sales.total_price as sale_price, vmaster_sales.sale_date "
+                . "from vmaster_sales "
+                . "where vmaster_sales.user_id = $id "
+                . "and vmaster_sales.status = 2 "
+                . "and vmaster_sales.sale_date < '$start_day' "
+                . "and vmaster_sales.deleted_at is null "
+                . "union "
+                ."select ppob.ppob_price as sale_price, ppob.ppob_date as sale_date "
+                . "from ppob "
+                . "where ppob.user_id = $id "
+                . "and ppob.status = 2 "
+                . "and ppob.ppob_date < '$start_day' "
+                . "and ppob.deleted_at is null) as sales "
+                . "GROUP BY year, month, monthly "
+                . "ORDER BY year ASC, month ASC ";
+        $result = DB::select($sql);
+        if(count($result) <= 0){
+            return null;
+        }
+        return $result;
+    }
+    
+    public function getMemberVendorPPOBMonthly($id){
+        $start_day = date("Y-m-01");
+        $sql = DB::table('ppob')
+                    ->selectRaw('sum(ppob.ppob_price) as month_sale_price, '
+                            . 'DATE_FORMAT(ppob.ppob_date, "%M-%Y") as monthly, YEAR(ppob.ppob_date) as year, '
+                            . 'MONTH(ppob.ppob_date) as month')
+                    ->where('ppob.user_id', '=', $id)
+                    ->where('ppob.status', '=', 2)
+                    ->whereDate('ppob.ppob_date', '<', $start_day)
+                    ->whereNull('ppob.deleted_at')
                     ->groupBy('year', 'month')
                     ->groupBy('monthly')
                     ->orderBy('year', 'ASC')
@@ -1236,24 +1276,51 @@ class Sales extends Model {
     
     public function getVendorPenjualanMonthly($id){
         $start_day = date("Y-m-01");
-        $sql = DB::table('vmaster_sales')
-                    ->selectRaw('sum(vmaster_sales.total_price) as month_sale_price, '
-                            . 'DATE_FORMAT(vmaster_sales.sale_date, "%M-%Y") as monthly, YEAR(vmaster_sales.sale_date) as year, '
-                            . 'MONTH(vmaster_sales.sale_date) as month')
-                    ->where('vmaster_sales.vendor_id', '=', $id)
-                    ->where('vmaster_sales.status', '=', 2)
-                    ->whereDate('vmaster_sales.sale_date', '<', $start_day)
-                    ->whereNull('vmaster_sales.deleted_at')
-                    ->groupBy('year', 'month')
-                    ->groupBy('monthly')
-                    ->orderBy('year', 'ASC')
-                    ->orderBy('month', 'ASC')
-                    ->get();
-        $return = null;
-        if(count($sql) > 0){
-            $return = $sql;
+//        $sql = DB::table('vmaster_sales')
+//                    ->selectRaw('sum(vmaster_sales.total_price) as month_sale_price, '
+//                            . 'DATE_FORMAT(vmaster_sales.sale_date, "%M-%Y") as monthly, YEAR(vmaster_sales.sale_date) as year, '
+//                            . 'MONTH(vmaster_sales.sale_date) as month')
+//                    ->where('vmaster_sales.vendor_id', '=', $id)
+//                    ->where('vmaster_sales.status', '=', 2)
+//                    ->whereDate('vmaster_sales.sale_date', '<', $start_day)
+//                    ->whereNull('vmaster_sales.deleted_at')
+//                    ->groupBy('year', 'month')
+//                    ->groupBy('monthly')
+//                    ->orderBy('year', 'ASC')
+//                    ->orderBy('month', 'ASC')
+//                    ->get();
+//        $return = null;
+//        if(count($sql) > 0){
+//            $return = $sql;
+//        }
+//        return $return;
+        
+        
+        $sql = "select sum(sales.sale_price) as month_sale_price, "
+                . "DATE_FORMAT(sales.sale_date, '%M-%Y') as monthly, "
+                . "YEAR(sales.sale_date) as year, "
+                . "MONTH(sales.sale_date) as month "
+                . "from "
+                . "(select vmaster_sales.total_price as sale_price, vmaster_sales.sale_date "
+                . "from vmaster_sales "
+                . "where vmaster_sales.vendor_id = $id "
+                . "and vmaster_sales.status = 2 "
+                . "and vmaster_sales.sale_date < '$start_day' "
+                . "and vmaster_sales.deleted_at is null "
+                . "union "
+                ."select ppob.ppob_price as sale_price, ppob.ppob_date as sale_date "
+                . "from ppob "
+                . "where ppob.vendor_id = $id "
+                . "and ppob.status = 2 "
+                . "and ppob.ppob_date < '$start_day' "
+                . "and ppob.deleted_at is null) as sales "
+                . "GROUP BY year, month, monthly "
+                . "ORDER BY year ASC, month ASC ";
+        $result = DB::select($sql);
+        if(count($result) <= 0){
+            return null;
         }
-        return $return;
+        return $result;
     }
     
     public function getStockistPenjualanMonthlyTerbaru($id){

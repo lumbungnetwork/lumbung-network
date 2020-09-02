@@ -60,7 +60,11 @@
                                 </a>
                             </div>
                             <?php
-                                $future = strtotime('+1 years', strtotime($dataUser->active_at)); 
+                                $active_at = $dataUser->active_at;
+                                if($dataUser->pin_activate_at != null){
+                                    $active_at = $dataUser->pin_activate_at;
+                                }
+                                $future = strtotime('+1 years', strtotime($active_at)); 
                                 $timefromdb =time(); 
                                 $timeleft = $future - $timefromdb;
                                 $daysleft = round((($timeleft/24)/60)/60); 
