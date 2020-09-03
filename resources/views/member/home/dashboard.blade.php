@@ -109,6 +109,21 @@
                                     </div>
                                 @endif
                                 <?php
+                                    $active_at = $dataUser->active_at;
+                                    if($dataUser->pin_activate_at != null){
+                                        $active_at = $dataUser->pin_activate_at;
+                                    }
+                                    $future = strtotime('+365 days', strtotime($active_at)); 
+                                    $timefromdb =time(); 
+                                    $timeleft = $future - $timefromdb;
+                                    $daysleft = round((($timeleft/24)/60)/60); 
+                                ?>
+                                @if($daysleft <= 0)
+                                    <div class="alert alert-danger alert-dismissible" role="alert">
+                                        Keanggotaan anda sudah kadaluarsa
+                                    </div>
+                                @endif
+                                <?php
                                     $countDataMemberBuy = 0;
                                     if($getDataMemberBuy != null){
                                         $countDataMemberBuy = count($getDataMemberBuy);

@@ -64,7 +64,7 @@
                                 if($dataUser->pin_activate_at != null){
                                     $active_at = $dataUser->pin_activate_at;
                                 }
-                                $future = strtotime('+1 years', strtotime($active_at)); 
+                                $future = strtotime('+365 days', strtotime($active_at)); 
                                 $timefromdb =time(); 
                                 $timeleft = $future - $timefromdb;
                                 $daysleft = round((($timeleft/24)/60)/60); 
@@ -73,8 +73,13 @@
                                 <p>
                                     Masa Aktif Keanggotaan
                                 </p>
+                                @if($daysleft <= 0)
+                                <h5 class="text-danger">Keanggotaan anda sudah kadaluarsa</h5>
+                                @endif
+                                @if($daysleft > 0)
                                 <h5 class="text-warning">{{$daysleft}}</h5>
                                 <p class="f-12">Hari sebelum kadaluwarsa</p>
+                                @endif
                             </div>
                             <div class="col-4 mb-3">
                                 <input type="hidden" class="form-control allownumericwithoutdecimal invalidpaste" id="input_jml_pin" name="total_pin" autocomplete="off" value ="1">

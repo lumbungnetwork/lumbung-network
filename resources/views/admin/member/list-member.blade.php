@@ -94,7 +94,11 @@
                                             if($row->is_active == 1){
                                                 $active= 'aktif';
                                                 $label = 'success';
-                                                if(strtotime(date('Y-m-d')) > strtotime('+365 days', strtotime($row->active_at))){
+                                                $active_at = $row->active_at;
+                                                if($row->pin_activate_at != null){
+                                                    $active_at = $row->pin_activate_at;
+                                                }
+                                                if(strtotime(date('Y-m-d')) >= strtotime('+365 days', strtotime($active_at))){
                                                     $active= 'expired';
                                                     $label = 'danger';
                                                 }
@@ -110,8 +114,8 @@
                                                 <td>{{$row->hp}}</td>
                                                 <td>{{$sp}}</td>
                                                 <td><span class="badge badge-pill badge-{{$label}}">{{$active}}</span></td>
-                                                <td>{{date('d F Y', strtotime($row->active_at))}}</td>
-                                                <td>{{date('d F Y', strtotime('+365 days', strtotime($row->active_at)))}}</td>
+                                                <td>{{date('d F Y', strtotime($active_at))}}</td>
+                                                <td>{{date('d F Y', strtotime('+365 days', strtotime($active_at)))}}</td>
                                                 <td>{{$tron}}</td>
                                                 <td class="td-actions text-left" >
                                                     <div class="table-icons">
