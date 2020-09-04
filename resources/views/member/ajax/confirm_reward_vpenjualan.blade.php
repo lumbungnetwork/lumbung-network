@@ -7,7 +7,7 @@
             <form id="form-add" method="POST" action="/m/vendor/penjualan-reward">
                 {{ csrf_field() }}
                 <?php
-                    $kelipatan = $data->month_sale_price / 1000 * 0.01;
+                    $kelipatan = $data[0]->month_sale_price / 1000 * 0.01;
                     if($kelipatan > 100){
                         $kelipatan = 100;
                     }
@@ -21,8 +21,8 @@
                     </div>
                 </div>
                 <input type="hidden" name="reward"  value="{{$kelipatan}}">
-                <input type="hidden" name="month"  value="{{$data->month}}">
-                <input type="hidden" name="year"  value="{{$data->year}}">
+                <input type="hidden" name="month"  value="{{$data[0]->month}}">
+                <input type="hidden" name="year"  value="{{$data[0]->year}}">
             </form>    
         </div>
         <div class="modal-footer">

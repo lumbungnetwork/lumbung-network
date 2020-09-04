@@ -72,17 +72,23 @@
                                                 <td>Sponsor</td>
                                                 <td>{{$dataExplore->sponsor->user_code}}</td>
                                             </tr>
+                                            <?php
+                                                $active_at = $dataExplore->user->active_at;
+                                                if($dataExplore->user->pin_activate_at != null){
+                                                    $active_at = $dataExplore->user->pin_activate_at;
+                                                }
+                                            ?>
                                             <tr>
                                                 <td>Aktif Sejak</td>
                                                 <td>{{date('d F Y', strtotime($dataExplore->user->active_at))}}</td>
                                             </tr>
                                             <tr>
                                                 <td>Kadaluarsa</td>
-                                                <td>{{date('d F Y', strtotime('+365 days', strtotime($dataExplore->user->active_at)))}}</td>
+                                                <td>{{date('d F Y', strtotime('+365 days', strtotime($active_at)))}}</td>
                                             </tr>
                                             <tr>
                                                 <td>Siklus</td>
-                                                <td>1</td>
+                                                <td>{{$dataExplore->user->pin_activate}}</td>
                                             </tr>
                                             <tr>
                                                 <td>Peringkat</td>
