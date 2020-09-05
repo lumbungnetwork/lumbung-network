@@ -782,7 +782,7 @@ class BonusmemberController extends Controller {
             'month' => $request->month,
             'year' => $request->year,
             'belanja_date' => $request->year.'-'.$request->month.'-01',
-            'total_belanja' => $getData->month_sale_price,
+            'total_belanja' => $getData[0]->month_sale_price,
             'type' => 3
         );
         $modelBonus->getInsertBelanjaReward($dataInsert);
@@ -873,11 +873,11 @@ class BonusmemberController extends Controller {
             'month' => $request->month,
             'year' => $request->year,
             'belanja_date' => $request->year.'-'.$request->month.'-01',
-            'total_belanja' => $getData->month_sale_price,
+            'total_belanja' => $getData[0]->month_sale_price,
             'type' => 4
         );
         $modelBonus->getInsertBelanjaReward($dataInsert);
-        return redirect()->route('m_PenjualanReward')
+        return redirect()->route('m_VPenjualanReward')
                     ->with('message', 'Claim Reward Penjualan berhasil')
                     ->with('messageclass', 'success');
     }
