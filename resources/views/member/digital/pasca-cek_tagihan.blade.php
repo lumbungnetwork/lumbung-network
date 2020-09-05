@@ -20,7 +20,9 @@
                 </nav>
             </div>
             <?php
-            $nama = 'BPJS';
+            if($type == 4){
+                $nama = 'BPJS';
+            }
             if($type == 5){
                 $nama = 'PLN';
             }
@@ -164,7 +166,10 @@
     </script>
     @if($getData['rc'] == '00')
     <?PHP
-        $selling_price = $getData['selling_price'];
+        if($type == 4){
+            $nama = 'BPJS';
+            $selling_price = $getData['selling_price'];
+        }
         if($type == 5){
             $nama = 'PLN';
             $selling_price = $getData['selling_price'] + 500;

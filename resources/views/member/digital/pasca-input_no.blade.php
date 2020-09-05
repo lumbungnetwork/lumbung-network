@@ -34,7 +34,9 @@
                         <form method="GET" action="/m/cek/tagihan/pascabayar" style="display: contents;">
                             {{ csrf_field() }}
                             <?php
-                            $nama = 'BPJS';
+                            if($type == 1){
+                                $nama = 'BPJS';
+                            }
                             if($type == 2){
                                 $nama = 'PLN';
                             }
