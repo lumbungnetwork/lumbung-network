@@ -3968,7 +3968,7 @@ class MemberController extends Controller {
                 'product_name' => $request->no_hp,
                 'ppob_price' => $request->price,
                 'ppob_date' => date('Y-m-d'),
-                'harga_modal' => $request->harga_modal,
+                'harga_modal' => ($request->harga_modal  - 1500),
                 'message' => $request->message
             );
             $newPPOB = $modelPin->getInsertPPOB($dataInsert);
@@ -3989,7 +3989,7 @@ class MemberController extends Controller {
                 'product_name' => $request->no_hp,
                 'ppob_price' => $request->price,
                 'ppob_date' => date('Y-m-d'),
-                'harga_modal' => ($request->harga_modal - 1500),
+                'harga_modal' => $request->harga_modal,
                 'message' => $request->message
             );
             $newPPOB = $modelPin->getInsertPPOB($dataInsert);
@@ -4722,146 +4722,6 @@ class MemberController extends Controller {
                     ->with('dataUser', $dataUser);
     }
     
-//    array:1 [▼
-//        "data" => array:11 [▼
-//          0 => array:10 [▼
-//            "product_name" => "Pln Pascabayar"
-//            "category" => "Pascabayar"
-//            "brand" => "PLN PASCABAYAR"
-//            "seller_name" => "Lucky 7 Cell"
-//            "admin" => 2750
-//            "commission" => 2500
-//            "buyer_sku_code" => "PLNPOST"
-//            "buyer_product_status" => true
-//            "seller_product_status" => true
-//            "desc" => "-"
-//          ]
-//          1 => array:10 [▼
-//            "product_name" => "Halo Postpaid"
-//            "category" => "Pascabayar"
-//            "brand" => "HP PASCABAYAR"
-//            "seller_name" => "Lucky 7 Cell"
-//            "admin" => 0
-//            "commission" => 800
-//            "buyer_sku_code" => "HALO"
-//            "buyer_product_status" => true
-//            "seller_product_status" => true
-//            "desc" => "-"
-//          ]
-//          2 => array:10 [▼
-//            "product_name" => "XL Postpaid"
-//            "category" => "Pascabayar"
-//            "brand" => "HP PASCABAYAR"
-//            "seller_name" => "Lucky 7 Cell"
-//            "admin" => 0
-//            "commission" => 1500
-//            "buyer_sku_code" => "XLPASCA"
-//            "buyer_product_status" => true
-//            "seller_product_status" => true
-//            "desc" => "-"
-//          ]
-//          3 => array:10 [▼
-//            "product_name" => "Tirtanadi Medan"
-//            "category" => "Pascabayar"
-//            "brand" => "PDAM"
-//            "seller_name" => "Lucky 7 Cell"
-//            "admin" => 2500
-//            "commission" => 800
-//            "buyer_sku_code" => "TIRTANADI"
-//            "buyer_product_status" => true
-//            "seller_product_status" => true
-//            "desc" => "Provinsi Sumatera Utara"
-//          ]
-//          4 => array:10 [▼
-//            "product_name" => "TELKOMPSTN"
-//            "category" => "Pascabayar"
-//            "brand" => "INTERNET PASCABAYAR"
-//            "seller_name" => "Lucky 7 Cell"
-//            "admin" => 2500
-//            "commission" => 1200
-//            "buyer_sku_code" => "TELKOM"
-//            "buyer_product_status" => true
-//            "seller_product_status" => true
-//            "desc" => "-"
-//          ]
-//          5 => array:10 [▼
-//            "product_name" => "Bpjs Kesehatan"
-//            "category" => "Pascabayar"
-//            "brand" => "BPJS KESEHATAN"
-//            "seller_name" => "Lucky 7 Cell"
-//            "admin" => 2500
-//            "commission" => 1150
-//            "buyer_sku_code" => "BPJS"
-//            "buyer_product_status" => true
-//            "seller_product_status" => true
-//            "desc" => "-"
-//          ]
-//          6 => array:10 [▼
-//            "product_name" => "Bussan Auto Finance"
-//            "category" => "Pascabayar"
-//            "brand" => "MULTIFINANCE"
-//            "seller_name" => "Lucky 7 Cell"
-//            "admin" => 6000
-//            "commission" => 1100
-//            "buyer_sku_code" => "BAF"
-//            "buyer_product_status" => true
-//            "seller_product_status" => true
-//            "desc" => "-"
-//          ]
-//          7 => array:10 [▼
-//            "product_name" => "Mega Auto Finance"
-//            "category" => "Pascabayar"
-//            "brand" => "MULTIFINANCE"
-//            "seller_name" => "Lucky 7 Cell"
-//            "admin" => 0
-//            "commission" => 500
-//            "buyer_sku_code" => "MAF"
-//            "buyer_product_status" => true
-//            "seller_product_status" => true
-//            "desc" => "-"
-//          ]
-//          8 => array:10 [▼
-//            "product_name" => "Mega Central Finance"
-//            "category" => "Pascabayar"
-//            "brand" => "MULTIFINANCE"
-//            "seller_name" => "Lucky 7 Cell"
-//            "admin" => 0
-//            "commission" => 500
-//            "buyer_sku_code" => "MCF"
-//            "buyer_product_status" => true
-//            "seller_product_status" => true
-//            "desc" => "-"
-//          ]
-//          9 => array:10 [▼
-//            "product_name" => "Wom Finance"
-//            "category" => "Pascabayar"
-//            "brand" => "MULTIFINANCE"
-//            "seller_name" => "Lucky 7 Cell"
-//            "admin" => 0
-//            "commission" => 500
-//            "buyer_sku_code" => "WOM"
-//            "buyer_product_status" => true
-//            "seller_product_status" => true
-//            "desc" => "-"
-//          ]
-//          10 => array:10 [▼
-//            "product_name" => "Columbia Finance"
-//            "category" => "Pascabayar"
-//            "brand" => "MULTIFINANCE"
-//            "seller_name" => "Lucky 7 Cell"
-//            "admin" => 0
-//            "commission" => 1100
-//            "buyer_sku_code" => "COF"
-//            "buyer_product_status" => true
-//            "seller_product_status" => true
-//            "desc" => "-"
-//          ]
-//        ]
-//      ]
-    
-    
-    
-    
     public function getPPOBPascabayarCekTagihan(Request $request){
         $dataUser = Auth::user();
         $onlyUser  = array(10);
@@ -5033,6 +4893,142 @@ class MemberController extends Controller {
 //    }
     
     
+//    array:1 [▼
+//        "data" => array:11 [▼
+//          0 => array:10 [▼
+//            "product_name" => "Pln Pascabayar"
+//            "category" => "Pascabayar"
+//            "brand" => "PLN PASCABAYAR"
+//            "seller_name" => "Lucky 7 Cell"
+//            "admin" => 2750
+//            "commission" => 2500
+//            "buyer_sku_code" => "PLNPOST"
+//            "buyer_product_status" => true
+//            "seller_product_status" => true
+//            "desc" => "-"
+//          ]
+//          1 => array:10 [▼
+//            "product_name" => "Halo Postpaid"
+//            "category" => "Pascabayar"
+//            "brand" => "HP PASCABAYAR"
+//            "seller_name" => "Lucky 7 Cell"
+//            "admin" => 0
+//            "commission" => 800
+//            "buyer_sku_code" => "HALO"
+//            "buyer_product_status" => true
+//            "seller_product_status" => true
+//            "desc" => "-"
+//          ]
+//          2 => array:10 [▼
+//            "product_name" => "XL Postpaid"
+//            "category" => "Pascabayar"
+//            "brand" => "HP PASCABAYAR"
+//            "seller_name" => "Lucky 7 Cell"
+//            "admin" => 0
+//            "commission" => 1500
+//            "buyer_sku_code" => "XLPASCA"
+//            "buyer_product_status" => true
+//            "seller_product_status" => true
+//            "desc" => "-"
+//          ]
+//          3 => array:10 [▼
+//            "product_name" => "Tirtanadi Medan"
+//            "category" => "Pascabayar"
+//            "brand" => "PDAM"
+//            "seller_name" => "Lucky 7 Cell"
+//            "admin" => 2500
+//            "commission" => 800
+//            "buyer_sku_code" => "TIRTANADI"
+//            "buyer_product_status" => true
+//            "seller_product_status" => true
+//            "desc" => "Provinsi Sumatera Utara"
+//          ]
+//          4 => array:10 [▼
+//            "product_name" => "TELKOMPSTN"
+//            "category" => "Pascabayar"
+//            "brand" => "INTERNET PASCABAYAR"
+//            "seller_name" => "Lucky 7 Cell"
+//            "admin" => 2500
+//            "commission" => 1200
+//            "buyer_sku_code" => "TELKOM"
+//            "buyer_product_status" => true
+//            "seller_product_status" => true
+//            "desc" => "-"
+//          ]
+//          5 => array:10 [▼
+//            "product_name" => "Bpjs Kesehatan"
+//            "category" => "Pascabayar"
+//            "brand" => "BPJS KESEHATAN"
+//            "seller_name" => "Lucky 7 Cell"
+//            "admin" => 2500
+//            "commission" => 1150
+//            "buyer_sku_code" => "BPJS"
+//            "buyer_product_status" => true
+//            "seller_product_status" => true
+//            "desc" => "-"
+//          ]
+//          6 => array:10 [▼
+//            "product_name" => "Bussan Auto Finance"
+//            "category" => "Pascabayar"
+//            "brand" => "MULTIFINANCE"
+//            "seller_name" => "Lucky 7 Cell"
+//            "admin" => 6000
+//            "commission" => 1100
+//            "buyer_sku_code" => "BAF"
+//            "buyer_product_status" => true
+//            "seller_product_status" => true
+//            "desc" => "-"
+//          ]
+//          7 => array:10 [▼
+//            "product_name" => "Mega Auto Finance"
+//            "category" => "Pascabayar"
+//            "brand" => "MULTIFINANCE"
+//            "seller_name" => "Lucky 7 Cell"
+//            "admin" => 0
+//            "commission" => 500
+//            "buyer_sku_code" => "MAF"
+//            "buyer_product_status" => true
+//            "seller_product_status" => true
+//            "desc" => "-"
+//          ]
+//          8 => array:10 [▼
+//            "product_name" => "Mega Central Finance"
+//            "category" => "Pascabayar"
+//            "brand" => "MULTIFINANCE"
+//            "seller_name" => "Lucky 7 Cell"
+//            "admin" => 0
+//            "commission" => 500
+//            "buyer_sku_code" => "MCF"
+//            "buyer_product_status" => true
+//            "seller_product_status" => true
+//            "desc" => "-"
+//          ]
+//          9 => array:10 [▼
+//            "product_name" => "Wom Finance"
+//            "category" => "Pascabayar"
+//            "brand" => "MULTIFINANCE"
+//            "seller_name" => "Lucky 7 Cell"
+//            "admin" => 0
+//            "commission" => 500
+//            "buyer_sku_code" => "WOM"
+//            "buyer_product_status" => true
+//            "seller_product_status" => true
+//            "desc" => "-"
+//          ]
+//          10 => array:10 [▼
+//            "product_name" => "Columbia Finance"
+//            "category" => "Pascabayar"
+//            "brand" => "MULTIFINANCE"
+//            "seller_name" => "Lucky 7 Cell"
+//            "admin" => 0
+//            "commission" => 1100
+//            "buyer_sku_code" => "COF"
+//            "buyer_product_status" => true
+//            "seller_product_status" => true
+//            "desc" => "-"
+//          ]
+//        ]
+//      ]
     
     
     
