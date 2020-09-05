@@ -189,7 +189,7 @@
            var type_pay = $('input[type=radio][name=type_pay]:checked').attr('value');
             $.ajax({
                 type: "GET",
-                url: "{{ URL::to('/') }}/m/cek/buy/ppob-pasca?no_hp={{$getData['customer_no']}}&vendor_id="+vendor_id+"&harga={{$selling_price}}&type_pay="+type_pay+"&type={{$type}}&ref_id={{$getData['ref_id']}}&price={{$getData['price']}}&customer_no={{$getData['customer_no']}}&buyer_sku_code={{$buyer_sku_code}}",
+                url: "{{ URL::to('/') }}/m/cek/buy/ppob-pasca?no_hp={{$getData['customer_no']}}&vendor_id="+vendor_id+"&harga={{$selling_price}}&type_pay="+type_pay+"&type={{$type}}&ref_id={{$getData['ref_id']}}&price={{$getData['selling_price']}}&customer_no={{$getData['customer_no']}}&buyer_sku_code={{$buyer_sku_code}}",
                 success: function(url){
                     $("#confirmDetail" ).empty();
                     $("#confirmDetail").html(url);
