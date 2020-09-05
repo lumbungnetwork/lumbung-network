@@ -4735,8 +4735,11 @@ class MemberController extends Controller {
             return redirect()->route('mainDashboard');
         }
         //1 BPJS. 2 PLN, 3 Hp Pasca, 4 TELKOM PSTN
-        $buyer_sku_code = 'BPJS';
-        $typePPOB = 4;
+        
+        if($request->type == 1){
+            $buyer_sku_code = 'BPJS';
+            $typePPOB = 4;
+        }
         if($request->type == 2){
             $buyer_sku_code = 'PLNPOST';
             $typePPOB = 5;

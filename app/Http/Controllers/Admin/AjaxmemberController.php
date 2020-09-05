@@ -1562,7 +1562,9 @@ class AjaxmemberController extends Controller {
         }
         $type = $request->type;
         $modelMember = New Member;
-        $typeName = 'Pembayaran BPJS';
+        if($type == 4){
+            $typeName = 'Pembayaran BPJS';
+        }
         if($type == 5){
             $typeName = 'Pembayaran PLN Pascabayar';
         }

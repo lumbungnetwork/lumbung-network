@@ -18,20 +18,23 @@
         <form id="form-add" method="POST" action="/m/buy/ppob">
             {{ csrf_field() }}
             <?php
-                $textProductName = 'BPJS';
-                $typePPOB = 4;
-                if($type == 2){
+                if($type == 4){
+                    $textProductName = 'BPJS';
+                    $typePPOB = 7;
+                }
+                if($type == 5){
                     $textProductName = 'PLN Pascabayar'  ;
                     $typePPOB = 5;
                 }
-                if($type == 3){
+                if($type == 6){
                     $textProductName = 'HP Pascabayar'  ;
                     $typePPOB = 6;
                 }
-                if($type == 4){
+                if($type == 7){
                     $textProductName = 'TELKOM PSTN'  ;
-                    $typePPOB = 7;
+                    $typePPOB = 4;
                 }
+
             ?>
             <div class="row">
                 <div class="col-md-12 col-xs-12">
