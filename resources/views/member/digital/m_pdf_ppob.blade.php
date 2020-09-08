@@ -10,6 +10,7 @@
             font-family:'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
             text-align:center;
             color:#777;
+            font-weight: 700;
             }
             body h1{
             font-weight:300;
@@ -202,13 +203,13 @@
                             Tagihan
                         </td>
                         <td>
-                            Rp {{$getDataMaster->harga_modal}}
+                            Rp {{$getDataMaster->ppob_price}}
                         </td>
                     </tr>
                     <tr class="total">
                         <td></td>
                         <td>
-                            Total: Rp {{$getDataMaster->harga_modal}}
+                            Total: Rp {{$getDataMaster->ppob_price}}
                         </td>
                     </tr>
                     @endif
