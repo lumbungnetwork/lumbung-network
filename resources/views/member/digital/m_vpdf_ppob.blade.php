@@ -171,13 +171,21 @@
                             Tagihan
                         </td>
                         <td>
-                            Rp {{$getDataMaster->harga_modal}}
+                            Rp {{$getDataMaster->ppob_price - 2500}}
+                        </td>
+                    </tr>
+                    <tr class="item last">
+                        <td>
+                            Biaya Admin
+                        </td>
+                        <td>
+                            Rp 2500
                         </td>
                     </tr>
                     <tr class="total">
                         <td></td>
                         <td>
-                            Total: Rp {{$getDataMaster->harga_modal}}
+                            Total: Rp {{$getDataMaster->ppob_price}}
                         </td>
                     </tr>
                     @endif
@@ -195,13 +203,13 @@
                             Tagihan
                         </td>
                         <td>
-                            Rp {{$getDataMaster->harga_modal}}
+                            Rp {{$getDataMaster->ppob_price}}
                         </td>
                     </tr>
                     <tr class="total">
                         <td></td>
                         <td>
-                            Total: Rp {{$getDataMaster->harga_modal}}
+                            Total: Rp {{$getDataMaster->ppob_price}}
                         </td>
                     </tr>
                     @endif
