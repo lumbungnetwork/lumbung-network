@@ -157,7 +157,7 @@
                             </table>
                         </td>
                     </tr>
-                    @if($getDataMaster->message != 'Pembayaran BPJS')
+                    
                     <tr class="heading">
                         <td>
                             Detail
@@ -188,31 +188,7 @@
                             Total: Rp {{$getDataMaster->ppob_price}}
                         </td>
                     </tr>
-                    @endif
-                    @if($getDataMaster->message == 'Pembayaran BPJS')
-                    <tr class="heading">
-                        <td>
-                            Detail
-                        </td>
-                        <td>
-                            Harga
-                        </td>
-                    </tr>
-                    <tr class="item">
-                        <td>
-                            Tagihan
-                        </td>
-                        <td>
-                            Rp {{$getDataMaster->ppob_price}}
-                        </td>
-                    </tr>
-                    <tr class="total">
-                        <td></td>
-                        <td>
-                            Total: Rp {{$getDataMaster->ppob_price}}
-                        </td>
-                    </tr>
-                    @endif
+                    
                     <tr class="information">
                         <td colspan="2">
                             <table>
