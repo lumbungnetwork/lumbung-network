@@ -54,22 +54,24 @@
                                     <?php $no = 0; ?>
                                         @foreach($getData as $row)
                                             @if($row->hapus == 0)
-                                            <?php
-                                                $no++;
-                                            ?>
-                                            <tr>
-                                                <td>{{$no}}</td>
-                                                <td>{{$row->ukuran}} {{$row->name}}</td>
-                                                <td>{{$row->code}}</td>
-                                                <td>{{number_format($row->total_sisa, 0, ',', ',')}}</td>
-                                                <td>
-                                                    <a rel="tooltip"  data-toggle="modal" data-target="#popUp1" class="text-info" href="{{ URL::to('/') }}/ajax/adm/edit-stock/{{$getStockist->id}}/{{$row->purchase_id}}">edit</a>
-                                                    @if($row->total_sisa <= 0)
-                                                        &nbsp;&nbsp;
-                                                        <a rel="tooltip"  data-toggle="modal" data-target="#popUp2" class="text-danger" href="{{ URL::to('/') }}/ajax/adm/rm-stock/{{$getStockist->id}}/{{$row->purchase_id}}">hapus</a>
-                                                    @endif
-                                                </td>
-                                            </tr>
+                                                @if($row->total_sisa > 0)
+                                                <?php
+                                                    $no++;
+                                                ?>
+                                                <tr>
+                                                    <td>{{$no}}</td>
+                                                    <td>{{$row->ukuran}} {{$row->name}}</td>
+                                                    <td>{{$row->code}}</td>
+                                                    <td>{{number_format($row->total_sisa, 0, ',', ',')}}</td>
+                                                    <td>
+                                                        <a rel="tooltip"  data-toggle="modal" data-target="#popUp1" class="text-info" href="{{ URL::to('/') }}/ajax/adm/edit-stock/{{$getStockist->id}}/{{$row->purchase_id}}">edit</a>
+                                                        @if($row->jml_keluar <= 0)
+                                                            &nbsp;&nbsp;
+                                                            <a rel="tooltip"  data-toggle="modal" data-target="#popUp2" class="text-danger" href="{{ URL::to('/') }}/ajax/adm/rm-stock/{{$getStockist->id}}/{{$row->purchase_id}}">hapus</a>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                                @endif
                                             @endif
                                         @endforeach
                                     @endif

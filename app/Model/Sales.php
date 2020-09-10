@@ -1575,7 +1575,7 @@ class Sales extends Model {
         return $sql;
     }
     
-    public function getAllItemPurchaseStockistPurchase($purchase_id, $user_id){
+    public function getAllItemPurchaseStockistPurchase($purchase_id, $user_id){ 
         $sql = DB::table('item_purchase')
                     ->where('purchase_id', '=', $purchase_id)
                     ->where('stockist_id', '=', $user_id)
