@@ -4,6 +4,18 @@
     </div>
     @if($bankPerusahaan != null)
     <div class="modal-body"  style="overflow-y: auto;max-height: 330px;">
+        <div class="row" id="loading" style="display:none;">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <h5 class="text-danger" style="display: block;text-align: center;">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only"></span>
+                        </div>
+                        Loading...
+                    </h5>
+                </div>
+            </div>
+        </div>
         <form id="form-add" method="POST" action="/m/add/transaction">
             {{ csrf_field() }}
             <div class="row">

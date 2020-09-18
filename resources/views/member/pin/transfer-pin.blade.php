@@ -124,6 +124,14 @@
         $("#to_id").val(valNew[0]);
         $("#get_id-box").hide();
     }
+    function confirmSubmit(){
+        var dataInput = $("#form-add").serializeArray();
+        $('#form-add').submit();
+        $('#form-add').remove();
+        $('#loading').show();
+        $('#tutupModal').remove();
+        $('#submit').remove();
+    }
 
 </script>
 @stop
