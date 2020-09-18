@@ -5,7 +5,7 @@
         <h5 class="modal-title" id="exampleModalLabel">{{$headerTitle}}</h5>
     </div>
     <?php
-        $royalti = 4/100 * $getDataMaster->price;
+        $royalti = 2/100 * $getDataMaster->price; //sebelumnya 4
     ?>
     <div class="modal-body" style="max-height: 400px;overflow-y: auto;">
         <div class="row">
