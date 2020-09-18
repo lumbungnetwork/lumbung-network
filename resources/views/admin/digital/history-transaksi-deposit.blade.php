@@ -43,6 +43,7 @@
                                         <th>No</th>
                                         <th>User ID</th>
                                         <th>Type</th>
+                                        <th>Kode</th>
                                         <th>Status</th>
                                         <th>EIDR/Bank</th>
                                         <th>TRON/Detail Bank</th>
@@ -95,6 +96,7 @@
                                             <tr>
                                                 <td>{{$no}}</td>
                                                 <td>{{$row->user_code}}</td>
+                                                <td>{{$row->transaction_code}}</td>
                                                 <td>{{$type}}</td>
                                                 <td>
                                                     <span class="badge badge-pill badge-{{$label}}">{{$status}}</span>
