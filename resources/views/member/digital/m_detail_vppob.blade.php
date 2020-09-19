@@ -110,14 +110,16 @@
                                         @endif
                                         @if($getDataMaster->status == 1)
                                             <a class="btn btn-dark" href="{{ URL::to('/') }}/m/list/vppob-transaction">Kembali</a>
-                                            <button type="submit" class="btn btn-danger"  id="submitBtn" data-toggle="modal" data-target="#rejectSubmit" onClick="rejectSubmit()">Batal</button>
-                                            &nbsp;
-                                            <form method="POST" action="/m/confirm/vppob" style="display: contents;">
-                                                {{ csrf_field() }}
-                                                <input type="hidden" name="ppob_id" value="{{$getDataMaster->id}}">
-                                                <input type="hidden" name="harga_modal" value="{{$getDataMaster->harga_modal}}">
-                                                <button type="submit" class="btn btn-success" id="submitBtn">Konfirmasi</button>
-                                            </form>
+                                            @if($getDataMaster->vendor_cek == null)
+                                                <button type="submit" class="btn btn-danger"  id="submitBtn" data-toggle="modal" data-target="#rejectSubmit" onClick="rejectSubmit()">Batal</button>
+                                                &nbsp;
+                                                <form method="POST" action="/m/confirm/vppob" style="display: contents;">
+                                                    {{ csrf_field() }}
+                                                    <input type="hidden" name="ppob_id" value="{{$getDataMaster->id}}">
+                                                    <input type="hidden" name="harga_modal" value="{{$getDataMaster->harga_modal}}">
+                                                    <button type="submit" class="btn btn-success" id="submitBtn">Konfirmasi</button>
+                                                </form>
+                                            @endif
                                         @endif
                                         @if($getDataMaster->status == 2)
                                             <a class="btn btn-dark" href="{{ URL::to('/') }}/m/list/vppob-transaction">Kembali</a>
