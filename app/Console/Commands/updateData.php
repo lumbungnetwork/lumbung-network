@@ -24,7 +24,6 @@ class updateData extends Command {
         //update lumbung.users set password = '$2y$10$QdU2j2MFloz3bmh8Co03UegnbeaSq5H3N8Ge8yM8QqEplce/pSlU6';
         ini_set("memory_limit",-1);
         ini_set('max_execution_time', 1500);
-        $modelMember = New Member;
 //        $dataUser = array(28, 831);
 //        foreach($dataUser as $rowUser){
 //            $getStockistReqRemove = $modelMember->getCekRequestSotckistBalikinData($rowUser);
@@ -43,15 +42,14 @@ class updateData extends Command {
 //            $modelMember->getUpdateUsers('id', $rowUser, $dataUpdateUser);
 //        }
         $dataAndya = array(
-            'email' => 'bernaandya@gmail.com',
-            'password' => bcrypt('superadmin_2020'),
-            'name' => 'bernaandya@gmail.com',
-            'user_code' => 'bernaandya@gmail.com',
-            'is_active' => 1,
-            'user_type' => 1,
-            'id_type' => 0,
+            'kode' => '12.71.22.0000',
+            'nama' => 'MEDAN PETISAH',
+            'propinsi' => 12,
+            'kabupatenkota' => 71,
+            'kecamatan' => 22,
+            'kelurahan' => '0000'
         );
-        DB::table('users')->insert($dataAndya);
+        DB::table('daerah')->insert($dataAndya);
         dd('done');
     }
     
