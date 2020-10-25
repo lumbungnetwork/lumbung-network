@@ -373,6 +373,14 @@ class Pin extends Model {
         return $sql;
     }
     
+    public function getStatusPPOBDetailCekReject(){
+        $sql = DB::table('ppob')
+                    ->where('ppob.status', '=', 3)
+                    ->where('ppob.ppob_date', '>', '2020-07-01')
+                    ->get();
+        return $sql;
+    }
+    
     public function getCekHpOn10Menit($hp){
         $date = date('Y-m-d H:i:s');
         $startTime = strtotime("-13 minutes", strtotime($date));

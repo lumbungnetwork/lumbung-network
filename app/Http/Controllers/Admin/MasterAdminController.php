@@ -3690,5 +3690,40 @@ class MasterAdminController extends Controller {
 
     }
     
+    public function getMemberTestingCheckRejectStatus(){
+        $dataUser = Auth::user();
+        $onlyUser  = array(1);
+        if(!in_array($dataUser->user_type, $onlyUser)){
+            return redirect()->route('mainDashboard');
+        }
+        $modelMember = New Member;
+        $modelPin = new Pin;
+        $getDataMaster = $modelPin->getStatusPPOBDetailCekReject();
+        $getDataAPI = $modelMember->getDataAPIMobilePulsa();
+        $username   = $getDataAPI->username;
+        $apiKey   = $getDataAPI->api_key;
+        $return = array();
+        foreach($getDataMaster as $row){
+            $sign = md5($username.$apiKey.$row->ppob_code);
+            $array = array(
+                'username' => $username,
+                'buyer_sku_code' => $row->buyer_code,
+                'customer_no' => $row->product_name,
+                'ref_id' => $row->ppob_code,
+                'sign' => $sign,
+            );
+            $url = $getDataAPI->master_url.'/v1/transaction';
+            $json = json_encode($array);
+            $cek = $modelMember->getAPIurlCheck($url, $json);
+            $arrayData = json_decode($cek, true);
+            $return[] = array(
+                'id' => $row->id,
+                'cek' => $arrayData
+            );
+        }
+        dd($return);
+        
+    }
+    
 
 }
