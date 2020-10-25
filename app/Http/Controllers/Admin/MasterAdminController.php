@@ -3529,9 +3529,9 @@ class MasterAdminController extends Controller {
         if($getDataMaster == null){
             dd('empty');
         }
-        if($getDataMaster->status != 2){
-            dd('stop here');
-        }
+//        if($getDataMaster->status != 2){
+//            dd('stop here');
+//        }
         $getDataAPI = $modelMember->getDataAPIMobilePulsa();
         $username   = $getDataAPI->username;
         $apiKey   = $getDataAPI->api_key;
