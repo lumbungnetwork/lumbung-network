@@ -2,7 +2,7 @@
 @section('content')
 @include('layout.admin.sidebar')
 <div class="main-panel">
-    
+
     <?php //MENU HEADER  ?>
     <nav class="navbar navbar-expand-lg navbar-absolute fixed-top navbar-transparent">
         <div class="container-fluid">
@@ -18,7 +18,7 @@
             </div>
         </div>
     </nav>
-    
+
     <?php //MENU CONTENT  ?>
     <div class="content">
         <div class="row">
@@ -32,7 +32,7 @@
                             <div class="widget-content mt10 mb10 mr15">
                                 <div class="alert alert-{{ Session::get('messageclass') }}">
                                     <button class="close" type="button" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
-                                    {{  Session::get('message')    }} 
+                                    {{  Session::get('message')    }}
                                 </div>
                             </div>
                         @endif
@@ -50,24 +50,30 @@
                                         <th>By Admin</th>
                                     </tr>
                                 </thead>
-                                
+
                                 <tbody>
                                     @if($getData != null)
-                                        <?php 
-                                        $no = 0; 
+                                        <?php
+                                        $no = 0;
                                         ?>
                                         @foreach($getData as $row)
-                                        <?php 
+                                        <?php
                                             $no++;
                                             $metode = 'eIDR';
-                                            $detail = 'TWJtGQHBS88PfZTXvWAYhQEMrx36eX2F9Pc';
+                                            $detail = 'TZHYx9bVa4vQz8VpVvZtjwMb4AHqkUChiQ';
                                             if($row->buy_metode == 2){
                                                 $metode = 'Transfer Bank';
-                                                $detail = 'BRI 
+                                                $detail = 'BRI
                                                     <br>
                                                     a/n <b>PT LUMBUNG MOMENTUM BANGSA</b>
                                                     <br>
                                                     033601001795562';
+                                            }
+                                            if($row->buy_metode == 4){
+                                                $metode = 'TronWeb Autoconfirm';
+                                                $detail = 'eIDR
+                                                    <br>
+                                                    TZHYx9bVa4vQz8VpVvZtjwMb4AHqkUChiQ';
                                             }
                                             $royalti = 4/100 * $row->price;
                                             $status = 'waiting';
@@ -86,7 +92,7 @@
                                                     $name = $row->submit_name;
                                                 }
                                             }
-                                            
+
                                             if($row->submit_by == 1){
                                                 $name = 'Master Admin';
                                             }
@@ -107,8 +113,8 @@
                                     @endif
                                 </tbody>
                             </table>
-                             
-                             
+
+
                         </div>
                     </div>
                 </div>
