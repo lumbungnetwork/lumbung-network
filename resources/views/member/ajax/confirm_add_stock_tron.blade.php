@@ -38,15 +38,14 @@
                         <input type="hidden" name="sender"  value="{{$data->sender}}">
                         <input type="hidden" name="timestamp"  value="{{$data->timestamp}}">
                         <input type="hidden" name="royalti"  value="{{$data->royalti}}">
-                        <p class="lead text-muted" style="display: block;text-align: center;">Apakah anda ingin <b>Mengkonfirmasi</b> Pembayaran Royalti?</p>
+                        <p class="lead text-muted" style="display: block;text-align: center;">Silakan tekan tombol <b>Konfirmasi</b> di bawah:</p>
                     </div>
                 </div>
             </div>
         </form>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Tutup</button>
-        <button type="button" class="btn btn-primary waves-effect waves-light" id="submit" onclick="confirmSubmit()">Konfirmasi</button>
+        <button type="button" class="btn btn-lg btn-primary waves-effect waves-light" id="submit" onclick="confirmSubmit()">Konfirmasi</button>
     </div>
 </div>
 @endif

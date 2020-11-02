@@ -252,17 +252,23 @@
         })
         setTimeout(function(){
             if($('#isTronWeb').val() > 0 && $('#eidr-balance').html() >= {{$royalti}}){
-                $('#submitBtn').remove();
+                $('#submitBtn').hide();
                 $('#eidr-pay-button').show();
                 }
         }, 3000);
 
             $('#bankbutton').click(function() {
                 $('#radio1').prop('checked', true)
+                $('#submitBtn').show();
+                $('#eidr-pay-button').hide();
             })
 
             $('#eidrbutton').click(function() {
                 $('#radio2').prop('checked', true)
+                if($('#isTronWeb').val() > 0 && $('#eidr-balance').html() >= {{$royalti}}){
+                    $('#submitBtn').hide();
+                    $('#eidr-pay-button').show();
+                }
             })
 
            function inputSubmit(){
