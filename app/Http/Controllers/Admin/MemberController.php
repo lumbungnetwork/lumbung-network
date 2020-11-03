@@ -1998,11 +1998,7 @@ class MemberController extends Controller
         if ($dataUser->is_stockist == 0) {
             return redirect()->route('m_SearchStockist');
         }
-        if ($request->transfer == 0) {
-            return redirect()->route('m_StockistDetailPruchase', [$request->id_master])
-                ->with('message', 'Transfer Gagal!')
-                ->with('messageclass', 'danger');
-        }
+
         $modelSales = new Sales;
         $bank_name = 'TronWeb';
         $account_no = null;
@@ -2014,9 +2010,23 @@ class MemberController extends Controller
         $timestamp = $request->timestamp;
 
         $client = new Client();
+        sleep(3);
         $response = $client->request('GET', 'https://apilist.tronscan.org/api/transaction-info', [
             'query' => ['hash' => $hash]
         ]);
+
+        if ($response->getStatusCode() != 200) {
+            return redirect()->route('m_StockistDetailPruchase', [$request->id_master])
+                ->with('message', 'Ada Gangguan Koneksi API, Lapor ke Admin!')
+                ->with('messageclass', 'danger');
+        }
+
+        if (empty(json_decode($response->getBody(), true))) {
+            return redirect()->route('m_StockistDetailPruchase', [$request->id_master])
+                ->with('message', 'Hash Transaksi Bermasalah!')
+                ->with('messageclass', 'danger');
+        };
+
         $jsonres = json_decode($response->getBody());
         $txdata = $jsonres->contractData;
         if ($jsonres->timestamp > $timestamp) {

@@ -49,8 +49,8 @@ $("#eidr-pay-button").click(async function () {
     var broastTx = await tronweb.trx.sendRawTransaction(signedTx);
     if (broastTx.result) {
       alert("Transaksi Berhasil, Silakan Klik Konfirmasi!");
-      console.log(broastTx.txid);
       $('#hash').val(broastTx.txid);
+      $('#submit').removeAttr("disabled");
 
     } else {
       alert("Transaksi Gagal! Cek kembali koneksi anda lalu ulangi");

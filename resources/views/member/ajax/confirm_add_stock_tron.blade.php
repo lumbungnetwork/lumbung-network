@@ -45,7 +45,7 @@
         </form>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-lg btn-primary waves-effect waves-light" id="submit" onclick="confirmSubmit()">Konfirmasi</button>
+        <button type="button" class="btn btn-lg btn-primary waves-effect waves-light" id="submit" disabled onclick="confirmSubmit()">Konfirmasi</button>
     </div>
 </div>
 @endif
