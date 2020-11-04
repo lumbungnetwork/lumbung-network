@@ -2823,6 +2823,97 @@ class MemberController extends Controller
             ->with('messageclass', 'success');
     }
 
+    public function postAddRequestVStockTron(Request $request)
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_vendor == 0) {
+            return redirect()->route('m_SearchVendor');
+        }
+        $modelSales = new Sales;
+        $bank_name = 'TronWeb';
+        $account_no = null;
+        $account_name = null;
+        $buy_metode = 0;
+        $hash = $request->transfer;
+        $sender = $request->sender;
+        $amount = $request->royalti;
+        $timestamp = $request->timestamp;
+
+        $client = new Client();
+        sleep(3);
+        $response = $client->request('GET', 'https://apilist.tronscan.org/api/transaction-info', [
+            'query' => ['hash' => $hash]
+        ]);
+
+        if ($response->getStatusCode() != 200) {
+            return redirect()->route('m_VendorListPruchase', [$request->id_master])
+                ->with('message', 'Ada Gangguan Koneksi API, Lapor ke Admin!')
+                ->with('messageclass', 'danger');
+        }
+
+        if (empty(json_decode($response->getBody(), true))) {
+            return redirect()->route('m_VendorListPruchase', [$request->id_master])
+                ->with('message', 'Hash Transaksi Bermasalah!')
+                ->with('messageclass', 'danger');
+        };
+
+        $jsonres = json_decode($response->getBody());
+        $txdata = $jsonres->contractData;
+        if ($jsonres->timestamp > $timestamp) {
+            if ($txdata->amount == $amount * 100) {
+                if ($txdata->asset_name == '1002652') {
+                    if ($txdata->to_address == 'TZHYx9bVa4vQz8VpVvZtjwMb4AHqkUChiQ') {
+                        if ($txdata->owner_address == $sender) {
+                            $buy_metode = 4;
+                            $tron = $request->tron;
+                            $dataUpdate = array(
+                                'status' => 2,
+                                'buy_metode' => $buy_metode,
+                                'tron' => $tron,
+                                'tron_transfer' => $hash,
+                                'bank_name' => $bank_name,
+                                'account_no' => $account_no,
+                                'account_name' => $account_name,
+                                'metode_at' => date('Y-m-d H:i:s')
+                            );
+                            $modelSales->getUpdateVendorItemPurchaseMaster('id', $request->id_master, $dataUpdate);
+                            return redirect()->route('m_VendorListPruchase')
+                                ->with('message', 'Konfirmasi request Vendor Input Stock berhasil')
+                                ->with('messageclass', 'success');
+                        } else {
+                            return redirect()->route('m_VendorListPruchase', [$request->id_master])
+                                ->with('message', 'Bukan Pengirim Yang Sebenarnya!')
+                                ->with('messageclass', 'danger');
+                        }
+                    } else {
+                        return redirect()->route('m_VendorListPruchase', [$request->id_master])
+                            ->with('message', 'Alamat Tujuan Transfer Salah!')
+                            ->with('messageclass', 'danger');
+                    }
+                } else {
+                    return redirect()->route('m_VendorListPruchase', [$request->id_master])
+                        ->with('message', 'Bukan Token eIDR yang benar!')
+                        ->with('messageclass', 'danger');
+                }
+            } else {
+                return redirect()->route('m_VendorListPruchase', [$request->id_master])
+                    ->with('message', 'Nominal Transfer Salah!')
+                    ->with('messageclass', 'danger');
+            }
+        } else {
+            return redirect()->route('m_VendorListPruchase', [$request->id_master])
+                ->with('message', 'Hash sudah terpakai!')
+                ->with('messageclass', 'danger');
+        }
+    }
+
     public function postRejectRequestVStock(Request $request)
     {
         $dataUser = Auth::user();

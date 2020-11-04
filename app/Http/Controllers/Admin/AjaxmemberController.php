@@ -1099,18 +1099,25 @@ class AjaxmemberController extends Controller
             $account_no = '033601001795562';
             $account_name = 'PT LUMBUNG MOMENTUM BANGSA';
         }
-        if ($request->metode == 3) {
-            $tron = 'TWJtGQHBS88PfZTXvWAYhQEMrx36eX2F9Pc';
+        if ($request->metode == 3 || $request->metode == 4) {
+            $tron = 'TZHYx9bVa4vQz8VpVvZtjwMb4AHqkUChiQ';
         }
         $data = (object) array(
             'id_master' => $request->id_master,
             'royalti' => $request->royalti,
             'buy_metode' => $request->metode,
+            'sender' => $request->sender,
+            'timestamp' => $request->timestamp,
             'bank_name' => $bank_name,
             'account_no' => $account_no,
             'account_name' => $account_name,
             'tron' => $tron
         );
+        if ($request->metode == 4) {
+            return view('member.ajax.confirm_add_vstock_tron')
+                ->with('check', $canInsert)
+                ->with('data', $data);
+        }
         return view('member.ajax.confirm_add_vstock')
             ->with('check', $canInsert)
             ->with('data', $data);

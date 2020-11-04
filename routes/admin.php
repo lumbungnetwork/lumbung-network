@@ -360,6 +360,7 @@ Route::prefix('/')->group(function () {
     Route::get('/m/purchase/detail-vstock/{id}', 'Admin\MemberController@getVendorDetailRequestStock')->name('m_VendorDetailPruchase')->middleware('auth');
     Route::get('/m/purchase/list-vstock', 'Admin\MemberController@getVendorListPurchase')->name('m_VendorListPruchase')->middleware('auth');
     Route::post('/m/add/req-vstock', 'Admin\MemberController@postAddRequestVStock')->middleware('auth');
+    Route::post('/m/add/req-vstock-tron', 'Admin\MemberController@postAddRequestVStockTron')->middleware('auth');
     Route::post('/m/reject/req-vstock', 'Admin\MemberController@postRejectRequestVStock')->middleware('auth');
     Route::get('/m/purchase/my-vstock', 'Admin\MemberController@getVendorMyStockPurchaseSisa')->name('m_VendorMyPruchaseSisa')->middleware('auth');
     Route::get('/m/vendor-report', 'Admin\MemberController@getMemberVendorReport')->name('m_MemberVendorReport')->middleware('auth');

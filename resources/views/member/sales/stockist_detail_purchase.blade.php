@@ -251,7 +251,7 @@
             $('#eidr-pay-button').hide();
         })
         setTimeout(function(){
-            if($('#isTronWeb').val() > 0 && $('#eidr-balance').html() >= {{$royalti}}){
+            if($('#isTronWeb').val() > 0 && $('#eidr-balance').val() >= {{$royalti}}){
                 $('#submitBtn').hide();
                 $('#eidr-pay-button').show();
                 }
@@ -265,7 +265,7 @@
 
             $('#eidrbutton').click(function() {
                 $('#radio2').prop('checked', true)
-                if($('#isTronWeb').val() > 0 && $('#eidr-balance').html() >= {{$royalti}}){
+                if($('#isTronWeb').val() > 0 && $('#eidr-balance').val() >= {{$royalti}}){
                     $('#submitBtn').hide();
                     $('#eidr-pay-button').show();
                 }

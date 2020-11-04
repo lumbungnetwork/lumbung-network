@@ -14,10 +14,12 @@
           let eIDRarray = await tokenBalancesArray.find(function (tokenID) {
             return tokenID.key == "1002652";
           });
+          let eIDRbalance = eIDRarray.value / 100;
+
           $("#saldo-eidr").html(
-            `<small>Saldo eIDR anda:</small> <h4 id="eidr-balance" class="text-success">` +
-              eIDRarray.value / 100 +
-              `<h4 class="text-success"> eIDR</h4>`
+            `
+            <input type="hidden" value="`+ eIDRbalance +`" name="eidr-balance" id="eidr-balance">
+            <small>Saldo eIDR anda:</small> <h5 class="text-success">` + eIDRbalance +` eIDR</h5>`
           );
 
           $("#userTron").val(userAddress);
@@ -43,7 +45,7 @@ $("#eidr-pay-button").click(async function () {
       toAddress,
       sendAmount,
       "1002652",
-      userAddress
+      userAddress,
     );
     var signedTx = await tronweb.trx.sign(tx);
     var broastTx = await tronweb.trx.sendRawTransaction(signedTx);
@@ -53,7 +55,9 @@ $("#eidr-pay-button").click(async function () {
       $('#submit').removeAttr("disabled");
 
     } else {
-      alert("Transaksi Gagal! Cek kembali koneksi anda lalu ulangi");
+      alert("Transaksi Gagal! Cek koneksi anda, Restart Aplikasi ini, lalu ulangi");
+      $('#submit').remove();
+      $('.modal-footer').append('<button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Tutup</button>');
     }
   } catch (e) {
     if (e.includes("assetBalance is not sufficient")) {
