@@ -5,6 +5,7 @@
     <div id="content">
         <input type="hidden" id="isTronWeb" value="0">
         <input type="hidden" id="userTron" value="0" disabled>
+        <input type="hidden" id="txType" value="1" disabled>
         <div class="bg-gradient-sm">
             <nav class="navbar navbar-expand-lg navbar-light bg-transparent w-100">
                 <div class="container">
@@ -150,7 +151,7 @@
                                     <label for="radio2">
                                         Transfer eIDR ke alamat ini:
                                         <br>
-                                        TZHYx9bVa4vQz8VpVvZtjwMb4AHqkUChiQ
+                                        <mark class="text-break">TZHYx9bVa4vQz8VpVvZtjwMb4AHqkUChiQ</mark>
 
                                     </label>
                                 </div>
@@ -290,10 +291,9 @@
                 var metode = 4;
                 var royalti = {{$royalti}};
                 var sender = $("#userTron").val();
-                var timestamp = new Date().getTime();
                  $.ajax({
                      type: "GET",
-                     url: "{{ URL::to('/') }}/m/cek/add-stock?id_master="+id_master+"&metode="+metode+"&royalti="+royalti+"&sender="+sender+"&timestamp="+timestamp,
+                     url: "{{ URL::to('/') }}/m/cek/add-stock?id_master="+id_master+"&metode="+metode+"&royalti="+royalti+"&sender="+sender,
                      success: function(url){
                          $("#confirmDetail" ).empty();
                          $("#confirmDetail").html(url);

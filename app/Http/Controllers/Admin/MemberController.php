@@ -2007,7 +2007,7 @@ class MemberController extends Controller
         $hash = $request->transfer;
         $sender = $request->sender;
         $amount = $request->royalti;
-        $timestamp = $request->timestamp;
+        $timestamp = $modelSales->getItemPurchaseMasterTimestamp($request->id_master);
 
         $client = new Client();
         sleep(3);
@@ -2028,8 +2028,9 @@ class MemberController extends Controller
         };
 
         $jsonres = json_decode($response->getBody());
+        $hashTime = $jsonres->timestamp / 1000;
         $txdata = $jsonres->contractData;
-        if ($jsonres->timestamp > $timestamp) {
+        if ($hashTime > $timestamp) {
             if ($txdata->amount == $amount * 100) {
                 if ($txdata->asset_name == '1002652') {
                     if ($txdata->to_address == 'TZHYx9bVa4vQz8VpVvZtjwMb4AHqkUChiQ') {
@@ -2844,7 +2845,7 @@ class MemberController extends Controller
         $hash = $request->transfer;
         $sender = $request->sender;
         $amount = $request->royalti;
-        $timestamp = $request->timestamp;
+        $timestamp = $modelSales->getVendorItemPurchaseMasterTimestamp($request->id_master);
 
         $client = new Client();
         sleep(3);
@@ -2865,8 +2866,9 @@ class MemberController extends Controller
         };
 
         $jsonres = json_decode($response->getBody());
+        $hashTime = $jsonres->timestamp / 1000;
         $txdata = $jsonres->contractData;
-        if ($jsonres->timestamp > $timestamp) {
+        if ($hashTime > $timestamp) {
             if ($txdata->amount == $amount * 100) {
                 if ($txdata->asset_name == '1002652') {
                     if ($txdata->to_address == 'TZHYx9bVa4vQz8VpVvZtjwMb4AHqkUChiQ') {
@@ -2885,7 +2887,7 @@ class MemberController extends Controller
                             );
                             $modelSales->getUpdateVendorItemPurchaseMaster('id', $request->id_master, $dataUpdate);
                             return redirect()->route('m_VendorListPruchase')
-                                ->with('message', 'Konfirmasi request Vendor Input Stock berhasil')
+                                ->with('message', 'Proses Input Stock Vendor berhasil')
                                 ->with('messageclass', 'success');
                         } else {
                             return redirect()->route('m_VendorListPruchase', [$request->id_master])
@@ -3461,6 +3463,93 @@ class MemberController extends Controller
         return redirect()->route('m_listDepositTransactions')
             ->with('message', 'Konfirmasi transfer berhasil')
             ->with('messageclass', 'success');
+    }
+
+    public function postAddDepositTransactionTron(Request $request)
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_active == 0) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->is_vendor == 0) {
+            return redirect()->route('m_SearchVendor');
+        }
+
+        $hash = $request->tron_transfer;
+        $sender = $request->sender;
+        $amount = $request->amount;
+        $timestamp = $request->timestamp;
+
+        $client = new Client();
+        sleep(3);
+        $response = $client->request('GET', 'https://apilist.tronscan.org/api/transaction-info', [
+            'query' => ['hash' => $hash]
+        ]);
+
+        if ($response->getStatusCode() != 200) {
+            return redirect()->route('m_addDepositTransaction', [$request->id_trans])
+                ->with('message', 'Ada Gangguan Koneksi API, Lapor ke Admin!')
+                ->with('messageclass', 'danger');
+        }
+
+        if (empty(json_decode($response->getBody(), true))) {
+            return redirect()->route('m_addDepositTransaction', [$request->id_trans])
+                ->with('message', 'Hash Transaksi Bermasalah!')
+                ->with('messageclass', 'danger');
+        };
+
+        $jsonres = json_decode($response->getBody());
+        $txdata = $jsonres->contractData;
+        if ($jsonres->timestamp > $timestamp) {
+            if ($txdata->amount == $amount * 100) {
+                if ($txdata->asset_name == '1002652') {
+                    if ($txdata->to_address == 'TC1o89VSHMSPno2FE6SgoCsuy8i4mVSWge') {
+                        if ($txdata->owner_address == $sender) {
+                            $modelSettingTrans = new Transaction;
+                            $id_trans = $request->id_trans;
+                            $dataUpdate = array(
+                                'status' => 2,
+                                'bank_perusahaan_id' => $request->bank_perusahaan_id,
+                                'updated_at' => date('Y-m-d H:i:s'),
+                                'is_tron' => $request->is_tron,
+                                'tron_transfer' => $request->tron_transfer
+                            );
+                            $modelSettingTrans->getUpdateDepositTransaction('id', $id_trans, $dataUpdate);
+                            return redirect()->route('m_listDepositTransactions')
+                                ->with('message', 'Proses Isi Deposit Vendor berhasil')
+                                ->with('messageclass', 'success');
+                        } else {
+                            return redirect()->route('m_addDepositTransaction', [$request->id_trans])
+                                ->with('message', 'Bukan Pengirim Yang Sebenarnya!')
+                                ->with('messageclass', 'danger');
+                        }
+                    } else {
+                        return redirect()->route('m_addDepositTransaction', [$request->id_trans])
+                            ->with('message', 'Alamat Tujuan Transfer Salah!')
+                            ->with('messageclass', 'danger');
+                    }
+                } else {
+                    return redirect()->route('m_addDepositTransaction', [$request->id_trans])
+                        ->with('message', 'Bukan Token eIDR yang benar!')
+                        ->with('messageclass', 'danger');
+                }
+            } else {
+                return redirect()->route('m_addDepositTransaction', [$request->id_trans])
+                    ->with('message', 'Nominal Transfer Salah!')
+                    ->with('messageclass', 'danger');
+            }
+        } else {
+            return redirect()->route('m_addDepositTransaction', [$request->id_trans])
+                ->with('message', 'Hash sudah terpakai!')
+                ->with('messageclass', 'danger');
+        }
     }
 
     public function postRejectDepositTransaction(Request $request)

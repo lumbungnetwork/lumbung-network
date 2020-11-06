@@ -36,7 +36,6 @@
                         <input type="hidden" name="id_master" value="{{$data->id_master}}">
                         <input type="hidden" name="metode"  value="{{$data->buy_metode}}">
                         <input type="hidden" name="sender"  value="{{$data->sender}}">
-                        <input type="hidden" name="timestamp"  value="{{$data->timestamp}}">
                         <input type="hidden" name="royalti"  value="{{$data->royalti}}">
                         <p class="lead text-muted" style="display: block;text-align: center;">Silakan tekan tombol <b>Konfirmasi</b> di bawah:</p>
                     </div>

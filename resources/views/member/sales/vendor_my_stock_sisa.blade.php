@@ -2,11 +2,11 @@
 @section('content')
 
 <div class="wrapper">
-        
-    
+
+
         <!-- Page Content -->
         <div id="content">
-            
+
             <div class="bg-gradient-sm">
                 <nav class="navbar navbar-expand-lg navbar-light bg-transparent w-100">
                     <div class="container">
@@ -21,7 +21,7 @@
             </div>
             <div class="mt-min-10">
                 <div class="container">
-                    
+
                     <div class="rounded-lg bg-white p-3 mb-3">
                         <div class="row">
                             <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
@@ -39,7 +39,7 @@
                                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                                 <span aria-hidden="true">×</span>
                                             </button>
-                                            {{  Session::get('message')    }} 
+                                            {{  Session::get('message')    }}
                                         </div>
                                     @endif
                                     <div class="m-b-20">
@@ -53,7 +53,6 @@
                                             <tr>
                                                 <th>No.</th>
                                                 <th>Nama Produk</th>
-                                                <th>Kode Produk</th>
                                                 <th>Stok Tersedia</th>
                                             </tr>
                                         </thead>
@@ -68,7 +67,6 @@
                                                     <tr>
                                                         <td>{{$no}}</td>
                                                         <td>{{$row->ukuran}} {{$row->name}}</td>
-                                                        <td>{{$row->code}}</td>
                                                         <td>{{number_format($row->total_sisa, 0, ',', ',')}}</td>
                                                     </tr>
                                                     @endif
@@ -79,9 +77,9 @@
                             </div>
                         </div>
                     </div>
-                    
-                    
-                    
+
+
+
                 </div>
             </div>
             @include('layout.member.nav')
@@ -108,11 +106,11 @@
 <script src="/asset_member/plugins/datatables/dataTables.bootstrap4.min.js"></script>
     <script type="text/javascript">
     $(document).ready(function() {
-        $('#datatable').DataTable();
-        var table = $('#datatable-buttons').DataTable({
-            lengthChange: false,
+        $('#datatable').DataTable({
+            searching: false;
         });
+
     } );
-    
+
 </script>
 @stop

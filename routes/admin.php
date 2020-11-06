@@ -381,6 +381,7 @@ Route::prefix('/')->group(function () {
     Route::get('/m/list/deposit-transaction', 'Admin\MemberController@getListDepositTransactions')->name('m_listDepositTransactions')->middleware('auth');
     Route::get('/m/add/deposit-transaction/{id}', 'Admin\MemberController@getAddDepositTransaction')->name('m_addDepositTransaction')->middleware('auth');
     Route::post('/m/add/deposit-transaction', 'Admin\MemberController@postAddDepositTransaction')->middleware('auth');
+    Route::post('/m/add/deposit-transaction-tron', 'Admin\MemberController@postAddDepositTransactionTron')->middleware('auth');
     Route::post('/m/reject/deposit-transaction', 'Admin\MemberController@postRejectDepositTransaction')->middleware('auth');
     //        Route::get('/m/pin/deposit-stock', 'Admin\MemberController@getMyDepositStock')->name('m_myDepositStock')->middleware('auth');
     Route::get('/m/deposit/history', 'Admin\MemberController@getMyDepositHistory')->name('m_myDepositHistory')->middleware('auth');

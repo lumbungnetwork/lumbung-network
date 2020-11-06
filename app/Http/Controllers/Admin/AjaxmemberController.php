@@ -1256,6 +1256,7 @@ class AjaxmemberController extends Controller
         $modelBank = new Bank;
         $modelTrans = new Transaction;
         $separate = explode('_', $request->id_bank);
+        $is_tronweb = $request->is_tronweb;
         $getPerusahaanBank = null;
         $cekType = null;
         if (count($separate) == 2) {
@@ -1263,6 +1264,16 @@ class AjaxmemberController extends Controller
             $bankId = $separate[1];
             if ($cekType == 0) {
                 $getPerusahaanBank = $modelBank->getBankPerusahaanID($bankId);
+            } else if ($cekType == 1 && $is_tronweb == 1) {
+                $getPerusahaanBank = $modelBank->getTronPerusahaanID($bankId);
+                $getTrans = $modelTrans->getDetailDepositTransactionsMember($request->id_trans, $dataUser);
+                $data = (object) array('id_trans' => $request->id_trans, 'amount' => $request->amount, 'sender' => $request->sender, 'timestamp' => $request->timestamp);
+                return view('member.ajax.confirm_add_deposit_transaction')
+                    ->with('is_tronweb', $is_tronweb)
+                    ->with('bankPerusahaan', $getPerusahaanBank)
+                    ->with('getTrans', $getTrans)
+                    ->with('cekType', $cekType)
+                    ->with('data', $data);
             } else {
                 $getPerusahaanBank = $modelBank->getTronPerusahaanID($bankId);
             }
