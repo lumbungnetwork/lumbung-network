@@ -78,8 +78,8 @@
                 </div>
             </div>
             @endif
-            
-        </form>    
+
+        </form>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary waves-effect" id="tutupModal" data-dismiss="modal">Tutup</button>
@@ -96,5 +96,5 @@
     </div>
     @endif
     @endif
-    
+
 </div>

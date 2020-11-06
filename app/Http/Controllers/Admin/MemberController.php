@@ -3347,7 +3347,7 @@ class MemberController extends Controller
         }
         $modelSettingTrans = new Transaction;
         $code = $modelSettingTrans->getCodeDepositTransaction();
-        $rand = rand(101, 249);
+        $rand = rand(50, 148);
         $dataInsert = array(
             'user_id' => $dataUser->id,
             'transaction_code' => 'DTR' . date('Ymd') . $dataUser->id . $code,
@@ -3482,10 +3482,18 @@ class MemberController extends Controller
             return redirect()->route('m_SearchVendor');
         }
 
+        $modelSettingTrans = new Transaction;
+        $modelPin = new Pin;
+        $getTrans = $modelSettingTrans->getDetailDepositTransactionsMember($request->id_trans, $dataUser);
         $hash = $request->tron_transfer;
         $sender = $request->sender;
-        $amount = $request->amount;
-        $timestamp = $request->timestamp;
+        $amount = $getTrans->price + $getTrans->unique_digit;
+        $timestamp = strtotime($getTrans->created_at);
+        $id_trans = $request->id_trans;
+        $user_id = $dataUser->id;
+
+
+
 
         $client = new Client();
         sleep(3);
@@ -3494,59 +3502,64 @@ class MemberController extends Controller
         ]);
 
         if ($response->getStatusCode() != 200) {
-            return redirect()->route('m_addDepositTransaction', [$request->id_trans])
+            return redirect()->route('m_addDepositTransaction', [$id_trans])
                 ->with('message', 'Ada Gangguan Koneksi API, Lapor ke Admin!')
                 ->with('messageclass', 'danger');
         }
 
         if (empty(json_decode($response->getBody(), true))) {
-            return redirect()->route('m_addDepositTransaction', [$request->id_trans])
+            return redirect()->route('m_addDepositTransaction', [$id_trans])
                 ->with('message', 'Hash Transaksi Bermasalah!')
                 ->with('messageclass', 'danger');
         };
 
         $jsonres = json_decode($response->getBody());
+        $hashTime = $jsonres->timestamp / 1000;
         $txdata = $jsonres->contractData;
-        if ($jsonres->timestamp > $timestamp) {
-            if ($txdata->amount == $amount * 100) {
+        if ($hashTime > $timestamp) {
+            if ($txdata->amount / 100 == $amount) {
                 if ($txdata->asset_name == '1002652') {
                     if ($txdata->to_address == 'TC1o89VSHMSPno2FE6SgoCsuy8i4mVSWge') {
                         if ($txdata->owner_address == $sender) {
-                            $modelSettingTrans = new Transaction;
-                            $id_trans = $request->id_trans;
                             $dataUpdate = array(
                                 'status' => 2,
-                                'bank_perusahaan_id' => $request->bank_perusahaan_id,
+                                'bank_perusahaan_id' => 9,
                                 'updated_at' => date('Y-m-d H:i:s'),
-                                'is_tron' => $request->is_tron,
-                                'tron_transfer' => $request->tron_transfer
+                                'is_tron' => 1,
+                                'tron_transfer' => $hash
                             );
                             $modelSettingTrans->getUpdateDepositTransaction('id', $id_trans, $dataUpdate);
+                            $memberDeposit = array(
+                                'user_id' => $user_id,
+                                'total_deposito' => $getTrans->price,
+                                'transaction_code' => $getTrans->transaction_code,
+                            );
+                            $modelPin->getInsertMemberDeposit($memberDeposit);
                             return redirect()->route('m_listDepositTransactions')
                                 ->with('message', 'Proses Isi Deposit Vendor berhasil')
                                 ->with('messageclass', 'success');
                         } else {
-                            return redirect()->route('m_addDepositTransaction', [$request->id_trans])
+                            return redirect()->route('m_addDepositTransaction', [$id_trans])
                                 ->with('message', 'Bukan Pengirim Yang Sebenarnya!')
                                 ->with('messageclass', 'danger');
                         }
                     } else {
-                        return redirect()->route('m_addDepositTransaction', [$request->id_trans])
+                        return redirect()->route('m_addDepositTransaction', [$id_trans])
                             ->with('message', 'Alamat Tujuan Transfer Salah!')
                             ->with('messageclass', 'danger');
                     }
                 } else {
-                    return redirect()->route('m_addDepositTransaction', [$request->id_trans])
+                    return redirect()->route('m_addDepositTransaction', [$id_trans])
                         ->with('message', 'Bukan Token eIDR yang benar!')
                         ->with('messageclass', 'danger');
                 }
             } else {
-                return redirect()->route('m_addDepositTransaction', [$request->id_trans])
+                return redirect()->route('m_addDepositTransaction', [$id_trans])
                     ->with('message', 'Nominal Transfer Salah!')
                     ->with('messageclass', 'danger');
             }
         } else {
-            return redirect()->route('m_addDepositTransaction', [$request->id_trans])
+            return redirect()->route('m_addDepositTransaction', [$id_trans])
                 ->with('message', 'Hash sudah terpakai!')
                 ->with('messageclass', 'danger');
         }

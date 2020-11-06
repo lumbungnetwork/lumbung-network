@@ -473,6 +473,7 @@ Route::prefix('/')->group(function () {
 
     Route::get('/m/cek/add-deposit', 'Admin\AjaxmemberController@postCekAddDeposit')->middleware('auth');
     Route::get('/m/cek/add/deposit-transaction', 'Admin\AjaxmemberController@postCekAddDepositTransaction')->middleware('auth');
+    Route::get('/m/cek/add/deposit-transaction-tron', 'Admin\AjaxmemberController@postCekAddDepositTransactionTron')->middleware('auth');
     Route::get('/m/cek/reject/deposit-transaction', 'Admin\AjaxmemberController@postCekRejectDepositTransaction')->middleware('auth');
     Route::get('/m/cek/tarik-deposit', 'Admin\AjaxmemberController@postCekTarikDeposit')->middleware('auth');
     Route::get('/m/cek/add/tarik-transaction', 'Admin\AjaxmemberController@postCekAddTarikTransaction')->middleware('auth');

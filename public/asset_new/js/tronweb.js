@@ -34,7 +34,7 @@ function shortId(a,b){return a.substr(0,b)+"..."+a.substr(a.length-b,a.length)}
           $("#saldo-eidr").html(
             `
             <input type="hidden" value="${eIDRbalance}" name="eidr-balance" id="eidr-balance">
-            <small>Saldo eIDR anda:</small> <h5 class="text-success">${eIDRbalance.toLocaleString("id-ID")} eIDR</h5>`
+            <small>Saldo eIDR anda:</small> <h5 class="text-success">${eIDRbalance.toLocaleString("en-US")} eIDR</h5>`
           );
 
           $("#userTron").val(userAddress);
@@ -58,7 +58,7 @@ $("#eidr-pay-button").click(async function () {
         toAddress = "TDtvo2jCoRftmRgzjkwMxekh8jqWLdDHNB";
     } else {
         toAddress = "TC1o89VSHMSPno2FE6SgoCsuy8i4mVSWge";
-        sendAmount = $('#deposit').val().trim() * 100;
+        sendAmount = $('#deposit').val() * 100;
     }
 
     var tronweb = window.tronWeb;
@@ -87,6 +87,9 @@ $("#eidr-pay-button").click(async function () {
         } else if (e.includes("assetBalance must be greater than")) {
             alert("Alamat TRON ini tidak memiliki eIDR");
         } else if (e.includes("declined by user")) {
+            alert("Anda membatalkan Transaksi");
+            $('#confirmSubmit').modal("hide");
+        } else if (e.includes("cancle")) {
             alert("Anda membatalkan Transaksi");
             $('#confirmSubmit').modal("hide");
         } else {
