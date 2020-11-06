@@ -4,6 +4,18 @@
         <h5 class="modal-title" id="modalLabel">Konfirmasi Input Stock Vendor</h5>
     </div>
     <div class="modal-body"  style="overflow-y: auto;max-height: 330px;">
+        <div class="row" id="loading" style="display:none;">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <h5 class="text-warning" style="display: block;text-align: center;">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only"></span>
+                        </div>
+                        Sedang Memproses...
+                    </h5>
+                </div>
+            </div>
+        </div>
         <form id="form-add" method="POST" action="/m/add/req-vstock-tron">
             {{ csrf_field() }}
             <div class="row">

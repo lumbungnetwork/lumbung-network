@@ -316,6 +316,8 @@
             function confirmSubmit(){
                 var dataInput = $("#form-add").serializeArray();
                 $('#form-add').submit();
+                $('#form-add').remove();
+                $('#loading').show();
                 $('#tutupModal').remove();
                 $('#submit').remove();
             }

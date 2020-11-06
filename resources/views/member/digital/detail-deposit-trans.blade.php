@@ -301,6 +301,8 @@
             function confirmSubmit(){
                 var dataInput = $("#form-add").serializeArray();
                 $('#form-add').submit();
+                $('#form-add').remove();
+                $('#loading').show();
                 $('#tutupModal').remove();
                 $('#submit').remove();
             }
@@ -308,6 +310,8 @@
             function confirmSubmitTron(){
                 var dataInput = $("#form-add-tron").serializeArray();
                 $('#form-add-tron').submit();
+                $('#form-add-tron').remove();
+                $('#loading').show();
                 $('#tutupModal').remove();
                 $('#submit').remove();
             }
