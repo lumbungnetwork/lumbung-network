@@ -10,7 +10,7 @@
                     <div class="container">
                         <h6>
                             Halo,
-                            <dd> {{$dataUser->user_code}} </dd>
+                            <dd> {{$dataUser->full_name}} </dd>
                         </h6>
                         <a href="{{ URL::to('/') }}/user_logout" class="btn btn-transparent">
                             <i class="fas fa-power-off text-danger icon-bottom"></i>
@@ -18,15 +18,7 @@
                     </div>
                 </nav>
             </div>
-<!--            <div class="mt-min-30">
-                <div class="container">
-                    <h5>
-                        Selamat Pagi,
-                        <dd> Rio Abi Nugraha </dd>
-                    </h5>
-                </div>
-            </div>-->
-            
+
             @if($dataUser->is_active == 0)
             <div class="mt-min-10">
                 <div class="container">
@@ -46,7 +38,7 @@
                                     <div class="bg-icon pull-xs-left">
                                         @if($dataSponsor->gender == 2)
                                         <i class="fa fa-user"></i>
-                                        @else 
+                                        @else
                                         <i class="fa fa-user"></i>
                                         @endif
                                     </div>
@@ -62,7 +54,7 @@
                 </div>
             </div>
             @endif
-            
+
             @if($dataUser->is_active == 1)
                 @if($dataUser->upline_id == null)
                     @if($dataUser->id > 4)
@@ -95,17 +87,17 @@
                         </div>
                     @endif
                 @endif
-                    
+
                 @if($dataUser->upline_id != null)
                     <div class="mt-min-10">
                         <div class="container">
-                            <div class="rounded-lg bg-white shadow-sm p-3">
+                            <div class="card rounded shadow bg-white shadow-sm p-3">
                                 @if ( Session::has('message') )
                                     <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible" role="alert">
                                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                             <span aria-hidden="true">×</span>
                                         </button>
-                                        {{  Session::get('message')    }} 
+                                        {{  Session::get('message')    }}
                                     </div>
                                 @endif
                                 <?php
@@ -113,10 +105,10 @@
                                     if($dataUser->pin_activate_at != null){
                                         $active_at = $dataUser->pin_activate_at;
                                     }
-                                    $future = strtotime('+365 days', strtotime($active_at)); 
-                                    $timefromdb =time(); 
+                                    $future = strtotime('+365 days', strtotime($active_at));
+                                    $timefromdb =time();
                                     $timeleft = $future - $timefromdb;
-                                    $daysleft = round((($timeleft/24)/60)/60); 
+                                    $daysleft = round((($timeleft/24)/60)/60);
                                 ?>
                                 @if($daysleft <= 0)
                                     <div class="alert alert-danger alert-dismissible" role="alert">
@@ -162,6 +154,9 @@
                                         @if($dataUser->is_stockist == 1)
                                             <a href="" class="btn btn-warning btn-sm btn-block rounded-pill"> Stokis </a>
                                         @endif
+                                        @if($dataUser->is_vendor == 1)
+                                            <a href="" class="btn btn-warning btn-sm btn-block rounded-pill"> Vendor </a>
+                                        @endif
                                     </div>
                                             <?php
                                                 $text = '*Anda belum memenuhi Belanja Wajib';
@@ -195,7 +190,7 @@
                         <div>
                             <div class="p-2">
                                 <a href="">
-                                    <img src="/asset_new/img/promo/promo-2.jpg" class="w-100 rounded-lg" alt="">
+                                    <img src="/asset_new/img/promo/promo-2.png" class="w-100 rounded-lg" alt="">
                                 </a>
                             </div>
 
@@ -203,14 +198,7 @@
                         <div>
                             <div class="p-2">
                                 <a href="">
-                                    <img src="/asset_new/img/promo/promo-3.jpg" class="w-100 rounded-lg" alt="">
-                                </a>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="p-2">
-                                <a href="">
-                                    <img src="/asset_new/img/promo/promo-4.jpg" class="w-100 rounded-lg" alt="">
+                                    <img src="/asset_new/img/promo/promo-3.png" class="w-100 rounded-lg" alt="">
                                 </a>
                             </div>
                         </div>
@@ -220,7 +208,7 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-6">
-                                <div class="rounded bg-white p-3 text-center">
+                                <div class="card rounded shadow bg-white p-3 text-center">
                                     <a href="{{ URL::to('/') }}/m/search/stockist"><i class="fa fa-cubes icon-menu2"></i></a>
                                     <dd>Stokis</dd>
                                     <div class="">
@@ -230,7 +218,7 @@
                                 </div>
                             </div>
                             <div class="col-6">
-                                <div class="rounded bg-white p-3 text-center">
+                                <div class="card rounded shadow bg-white p-3 text-center">
                                     <a href="{{ URL::to('/') }}/m/search/vendor"><i class="fa fa-store icon-menu2"></i></a>
                                     <dd>Vendor</dd>
                                     <div class="">
@@ -243,94 +231,98 @@
                     </div>
 
                     <!-- menu ppob -->
-                    <div class="container mt-3 bg-light">
-                        <div class="row">
-                            <div class="col-3 px-3 mb-3">
-                                <a href="/m/list/operator/1" class="text-decoration-none">
-                                    <div class="rounded icon-ppob p-1 text-center">
-                                        <div class="box-icon bg-green text-center">
-                                            <i class="mdi mdi-cellphone-android icon-menu"></i>
+                    <div class="container mt-3">
+                        <div class="card rounded shadow bg-white p-3">
+                            <div class="row">
+                                <div class="col-3 px-3 mb-3">
+                                    <a href="/m/list/operator/1" class="text-decoration-none">
+                                        <div class="rounded icon-ppob p-1 text-center">
+                                            <div class="box-icon bg-green text-center">
+                                                <i class="mdi mdi-cellphone-android icon-menu"></i>
+                                            </div>
+                                            <dd>Pulsa</dd>
                                         </div>
-                                        <dd>Pulsa</dd>
-                                    </div>
-                                </a>
+                                    </a>
+                                </div>
+                                <div class="col-3 px-3 mb-3">
+                                    <a href="/m/list/operator/2" class="text-decoration-none">
+                                        <div class="rounded icon-ppob p-1 text-center">
+                                            <div class="box-icon bg-green text-center">
+                                                <i class="mdi mdi-cellphone-nfc icon-menu"></i>
+                                            </div>
+                                            <dd>Data</dd>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-3 px-3 mb-3">
+                                    <a href="/m/daftar-harga/prepaid/pln" class="text-decoration-none">
+                                        <div class="rounded icon-ppob p-1 text-center">
+                                            <div class="box-icon bg-green text-center">
+                                                <i class="mdi mdi-lightbulb-on-outline icon-menu"></i>
+                                            </div>
+                                            <dd>PLN</dd>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-3 px-3 mb-3">
+                                    <a href="/m/detail/pascabayar/1" class="text-decoration-none">
+                                        <div class="rounded icon-ppob p-1 text-center">
+                                            <div class="box-icon bg-green text-center">
+                                                <i class="mdi mdi-hospital-building icon-menu"></i>
+                                            </div>
+                                            <dd>BPJS</dd>
+                                        </div>
+                                    </a>
+                                </div>
                             </div>
-                            <div class="col-3 px-3 mb-3">
-                                <a href="/m/list/operator/2" class="text-decoration-none">
-                                    <div class="rounded icon-ppob p-1 text-center">
-                                        <div class="box-icon bg-green text-center">
-                                            <i class="mdi mdi-cellphone-nfc icon-menu"></i>
+                            <div class="row">
+                                <div class="col-3 px-3 mb-3">
+                                    <a href="/m/list/hp-pascabayar" class="text-decoration-none">
+                                        <div class="rounded icon-ppob p-1 text-center">
+                                            <div class="box-icon bg-green text-center">
+                                                <i class="mdi mdi-cellphone-arrow-down icon-menu"></i>
+                                            </div>
+                                            <dd>Pasca Bayar</dd>
                                         </div>
-                                        <dd>Data</dd>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="col-3 px-3 mb-3">
-                                <a href="/m/daftar-harga/prepaid/pln" class="text-decoration-none">
-                                    <div class="rounded icon-ppob p-1 text-center">
-                                        <div class="box-icon bg-green text-center">
-                                            <i class="mdi mdi-lightbulb-on-outline icon-menu"></i>
+                                    </a>
+                                </div>
+                                <div class="col-3 px-3 mb-3">
+                                    <a href="/m/detail/pascabayar/4" class="text-decoration-none">
+                                        <div class="rounded icon-ppob p-1 text-center">
+                                            <div class="box-icon bg-green text-center">
+                                                <i class="mdi mdi-wifi icon-menu"></i>
+                                            </div>
+                                            <dd>Telkom</dd>
                                         </div>
-                                        <dd>PLN</dd>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="col-3 px-3 mb-3">
-                                <a href="/m/detail/pascabayar/1" class="text-decoration-none">
-                                    <div class="rounded icon-ppob p-1 text-center">
-                                        <div class="box-icon bg-green text-center">
-                                            <i class="mdi mdi-hospital-building icon-menu"></i>
+                                    </a>
+                                </div>
+                                <div class="col-3 px-3 mb-3">
+                                    <a href="/m/list/tagihan-pascabayar" class="text-decoration-none">
+                                        <div class="rounded icon-ppob p-1 text-center">
+                                            <div class="box-icon bg-green text-center">
+                                                <i class="mdi mdi-playlist-check icon-menu"></i>
+                                            </div>
+                                            <dd>Tagihan</dd>
                                         </div>
-                                        <dd>BPJS</dd>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="col-3 px-3 mb-3">
-                                <a href="/m/list/hp-pascabayar" class="text-decoration-none">
-                                    <div class="rounded icon-ppob p-1 text-center">
-                                        <div class="box-icon bg-green text-center">
-                                            <i class="mdi mdi-cellphone-arrow-down icon-menu"></i>
+                                    </a>
+                                </div>
+                                <div class="col-3 px-3 mb-3">
+                                    <a href="/m/list/buy-ppob" class="text-decoration-none">
+                                        <div class="rounded icon-ppob p-1 text-center">
+                                            <div class="box-icon bg-green text-center">
+                                                <i class="mdi mdi-format-align-justify icon-menu"></i>
+                                            </div>
+                                            <dd>List Pembelian</dd>
                                         </div>
-                                        <dd>Pasca Bayar</dd>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="col-3 px-3 mb-3">
-                                <a href="/m/detail/pascabayar/4" class="text-decoration-none">
-                                    <div class="rounded icon-ppob p-1 text-center">
-                                        <div class="box-icon bg-green text-center">
-                                            <i class="mdi mdi-wifi icon-menu"></i>
-                                        </div>
-                                        <dd>Telkom</dd>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="col-3 px-3 mb-3">
-                                <a href="/m/list/tagihan-pascabayar" class="text-decoration-none">
-                                    <div class="rounded icon-ppob p-1 text-center">
-                                        <div class="box-icon bg-green text-center">
-                                            <i class="mdi mdi-playlist-check icon-menu"></i>
-                                        </div>
-                                        <dd>Tagihan</dd>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="col-3 px-3 mb-3">
-                                <a href="/m/list/buy-ppob" class="text-decoration-none">
-                                    <div class="rounded icon-ppob p-1 text-center">
-                                        <div class="box-icon bg-green text-center">
-                                            <i class="mdi mdi-format-align-justify icon-menu"></i>
-                                        </div>
-<!--                                        <dd>Lainnya</dd>-->
-                                        <dd>List Pembelian</dd>
-                                    </div>
-                                </a>
+                                    </a>
+                                </div>
                             </div>
                         </div>
+
                     </div>
                 @endif
             @endif
-            
+
             @include('layout.member.nav')
         </div>
         <!-- Dark Overlay element -->
@@ -352,7 +344,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
     <script src="{{ asset('asset_new/js/sidebar.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"></script>
-    
+
     <script>
         $('.slider-promo').slick({
             centerMode: true,

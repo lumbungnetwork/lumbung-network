@@ -17,7 +17,7 @@
 
             <div class="mt-min-10">
                 <div class="container">
-                    <div class="rounded-lg bg-white p-3 mb-3">
+                    <div class="card rounded shadow bg-white p-3 mb-3">
                         <div class="row">
                             <div class="col-3 mb-3">
                                 <a href="{{ URL::to('/') }}/m/profile" class="text-decoration-none">
@@ -64,10 +64,10 @@
                                 if($dataUser->pin_activate_at != null){
                                     $active_at = $dataUser->pin_activate_at;
                                 }
-                                $future = strtotime('+365 days', strtotime($active_at)); 
-                                $timefromdb =time(); 
+                                $future = strtotime('+365 days', strtotime($active_at));
+                                $timefromdb =time();
                                 $timeleft = $future - $timefromdb;
-                                $daysleft = round((($timeleft/24)/60)/60); 
+                                $daysleft = round((($timeleft/24)/60)/60);
                             ?>
                             <div class="col-8 mb-3">
                                 <p>
@@ -91,9 +91,9 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     @if($dataUser->is_stockist == 1)
-                    <div class="rounded-lg bg-white p-3 mb-3">
+                    <div class="card rounded shadow bg-white p-3 mb-3">
                         <h6 class="mb-3">Stokis Saya</h6>
                         <div class="row">
                             <div class="col-3 mb-3">
@@ -191,7 +191,7 @@
                                 <a href="{{ URL::to('/') }}/m/add/deposit" class="text-decoration-none">
                                     <div class="rounded icon-ppob text-center">
                                         <div class="box-icon bg-green text-center">
-                                            <i class="mdi mdi-cog-counterclockwise icon-menu"></i>
+                                            <i class="mdi mdi-wallet-plus-outline icon-menu"></i>
                                         </div>
                                         <dd>Isi Deposit</dd>
                                     </div>
@@ -207,7 +207,7 @@
                                     </div>
                                 </a>
                             </div>
-                            <div class="col-2 mb-2">
+                            <div class="col-3 mb-3">
                                 <a href="{{ URL::to('/') }}/m/deposit/history" class="text-decoration-none">
                                     <div class="rounded icon-ppob text-center">
                                         <div class="box-icon bg-green text-center">
@@ -217,7 +217,7 @@
                                     </div>
                                 </a>
                             </div>
-                            <div class="col-2 mb-2">
+                            <div class="col-3 mb-3">
                                 <a href="{{ URL::to('/') }}/m/list/deposit-transaction" class="text-decoration-none">
                                     <div class="rounded icon-ppob text-center">
                                         <div class="box-icon bg-green text-center">
@@ -227,16 +227,9 @@
                                     </div>
                                 </a>
                             </div>
-                            <div class="col-2 mb-2">
-                                <a href="{{ URL::to('/') }}/m/list/vppob-transaction" class="text-decoration-none">
-                                    <div class="rounded icon-ppob text-center">
-                                        <div class="box-icon bg-green text-center">
-                                            <i class="mdi mdi-bank-transfer icon-menu text-warning"></i>
-                                        </div>
-                                        <dd>Transaksi Digital</dd>
-                                    </div>
-                                </a>
-                            </div>
+
+                        </div>
+                        <div class="row">
                             <?php
                                 $sum_deposit_masuk = 0;
                                 $sum_deposit_keluar1 = 0;
@@ -252,11 +245,23 @@
                                 }
                                 $totalDeposit = $sum_deposit_masuk - $sum_deposit_keluar - $sum_deposit_keluar1;
                             ?>
-                            <div class="col-12 mb-3">
+                            <div class="col-9 mb-3">
                                 <p class="f-14">Saldo Deposit Vendor</p>
-                                <h6 class="text-warning"> Rp {{number_format($totalDeposit, 0, ',', '.')}}</h6>
+                                <h4 class="text-warning"> Rp {{number_format($totalDeposit, 0, ',', '.')}}</h4>
+                            </div>
+                            <div class="col-3 mb-3">
+                                <a href="{{ URL::to('/') }}/m/list/vppob-transaction" class="text-decoration-none">
+                                    <div class="rounded icon-ppob text-center">
+                                        <div class="box-icon bg-green text-center">
+                                            <i class="mdi mdi-bank-transfer icon-menu text-warning"></i>
+                                        </div>
+                                        <dd>Transaksi Digital</dd>
+                                    </div>
+                                </a>
                             </div>
                         </div>
+
+
                     </div>
                     @endif
                     @if($dataUser->is_stockist == 1)
@@ -267,15 +272,15 @@
                     <a href="{{ URL::to('/') }}/m/vendor/penjualan-reward" class="btn btn-warning btn-block shadow-sm mb-3">  <div class="f-14">Claim Reward Penjualan  </div></a>
 <!--                    <a href="#" class="btn btn-warning btn-block shadow-sm mb-3">  <div class="f-14">Claim Reward Penjualan  </div></a>-->
                     @endif
-                    
+
                 </div>
             </div>
-            
-            
+
+
             @include('layout.member.nav')
 
 
-            
+
 
         </div>
         <!-- Dark Overlay element -->
@@ -308,21 +313,21 @@
                 }
             });
         }
-        
+
         function confirmSubmit(){
             var dataInput = $("#form-add").serializeArray();
             $('#form-add').submit();
             $('#tutupModal').remove();
             $('#submit').remove();
         }
-        
-        $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {    
+
+        $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {
            $(this).val($(this).val().replace(/[^\d].+/, ""));
             if ((event.which < 48 || event.which > 57)) {
                 event.preventDefault();
             }
         });
-        
+
         $('.invalidpaste').on('paste', function (event) {
             if (event.originalEvent.clipboardData.getData('Text').match(/[^\d]/)) {
                 event.preventDefault();

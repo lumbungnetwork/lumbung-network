@@ -350,7 +350,7 @@ class Transaction extends Model
             ->join('users', 'deposit_transaction.user_id', '=', 'users.id')
             ->selectRaw('users.user_code, users.hp,  '
                 . 'deposit_transaction.transaction_code, deposit_transaction.price, deposit_transaction.status,'
-                . 'deposit_transaction.created_at, deposit_transaction.unique_digit, deposit_transaction.user_id, deposit_transaction.id, deposit_transaction.is_tron')
+                . 'deposit_transaction.created_at, deposit_transaction.unique_digit, deposit_transaction.user_id, deposit_transaction.id, deposit_transaction.is_tron, deposit_transaction.bank_perusahaan_id')
             ->where('deposit_transaction.type', '=', 1)
             ->where('deposit_transaction.status', '=', 1)
             ->orderBy('deposit_transaction.id', 'DESC')

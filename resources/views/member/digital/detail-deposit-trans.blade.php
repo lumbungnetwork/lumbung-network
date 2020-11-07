@@ -95,11 +95,17 @@
                                 <br>
                                 No. Rekening: <strong>{{$bankPerusahaan->account_no}}</strong>
                             @endif
-                            @if($getData->is_tron == 1)
+                            @if($getData->is_tron == 1 && $getData->bank_perusahaan_id != 9)
                                 <br>
-                                Nama: <strong>{{$bankPerusahaan->tron_name}}</strong>
+                                Nama: <strong>Pembayaran via eIDR</strong>
                                 <br>
-                                Alamat Tron: <strong>{{$bankPerusahaan->tron}}</strong>
+                                Alamat Tron: <strong>TC1o89VSHMSPno2FE6SgoCsuy8i4mVSWge</strong>
+                            @endif
+                            @if($getData->is_tron == 1 && $getData->bank_perusahaan_id == 9)
+                                <br>
+                                Nama: <strong>Pembayaran via eIDR Autoconfirm</strong>
+                                <br>
+                                Alamat Tron: <strong>TC1o89VSHMSPno2FE6SgoCsuy8i4mVSWge</strong>
                             @endif
                         @endif
                         <div class="accordion mt-2" id="accordionExample">

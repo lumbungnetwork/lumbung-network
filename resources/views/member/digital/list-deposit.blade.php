@@ -81,7 +81,12 @@
                                             <tr>
                                                 <td>{{$no}}</td>
                                                 <td>{{date('d F Y', strtotime($row->created_at))}}</td>
-                                                <td>{{number_format($row->price, 0, ',', ',')}}<br>@if($row->type == 1)
+                                                <td>@if ($row->bank_perusahaan_id == 9)
+                                                    {{number_format($row->price + $row->unique_digit, 0, ',', ',')}}<br>
+                                                    @else
+                                                    {{number_format($row->price, 0, ',', ',')}}<br>
+                                                    @endif
+                                                    @if($row->type == 1)
                                                     <a class="badge badge-primary" href="{{ URL::to('/') }}/m/add/deposit-transaction/{{$row->id}}">detail</a>
                                                     @endif</td>
                                                 <td>{{$type}}<br><label class="label label-{{$label}}">{{$status}}</label></td>

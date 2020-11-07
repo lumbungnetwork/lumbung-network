@@ -4,12 +4,12 @@
 
 @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
     /*background: #f9f9f9 !important;*/
 }
 
 p {
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
     font-size: 1.1em;
     font-weight: 500;
     line-height: 1.7em;
@@ -50,7 +50,14 @@ a:focus {
 
 .wrapper {
     display: flex;
-    width: 100%;
+    background: #fafafa;
+    box-shadow: 1px 1px 12px rgba(0, 0, 0, 0.1);
+    max-width: 960px;
+    margin: auto;
+    position: absolute;
+    left: 0;
+    right: 0;
+    justify-content: center;
 }
 
 #sidebar {
@@ -96,7 +103,7 @@ a:focus {
     background: #2c3e50;
 }
 
-#sidebar ul li.active>a,
+#sidebar ul li.active > a,
 a[aria-expanded="true"] {
     color: #fff;
     background: #2c3e50;
@@ -135,7 +142,7 @@ ul.CTAs a {
 
 a.download {
     background: #fff;
-    color: #7386D5;
+    color: #7386d5;
 }
 
 a.article,
@@ -149,7 +156,7 @@ a.article:hover {
 ----------------------------------------------------- */
 
 #content {
-    width: calc(100%); /*calc(100% - 250px);*/
+    width: 512px; /*calc(100% - 250px);*/
     min-height: 100vh;
     transition: all 0.3s;
     position: absolute;
@@ -227,5 +234,19 @@ a.article:hover {
     }
     #sidebarCollapse span {
         display: none;
+    }
+}
+
+@media (min-width: 768px) {
+    #content {
+        width: 512px;
+        min-height: 100vh;
+        transition: all 0.5s;
+        position: absolute;
+        top: 0;
+        right: 25%;
+        left: 25%;
+        padding-bottom: 80px;
+        margin-bottom: 50px;
     }
 }
