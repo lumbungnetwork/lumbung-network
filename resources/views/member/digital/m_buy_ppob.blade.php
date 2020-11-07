@@ -17,7 +17,7 @@
         </div>
         <div class="mt-min-10">
             <div class="container">
-                
+
                 <div class="rounded-lg bg-white p-3 mb-3">
                     <h6 class="mb-3">Keranjang Pembayaran Anda</h6>
                     @if ( Session::has('message') )
@@ -25,7 +25,7 @@
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">×</span>
                             </button>
-                            {{  Session::get('message')    }} 
+                            {{  Session::get('message')    }}
                         </div>
                     @endif
                 </div>
@@ -68,8 +68,8 @@
                                 $arrayData = json_decode($getDataMaster->return_buy, true);
                                 $data = $arrayData['data'];
                             ?>
-                            <p class="card-text">Pesan</p> 
-                            
+                            <p class="card-text">Pesan</p>
+
                             <div class="row" style="margin-bottom: 15px;">
                                 <div class="col-md-12">
                                     <b>Kode</b>
@@ -78,7 +78,8 @@
                                 </div>
                             </div>
                             @endif
-                            <p class="card-text">Vendor</p>
+                            <div class="container">
+                                <p class="card-text">Vendor</p>
                             @if($getVendor != null)
                             <div class="row" style="margin-bottom: 15px;">
                                 <div class="col-md-12">
@@ -94,6 +95,8 @@
                                     <b>Direct</b>
                                 </div>
                             @endif
+                            </div>
+
                         </div>
                     </div>
                     <div class="row">
@@ -181,7 +184,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/fonts/slick.woff">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
-    
+
 @stop
 
 @section('javascript')

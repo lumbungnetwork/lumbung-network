@@ -1476,7 +1476,7 @@ class AjaxmemberController extends Controller
         if ($no_hp == null) {
             return view('member.ajax.confirm_cek_ppob')
                 ->with('data', null)
-                ->with('message', 'Anda tidak memasukan nomor')
+                ->with('message', 'Anda belum memasukan nomor HP')
                 ->with('dataVendor', null);
         }
         $buy_method = $request->type_pay;
@@ -1496,13 +1496,13 @@ class AjaxmemberController extends Controller
         if ($vendor_id == null) {
             return view('member.ajax.confirm_cek_ppob')
                 ->with('data', null)
-                ->with('message', 'Anda tidak memilih Vendor')
+                ->with('message', 'Anda belum memilih Vendor tujuan pembelian')
                 ->with('dataVendor', null);
         }
         if ($request->harga == 'undefined') {
             return view('member.ajax.confirm_cek_ppob')
                 ->with('data', null)
-                ->with('message', 'Anda tidak memilih harga')
+                ->with('message', 'Anda belum memilih nominal pembelian')
                 ->with('dataVendor', null);
         }
 
@@ -1513,7 +1513,7 @@ class AjaxmemberController extends Controller
         if ($cekHP != null) {
             return view('member.ajax.confirm_cek_ppob')
                 ->with('data', null)
-                ->with('message', 'Nomor HP ini masih dalam rentang 10 menit.')
+                ->with('message', 'Nomor HP ini masih belum melewati jeda 10 menit dari transaksi sebelumnya.')
                 ->with('dataVendor', null);
         }
         $separate = explode('__', $request->harga);
@@ -1546,7 +1546,7 @@ class AjaxmemberController extends Controller
             if ($totalDeposit < 0) {
                 return view('member.ajax.confirm_cek_ppob')
                     ->with('data', null)
-                    ->with('message', 'tidak dapat dilanjutkan, saldo vendor kurang')
+                    ->with('message', 'Transaksi tidak dapat dilanjutkan, saldo vendor kurang')
                     ->with('dataVendor', null);
             }
         }

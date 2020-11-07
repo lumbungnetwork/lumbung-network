@@ -3729,7 +3729,7 @@ class MemberController extends Controller
         $url = $getDataAPI->master_url . '/v1/price-list';
         $cek = $modelMember->getAPIurlCheck($url, $json);
         $arrayData = json_decode($cek, true);
-        //        dd($arrayData['data']);
+        // dd($arrayData['data']);
         //category => pulsa
         //brand =>
         //1 => TELKOMSEL
@@ -3830,25 +3830,27 @@ class MemberController extends Controller
                 }
             }
         }
+        $arrayHarga = null;
         $daftarHarga = null;
         if ($operator == 1) {
-            $daftarHarga = $telkomsel;
+            $arrayHarga = $telkomsel;
         }
         if ($operator == 2) {
-            $daftarHarga = $indosat;
+            $arrayHarga = $indosat;
         }
         if ($operator == 3) {
-            $daftarHarga = $xl;
+            $arrayHarga = $xl;
         }
         if ($operator == 4) {
-            $daftarHarga = $axis;
+            $arrayHarga = $axis;
         }
         if ($operator == 5) {
-            $daftarHarga = $tri;
+            $arrayHarga = $tri;
         }
         if ($operator == 6) {
-            $daftarHarga = $smart;
+            $arrayHarga = $smart;
         }
+        $daftarHarga = collect($arrayHarga)->sortBy('price')->toArray();
         return view('member.digital.daftar-harga-operator')
             ->with('headerTitle', 'Daftar Harga Operator')
             ->with('daftarHarga', $daftarHarga)
@@ -3984,42 +3986,34 @@ class MemberController extends Controller
                 }
             }
         }
+        $arrayHarga = null;
         $daftarHarga = null;
+
         if ($operator == 1) {
-            if (!empty($telkomsel)) {
-                $daftarHarga = $telkomsel;
-            }
+            $arrayHarga = $telkomsel;
         }
         if ($operator == 2) {
-            if (!empty($indosat)) {
-                $daftarHarga = $indosat;
-            }
+            $arrayHarga = $indosat;
         }
         if ($operator == 3) {
-            if (!empty($xl)) {
-                $daftarHarga = $xl;
-            }
+            $arrayHarga = $xl;
         }
         if ($operator == 4) {
-            if (!empty($axis)) {
-                $daftarHarga = $axis;
-            }
+            $arrayHarga = $axis;
         }
         if ($operator == 5) {
-            if (!empty($tri)) {
-                $daftarHarga = $tri;
-            }
+            $arrayHarga = $tri;
         }
         if ($operator == 6) {
-            if (!empty($smart)) {
-                $daftarHarga = $smart;
-            }
+            $arrayHarga = $smart;
         }
-        if ($daftarHarga == null) {
+        if ($arrayHarga == null) {
             return redirect()->route('mainDashboard')
                 ->with('message', 'Tidak ada data')
                 ->with('messageclass', 'danger');
         }
+        $daftarHarga = collect($arrayHarga)->sortBy('price')->toArray();
+
         return view('member.digital.daftar-hargadata-operator')
             ->with('headerTitle', 'Daftar Harga Data Operator')
             ->with('daftarHarga', $daftarHarga)

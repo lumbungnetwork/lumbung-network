@@ -2,11 +2,11 @@
 @section('content')
 
 <div class="wrapper">
-        
-    
+
+
         <!-- Page Content -->
         <div id="content">
-            
+
             <div class="bg-gradient-sm">
                 <nav class="navbar navbar-expand-lg navbar-light bg-transparent w-100">
                     <div class="container">
@@ -29,7 +29,7 @@
                                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                             <span aria-hidden="true">×</span>
                                         </button>
-                                        {{  Session::get('message')    }} 
+                                        {{  Session::get('message')    }}
                                     </div>
                                 @endif
                                 <br>
@@ -41,10 +41,6 @@
                                             <th>Pembeli</th>
                                             <th>Nominal (Rp.)</th>
                                             <th>Status</th>
-                                            <th>Pembayaran</th>
-                                            <th>Type</th>
-                                            <th>###</th>
-                                            <th>Cek Transaksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -110,33 +106,18 @@
                                                 <tr>
                                                     <td>{{$no}}</td>
                                                     <td>{{date('d-m-Y H:i', strtotime($row->created_at))}}</td>
-                                                    <td>{{$row->user_code}}</td>
-                                                    <td>{{number_format($row->ppob_price, 0, ',', ',')}}</td>
-                                                    <td>
-                                                            <span class="label label-{{$label}}">{{$status}}</span>
-                                                    </td>
-                                                    <td>
-                                                            <span class="label label-info">{{$buy}}</span>
-                                                    </td>
-                                                    <td>{{$type}}</td>
-                                                    <td>
-                                                        <a class="label label-primary" href="{{ URL::to('/') }}/m/detail/vppob/{{$row->id}}">detail</a>
+                                                    <td>{{$row->user_code}}<br><a class="label label-primary" href="{{ URL::to('/') }}/m/detail/vppob/{{$row->id}}">Detail</a>
                                                         @if($row->status == 2)
                                                             &nbsp;
                                                             @if($row->type > 2 && $row->type < 8)
-                                                                <a class="label label-warning" href="{{ URL::to('/') }}/m/vinvoice/ppob/{{$row->id}}">pdf</a>
+                                                                <a class="label label-warning" href="{{ URL::to('/') }}/m/vinvoice/ppob/{{$row->id}}">Struk Pembayaran</a>
                                                             @endif
-                                                        @endif
-                                                    </td>
+                                                        @endif</td>
+                                                    <td>{{number_format($row->ppob_price, 0, ',', ',')}}<br>{{$type}}</td>
                                                     <td>
-                                                        @if($row->buy_metode == 1)
-                                                            @if($row->status == 2)
-                                                                @if($row->vendor_approve == 0)
-                                                                <a class="label label-warning" href="{{ URL::to('/') }}/m/cek-status/transaction/{{$row->id}}" title="cek disini untuk memeriksa status transaksi">cek</a>
-                                                                @endif
-                                                            @endif
-                                                        @endif
+                                                            <span class="label label-{{$label}}">{{$status}}</span>
                                                     </td>
+
                                                 </tr>
                                             @endforeach
                                         @endif
@@ -145,7 +126,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
             @include('layout.member.nav')

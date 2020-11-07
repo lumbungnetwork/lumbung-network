@@ -2,11 +2,11 @@
 @section('content')
 
 <div class="wrapper">
-        
-    
+
+
         <!-- Page Content -->
         <div id="content">
-            
+
             <div class="bg-gradient-sm">
                 <nav class="navbar navbar-expand-lg navbar-light bg-transparent w-100">
                     <div class="container">
@@ -23,70 +23,70 @@
             <div class="mt-min-10">
                 <div class="container">
                     <div class="rounded-lg bg-white p-3 mb-3">
-                        <div class="row">
-                            <div class="col-4 mb-4">
+                        <div class="d-flex flex-row justify-content-around">
+                            <div class="card p-3 media-body flex-column justify-content-center">
                                 <a href="/m/daftar-harga/1" class="text-decoration-none">
-                                    <div class="rounded icon-ppob text-center">
-                                        <div class="box-icon bg-green text-center">
-                                            <i class="mdi mdi-cellphone-android icon-menu" style="color: #e5131d;"></i>
-                                        </div>
+
+                                    <div class="text-center ">
+                                        <img src="/asset_new/img/providers/telkomsel.png" alt="logo-telkomsel">
                                         <dd>Telkomsel</dd>
                                     </div>
                                 </a>
                             </div>
-                            <div class="col-4 mb-4">
+                            <div class="card p-3 media-body flex-column justify-content-center">
                                 <a href="/m/daftar-harga/2" class="text-decoration-none">
-                                    <div class="rounded icon-ppob text-center">
-                                        <div class="box-icon bg-green text-center">
-                                            <i class="mdi mdi-cellphone-android icon-menu" style="color: #fcd401;"></i>
-                                        </div>
+
+                                    <div class="text-center">
+                                        <img src="/asset_new/img/providers/indosat.png" alt="logo-indosat">
                                         <dd>Indosat</dd>
                                     </div>
                                 </a>
                             </div>
-                            <div class="col-4 mb-4">
+
+                        </div>
+                        <div class="d-flex flex-row justify-content-around">
+                            <div class="card p-3 media-body flex-column justify-content-center">
                                 <a href="/m/daftar-harga/3" class="text-decoration-none">
-                                    <div class="rounded icon-ppob text-center">
-                                        <div class="box-icon bg-green text-center">
-                                            <i class="mdi mdi-cellphone-android icon-menu" style="color: #164396;"></i>
-                                        </div>
+
+                                    <div class="text-center ">
+                                        <img src="/asset_new/img/providers/xl.png" alt="logo-xl">
                                         <dd>XL</dd>
                                     </div>
                                 </a>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-4 mb-4">
-                                <a href="/m/daftar-harga/5" class="text-decoration-none">
-                                    <div class="rounded icon-ppob text-center">
-                                        <div class="box-icon bg-green text-center">
-                                            <i class="mdi mdi-cellphone-android icon-menu" style="color: #ff2082;"></i>
-                                        </div>
-                                        <dd>Tri</dd>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="col-4 mb-4">
-                                <a href="/m/daftar-harga/6" class="text-decoration-none">
-                                    <div class="rounded icon-ppob text-center">
-                                        <div class="box-icon bg-green text-center">
-                                            <i class="mdi mdi-cellphone-android icon-menu" style="color: #ff1659;"></i>
-                                        </div>
-                                        <dd>Smartfren</dd>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="col-4 mb-4">
+                            <div class="card p-3 media-body flex-column justify-content-center">
                                 <a href="/m/daftar-harga/4" class="text-decoration-none">
-                                    <div class="rounded icon-ppob text-center">
-                                        <div class="box-icon bg-green text-center">
-                                            <i class="mdi mdi-cellphone-android icon-menu" style="color: #34cef9;"></i>
-                                        </div>
+
+                                    <div class="text-center">
+                                        <img src="/asset_new/img/providers/axis.png" alt="logo-axis">
                                         <dd>Axis</dd>
                                     </div>
                                 </a>
                             </div>
+
                         </div>
+                        <div class="d-flex flex-row justify-content-around">
+                            <div class="card p-3 media-body flex-column justify-content-center">
+                                <a href="/m/daftar-harga/5" class="text-decoration-none">
+
+                                    <div class="text-center ">
+                                        <img src="/asset_new/img/providers/3.png" alt="logo-3">
+                                        <dd>3</dd>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="card p-3 media-body flex-column justify-content-center">
+                                <a href="/m/daftar-harga/6" class="text-decoration-none">
+
+                                    <div class="text-center">
+                                        <img src="/asset_new/img/providers/smartfren.png" alt="logo-smartfren">
+                                        <dd>smartfren</dd>
+                                    </div>
+                                </a>
+                            </div>
+
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -95,70 +95,70 @@
             <div class="mt-min-10">
                 <div class="container">
                     <div class="rounded-lg bg-white p-3 mb-3">
-                        <div class="row">
-                            <div class="col-4 mb-4">
+                        <div class="d-flex flex-row justify-content-around">
+                            <div class="card p-3 media-body flex-column justify-content-center">
                                 <a href="/m/daftar-harga/data/1" class="text-decoration-none">
-                                    <div class="rounded icon-ppob text-center">
-                                        <div class="box-icon bg-green text-center">
-                                            <i class="mdi mdi-cellphone-android icon-menu" style="color: #e5131d;"></i>
-                                        </div>
+
+                                    <div class="text-center ">
+                                        <img src="/asset_new/img/providers/telkomsel.png" alt="logo-telkomsel">
                                         <dd>Telkomsel</dd>
                                     </div>
                                 </a>
                             </div>
-                            <div class="col-4 mb-4">
+                            <div class="card p-3 media-body flex-column justify-content-center">
                                 <a href="/m/daftar-harga/data/2" class="text-decoration-none">
-                                    <div class="rounded icon-ppob text-center">
-                                        <div class="box-icon bg-green text-center">
-                                            <i class="mdi mdi-cellphone-android icon-menu" style="color: #fcd401;"></i>
-                                        </div>
+
+                                    <div class="text-center">
+                                        <img src="/asset_new/img/providers/indosat.png" alt="logo-indosat">
                                         <dd>Indosat</dd>
                                     </div>
                                 </a>
                             </div>
-                            <div class="col-4 mb-4">
+
+                        </div>
+                        <div class="d-flex flex-row justify-content-around">
+                            <div class="card p-3 media-body flex-column justify-content-center">
                                 <a href="/m/daftar-harga/data/3" class="text-decoration-none">
-                                    <div class="rounded icon-ppob text-center">
-                                        <div class="box-icon bg-green text-center">
-                                            <i class="mdi mdi-cellphone-android icon-menu" style="color: #164396;"></i>
-                                        </div>
+
+                                    <div class="text-center ">
+                                        <img src="/asset_new/img/providers/xl.png" alt="logo-xl">
                                         <dd>XL</dd>
                                     </div>
                                 </a>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-4 mb-4">
-                                <a href="/m/daftar-harga/data/5" class="text-decoration-none">
-                                    <div class="rounded icon-ppob text-center">
-                                        <div class="box-icon bg-green text-center">
-                                            <i class="mdi mdi-cellphone-android icon-menu" style="color: #ff2082;"></i>
-                                        </div>
-                                        <dd>Tri</dd>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="col-4 mb-4">
-                                <a href="/m/daftar-harga/data/6" class="text-decoration-none">
-                                    <div class="rounded icon-ppob text-center">
-                                        <div class="box-icon bg-green text-center">
-                                            <i class="mdi mdi-cellphone-android icon-menu" style="color: #ff1659;"></i>
-                                        </div>
-                                        <dd>Smartfren</dd>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="col-4 mb-4">
+                            <div class="card p-3 media-body flex-column justify-content-center">
                                 <a href="/m/daftar-harga/data/4" class="text-decoration-none">
-                                    <div class="rounded icon-ppob text-center">
-                                        <div class="box-icon bg-green text-center">
-                                            <i class="mdi mdi-cellphone-android icon-menu" style="color: #34cef9;"></i>
-                                        </div>
+
+                                    <div class="text-center">
+                                        <img src="/asset_new/img/providers/axis.png" alt="logo-axis">
                                         <dd>Axis</dd>
                                     </div>
                                 </a>
                             </div>
+
                         </div>
+                        <div class="d-flex flex-row justify-content-around">
+                            <div class="card p-3 media-body flex-column justify-content-center">
+                                <a href="/m/daftar-harga/data/5" class="text-decoration-none">
+
+                                    <div class="text-center ">
+                                        <img src="/asset_new/img/providers/3.png" alt="logo-3">
+                                        <dd>3</dd>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="card p-3 media-body flex-column justify-content-center">
+                                <a href="/m/daftar-harga/data/6" class="text-decoration-none">
+
+                                    <div class="text-center">
+                                        <img src="/asset_new/img/providers/smartfren.png" alt="logo-smartfren">
+                                        <dd>smartfren</dd>
+                                    </div>
+                                </a>
+                            </div>
+
+                        </div>
+
                     </div>
                 </div>
             </div>
