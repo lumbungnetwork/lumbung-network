@@ -3531,7 +3531,7 @@ class MemberController extends Controller
                             $modelSettingTrans->getUpdateDepositTransaction('id', $id_trans, $dataUpdate);
                             $memberDeposit = array(
                                 'user_id' => $user_id,
-                                'total_deposito' => $getTrans->price,
+                                'total_deposito' => $amount,
                                 'transaction_code' => $getTrans->transaction_code,
                             );
                             $modelPin->getInsertMemberDeposit($memberDeposit);
