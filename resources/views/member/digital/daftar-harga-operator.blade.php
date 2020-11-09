@@ -22,7 +22,7 @@
             <div class="mt-min-10">
                 <div class="container">
                         <div class="rounded-lg bg-white p-3 mb-3">
-                            <h4 class="mb-3">Isi Pulsa</h4>
+                            <h4 class="mb-3">{{$headerTitle}}</h4>
                             @if ( Session::has('message') )
                                 <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible fade in" role="alert">
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -99,7 +99,7 @@
                             <br>
                             <div class="row">
                                 <div class="col-xl-12">
-                                    <button type="submit" class="btn btn-lg btn-success"  id="submitBtn" data-toggle="modal" data-target="#confirmSubmit" onClick="inputSubmit()">Order</button>
+                                    <button type="submit" class="btn btn-lg btn-block btn-success"  id="submitBtn" data-toggle="modal" data-target="#confirmSubmit" onClick="inputSubmit()">Order Sekarang</button>
                                 </div>
                             </div>
                             <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true" data-backdrop="false">
