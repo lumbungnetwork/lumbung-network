@@ -1613,7 +1613,7 @@ class AjaxmemberController extends Controller
         if ($cekHP != null) {
             return view('member.ajax.confirm_cek_ppob_pasca')
                 ->with('data', null)
-                ->with('message', 'Nomor HP ini masih dalam rentang 10 menit.')
+                ->with('message', 'Nomor Pelanggan ini baru saja dibayarkan.')
                 ->with('dataVendor', null);
         }
         $buyer_sku_code = $request->buyer_sku_code;

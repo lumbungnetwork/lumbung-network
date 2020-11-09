@@ -402,7 +402,7 @@ class MemberController extends Controller
         $discAwal = $hargaAwal * $disc / 100;
         $harga = $hargaAwal - $discAwal;
         $code = $modelSettingTrans->getCodeTransaction();
-        $rand = rand(101, 249);
+        $rand = rand(49, 148);
         $dataInsert = array(
             'user_id' => $dataUser->id,
             'transaction_code' => 'TR' . date('Ymd') . $dataUser->id . $code,
@@ -3852,7 +3852,7 @@ class MemberController extends Controller
         }
         $daftarHarga = collect($arrayHarga)->sortBy('price')->toArray();
         return view('member.digital.daftar-harga-operator')
-            ->with('headerTitle', 'Daftar Harga Operator')
+            ->with('headerTitle', 'Isi Pulsa')
             ->with('daftarHarga', $daftarHarga)
             ->with('dataUser', $dataUser);
     }
@@ -4014,8 +4014,8 @@ class MemberController extends Controller
         }
         $daftarHarga = collect($arrayHarga)->sortBy('price')->toArray();
 
-        return view('member.digital.daftar-hargadata-operator')
-            ->with('headerTitle', 'Daftar Harga Data Operator')
+        return view('member.digital.daftar-harga-operator')
+            ->with('headerTitle', 'Isi Paket Data')
             ->with('daftarHarga', $daftarHarga)
             ->with('dataUser', $dataUser);
     }
