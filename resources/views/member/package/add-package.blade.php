@@ -2,11 +2,11 @@
 @section('content')
 
 <div class="wrapper">
-        
-    
+
+
         <!-- Page Content -->
         <div id="content">
-            
+
             <div class="bg-gradient-sm">
                 <nav class="navbar navbar-expand-lg navbar-light bg-transparent w-100">
                     <div class="container">
@@ -21,19 +21,19 @@
             </div>
             <div class="mt-min-10">
                 <div class="container">
-                    
+
                     <div class="rounded-lg bg-white p-3 mb-3">
                         <h6 class="mb-3">Beli Paket</h6>
-                       
+
                         <div class="alert alert-info" role="alert" style="color:#222;">
-                            Halo <b>{{$dataUser->name}}</b>, Selamat bergabung di keluarga Lumbung Network. Saat ini status keanggotaan anda belum aktif, Silakan memilih paket di bawah ini  dengan klik "Beli Paket"
+                            Halo <b>{{$dataUser->name}}</b>, Selamat bergabung di keluarga Lumbung Network. Saat ini status keanggotaan anda belum aktif, silakan ajukan permohonan Aktivasi ke Sponsor anda dengan klik tombol di bawah:
                         </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-md-12 pricing-table">
                                         @foreach($allPackage as $row)
-                                        <?php 
+                                        <?php
                                             $price = $row->pin * $pinSetting->price;
                                         ?>
                                         <div class="pricing-item pricing-featured">
@@ -48,10 +48,11 @@
                                             </div>
                                             <ul class="pricing-features">
                                                 <li><span class="keywords">{{$row->short_desc}}</span></li>
-                                                <li>Bonus Sponsor Rp. 20.000 / PIN</li>
-                                                <li>Link Referal</li>
+                                                <li>Iuran Keanggotaan Tahunan</li>
+                                                <li>Reward Aset dari Belanja</li>
+                                                <li>Dividen Setiap Bulan</li>
                                             </ul>
-                                            <a rel="tooltip" title="View" data-toggle="modal" data-target="#orderPackage" id="beli" class="btn  btn-success" href="{{ URL::to('/') }}/m/cek/add-package/{{$row->id}}/0" style="margin-bottom: 15px;">Beli</i></a>
+                                            <a rel="tooltip" title="View" data-toggle="modal" data-target="#orderPackage" id="beli" class="btn  btn-success" href="{{ URL::to('/') }}/m/cek/add-package/{{$row->id}}/0" style="margin-bottom: 15px;">Request Aktivasi</i></a>
                                             <div class="checkbox checkbox-success checkbox-single">
                                                 <input type="checkbox" id="singleCheckbox2" name="setuju" value="setuju" aria-label="Single checkbox Two" data-url="{{ URL::to('/') }}/m/cek/add-package/{{$row->id}}/1">
                                                 <label></label>
@@ -72,7 +73,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
             @include('layout.member.nav')
@@ -99,7 +100,7 @@
         var link = $(e.relatedTarget);
         $(this).find(".modal-content").load(link.attr("href"));
     });
-    
+
     $("#singleCheckbox2").change(function() {
         var href = $("#singleCheckbox2:checked").first().attr("data-url") || 'Test1';
         $("#beli").attr('href', href);
