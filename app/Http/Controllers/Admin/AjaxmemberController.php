@@ -171,6 +171,17 @@ class AjaxmemberController extends Controller
             ->with('data', $data);
     }
 
+    public function postCekAddTransactionTron(Request $request)
+    {
+        $dataUser = Auth::user();
+        $modelTrans = new Transaction;
+        $getTrans = $modelTrans->getDetailTransactionsMember($request->id_trans, $dataUser);
+        $data = (object) array('id_trans' => $request->id_trans, 'sender' => $request->sender);
+        return view('member.ajax.confirm_add_transaction_tron')
+            ->with('getTrans', $getTrans)
+            ->with('data', $data);
+    }
+
     public function postCekRejectTransaction(Request $request)
     {
         $data = (object) array('id_trans' => $request->id_trans);

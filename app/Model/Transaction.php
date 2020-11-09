@@ -45,6 +45,7 @@ class Transaction extends Model
     {
         $sql = DB::table('transaction')
             ->where('user_id', '=', $data->id)
+            ->orderBy('created_at', 'desc')
             ->get();
         return $sql;
     }
@@ -208,9 +209,10 @@ class Transaction extends Model
             ->join('users', 'transaction.user_id', '=', 'users.id')
             ->join('users as u', 'transaction.submit_by', '=', 'u.id')
             ->selectRaw('users.user_code, users.hp, users.user_code, '
-                . 'transaction.transaction_code, transaction.type, transaction.total_pin, transaction.price, transaction.status,'
+                . 'transaction.transaction_code, transaction.type, transaction.total_pin, transaction.price, transaction.status, transaction.bank_perusahaan_id,'
                 . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id, transaction.is_tron, transaction.submit_by, u.name')
             ->where('transaction.status', '>', 1)
+            ->orderBy('created_at', 'desc')
             ->get();
         $cek = null;
         if (count($sql) > 0) {

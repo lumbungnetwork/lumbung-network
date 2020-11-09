@@ -2,7 +2,7 @@
 @section('content')
 @include('layout.admin.sidebar')
 <div class="main-panel">
-    
+
     <?php //MENU HEADER  ?>
     <nav class="navbar navbar-expand-lg navbar-absolute fixed-top navbar-transparent">
         <div class="container-fluid">
@@ -18,7 +18,7 @@
             </div>
         </div>
     </nav>
-    
+
     <?php //MENU CONTENT  ?>
     <div class="content">
         <div class="row">
@@ -32,7 +32,7 @@
                             <div class="widget-content mt10 mb10 mr15">
                                 <div class="alert alert-{{ Session::get('messageclass') }}">
                                     <button class="close" type="button" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
-                                    {{  Session::get('message')    }} 
+                                    {{  Session::get('message')    }}
                                 </div>
                             </div>
                         @endif
@@ -51,14 +51,14 @@
                                         <th>Admin</th>
                                     </tr>
                                 </thead>
-                                
+
                                 <tbody>
                                     @if($getData != null)
-                                        <?php 
-                                        $no = 0; 
+                                        <?php
+                                        $no = 0;
                                         ?>
                                         @foreach($getData as $row)
-                                        <?php 
+                                        <?php
                                             $no++;
                                             $price = $row->price + $row->unique_digit;
                                             $status = 'proses transfer';
@@ -78,6 +78,9 @@
                                             $name = $row->name;
                                             if($row->submit_by == 1){
                                                 $name = 'Master Admin';
+                                            }
+                                            if($row->submit_by == 1 && $row->bank_perusahaan_id == 9){
+                                                $name = 'TronWeb Autoconfirm';
                                             }
                                         ?>
                                             <tr>

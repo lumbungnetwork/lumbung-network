@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Model\Member;
 use App\Model\Pinsetting;
+use App\Model\Masterpin;
 use App\Model\Package;
 use App\Model\Memberpackage;
 use App\Model\Transaction;
@@ -432,7 +433,7 @@ class MemberController extends Controller
         $modelSettingTrans = new Transaction;
         $getAllTransaction = $modelSettingTrans->getTransactionsMember($dataUser);
         return view('member.pin.list-transaction')
-            ->with('headerTitle', 'Transaction')
+            ->with('headerTitle', 'List Transaksi PIN')
             ->with('getData', $getAllTransaction)
             ->with('dataUser', $dataUser);
     }
@@ -468,7 +469,7 @@ class MemberController extends Controller
             $getPerusahaanTron = $modelBank->getTronPerusahaan();
         }
         return view('member.pin.order-detail-transaction')
-            ->with('headerTitle', 'Transaction')
+            ->with('headerTitle', 'Konfirmasi Pembelian PIN')
             ->with('bankPerusahaan', $getPerusahaanBank)
             ->with('tronPerusahaan', $getPerusahaanTron)
             ->with('getData', $getTrans)
@@ -523,6 +524,117 @@ class MemberController extends Controller
         return redirect()->route('m_listTransactions')
             ->with('message', 'Konfirmasi transfer berhasil')
             ->with('messageclass', 'success');
+    }
+
+    public function postAddTransactionTron(Request $request)
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_active == 0) {
+            return redirect()->route('mainDashboard');
+        }
+        $modelSettingTrans = new Transaction;
+        $modelSettingPin = new Pinsetting;
+        $modelPin = new Pin;
+        $modelMasterPin = new Masterpin;
+        $id_trans = $request->id_trans;
+        $getTrans = $modelSettingTrans->getDetailTransactionsMember($id_trans, $dataUser);
+
+        $hash = $request->hash;
+        $sender = $request->sender;
+        $amount = $getTrans->price + $getTrans->unique_digit;
+        $timestamp = strtotime($getTrans->created_at);
+
+        if (strlen($hash) != 64) {
+            return redirect()->route('m_listTransactions')
+                ->with('message', 'Hash Transaksi Salah atau Typo!')
+                ->with('messageclass', 'danger');
+        }
+
+        $client = new Client();
+        sleep(3);
+        $response = $client->request('GET', 'https://apilist.tronscan.org/api/transaction-info', [
+            'query' => ['hash' => $hash]
+        ]);
+
+        if ($response->getStatusCode() != 200) {
+            return redirect()->route('m_listTransactions')
+                ->with('message', 'Ada Gangguan Koneksi API, Lapor ke Admin!')
+                ->with('messageclass', 'danger');
+        }
+
+        $jsonres = json_decode($response->getBody(), true);
+
+        $hashTime = $jsonres['timestamp'] / 1000;
+        $txdata = $jsonres['contractData'];
+        if ($hashTime > $timestamp) {
+            if ($txdata['amount'] / 100 == $amount) {
+                if ($txdata['asset_name'] == '1002652') {
+                    if ($txdata['to_address'] == 'TDtvo2jCoRftmRgzjkwMxekh8jqWLdDHNB') {
+                        if ($txdata['owner_address'] == $sender) {
+
+                            $getPinSetting = $modelSettingPin->getActivePinSetting();
+                            $memberPin = array(
+                                'user_id' => $getTrans->user_id,
+                                'total_pin' => $getTrans->total_pin,
+                                'setting_pin' => $getPinSetting->id,
+                                'transaction_code' => $getTrans->transaction_code,
+                                'pin_code' => 'P' . date('Ymd') . $getTrans->user_id
+                            );
+                            $modelPin->getInsertMemberPin($memberPin);
+
+                            $dataInsertMasterPin = array(
+                                'total_pin' => $getTrans->total_pin,
+                                'type_pin' => 2,
+                                'transaction_code' => $getTrans->transaction_code,
+                                'reason' => "Member Buy (Autoconfirm)"
+                            );
+                            $modelMasterPin->getInsertMasterPin($dataInsertMasterPin);
+
+                            $dataUpdate = array(
+                                'status' => 2,
+                                'tuntas_at' => date('Y-m-d H:i:s'),
+                                'submit_by' => 1,
+                                'submit_at' => date('Y-m-d H:i:s'),
+                                'bank_perusahaan_id' => 9,
+                                'updated_at' => date('Y-m-d H:i:s'),
+                                'is_tron' => 1
+                            );
+                            $modelSettingTrans->getUpdateTransaction('id', $id_trans, $dataUpdate);
+                            return redirect()->route('m_listTransactions')
+                                ->with('message', 'Pembelian PIN berhasil')
+                                ->with('messageclass', 'success');
+                        } else {
+                            return redirect()->route('m_listTransactions')
+                                ->with('message', 'Bukan Pengirim Yang Sebenarnya!')
+                                ->with('messageclass', 'danger');
+                        }
+                    } else {
+                        return redirect()->route('m_listTransactions')
+                            ->with('message', 'Alamat Tujuan Transfer Salah!')
+                            ->with('messageclass', 'danger');
+                    }
+                } else {
+                    return redirect()->route('m_listTransactions')
+                        ->with('message', 'Bukan Token eIDR yang benar!')
+                        ->with('messageclass', 'danger');
+                }
+            } else {
+                return redirect()->route('m_listTransactions')
+                    ->with('message', 'Nominal Transfer Salah!')
+                    ->with('messageclass', 'danger');
+            }
+        } else {
+            return redirect()->route('m_listTransactions')
+                ->with('message', 'Hash sudah terpakai!')
+                ->with('messageclass', 'danger');
+        }
     }
 
     public function postRejectTransaction(Request $request)

@@ -3,6 +3,9 @@
 
 <div class="wrapper">
     <div id="content">
+        <input type="hidden" id="isTronWeb" value="0">
+        <input type="hidden" id="userTron" value="0" disabled>
+        <input type="hidden" id="txType" value="2" disabled>
         <div class="bg-gradient-sm">
             <nav class="navbar navbar-expand-lg navbar-light bg-transparent w-100">
                 <div class="container">
@@ -17,68 +20,21 @@
         </div>
         <div class="mt-min-10">
             <div class="container">
-                
-                <div class="rounded-lg bg-white p-3 mb-3">
-                    <h5 class="mb-3">Invoice # <br>
-                        <small>{{$getData->transaction_code}}</small>
-                    </h5>
+                <div class="card shadow rounded bg-white p-3 mb-3">
+                <h4 class="mb-3">{{$headerTitle}}</h4>
+                    <span id="showAddress"></span>
+
                     @if ( Session::has('message') )
                         <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible" role="alert">
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">×</span>
                             </button>
-                            {{  Session::get('message')    }} 
+                            {{  Session::get('message')    }}
                         </div>
                     @endif
-                    <div class="row">
-                        <div class="col-xl-12 col-xs-12">
-                            <address>
-                                @if($getData->bank_perusahaan_id != null)
-                                    @if($getData->is_tron == 0)
-                                        <br>
-                                        Nama Rekening: <strong>{{$bankPerusahaan->account_name}}</strong>
-                                        <br>
-                                        Nama Bank: <strong>{{$bankPerusahaan->bank_name}}</strong>
-                                        <br>
-                                        No. Rekening: <strong>{{$bankPerusahaan->account_no}}</strong>
-                                    @endif
-                                    @if($getData->is_tron == 1)
-                                        <br>
-                                        Nama: <strong>{{$bankPerusahaan->tron_name}}</strong>
-                                        <br>
-                                        Alamat Tron: <strong>{{$bankPerusahaan->tron}}</strong>
-                                    @endif
-                                @endif
-                                @if($getData->bank_perusahaan_id == null)
-                                <?php $no = 1; ?>
-                                @foreach($bankPerusahaan as $rowBank)
-                                    <?php $no++; ?>
-                                    <div class="radio radio-primary">
-                                        <input type="radio" name="radio" id="radio{{$no}}" value="0_{{$rowBank->id}}">
-                                        <label for="radio{{$no}}">
-                                            {{$rowBank->bank_name}} a/n <b>{{$rowBank->account_name}}</b>
-                                            <br>
-                                            {{$rowBank->account_no}}
-                                        </label>
-                                    </div>
-                                @endforeach
-                                <?php $no1 = count($bankPerusahaan) + 1; ?>
-                                @foreach($tronPerusahaan as $rowTron)
-                                    <?php $no1++; ?>
-                                    <div class="radio radio-primary">
-                                        <input type="radio" name="radio" id="radio{{$no1}}" value="1_{{$rowTron->id}}">
-                                        <label for="radio{{$no1}}">
-                                            {{$rowTron->tron_name}}
-                                            <br>
-                                            <b>{{$rowTron->tron}}</b>
-                                        </label>
-                                    </div>
-                                @endforeach
-                                @endif
-                            </address>
-                        </div>
-                    </div>
+
                 </div>
+
                 <?php
                     $status = 'Tuntas';
                     $label = 'success';
@@ -95,52 +51,144 @@
                         $label = 'danger';
                     }
                 ?>
-                <div class="rounded-lg bg-white p-3 mb-3">
+                <div class="card rounded shadow bg-white p-3 mb-3">
                     <div class="row">
                         <div class="col-xl-12 col-xs-12">
+                            <h5 class="mb-3">Invoice # <br>
+                                <small>{{$getData->transaction_code}}</small>
+                            </h5>
                             <p><strong>Tanggal Order: </strong>{{date('d F Y', strtotime($getData->created_at))}}</p>
                             <p class="m-t-10"><strong>Order Status: </strong> <span class="label label-{{$label}}">{{$status}}</span></p>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table m-t-30">
-                                <thead class="bg-faded">
+                        <div class="container px-3">
+                            <table class="table table-sm">
+                                <thead class="thead-light">
                                     <tr>
-                                        <th>#</th>
-                                    <th>Jumlah Pin</th>
-                                    <th>Harga (Rp.)</th>
+                                        <th>Jumlah Pin</th>
+                                        <th>Harga (Rp.)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>1</td>
                                         <td>{{$getData->total_pin}}</td>
                                         <td>{{number_format($getData->price, 0, ',', ',')}}</td>
                                     </tr>
                                 </tbody>
                             </table>
-                            <?php
-                                $total = $getData->price + $getData->unique_digit;
-                            ?>
+
                         </div>
-                        <div class="col-md-9 col-sm-6 col-xs-6">
+
+                    </div>
+                </div>
+
+                <div class="card shadow rounded bg-white p-3 mb-3">
+                    <h5>Pilih Metode Pembayaran</h5>
+                    <address>
+                        @if($getData->bank_perusahaan_id != null)
+                            @if($getData->is_tron == 0)
+                                <br>
+                                Nama Rekening: <strong>{{$bankPerusahaan->account_name}}</strong>
+                                <br>
+                                Nama Bank: <strong>{{$bankPerusahaan->bank_name}}</strong>
+                                <br>
+                                No. Rekening: <strong>{{$bankPerusahaan->account_no}}</strong>
+                            @endif
+                            @if($getData->is_tron == 1 && $getData->bank_perusahaan_id != 9)
+                                <br>
+                                Nama: <strong>Pembayaran via eIDR</strong>
+                                <br>
+                                Alamat Tron: <strong>TDtvo2jCoRftmRgzjkwMxekh8jqWLdDHNB</strong>
+                            @endif
+                            @if($getData->is_tron == 1 && $getData->bank_perusahaan_id == 9)
+                                <br>
+                                Nama: <strong>Pembayaran via eIDR Autoconfirm</strong>
+                                <br>
+                                Alamat Tron: <strong>TDtvo2jCoRftmRgzjkwMxekh8jqWLdDHNB</strong>
+                            @endif
+                        @endif
+                        <div class="accordion mt-2" id="accordionExample">
+                            @if($getData->bank_perusahaan_id == null)
+                            <?php $no = 1; ?>
+                            @foreach($bankPerusahaan as $rowBank)
+                                <div class="card">
+                                    <div class="card-header" id="heading{{$no}}">
+                                        <h1 class="mb-0">
+                                            <button class="btn btn-outline-primary btn-lg" id="bankbutton{{$no}}" type="button" data-toggle="collapse" data-target="#collapse{{$no}}" aria-expanded="true" aria-controls="collapse{{$no}}">
+                                            Bayar via Transfer {{$rowBank->bank_name}}
+                                            </button>
+                                        </h1>
+                                    </div>
+
+                                    <div id="collapse{{$no}}" class="collapse" aria-labelledby="heading{{$no}}" data-parent="#accordionExample">
+                                        <div class="card-body">
+                                            <div class="radio radio-primary">
+                                                    <input type="radio" name="radio" id="radio{{$no}}" value="0_{{$rowBank->id}}">
+                                                    <label for="radio{{$no}}">
+                                                        {{$rowBank->bank_name}} a/n <b>{{$rowBank->account_name}}</b>
+                                                        <br>
+                                                        {{$rowBank->account_no}}
+                                                    </label>
+                                                </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php $no++; ?>
+                            @endforeach
+                            <?php $eidrno = count($bankPerusahaan) + 1; ?>
+                                <div class="card">
+                                    <div class="card-header" id="headingTwo">
+                                    <h1 class="mb-0">
+                                        <button class="btn btn-outline-warning btn-lg" id="eidrbutton" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                        Bayar via eIDR
+                                        </button>
+                                    </h1>
+                                    </div>
+                                    <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                                    <div class="card-body">
+                                        <div class="radio radio-primary">
+                                            <input type="radio" name="radio" id="radio{{$eidrno}}" value="1_1" checked>
+                                            <label for="radio{{$eidrno}}">
+                                                eIDR
+                                                <br>
+                                                <mark class="text-break">TDtvo2jCoRftmRgzjkwMxekh8jqWLdDHNB</mark>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                    </address>
+
+                </div>
+                <?php
+                    $total = $getData->price + $getData->unique_digit;
+                ?>
+
+
+                <div class="rounded-lg bg-white p-3 mb-3">
+                    <div class="row">
+                        <div class="col-sm-6 col-xs-6">
                             <p class="text-xs-right"><b>Sub-total:</b> Rp. {{number_format($getData->price, 0, ',', ',')}}</p>
                             <p class="text-xs-right"><b>Kode Unik:</b> {{number_format($getData->unique_digit, 0, ',', ',')}}</p>
                             <hr>
                             <h3 class="text-xs-right">Rp. {{number_format($total, 0, ',', ',')}}</h3>
+                            <br>
+                            <span class="text-xs-right" id="saldo-eidr"></span>
+                            <hr>
                         </div>
                     </div>
-                </div>
-                
-                <div class="rounded-lg bg-white p-3 mb-3">
                     <div class="row">
-                        
-                        <div class="col-md-3 col-sm-6 col-xs-6 col-md-offset-9">
+
+                        <div class="col-sm-6 col-xs-6 col-md-offset-6">
                             @if($getData->status == 0)
                             <div class="hidden-print">
                                 <div class="pull-xs-right">
                                     <input type="hidden" value="{{$getData->id}}" name="id_trans" id="id_trans">
-                                    <button type="submit" class="btn btn-danger"  id="submitBtn" data-toggle="modal" data-target="#rejectSubmit" onClick="rejectSubmit()">Batal</button>
-                                    <button type="submit" class="btn btn-success"  id="submitBtn" data-toggle="modal" data-target="#confirmSubmit" onClick="inputSubmit()">Confirm</button>
+                                    <input type="hidden" value="{{$total}}" name="nominal" id="nominal">
+                                    <button type="submit" class="btn btn-danger"  id="rejectBtn" data-toggle="modal" data-target="#rejectSubmit" onClick="rejectSubmit()">Batal</button>
+                                    <button type="submit" class="btn btn-success"  id="submitBtn" data-toggle="modal" data-target="#confirmSubmit" onClick="inputSubmit()">Saya sudah transfer</button>
+                                    <button type="submit" class="btn btn-success" id="eidr-pay-button" data-toggle="modal" data-target="#confirmSubmit" onClick="inputSubmitTron()">Bayar via eIDR</button>
                                 </div>
                                 <div class="clearfix"></div>
                             </div>
@@ -181,19 +229,45 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/fonts/slick.woff">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
-    
+
 @stop
 
 @section('javascript')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
     <script src="{{ asset('asset_new/js/sidebar.js') }}"></script>
     <script src="{{ asset('asset_member/js/jquery.cart.min.js') }}"></script>
+    <script src="{{ asset('asset_new/js/tronweb.js') }}"></script>
     @if($getData->status == 0)
     <script>
+        $(function() {
+            $('#eidr-pay-button').hide();
+            setTimeout(function(){
+                if($('#isTronWeb').val() > 0 && $('#eidr-balance').val() >= {{$total}}){
+                    $('#submitBtn').hide();
+                    $('#eidr-pay-button').show();
+                    }
+            }, 2000);
+        })
+
+        @for ($i = 1; $i < $eidrno; $i++)
+            $('#bankbutton{{$i}}').click(function() {
+                $('#radio{{$i}}').prop('checked', true)
+                $('#submitBtn').show();
+                $('#eidr-pay-button').hide();
+            })
+        @endfor
+
+            $('#eidrbutton').click(function() {
+                $('#radio{{$eidrno}}').prop('checked', true)
+                if($('#isTronWeb').val() > 0 && $('#eidr-balance').val() >= {{$total}}){
+                    $('#submitBtn').hide();
+                    $('#eidr-pay-button').show();
+                }
+            })
+
            function inputSubmit(){
                 var id_trans = $("#id_trans").val();
-//                var id_bank = $("#bank_name").val();
-                var id_bank = $('input[name=radio]:checked').val(); 
+                var id_bank = $('input[name=radio]:checked').val();
                  $.ajax({
                      type: "GET",
                      url: "{{ URL::to('/') }}/m/cek/add-transaction?id_trans="+id_trans+"&id_bank="+id_bank,
@@ -203,7 +277,20 @@
                      }
                  });
            }
-           
+
+           function inputSubmitTron(){
+                var id_trans = $("#id_trans").val();
+                var sender = $("#userTron").val();
+                 $.ajax({
+                     type: "GET",
+                     url: "{{ URL::to('/') }}/m/cek/add-transaction-tron?id_trans="+id_trans+"&sender="+sender,
+                     success: function(url){
+                         $("#confirmDetail" ).empty();
+                         $("#confirmDetail").html(url);
+                     }
+                 });
+           }
+
            function rejectSubmit(){
                 var id_trans = $("#id_trans").val();
                  $.ajax({

@@ -285,7 +285,7 @@ Route::prefix('/')->group(function () {
     Route::get('/m/list/transactions', 'Admin\MemberController@getListTransactions')->name('m_listTransactions')->middleware('auth');
     Route::get('/m/add/transaction/{id}', 'Admin\MemberController@getAddTransaction')->name('m_addTransaction')->middleware('auth');
     Route::post('/m/add/transaction', 'Admin\MemberController@postAddTransaction')->middleware('auth');
-    Route::post('/m/add/transaction-tron', 'Admin\MemberController@postAddTransactionTron')->middleware('auth')->middleware('cors');
+    Route::post('/m/add/transaction-tron', 'Admin\MemberController@postAddTransactionTron')->middleware('auth');
     Route::post('/m/reject/transaction', 'Admin\MemberController@postRejectTransaction')->middleware('auth');
     Route::get('/m/pin/stock', 'Admin\MemberController@getMyPinStock')->name('m_myPinStock')->middleware('auth');
     Route::get('/m/pin/history', 'Admin\MemberController@getMyPinHistory')->name('m_myPinHistory')->middleware('auth');

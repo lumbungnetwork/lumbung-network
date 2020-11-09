@@ -2,11 +2,11 @@
 @section('content')
 
 <div class="wrapper">
-        
-    
+
+
         <!-- Page Content -->
         <div id="content">
-            
+
             <div class="bg-gradient-sm">
                 <nav class="navbar navbar-expand-lg navbar-light bg-transparent w-100">
                     <div class="container">
@@ -21,7 +21,7 @@
             </div>
             <div class="mt-min-10">
                 <div class="container">
-                    
+
                     <div class="rounded-lg bg-white p-3 mb-3">
                         <div class="row">
                             <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
@@ -33,25 +33,22 @@
                         </div>
                         <br>
                         <div class="row">
-                            <div class="table-responsive">
+                            <div class="container p-2 table-responsive">
                                     @if ( Session::has('message') )
                                         <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible" role="alert">
                                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                                 <span aria-hidden="true">×</span>
                                             </button>
-                                            {{  Session::get('message')    }} 
+                                            {{  Session::get('message')    }}
                                         </div>
                                     @endif
                                     <table id="datatable" class="table table-striped table-bordered">
                                         <thead>
                                             <tr>
                                                 <th>No.</th>
-                                                <th>Kode Transaksi</th>
                                                 <th>Tgl</th>
                                                 <th>Jml Pin</th>
-                                                <th>Harga</th>
                                                 <th>Status</th>
-                                                <th>###</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -77,14 +74,12 @@
                                                 ?>
                                             <tr>
                                                 <td>{{$no}}</td>
-                                                <td>{{$row->transaction_code}}</td>
                                                 <td>{{date('d F Y', strtotime($row->created_at))}}</td>
-                                                <td>{{$row->total_pin}}</td>
-                                                <td>{{number_format($row->price, 0, ',', ',')}}</td>
-                                                <td><label class="label label-{{$label}}">{{$status}}</label></td>
-                                                <td>
-                                                    <a rel="tooltip" title="View" class="text-primary" href="{{ URL::to('/') }}/m/add/transaction/{{$row->id}}">detail</a>
+                                                <td>{{$row->total_pin}}<br>
+                                                    <a class="label label-primary" href="{{ URL::to('/') }}/m/add/transaction/{{$row->id}}">detail</a>
                                                 </td>
+                                                <td><label class="label label-{{$label}}">{{$status}}</label></td>
+
                                             </tr>
                                             @endforeach
                                             @endif
@@ -93,9 +88,9 @@
                             </div>
                         </div>
                     </div>
-                    
-                    
-                    
+
+
+
                 </div>
             </div>
             @include('layout.member.nav')
@@ -132,20 +127,20 @@
              }
          });
      }
-     
+
      function confirmSubmit(){
          var dataInput = $("#form-add").serializeArray();
          $('#form-add').submit();
      }
-    
+
 </script>
 <script type="text/javascript">
     $(document).ready(function() {
-        $('#datatable').DataTable();
-        var table = $('#datatable-buttons').DataTable({
+        $('#datatable').DataTable({
             lengthChange: false,
+            searching: false
         });
     } );
-    
+
 </script>
 @stop

@@ -56,6 +56,7 @@ $("#eidr-pay-button").click(async function () {
         sendAmount = $("#royalti").val().trim() * 100;
     } else if (txType == 2) {
         toAddress = "TDtvo2jCoRftmRgzjkwMxekh8jqWLdDHNB";
+        sendAmount = $('#nominal').val() * 100;
     } else {
         toAddress = "TC1o89VSHMSPno2FE6SgoCsuy8i4mVSWge";
         sendAmount = $('#deposit').val() * 100;
