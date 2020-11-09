@@ -168,8 +168,8 @@
 
                 <div class="rounded-lg bg-white p-3 mb-3">
                     <div class="row">
-                        <div class="col-md-8 col-sm-6 col-xs-6"></div>
-                        <div class="col-md-4 col-sm-6 col-xs-6 col-md-offset-6">
+                        <div class="col-sm-6 col-xs-6"></div>
+                        <div class="col-sm-6 col-xs-6 col-md-offset-6">
                             <p class="text-xs-right"><b>Total Harga : </b> Rp. {{number_format($getDataMaster->price, 0, ',', ',')}}</p>
                             <?php
                                 $royalti = 4/100 * $getDataMaster->price; //2% bisa dinamis nanti
@@ -183,8 +183,8 @@
                     </div>
                     <hr>
                     <div class="row">
-                        <div class="col-md-8 col-sm-6 col-xs-6"></div>
-                        <div class="col-md-4 col-sm-6 col-xs-6 col-md-offset-6">
+                        <div class="col-sm-6 col-xs-6"></div>
+                        <div class="col-sm-6 col-xs-6 col-md-offset-6">
                             @if($getDataMaster->status == 0)
                         <div class="hidden-print">
                             <div class="pull-xs-right mt-2">

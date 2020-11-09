@@ -168,7 +168,7 @@
 
                 <div class="rounded-lg bg-white p-3 mb-3">
                     <div class="row">
-                        <div class="col-md-9 col-sm-6 col-xs-6">
+                        <div class="col-sm-6 col-xs-6">
                             <p class="text-xs-right"><b>Sub-total:</b> Rp. {{number_format($getData->price, 0, ',', ',')}}</p>
                             <p class="text-xs-right"><b>Kode Unik:</b> {{number_format($getData->unique_digit, 0, ',', ',')}}</p>
                             <hr>
@@ -180,7 +180,7 @@
                     </div>
                     <div class="row">
 
-                        <div class="col-md-3 col-sm-6 col-xs-6 col-md-offset-9">
+                        <div class="col-sm-6 col-xs-6 col-md-offset-6">
                             @if($getData->status == 0)
                             <div class="hidden-print">
                                 <div class="pull-xs-right">

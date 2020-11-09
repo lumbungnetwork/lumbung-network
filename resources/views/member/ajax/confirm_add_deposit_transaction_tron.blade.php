@@ -43,7 +43,7 @@
                 <div class="col-md-12 col-xs-12">
                     <div class="form-group">
                         <label>Transaction Hash #</label>
-                        <textarea class="form-control" id="hash" rows="2" name="tron_transfer"></textarea>
+                        <textarea class="form-control" id="hash" rows="2" name="tron_transfer" readonly></textarea>
                     </div>
                 </div>
             </div>
@@ -53,7 +53,7 @@
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary waves-effect" id="tutupModal" data-dismiss="modal">Tutup</button>
-        <button type="button" class="btn btn-primary waves-effect waves-light" id="submit" onclick="confirmSubmitTron()">Konfirmasi</button>
+        <button type="button" class="btn btn-primary waves-effect waves-light" id="submit" disabled onclick="confirmSubmitTron()">Konfirmasi</button>
     </div>
 
 
