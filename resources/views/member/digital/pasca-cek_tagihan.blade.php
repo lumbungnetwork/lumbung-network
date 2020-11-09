@@ -2,11 +2,11 @@
 @section('content')
 
 <div class="wrapper">
-        
-    
+
+
         <!-- Page Content -->
         <div id="content">
-            
+
             <div class="bg-gradient-sm">
                 <nav class="navbar navbar-expand-lg navbar-light bg-transparent w-100">
                     <div class="container">
@@ -19,33 +19,45 @@
                     </div>
                 </nav>
             </div>
-            <?php
-            if($type == 4){
-                $nama = 'BPJS';
-            }
-            if($type == 5){
-                $nama = 'PLN';
-            }
-            if($type == 6){
-                $nama = 'HP Pascabayar';
-            }
-            if($type == 7){
-                $nama = 'Telkom PTSN';
-            }
-            ?>
+
             <div class="mt-min-10">
                 <div class="container">
-                    
+
                     <div class="rounded-lg bg-white p-3 mb-3">
-                        <h6 class="mb-3">Pembayaran {{$nama}}</h6>
                         @if($getData['rc'] != '00')
-                            <div class="alert alert-danger alert-dismissible" role="alert">
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">×</span>
-                                </button>
-                                {{ $getData['message'] }}
+                            <div class="container">
+                                <div class="alert alert-danger alert-dismissible" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    {{ $getData['message'] }}
+                                </div>
                             </div>
+
                         @endif
+
+                        @if($getData['rc'] == '00')
+                            <?PHP
+                                if($type == 4){
+                                    $nama = 'BPJS';
+                                    $selling_price = $getData['selling_price'];
+                                }
+                                if($type == 5){
+                                    $nama = 'PLN';
+                                    $selling_price = $getData['selling_price'] + 500;
+                                }
+                                if($type == 6){
+                                    $nama = 'HP Pascabayar';
+                                    $selling_price = $getData['selling_price'] + 1000;
+                                }
+                                if($type == 7){
+                                    $nama = 'Telkom PTSN';
+                                    $selling_price = $getData['selling_price'] + 1000;
+                                }
+                            ?>
+
+                        <h4 class="mb-3">Pembayaran {{$nama}}</h4>
+
                         <div class="row">
                             <div class="col-xl-12 col-xs-12">
                                 <fieldset class="form-group">
@@ -53,12 +65,12 @@
                                     <input type="text" class="form-control"  autocomplete="off" value="{{$getData['customer_no']}}">
                                 </fieldset>
                             </div>
-                            
-                        </div>    
+
+                        </div>
                     </div>
-                    
-                    
-                    @if($getData['rc'] == '00')
+
+
+
                     <div class="rounded-lg bg-white p-3 mb-3">
                         <div class="row">
                             <div class="col-xs-8 col-md-12 col-lg-12 col-xl-12">
@@ -70,7 +82,7 @@
                             <div class="col-xs-4 col-md-12 col-lg-12 col-xl-12">
                                 <fieldset class="form-group">
                                     <label>Biaya</label>
-                                    <input type="text" class="form-control" autocomplete="off" value="Rp. {{$getData['selling_price']}}">
+                                    <input type="text" class="form-control" autocomplete="off" value="Rp. {{$selling_price}}">
                                 </fieldset>
                             </div>
                         </div>
@@ -81,35 +93,14 @@
                             <div class="col-xl-12 col-xs-12">
                                 <fieldset class="form-group">
                                     <label for="user_name">Masukkan Username Vendor Tujuan Belanja Anda:</label>
+                                    <small>Ketikkan 3-4 huruf awal, lalu klik opsi yang tampil</small>
                                     <input type="text" class="form-control" id="get_id" name="user_name" autocomplete="off">
                                     <input type="hidden" name="get_id" id="id_get_id">
                                     <ul class="typeahead dropdown-menu" style="max-height: 120px; overflow: auto;border: 1px solid #ddd;width: 96%;margin-left: 11px;" id="get_id-box"></ul>
                                 </fieldset>
                             </div>
                             @endif
-                            <div class="col-xl-12 col-xs-12">
 
-                                <div class="rounded-lg shadow-sm p-2">
-                                    <div class="radio radio-primary">
-                                        <input type="radio" id="type_pay" name="type_pay" value="1">
-                                        <label for="radio1">
-                                            Bayar via vendor terdekat <b>(COD)</b>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="rounded-lg shadow-sm p-2">
-                                    <div class="radio radio-primary">
-                                        <input type="radio" id="type_pay"  name="type_pay" value="3">
-                                        <label for="radio2">
-                                            Bayar via eIDR (Direct)*
-                                        </label>
-                                        <br>
-                                        <small>
-                                                Pembayaran via eIDR akan ditambah Rp. 1000, sebagai kontribusi langsung ke deviden LMB
-                                            </small>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                         <br>
                         <div class="row">
@@ -165,38 +156,20 @@
         }
     </script>
     @if($getData['rc'] == '00')
-    <?PHP
-        if($type == 4){
-            $nama = 'BPJS';
-            $selling_price = $getData['selling_price'];
-        }
-        if($type == 5){
-            $nama = 'PLN';
-            $selling_price = $getData['selling_price'] + 500;
-        }
-        if($type == 6){
-            $nama = 'HP Pascabayar';
-            $selling_price = $getData['selling_price'] + 1000;
-        }
-        if($type == 7){
-            $nama = 'Telkom PTSN';
-            $selling_price = $getData['selling_price'] + 1000;
-        }
-    ?>
+
     <script>
        function inputSubmit(){
            var vendor_id = $("#id_get_id").val();
-           var type_pay = $('input[type=radio][name=type_pay]:checked').attr('value');
             $.ajax({
                 type: "GET",
-                url: "{{ URL::to('/') }}/m/cek/buy/ppob-pasca?no_hp={{$getData['customer_no']}}&vendor_id="+vendor_id+"&harga={{$selling_price}}&type_pay="+type_pay+"&type={{$type}}&ref_id={{$getData['ref_id']}}&price={{$getData['selling_price']}}&customer_no={{$getData['customer_no']}}&buyer_sku_code={{$buyer_sku_code}}",
+                url: "{{ URL::to('/') }}/m/cek/buy/ppob-pasca?no_hp={{$getData['customer_no']}}&vendor_id="+vendor_id+"&harga={{$selling_price}}&type_pay=1&type={{$type}}&ref_id={{$getData['ref_id']}}&price={{$getData['selling_price']}}&customer_no={{$getData['customer_no']}}&buyer_sku_code={{$buyer_sku_code}}",
                 success: function(url){
                     $("#confirmDetail" ).empty();
                     $("#confirmDetail").html(url);
                 }
             });
         }
-        
+
         function confirmSubmit(){
             var dataInput = $("#form-add").serializeArray();
             $('#form-add').submit();
@@ -205,8 +178,8 @@
             $('#tutupModal').remove();
             $('#submit').remove();
         }
-        
-        $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {    
+
+        $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {
            $(this).val($(this).val().replace(/[^\d].+/, ""));
             if ((event.which < 48 || event.which > 57)) {
                 event.preventDefault();
@@ -214,5 +187,5 @@
         });
 
     </script>
-    @endif 
+    @endif
 @stop
