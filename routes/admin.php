@@ -285,6 +285,7 @@ Route::prefix('/')->group(function () {
     Route::get('/m/list/transactions', 'Admin\MemberController@getListTransactions')->name('m_listTransactions')->middleware('auth');
     Route::get('/m/add/transaction/{id}', 'Admin\MemberController@getAddTransaction')->name('m_addTransaction')->middleware('auth');
     Route::post('/m/add/transaction', 'Admin\MemberController@postAddTransaction')->middleware('auth');
+    Route::post('/m/add/transaction-tron', 'Admin\MemberController@postAddTransactionTron')->middleware('auth')->middleware('cors');
     Route::post('/m/reject/transaction', 'Admin\MemberController@postRejectTransaction')->middleware('auth');
     Route::get('/m/pin/stock', 'Admin\MemberController@getMyPinStock')->name('m_myPinStock')->middleware('auth');
     Route::get('/m/pin/history', 'Admin\MemberController@getMyPinHistory')->name('m_myPinHistory')->middleware('auth');
@@ -342,7 +343,7 @@ Route::prefix('/')->group(function () {
     Route::get('/m/purchase/list-stock', 'Admin\MemberController@getStockistListPurchase')->name('m_StockistListPruchase')->middleware('auth');
     Route::get('/m/purchase/detail-stock/{id}', 'Admin\MemberController@getStockistDetailRequestStock')->name('m_StockistDetailPruchase')->middleware('auth');
     Route::post('/m/add/req-stock', 'Admin\MemberController@postAddRequestStock')->middleware('auth');
-    Route::post('/m/add/req-stock-tron', 'Admin\MemberController@postAddRequestStockTron')->middleware('auth');
+    Route::post('/m/add/req-stock-tron', 'Admin\MemberController@postAddRequestStockTron')->middleware('auth')->middleware('cors');
     Route::post('/m/reject/req-stock', 'Admin\MemberController@postRejectRequestStock')->middleware('auth');
     Route::post('/m/add/transfer-royalti', 'Admin\MemberController@postAddTransferRoyalti')->middleware('auth');
     Route::post('/m/add/confirm-pembelian', 'Admin\MemberController@postAddConfirmPembelian')->middleware('auth');
@@ -360,7 +361,7 @@ Route::prefix('/')->group(function () {
     Route::get('/m/purchase/detail-vstock/{id}', 'Admin\MemberController@getVendorDetailRequestStock')->name('m_VendorDetailPruchase')->middleware('auth');
     Route::get('/m/purchase/list-vstock', 'Admin\MemberController@getVendorListPurchase')->name('m_VendorListPruchase')->middleware('auth');
     Route::post('/m/add/req-vstock', 'Admin\MemberController@postAddRequestVStock')->middleware('auth');
-    Route::post('/m/add/req-vstock-tron', 'Admin\MemberController@postAddRequestVStockTron')->middleware('auth');
+    Route::post('/m/add/req-vstock-tron', 'Admin\MemberController@postAddRequestVStockTron')->middleware('auth')->middleware('cors');
     Route::post('/m/reject/req-vstock', 'Admin\MemberController@postRejectRequestVStock')->middleware('auth');
     Route::get('/m/purchase/my-vstock', 'Admin\MemberController@getVendorMyStockPurchaseSisa')->name('m_VendorMyPruchaseSisa')->middleware('auth');
     Route::get('/m/vendor-report', 'Admin\MemberController@getMemberVendorReport')->name('m_MemberVendorReport')->middleware('auth');
@@ -381,7 +382,7 @@ Route::prefix('/')->group(function () {
     Route::get('/m/list/deposit-transaction', 'Admin\MemberController@getListDepositTransactions')->name('m_listDepositTransactions')->middleware('auth');
     Route::get('/m/add/deposit-transaction/{id}', 'Admin\MemberController@getAddDepositTransaction')->name('m_addDepositTransaction')->middleware('auth');
     Route::post('/m/add/deposit-transaction', 'Admin\MemberController@postAddDepositTransaction')->middleware('auth');
-    Route::post('/m/add/deposit-transaction-tron', 'Admin\MemberController@postAddDepositTransactionTron')->middleware('auth');
+    Route::post('/m/add/deposit-transaction-tron', 'Admin\MemberController@postAddDepositTransactionTron')->middleware('auth')->middleware('cors');
     Route::post('/m/reject/deposit-transaction', 'Admin\MemberController@postRejectDepositTransaction')->middleware('auth');
     //        Route::get('/m/pin/deposit-stock', 'Admin\MemberController@getMyDepositStock')->name('m_myDepositStock')->middleware('auth');
     Route::get('/m/deposit/history', 'Admin\MemberController@getMyDepositHistory')->name('m_myDepositHistory')->middleware('auth');
@@ -424,6 +425,7 @@ Route::prefix('/')->group(function () {
     Route::get('/m/cek/add-pin', 'Admin\AjaxmemberController@postCekAddPin')->middleware('auth');
     Route::get('/m/cek/add-profile', 'Admin\AjaxmemberController@postCekAddProfile')->middleware('auth');
     Route::get('/m/cek/add-transaction', 'Admin\AjaxmemberController@postCekAddTransaction')->middleware('auth');
+    Route::get('/m/cek/add-transaction-tron', 'Admin\AjaxmemberController@postCekAddTransactionTron')->middleware('auth');
     Route::get('/m/cek/reject-transaction', 'Admin\AjaxmemberController@postCekRejectTransaction')->middleware('auth');
     Route::get('/m/cek/confirm-order', 'Admin\AjaxmemberController@getCekConfirmOrderPackage')->middleware('auth');
     Route::get('/m/cek/reject-order', 'Admin\AjaxmemberController@getCekRejectOrderPackage')->middleware('auth');
