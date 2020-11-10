@@ -91,7 +91,7 @@
                 @if($dataUser->upline_id != null)
                     <div class="mt-min-10">
                         <div class="container">
-                            <div class="card rounded shadow bg-white shadow-sm p-3">
+                            <div class="card p-3">
                                 @if ( Session::has('message') )
                                     <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible" role="alert">
                                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -208,22 +208,30 @@
                     <div class="container" id="stockist-vendor-btn">
                         <div class="row">
                             <div class="col-6">
-                                <div class="card rounded shadow bg-white p-3 text-center">
+                                <div class="card p-3 text-center">
                                     <a href="{{ URL::to('/') }}/m/search/stockist"><i class="fa fa-cubes icon-menu2"></i></a>
                                     <dd>Stokis</dd>
-                                    <div class="">
-                                        <a href="{{ URL::to('/') }}/m/history/shoping" class="btn btn-sm btn-warning">History</a>
-                                        <a href="{{ URL::to('/') }}/m/belanja-reward" class="btn btn-sm btn-warning">Reward</a>
+                                    <div class="row justify-content-center">
+                                        <div class="col-xs-6 mx-1">
+                                            <a href="{{ URL::to('/') }}/m/history/shoping" class="btn btn-sm btn-warning">History</a>
+                                        </div>
+                                        <div class="col-xs-6 mx-1">
+                                            <a href="{{ URL::to('/') }}/m/belanja-reward" class="btn btn-sm btn-warning">Reward</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-6">
-                                <div class="card rounded shadow bg-white p-3 text-center">
+                                <div class="card p-3 text-center">
                                     <a href="{{ URL::to('/') }}/m/search/vendor"><i class="fa fa-store icon-menu2"></i></a>
                                     <dd>Vendor</dd>
-                                    <div class="">
-                                        <a href="{{ URL::to('/') }}/m/history/vshoping" class="btn btn-sm btn-warning">History</a>
-                                        <a href="{{ URL::to('/') }}/m/vbelanja-reward" class="btn btn-sm btn-warning">Reward</a>
+                                    <div class="row justify-content-center">
+                                        <div class="col-xs-6 mx-1">
+                                            <a href="{{ URL::to('/') }}/m/history/vshoping" class="btn btn-sm btn-warning">History</a>
+                                        </div>
+                                        <div class="col-xs-6 mx-1">
+                                            <a href="{{ URL::to('/') }}/m/vbelanja-reward" class="btn btn-sm btn-warning">Reward</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -232,9 +240,9 @@
 
                     <!-- menu ppob -->
                     <div class="container mt-3" id="ppob-btn-container">
-                        <div class="card rounded shadow bg-white p-3">
+                        <div class="card p-3">
                             <div class="row">
-                                <div class="col-3 px-3 mb-3">
+                                <div class="col-3 px-2 mb-3">
                                     <a href="/m/list/operator/1" class="text-decoration-none">
                                         <div class="rounded icon-ppob p-1 text-center">
                                             <div class="box-icon bg-green text-center">
@@ -244,7 +252,7 @@
                                         </div>
                                     </a>
                                 </div>
-                                <div class="col-3 px-3 mb-3">
+                                <div class="col-3 px-2 mb-3">
                                     <a href="/m/list/operator/2" class="text-decoration-none">
                                         <div class="rounded icon-ppob p-1 text-center">
                                             <div class="box-icon bg-green text-center">
@@ -254,7 +262,7 @@
                                         </div>
                                     </a>
                                 </div>
-                                <div class="col-3 px-3 mb-3">
+                                <div class="col-3 px-2 mb-3">
                                     <a href="/m/daftar-harga/prepaid/pln" class="text-decoration-none">
                                         <div class="rounded icon-ppob p-1 text-center">
                                             <div class="box-icon bg-green text-center">
@@ -264,7 +272,7 @@
                                         </div>
                                     </a>
                                 </div>
-                                <div class="col-3 px-3 mb-3">
+                                <div class="col-3 px-2 mb-3">
                                     <a href="/m/detail/pascabayar/1" class="text-decoration-none">
                                         <div class="rounded icon-ppob p-1 text-center">
                                             <div class="box-icon bg-green text-center">
@@ -276,9 +284,9 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-3 px-3 mb-3">
+                                <div class="col-3 px-2 mb-3">
                                     <a href="/m/list/hp-pascabayar" class="text-decoration-none">
-                                        <div class="rounded icon-ppob p-1 text-center">
+                                        <div class="icon-ppob p-1 text-center">
                                             <div class="box-icon bg-green text-center">
                                                 <i class="mdi mdi-cellphone-arrow-down icon-menu"></i>
                                             </div>
@@ -286,7 +294,7 @@
                                         </div>
                                     </a>
                                 </div>
-                                <div class="col-3 px-3 mb-3">
+                                <div class="col-3 px-2 mb-3">
                                     <a href="/m/detail/pascabayar/4" class="text-decoration-none">
                                         <div class="rounded icon-ppob p-1 text-center">
                                             <div class="box-icon bg-green text-center">
@@ -296,7 +304,7 @@
                                         </div>
                                     </a>
                                 </div>
-                                <div class="col-3 px-3 mb-3">
+                                <div class="col-3 px-2 mb-3">
                                     <a href="/m/list/tagihan-pascabayar" class="text-decoration-none">
                                         <div class="rounded icon-ppob p-1 text-center">
                                             <div class="box-icon bg-green text-center">
@@ -306,13 +314,13 @@
                                         </div>
                                     </a>
                                 </div>
-                                <div class="col-3 px-3 mb-3">
+                                <div class="col-3 px-2 mb-3">
                                     <a href="/m/list/buy-ppob" class="text-decoration-none">
                                         <div class="rounded icon-ppob p-1 text-center">
                                             <div class="box-icon bg-green text-center">
                                                 <i class="mdi mdi-format-align-justify icon-menu"></i>
                                             </div>
-                                            <dd>List Pembelian</dd>
+                                            <dd>Riwayat</dd>
                                         </div>
                                     </a>
                                 </div>
