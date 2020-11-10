@@ -263,7 +263,7 @@
                                     </a>
                                 </div>
                                 <div class="col-3 px-2 mb-3">
-                                    <a href="/m/daftar-harga/prepaid/pln" class="text-decoration-none">
+                                    <a href="/m/cek/pln-prepaid" class="text-decoration-none">
                                         <div class="rounded icon-ppob p-1 text-center">
                                             <div class="box-icon bg-green text-center">
                                                 <i class="mdi mdi-lightbulb-on-outline icon-menu"></i>
@@ -359,15 +359,15 @@
             centerPadding: '60px',
             slidesToShow: 3,
             autoplay: true,
-            autoplaySpeed: 2000,
+            autoplaySpeed: 3000,
             responsive: [
                 {
                 breakpoint: 768,
                 settings: {
                     arrows: false,
                     centerMode: true,
-                    centerPadding: '40px',
-                    slidesToShow: 3
+                    centerPadding: '50px',
+                    slidesToShow: 1
                 }
                 },
                 {
@@ -375,7 +375,7 @@
                 settings: {
                     arrows: false,
                     centerMode: true,
-                    centerPadding: '40px',
+                    centerPadding: '50px',
                     slidesToShow: 1
                 }
                 }

@@ -294,21 +294,6 @@ body {
     font-size: 20px !important;
 }
 
-@media (max-width: 1366px) {
-    p {
-        font-size: 15px !important;
-        margin-bottom: 3px !important;
-    }
-
-    span {
-        font-size: 14px;
-    }
-
-    small {
-        font-size: 12px !important;
-    }
-}
-
 @media (max-width: 351px) {
     ul .nav {
         justify-content: space-between !important;
@@ -337,6 +322,11 @@ body {
 
     .card a div dd {
         font-size: 12px !important;
+    }
+
+    span {
+        font-size: 8px;
+        font-weight: 200;
     }
 }
 
