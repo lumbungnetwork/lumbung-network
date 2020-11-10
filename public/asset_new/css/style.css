@@ -334,6 +334,10 @@ body {
         margin: 0 !important;
         width: 55px;
     }
+
+    .card a div dd {
+        font-size: 12px !important;
+    }
 }
 
 .margin-tb-10 {

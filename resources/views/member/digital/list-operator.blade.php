@@ -24,20 +24,20 @@
                 <div class="container">
                     <div class="rounded-lg bg-white p-3 mb-3">
                         <div class="d-flex flex-row justify-content-around">
-                            <div class="card p-3 media-body flex-column justify-content-center">
+                            <div class="card p-3 m-3 media-body flex-column justify-content-center">
                                 <a href="/m/daftar-harga/1" class="text-decoration-none">
 
                                     <div class="text-center ">
-                                        <img src="/asset_new/img/providers/telkomsel.png" alt="logo-telkomsel">
+                                        <img src="/asset_new/img/providers/telkomsel.png" width="60px" alt="logo-telkomsel">
                                         <dd>Telkomsel</dd>
                                     </div>
                                 </a>
                             </div>
-                            <div class="card p-3 media-body flex-column justify-content-center">
+                            <div class="card p-3 m-3 media-body flex-column justify-content-center">
                                 <a href="/m/daftar-harga/2" class="text-decoration-none">
 
                                     <div class="text-center">
-                                        <img src="/asset_new/img/providers/indosat.png" alt="logo-indosat">
+                                        <img src="/asset_new/img/providers/indosat.png" width="50px" alt="logo-indosat">
                                         <dd>Indosat</dd>
                                     </div>
                                 </a>
@@ -45,20 +45,20 @@
 
                         </div>
                         <div class="d-flex flex-row justify-content-around">
-                            <div class="card p-3 media-body flex-column justify-content-center">
+                            <div class="card p-3 m-3 media-body flex-column justify-content-center">
                                 <a href="/m/daftar-harga/3" class="text-decoration-none">
 
                                     <div class="text-center ">
-                                        <img src="/asset_new/img/providers/xl.png" alt="logo-xl">
+                                        <img src="/asset_new/img/providers/xl.png" height="40px" alt="logo-xl">
                                         <dd>XL</dd>
                                     </div>
                                 </a>
                             </div>
-                            <div class="card p-3 media-body flex-column justify-content-center">
+                            <div class="card p-3 m-3 media-body flex-column justify-content-center">
                                 <a href="/m/daftar-harga/4" class="text-decoration-none">
 
                                     <div class="text-center">
-                                        <img src="/asset_new/img/providers/axis.png" alt="logo-axis">
+                                        <img src="/asset_new/img/providers/axis.png" width="50px" alt="logo-axis">
                                         <dd>Axis</dd>
                                     </div>
                                 </a>
@@ -66,20 +66,20 @@
 
                         </div>
                         <div class="d-flex flex-row justify-content-around">
-                            <div class="card p-3 media-body flex-column justify-content-center">
+                            <div class="card p-3 m-3 media-body flex-column justify-content-center">
                                 <a href="/m/daftar-harga/5" class="text-decoration-none">
 
                                     <div class="text-center ">
-                                        <img src="/asset_new/img/providers/3.png" alt="logo-3">
+                                        <img src="/asset_new/img/providers/3.png" height="30px" alt="logo-3">
                                         <dd>3</dd>
                                     </div>
                                 </a>
                             </div>
-                            <div class="card p-3 media-body flex-column justify-content-center">
+                            <div class="card p-3 m-3 media-body flex-column justify-content-center">
                                 <a href="/m/daftar-harga/6" class="text-decoration-none">
 
                                     <div class="text-center">
-                                        <img src="/asset_new/img/providers/smartfren.png" alt="logo-smartfren">
+                                        <img src="/asset_new/img/providers/smartfren.png" width="60px" alt="logo-smartfren">
                                         <dd>smartfren</dd>
                                     </div>
                                 </a>
@@ -96,20 +96,20 @@
                 <div class="container">
                     <div class="rounded-lg bg-white p-3 mb-3">
                         <div class="d-flex flex-row justify-content-around">
-                            <div class="card p-3 media-body flex-column justify-content-center">
+                            <div class="card p-3 m-3 media-body flex-column justify-content-center">
                                 <a href="/m/daftar-harga/data/1" class="text-decoration-none">
 
                                     <div class="text-center ">
-                                        <img src="/asset_new/img/providers/telkomsel.png" alt="logo-telkomsel">
+                                        <img src="/asset_new/img/providers/telkomsel.png" width="60px" alt="logo-telkomsel">
                                         <dd>Telkomsel</dd>
                                     </div>
                                 </a>
                             </div>
-                            <div class="card p-3 media-body flex-column justify-content-center">
+                            <div class="card p-3 m-3 media-body flex-column justify-content-center">
                                 <a href="/m/daftar-harga/data/2" class="text-decoration-none">
 
                                     <div class="text-center">
-                                        <img src="/asset_new/img/providers/indosat.png" alt="logo-indosat">
+                                        <img src="/asset_new/img/providers/indosat.png" width="50px" alt="logo-indosat">
                                         <dd>Indosat</dd>
                                     </div>
                                 </a>
@@ -117,20 +117,20 @@
 
                         </div>
                         <div class="d-flex flex-row justify-content-around">
-                            <div class="card p-3 media-body flex-column justify-content-center">
+                            <div class="card p-3 m-3 media-body flex-column justify-content-center">
                                 <a href="/m/daftar-harga/data/3" class="text-decoration-none">
 
                                     <div class="text-center ">
-                                        <img src="/asset_new/img/providers/xl.png" alt="logo-xl">
+                                        <img src="/asset_new/img/providers/xl.png" height="40px" alt="logo-xl">
                                         <dd>XL</dd>
                                     </div>
                                 </a>
                             </div>
-                            <div class="card p-3 media-body flex-column justify-content-center">
+                            <div class="card p-3 m-3 media-body flex-column justify-content-center">
                                 <a href="/m/daftar-harga/data/4" class="text-decoration-none">
 
                                     <div class="text-center">
-                                        <img src="/asset_new/img/providers/axis.png" alt="logo-axis">
+                                        <img src="/asset_new/img/providers/axis.png" width="50px" alt="logo-axis">
                                         <dd>Axis</dd>
                                     </div>
                                 </a>
@@ -138,20 +138,20 @@
 
                         </div>
                         <div class="d-flex flex-row justify-content-around">
-                            <div class="card p-3 media-body flex-column justify-content-center">
+                            <div class="card p-3 m-3 media-body flex-column justify-content-center">
                                 <a href="/m/daftar-harga/data/5" class="text-decoration-none">
 
                                     <div class="text-center ">
-                                        <img src="/asset_new/img/providers/3.png" alt="logo-3">
+                                        <img src="/asset_new/img/providers/3.png" height="30px" alt="logo-3">
                                         <dd>3</dd>
                                     </div>
                                 </a>
                             </div>
-                            <div class="card p-3 media-body flex-column justify-content-center">
+                            <div class="card p-3 m-3 media-body flex-column justify-content-center">
                                 <a href="/m/daftar-harga/data/6" class="text-decoration-none">
 
                                     <div class="text-center">
-                                        <img src="/asset_new/img/providers/smartfren.png" alt="logo-smartfren">
+                                        <img src="/asset_new/img/providers/smartfren.png" width="60px" alt="logo-smartfren">
                                         <dd>smartfren</dd>
                                     </div>
                                 </a>
