@@ -2,7 +2,7 @@
 @section('content')
 @include('layout.admin.sidebar')
 <div class="main-panel">
-    
+
     <?php //MENU HEADER  ?>
     <nav class="navbar navbar-expand-lg navbar-absolute fixed-top navbar-transparent">
         <div class="container-fluid">
@@ -18,7 +18,7 @@
             </div>
         </div>
     </nav>
-    
+
     <?php //MENU CONTENT  ?>
     <div class="content">
         <div class="row">
@@ -32,7 +32,7 @@
                             <div class="widget-content mt10 mb10 mr15">
                                 <div class="alert alert-{{ Session::get('messageclass') }}">
                                     <button class="close" type="button" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
-                                    {{  Session::get('message')    }} 
+                                    {{  Session::get('message')    }}
                                 </div>
                             </div>
                         @endif
@@ -43,7 +43,7 @@
                                         <th>No</th>
                                         <th>Peringkat</th>
                                         <th>Reward</th>
-                                        <!--<th>###</th>-->
+                                        <th>###</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -55,13 +55,13 @@
                                                 <td>{{$no}}</td>
                                                  <td>{{$row->name}}</td>
                                                 <td>{{$row->reward_detail}}</td>
-<!--                                                <td>
+                                                <td>
                                                     <a rel="tooltip"  data-toggle="modal" data-target="#popUp" class="text-primary" href="{{ URL::to('/') }}/ajax/adm/edit/bonus-reward/{{$row->id}}">edit</a>
-                                                </td>-->
+                                                </td>
                                             </tr>
                                         @endforeach
                                     @endif
-                                    
+
                                 </tbody>
                             </table>
                              <div class="modal fade" id="popUp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="false">

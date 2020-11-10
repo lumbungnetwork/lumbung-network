@@ -2,7 +2,7 @@
 @section('content')
 @include('layout.admin.sidebar')
 <div class="main-panel">
-    
+
     <?php //MENU HEADER  ?>
     <nav class="navbar navbar-expand-lg navbar-absolute fixed-top navbar-transparent">
         <div class="container-fluid">
@@ -18,7 +18,7 @@
             </div>
         </div>
     </nav>
-    
+
     <?php //MENU CONTENT  ?>
     <div class="content">
         <div class="row">
@@ -32,7 +32,7 @@
                             <div class="widget-content mt10 mb10 mr15">
                                 <div class="alert alert-{{ Session::get('messageclass') }}">
                                     <button class="close" type="button" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
-                                    {{  Session::get('message')    }} 
+                                    {{  Session::get('message')    }}
                                 </div>
                             </div>
                         @endif
@@ -55,7 +55,7 @@
                                         <th>###</th>
                                     </tr>
                                 </thead>
-                                
+
                                 <tbody>
                                     @if($getData != null)
                                         <?php $no = 0; ?>
@@ -118,14 +118,44 @@
                 }],
                 dom: 'Bfrtip',
                 "deferRender": true,
-                columnDefs: [{ 
-                    orderable: false, 
+                columnDefs: [{
+                    orderable: false,
                     targets: 0,
                 }],
                 buttons: [
                     {
                         extend: 'excelHtml5',
                         title: 'export_xls' ,
+                   },
+                   {
+                        extend: 'copyHtml5',
+                        text: 'Copy All',
+                        header: false,
+
+                        exportOptions: {
+
+                            columns: [1, 2, 3, 4, 5, 6]
+                        }
+                   },
+                   {
+                        extend: 'copyHtml5',
+                        text: 'Copy Kalkulasi',
+                        header: false,
+
+                        exportOptions: {
+
+                            columns: [2, 3, 6]
+                        }
+                   },
+                   {
+                        extend: 'copyHtml5',
+                        text: 'Copy Script',
+                        header: false,
+
+                        exportOptions: {
+
+                            columns: [3, 6]
+                        }
                    }
                 ],
                 searching: false,
@@ -148,8 +178,8 @@
         $("form").submit(function() {
                 $(myTableRow.rows({search:'applied'}).nodes()).find('input[type="checkbox"]:checked');
         });
-        
+
     } );
-    
+
 </script>
 @stop
