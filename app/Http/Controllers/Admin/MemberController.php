@@ -4210,7 +4210,7 @@ class MemberController extends Controller
             ->with('dataUser', $dataUser);
     }
 
-    public function getDaftarHargaPLNPrepaid()
+    public function getCekPLNPrepaid()
     {
         $dataUser = Auth::user();
         $onlyUser  = array(10);
@@ -4223,21 +4223,53 @@ class MemberController extends Controller
         if ($dataUser->is_active == 0) {
             return redirect()->route('mainDashboard');
         }
+        return view('member.digital.cek-pln-prepaid')
+            ->with('headerTitle', 'Cek Nomor PLN Prabayar');
+    }
+
+    public function getInquiryPLNPrepaid(Request $request)
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_active == 0) {
+            return redirect()->route('mainDashboard');
+        }
+
         $modelMember = new Member;
         $getDataAPI = $modelMember->getDataAPIMobilePulsa();
         $username   = $getDataAPI->username;
         $apiKey   = $getDataAPI->api_key;
 
-        $sign = md5($username . $apiKey . 'pricelist');
         $array = array(
+            'commands' => 'pln-subscribe',
+            'customer_no' => $request->customer_no,
+        );
+        $url = $getDataAPI->master_url . '/v1/transaction';
+        $json = json_encode($array);
+        $cek = $modelMember->getAPIurlCheck($url, $json);
+        $getData = json_decode($cek, true);
+        if ($getData == null) {
+            return redirect()->route('m_cekPLNPrepaid')
+                ->with('message', 'Data tidak ditemukan, periksa kembali nomor yang anda masukkan')
+                ->with('messageclass', 'danger')
+                ->with('customer_no', $request->customer_no);
+        }
+        $sign = md5($username . $apiKey . 'pricelist');
+        $priceArray = array(
             'cmd' => 'prepaid',
             'username' => $username,
             'sign' => $sign
         );
-        $json = json_encode($array);
-        $url = $getDataAPI->master_url . '/v1/price-list';
-        $cek = $modelMember->getAPIurlCheck($url, $json);
-        $arrayData = json_decode($cek, true);
+        $priceJson = json_encode($priceArray);
+        $priceUrl = $getDataAPI->master_url . '/v1/price-list';
+        $priceCek = $modelMember->getAPIurlCheck($priceUrl, $priceJson);
+        $arrayData = json_decode($priceCek, true);
         $daftarHargaPLN = array();
         foreach ($arrayData['data'] as $row) {
             if ($row['category'] == 'PLN') {
@@ -4273,6 +4305,7 @@ class MemberController extends Controller
         return view('member.digital.daftar-hargapln')
             ->with('headerTitle', 'Daftar Harga PLN')
             ->with('daftarHarga', $daftarHargaPLN)
+            ->with('dataCustomer', $getData['data'])
             ->with('dataUser', $dataUser);
     }
 
