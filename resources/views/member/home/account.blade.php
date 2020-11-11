@@ -17,7 +17,7 @@
 
             <div class="mt-min-10">
                 <div class="container">
-                    <div class="card rounded shadow bg-white p-3 mb-3">
+                    <div class="rounded-lg shadow bg-white p-3 mb-3">
                         <div class="row">
                             <div class="col-3 mb-3">
                                 <a href="{{ URL::to('/') }}/m/profile" class="text-decoration-none">
@@ -81,7 +81,7 @@
                                 <p class="f-12">Hari sebelum kadaluwarsa</p>
                                 @endif
                             </div>
-                            <div class="col-4 mb-3">
+                            <div class="col-4 mb-3 px-0">
                                 <input type="hidden" class="form-control allownumericwithoutdecimal invalidpaste" id="input_jml_pin" name="total_pin" autocomplete="off" value ="1">
                                 <button type="submit" class="btn btn-success"  id="submitBtn" data-toggle="modal" data-target="#confirmSubmit" onClick="inputSubmit()">Resubscribe</button>
                             </div>
@@ -93,7 +93,7 @@
                     </div>
 
                     @if($dataUser->is_stockist == 1)
-                    <div class="card rounded shadow bg-white p-3 mb-3">
+                    <div class="rounded-lg bg-white p-3 mb-3">
                         <h6 class="mb-3">Stokis Saya</h6>
                         <div class="row">
                             <div class="col-3 mb-3">
@@ -140,7 +140,7 @@
                     </div>
                     @endif
                     @if($dataUser->is_vendor == 1)
-                    <div class="rounded-lg bg-white p-3 mb-3">
+                    <div class="rounded-lg shadow-lg bg-white p-3 mb-3">
                         <h6 class="mb-3">Vendor Saya</h6>
                         <p>Produk Fisik</p>
                         <div class="row">

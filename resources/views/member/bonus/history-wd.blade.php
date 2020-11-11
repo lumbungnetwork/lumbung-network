@@ -17,7 +17,7 @@
             </div>
             <div class="mt-min-10">
                 <div class="container">
-                    
+
                     <div class="rounded-lg bg-white p-3 mb-3">
                         <div class="row">
                             <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
@@ -35,7 +35,7 @@
                                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                                 <span aria-hidden="true">×</span>
                                             </button>
-                                            {{  Session::get('message')    }} 
+                                            {{  Session::get('message')    }}
                                         </div>
                                     @endif
                                     <table id="datatable" class="table table-striped table-bordered">
@@ -75,6 +75,9 @@
                                                         $jenis = 'Bonus';
                                                         if($row->type == 3){
                                                             $jenis = 'Bonus Royalti';
+                                                        }
+                                                        if($row->type == 3 && $row->is_tron == 1){
+                                                            $jenis = 'Bonus Royalti via eIDR';
                                                         }
                                                     ?>
                                                     <tr>
@@ -119,29 +122,11 @@
     <script src="/asset_member/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="/asset_member/plugins/datatables/dataTables.bootstrap4.min.js"></script>
     <script type="text/javascript">
-    $(document).ready(function(){
-        $("#get_id").keyup(function(){
-            $.ajax({
-                type: "GET",
-                url: "{{ URL::to('/') }}/m/cek/usercode-stockist" + "?name=" + $(this).val() ,
-                success: function(data){
-                    $("#get_id-box").show();
-                    $("#get_id-box").html(data);
-                }
-            });
-        });
-    });
-    function selectUsername(val) {
-        var valNew = val.split("____");
-        $("#get_id").val(valNew[1]);
-        $("#id_get_id").val(valNew[0]);
-        $("#get_id-box").hide();
-    }
-    
+
     $(document).ready(function() {
-        $('#datatable').DataTable();
-        var table = $('#datatable-buttons').DataTable({
+        $('#datatable').DataTable({
             lengthChange: false,
+            searching: false
         });
     } );
 </script>

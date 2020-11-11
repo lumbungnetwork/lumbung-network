@@ -39,8 +39,7 @@
                                             <th>No.</th>
                                             <th>Tanggal</th>
                                             <th>Pembeli</th>
-                                            <th>Nominal (Rp.)</th>
-                                            <th>Status</th>
+                                            <th>Nominal / Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -106,17 +105,16 @@
                                                 <tr>
                                                     <td>{{$no}}</td>
                                                     <td>{{date('d-m-Y H:i', strtotime($row->created_at))}}</td>
-                                                    <td>{{$row->user_code}}<br><a class="label label-primary" href="{{ URL::to('/') }}/m/detail/vppob/{{$row->id}}">Detail</a>
+                                                    <td>{{$row->user_code}}<br><a class="badge badge-primary" href="{{ URL::to('/') }}/m/detail/vppob/{{$row->id}}">Detail</a>
                                                         @if($row->status == 2)
                                                             &nbsp;
                                                             @if($row->type > 2 && $row->type < 8)
-                                                                <a class="label label-warning" href="{{ URL::to('/') }}/m/vinvoice/ppob/{{$row->id}}">Struk Pembayaran</a>
+                                                                <a class="badge badge-warning" href="{{ URL::to('/') }}/m/vinvoice/ppob/{{$row->id}}">Struk</a>
                                                             @endif
-                                                        @endif</td>
-                                                    <td>{{number_format($row->ppob_price, 0, ',', ',')}}<br>{{$type}}</td>
-                                                    <td>
-                                                            <span class="label label-{{$label}}">{{$status}}</span>
+                                                        @endif
                                                     </td>
+                                                    <td>{{number_format($row->ppob_price, 0, ',', ',')}}<br>{{$type}}<br><span class="label label-{{$label}}">{{$status}}</span></td>
+
 
                                                 </tr>
                                             @endforeach
@@ -148,24 +146,14 @@
 @section('javascript')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
     <script src="{{ asset('asset_new/js/sidebar.js') }}"></script>
+    <script src="/asset_member/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/asset_member/plugins/datatables/dataTables.bootstrap4.min.js"></script>
     <script type="text/javascript">
-    $(document).ready(function(){
-        $("#get_id").keyup(function(){
-            $.ajax({
-                type: "GET",
-                url: "{{ URL::to('/') }}/m/cek/usercode-stockist" + "?name=" + $(this).val() ,
-                success: function(data){
-                    $("#get_id-box").show();
-                    $("#get_id-box").html(data);
-                }
+        $(document).ready(function() {
+            $('#datatable').DataTable({
+                lengthChange: false
             });
-        });
-    });
-    function selectUsername(val) {
-        var valNew = val.split("____");
-        $("#get_id").val(valNew[1]);
-        $("#id_get_id").val(valNew[0]);
-        $("#get_id-box").hide();
-    }
-</script>
+
+    } );
+    </script>
 @stop

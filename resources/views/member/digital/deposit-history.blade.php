@@ -2,11 +2,11 @@
 @section('content')
 
 <div class="wrapper">
-        
-    
+
+
         <!-- Page Content -->
         <div id="content">
-            
+
             <div class="bg-gradient-sm">
                 <nav class="navbar navbar-expand-lg navbar-light bg-transparent w-100">
                     <div class="container">
@@ -21,7 +21,7 @@
             </div>
             <div class="mt-min-10">
                 <div class="container">
-                    
+
                     <div class="rounded-lg bg-white p-3 mb-3">
                         <div class="row">
                             <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
@@ -40,7 +40,7 @@
                                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                                 <span aria-hidden="true">×</span>
                                             </button>
-                                            {{  Session::get('message')    }} 
+                                            {{  Session::get('message')    }}
                                         </div>
                                     @endif
                                     <table id="datatable" class="table table-striped table-bordered">
@@ -49,7 +49,6 @@
                                                 <th>No.</th>
                                                 <th>Total Deposit</th>
                                                 <th>Tanggal</th>
-                                                <th>Type</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -67,9 +66,10 @@
                                                 ?>
                                             <tr>
                                                 <td>{{$no}}</td>
-                                                <td>{{$row->total_deposito}}</td>
+                                                <td>{{$row->total_deposito}}<br>
+                                                    <label class="label label-{{$label}}">{{$status}}</label></td>
                                                 <td>{{date('d-F-Y H:i', strtotime($row->created_at))}}</td>
-                                                <td><label class="label label-{{$label}}">{{$status}}</label></td>
+
                                             </tr>
                                             @endforeach
                                             @endif
@@ -79,9 +79,9 @@
                             </div>
                         </div>
                     </div>
-                    
-                    
-                    
+
+
+
                 </div>
             </div>
             @include('layout.member.nav')
@@ -105,14 +105,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
     <script src="{{ asset('asset_new/js/sidebar.js') }}"></script>
     <script src="/asset_member/plugins/datatables/jquery.dataTables.min.js"></script>
-<script src="/asset_member/plugins/datatables/dataTables.bootstrap4.min.js"></script>
+    <script src="/asset_member/plugins/datatables/dataTables.bootstrap4.min.js"></script>
     <script type="text/javascript">
     $(document).ready(function() {
-        $('#datatable').DataTable();
-        var table = $('#datatable-buttons').DataTable({
-            lengthChange: false,
+        $('#datatable').DataTable({
+            lengthChange: false
         });
+
     } );
-    
+
 </script>
 @stop

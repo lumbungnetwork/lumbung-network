@@ -425,6 +425,7 @@ class AjaxmemberController extends Controller
         $totalBonus = $request->input_jml_wd; //$modelBonus->getTotalBonus($dataUser);
         $totalBonusAll = $modelBonus->getTotalBonus($dataUser);
         $totalWD = $modelWD->getTotalDiTransfer($dataUser);
+        $totalWDeIDR = $modelWD->getTotalDiTransfereIDR($dataUser);
         $getMyActiveBank = $modelBank->getBankMemberActive($dataUser);
         $id_bank = null;
         if ($getMyActiveBank != null) {
@@ -435,7 +436,7 @@ class AjaxmemberController extends Controller
             'total_bonus' => $totalBonus,
             'total_wd' => $totalWD->total_wd,
             'total_tunda' => $totalWD->total_tunda,
-            'saldo' => (int) ($totalBonusAll->total_bonus - ($totalWD->total_wd + $totalWD->total_tunda + $totalWD->total_fee_admin)),
+            'saldo' => (int) ($totalBonusAll->total_bonus - ($totalWD->total_wd + $totalWD->total_tunda + $totalWD->total_fee_admin + $totalWDeIDR->total_wd + $totalWDeIDR->total_tunda + $totalWDeIDR->total_fee_admin)),
             'admin_fee' => 6500,
             'bank' => $id_bank
         );
@@ -485,7 +486,6 @@ class AjaxmemberController extends Controller
         $totalBonusAll = $modelBonus->getTotalBonus($dataUser);
         $totalWD = $modelWD->getTotalDiTransfer($dataUser);
         $totalWDeIDR = $modelWD->getTotalDiTransfereIDR($dataUser);
-        $totalTopUp = $modelBonus->getTotalSaldoUserId($dataUser);
         $dataAll = (object) array(
             'req_wd' => (int) $totalBonus,
             'total_bonus' => $totalBonus,
@@ -499,6 +499,33 @@ class AjaxmemberController extends Controller
         );
         $canInsert = $modelValidasi->getCheckWDeIDR($dataAll);
         return view('member.ajax.confirm_add_wdeidr')
+            ->with('check', $canInsert)
+            ->with('data', $dataAll);
+    }
+
+    public function getCekConfirmWDRoyaltieIDR(Request $request)
+    {
+        $dataUser = Auth::user();
+        $modelValidasi = new Validation;
+        $modelBonus = new Bonus;
+        $modelWD = new Transferwd;
+        $totalBonus = $request->input_jml_wd; //$modelBonus->getTotalBonus($dataUser);
+        $totalBonusAll = $modelBonus->getTotalBonusRoyalti($dataUser);
+        $totalWD = $modelWD->getTotalDiTransferRoyalti($dataUser);
+        $totalWDeIDR = $modelWD->getTotalDiTransferRoyaltieIDR($dataUser);
+        $dataAll = (object) array(
+            'req_wd' => (int) $totalBonus,
+            'total_bonus' => $totalBonus,
+            'total_wd' => $totalWD->total_wd,
+            'total_tunda' => $totalWD->total_tunda,
+            'total_wd_eidr' => $totalWDeIDR->total_wd,
+            'total_tunda_eidr' => $totalWDeIDR->total_tunda,
+            'saldo' => (int) ($totalBonusAll->total_bonus - ($totalWD->total_wd + $totalWD->total_tunda + $totalWD->total_fee_admin + $totalWDeIDR->total_wd + $totalWDeIDR->total_tunda + $totalWDeIDR->total_fee_admin)),
+            'admin_fee' => 3000,
+            'tron' => $dataUser->tron
+        );
+        $canInsert = $modelValidasi->getCheckWDeIDR($dataAll);
+        return view('member.ajax.confirm_add_wd_royalti_eidr')
             ->with('check', $canInsert)
             ->with('data', $dataAll);
     }

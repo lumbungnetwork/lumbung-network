@@ -2,7 +2,7 @@
 @section('content')
 @include('layout.admin.sidebar')
 <div class="main-panel">
-    
+
     <?php //MENU HEADER  ?>
     <nav class="navbar navbar-expand-lg navbar-absolute fixed-top navbar-transparent">
         <div class="container-fluid">
@@ -18,7 +18,7 @@
             </div>
         </div>
     </nav>
-    
+
     <?php //MENU CONTENT  ?>
     <div class="content">
         <div class="row">
@@ -32,7 +32,7 @@
                             <div class="widget-content mt10 mb10 mr15">
                                 <div class="alert alert-{{ Session::get('messageclass') }}">
                                     <button class="close" type="button" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
-                                    {{  Session::get('message')    }} 
+                                    {{  Session::get('message')    }}
                                 </div>
                             </div>
                         @endif
@@ -51,14 +51,14 @@
                                         <th>###</th>
                                     </tr>
                                 </thead>
-                                
+
                                 <tbody>
                                     @if($getData != null)
-                                        <?php 
-                                        $no = 0; 
+                                        <?php
+                                        $no = 0;
                                         ?>
                                         @foreach($getData as $row)
-                                        <?php 
+                                        <?php
                                             $no++;
                                             $jmlWD = $row->wd_total + $row->admin_fee;
                                             $status = 'Proses Transfer';
@@ -76,6 +76,7 @@
                                                 $name = 'Master Admin';
                                             }
                                         ?>
+                                            @if ($row->is_tron == 0)
                                             <tr>
                                                 <td>{{$no}}</td>
                                                 <td>{{$row->user_code}}</td>
@@ -91,6 +92,24 @@
                                                     <a rel="tooltip"  data-toggle="modal" data-target="#popUp" class="text-info" href="{{ URL::to('/') }}/ajax/adm/cek/detail-wd/{{$row->id}}">detail</a>
                                                 </td>
                                             </tr>
+                                            @endif
+                                            @if ($row->is_tron == 1)
+                                            <tr>
+                                                <td>{{$no}}</td>
+                                                <td>{{$row->user_code}}</td>
+                                                <td>WD by eIDR</td>
+                                                <td>{{$row->tron}}</td>
+                                                <td>{{date('d M Y', strtotime($row->wd_date))}}</td>
+                                                <td>{{number_format($jmlWD, 0, ',', ',')}}</td>
+                                                <td>
+                                                    <span class="badge badge-pill badge-{{$label}}">{{$status}}</span>
+                                                </td>
+                                                <td>{{$name}}</td>
+                                                <td>
+                                                    <a rel="tooltip"  data-toggle="modal" data-target="#popUp" class="text-info" href="{{ URL::to('/') }}/ajax/adm/cek/detail-wd/{{$row->id}}">detail</a>
+                                                </td>
+                                            </tr>
+                                            @endif
                                         @endforeach
                                     @endif
                                 </tbody>
@@ -135,8 +154,8 @@
                 }],
                 dom: 'Bfrtip',
                 "deferRender": true,
-                columnDefs: [{ 
-                    orderable: false, 
+                columnDefs: [{
+                    orderable: false,
                     targets: 0,
                 }],
                 buttons: [
@@ -152,6 +171,6 @@
                  "ordering": false,
         } );
     } );
-    
+
 </script>
 @stop

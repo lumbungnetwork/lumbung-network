@@ -91,7 +91,7 @@
                 @if($dataUser->upline_id != null)
                     <div class="mt-min-10">
                         <div class="container">
-                            <div class="card p-3">
+                            <div class="rounded-lg shadow-lg bg-white p-3">
                                 @if ( Session::has('message') )
                                     <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible" role="alert">
                                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -208,7 +208,7 @@
                     <div class="container" id="stockist-vendor-btn">
                         <div class="row">
                             <div class="col-6">
-                                <div class="card p-3 text-center">
+                                <div class="rounded-lg shadow-lg bg-white p-3 text-center">
                                     <a href="{{ URL::to('/') }}/m/search/stockist"><i class="fa fa-cubes icon-menu2"></i></a>
                                     <dd>Stokis</dd>
                                     <div class="row justify-content-center">
@@ -222,7 +222,7 @@
                                 </div>
                             </div>
                             <div class="col-6">
-                                <div class="card p-3 text-center">
+                                <div class="rounded-lg shadow-lg bg-white p-3 text-center">
                                     <a href="{{ URL::to('/') }}/m/search/vendor"><i class="fa fa-store icon-menu2"></i></a>
                                     <dd>Vendor</dd>
                                     <div class="row justify-content-center">
@@ -240,7 +240,7 @@
 
                     <!-- menu ppob -->
                     <div class="container mt-3" id="ppob-btn-container">
-                        <div class="card p-3">
+                        <div class="rounded-lg shadow-lg bg-white p-3">
                             <div class="row">
                                 <div class="col-3 px-2 mb-3">
                                     <a href="/m/list/operator/1" class="text-decoration-none">

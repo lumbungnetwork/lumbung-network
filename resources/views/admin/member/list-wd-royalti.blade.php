@@ -2,7 +2,7 @@
 @section('content')
 @include('layout.admin.sidebar')
 <div class="main-panel">
-    
+
     <?php //MENU HEADER  ?>
     <nav class="navbar navbar-expand-lg navbar-absolute fixed-top navbar-transparent">
         <div class="container-fluid">
@@ -18,7 +18,7 @@
             </div>
         </div>
     </nav>
-    
+
     <?php //MENU CONTENT  ?>
     <div class="content">
         <div class="row">
@@ -32,7 +32,7 @@
                             <div class="widget-content mt10 mb10 mr15">
                                 <div class="alert alert-{{ Session::get('messageclass') }}">
                                     <button class="close" type="button" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
-                                    {{  Session::get('message')    }} 
+                                    {{  Session::get('message')    }}
                                 </div>
                             </div>
                         @endif
@@ -49,7 +49,7 @@
                                         <th>No</th>
                                         <th>UserID</th>
                                         <th>Bank</th>
-                                        <th>No. Rek</th>
+                                        <th>No. Rek / Alamat TRON</th>
                                         <th>Nama. Rek</th>
                                         <th>Tgl. WD</th>
                                         <th>Jml. WD (Rp.)</th>
@@ -58,17 +58,18 @@
                                         <th>###</th>
                                     </tr>
                                 </thead>
-                                
+
                                 <tbody>
                                     @if($getData != null)
-                                        <?php 
-                                        $no = 0; 
+                                        <?php
+                                        $no = 0;
                                         ?>
                                         @foreach($getData as $row)
-                                        <?php 
+                                        <?php
                                             $no++;
                                             $jmlWD = $row->wd_total + $row->admin_fee;
                                         ?>
+                                        @if ($row->is_tron == 0)
                                             <tr>
                                                 <td><input type="checkbox" name="id[]" value="{{$row->id}}"></td>
                                                 <td>{{$no}}</td>
@@ -81,9 +82,27 @@
                                                 <td>{{number_format($row->admin_fee, 0, ',', ',')}}</td>
                                                 <td>{{number_format($row->wd_total, 0, ',', ',')}}</td>
                                                 <td>
-                                                    <a rel="tooltip"  data-toggle="modal" data-target="#popUp" class="text-danger" href="{{ URL::to('/') }}/ajax/adm/cek/reject-wd/{{$row->id}}">reject</a>
+                                                    <a rel="tooltip"  data-toggle="modal" data-target="#popUp" class="text-danger" href="{{ URL::to('/') }}/ajax/adm/cek/reject-wd-royalti/{{$row->id}}">reject</a>
                                                 </td>
                                             </tr>
+                                        @endif
+                                        @if ($row->is_tron == 1)
+                                            <tr>
+                                                <td><input type="checkbox" name="id[]" value="{{$row->id}}"></td>
+                                                <td>{{$no}}</td>
+                                                <td>{{$row->user_code}}</td>
+                                                <td>WD by eIDR</td>
+                                                <td>{{$row->tron}}</td>
+                                                <td>TRON</td>
+                                                <td>{{date('d M Y', strtotime($row->wd_date))}}</td>
+                                                <td>{{number_format($jmlWD, 0, ',', ',')}}</td>
+                                                <td>{{number_format($row->admin_fee, 0, ',', ',')}}</td>
+                                                <td>{{number_format($row->wd_total, 0, ',', ',')}}</td>
+                                                <td>
+                                                    <a rel="tooltip"  data-toggle="modal" data-target="#popUp" class="text-danger" href="{{ URL::to('/') }}/ajax/adm/cek/reject-wd-royalti/{{$row->id}}">reject</a>
+                                                </td>
+                                            </tr>
+                                        @endif
                                         @endforeach
                                     @endif
                                 </tbody>
@@ -129,8 +148,8 @@
                 }],
                 dom: 'Bfrtip',
                 "deferRender": true,
-                columnDefs: [{ 
-                    orderable: false, 
+                columnDefs: [{
+                    orderable: false,
                     targets: 0,
                 }],
                 buttons: [
@@ -145,7 +164,7 @@
                  "info":     false,
                  "ordering": true,
         } );
-        
+
         $('#myTable #example-select-all').change(function() {
                 var checked = $(this).is(":checked");
                 $("input", myTableRow.rows({search:'applied'}).nodes()).each(function(){

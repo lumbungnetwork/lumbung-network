@@ -17,7 +17,7 @@
             </div>
             <div class="mt-min-10">
                 <div class="container">
-                    
+
                     <div class="rounded-lg bg-white p-3 mb-3">
                         <div class="row">
                             <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
@@ -35,7 +35,7 @@
                                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                                 <span aria-hidden="true">×</span>
                                             </button>
-                                            {{  Session::get('message')    }} 
+                                            {{  Session::get('message')    }}
                                         </div>
                                     @endif
                                     <table id="datatable" class="table table-striped table-bordered">
@@ -93,11 +93,11 @@
 <script src="/asset_member/plugins/datatables/dataTables.bootstrap4.min.js"></script>
     <script type="text/javascript">
     $(document).ready(function() {
-        $('#datatable').DataTable();
-        var table = $('#datatable-buttons').DataTable({
-            lengthChange: false,
+        $('#datatable').DataTable({
+            lengthChange: false
         });
+
     } );
-    
+
 </script>
 @stop

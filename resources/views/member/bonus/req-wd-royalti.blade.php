@@ -2,11 +2,11 @@
 @section('content')
 
 <div class="wrapper">
-        
-    
+
+
         <!-- Page Content -->
         <div id="content">
-            
+
             <div class="bg-gradient-sm">
                 <nav class="navbar navbar-expand-lg navbar-light bg-transparent w-100">
                     <div class="container">
@@ -21,23 +21,36 @@
             </div>
             <div class="mt-min-10">
                 <div class="container">
-                    
+                    <div class="rounded-lg p-3">
+                        <div class="rounded-lg bg-white p-3 shadow">
+                            <p>Saldo Bonus Royalti Anda:</p>
+                                    <?php
+                                        $saldoRO = $dataAll->total_bonus - $dataAll->total_wd - $dataAll->total_tunda - $dataAll->total_fee_admin;
+                                        if($saldoRO < 0){
+                                            $saldoRO = 0;
+                                        }
+                                    ?>
+                                    <h5 class="text-warning">Rp {{number_format($saldoRO, 0, ',', '.')}}</h5>
+                        </div>
+
+                    </div>
+
                     <div class="rounded-lg bg-white p-3 mb-3">
-                        <h6 class="mb-3">Ajukan withdraw Royalti anda disini</h6>
+                        <h6 class="mb-3">Withdraw ke Rekening Bank</h6>
                         @if ( Session::has('message') )
                             <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible" role="alert">
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">×</span>
                                 </button>
-                                {{  Session::get('message')    }} 
+                                {{  Session::get('message')    }}
                             </div>
                         @endif
-                        
+
                         <div class="row">
                             <div class="col-xl-8 col-xs-12">
                                 <fieldset class="form-group">
                                     <label for="input_jml">Jumlah (Rp.)</label>
-                                    <input type="text" class="form-control allownumericwithoutdecimal" id="input_jml" name="jml_wd" autocomplete="off" placeholder="Minimum Withdraw Rp. 20.000">
+                                    <input type="text" class="form-control allownumericwithoutdecimal" id="input_jml" name="jml_wd" autocomplete="off" placeholder="Minimum WD Rp20.000,-">
                                 </fieldset>
                             </div>
                             <div class="col-xl-4 col-xs-12">
@@ -50,6 +63,34 @@
                         <div class="row">
                             <div class="col-xl-6">
                                 <button type="submit" class="btn btn-success"  id="submitBtn" data-toggle="modal" data-target="#confirmSubmit" onClick="inputSubmit()">Submit</button>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true" data-backdrop="false">
+                            <div class="modal-dialog" role="document" id="confirmDetail">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rounded-lg bg-white p-3 mb-3">
+                        <h6 class="mb-3">Withdraw via eIDR</h6>
+
+                        <div class="row">
+                            <div class="col-xl-8 col-xs-12">
+                                <fieldset class="form-group">
+                                    <label for="input_jml_eidr">Jumlah (Rp.)</label>
+                                    <input type="text" class="form-control allownumericwithoutdecimal" id="input_jml_eidr" name="jml_wd_eidr" autocomplete="off" placeholder="Minimum WD Rp10.000,-">
+                                </fieldset>
+                            </div>
+                            <div class="col-xl-4 col-xs-12">
+                                <fieldset class="form-group">
+                                    <label>Admin Fee (Rp.)</label>
+                                    <input type="text" class="form-control" disabled="" value="3.000">
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-6">
+                                <button type="submit" class="btn btn-success"  id="submitBtneIDR" data-toggle="modal" data-target="#confirmSubmit" onClick="inputSubmiteIDR()">Submit</button>
                             </div>
                         </div>
                         <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true" data-backdrop="false">
@@ -90,15 +131,27 @@
                 }
             });
         }
-        
+
+       function inputSubmiteIDR(){
+           var input_jml_wd = $("#input_jml_eidr").val();
+            $.ajax({
+                type: "GET",
+                url: "{{ URL::to('/') }}/m/cek/confirm-wd-royalti-eidr?input_jml_wd="+input_jml_wd,
+                success: function(url){
+                    $("#confirmDetail" ).empty();
+                    $("#confirmDetail").html(url);
+                }
+            });
+        }
+
         function confirmSubmit(){
             var dataInput = $("#form-add").serializeArray();
             $('#form-add').submit();
             $('#tutupModal').remove();
             $('#submit').remove();
         }
-        
-        $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {    
+
+        $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {
            $(this).val($(this).val().replace(/[^\d].+/, ""));
             if ((event.which < 48 || event.which > 57)) {
                 event.preventDefault();

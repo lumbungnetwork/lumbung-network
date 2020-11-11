@@ -22,46 +22,49 @@ use File;
 use App\Model\Sales;
 use Illuminate\Support\Facades\Mail;
 
-class MasterAdminController extends Controller {
+class MasterAdminController extends Controller
+{
 
-    public function __construct(){
-        
+    public function __construct()
+    {
     }
-    
-    public function getAddAdmin(){
+
+    public function getAddAdmin()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $getAllAdmin = $modelAdmin->getAllUserAdmin($dataUser);
         return view('admin.user.create-user')
-                ->with('headerTitle', 'Admin')
-                ->with('getAllAdmin', $getAllAdmin)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Admin')
+            ->with('getAllAdmin', $getAllAdmin)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postAddAdmin(Request $request){
+
+    public function postAddAdmin(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        if($request->email == null || $request->password == null || $request->repassword == null || $request->f_name == null || $request->role == null){
+        if ($request->email == null || $request->password == null || $request->repassword == null || $request->f_name == null || $request->role == null) {
             return redirect()->route('addCrew')
                 ->with('message', 'The field is required.')
                 ->with('messageclass', 'danger');
         }
-        if($request->password != $request->repassword){
+        if ($request->password != $request->repassword) {
             return redirect()->route('addCrew')
                 ->with('message', 'Password didn\'t match')
                 ->with('messageclass', 'danger');
         }
-        $permission = implode( ",", $request->role);
-         $modelAdmin = New Admin;
-         $cekUsername = $modelAdmin->getCekNewUsername($request->email);
-         if($cekUsername != null){
+        $permission = implode(",", $request->role);
+        $modelAdmin = new Admin;
+        $cekUsername = $modelAdmin->getCekNewUsername($request->email);
+        if ($cekUsername != null) {
             return redirect()->route('addCrew')
                 ->with('message', 'use another email')
                 ->with('messageclass', 'danger');
@@ -79,33 +82,34 @@ class MasterAdminController extends Controller {
         $modelAdmin->getInsertUser($dataInsert);
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => 'POST /adm/new-admin user_code = '.$request->email
+            'detail_log' => 'POST /adm/new-admin user_code = ' . $request->email
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('addCrew')
-                ->with('message', 'Create New Admin Success')
-                ->with('messageclass', 'success');
+            ->with('message', 'Create New Admin Success')
+            ->with('messageclass', 'success');
     }
-    
-    public function postEditAdmin(Request $request){
+
+    public function postEditAdmin(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        if($request->email == null || $request->password == null || $request->repassword == null || $request->name == null){
+        if ($request->email == null || $request->password == null || $request->repassword == null || $request->name == null) {
             return redirect()->route('addCrew')
                 ->with('message', 'Data tidak boleh kosong.')
                 ->with('messageclass', 'danger');
         }
-        if($request->password != $request->repassword){
+        if ($request->password != $request->repassword) {
             return redirect()->route('addCrew')
                 ->with('message', 'Password harus sama dengan ketik ulang password')
                 ->with('messageclass', 'danger');
         }
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $cekUsername = $modelAdmin->getCekNewUsernameEdit($request->email, $request->cekId);
-         if($cekUsername != null){
+        if ($cekUsername != null) {
             return redirect()->route('addCrew')
                 ->with('message', 'gunakan username/email yang lain')
                 ->with('messageclass', 'danger');
@@ -119,38 +123,40 @@ class MasterAdminController extends Controller {
         $modelAdmin->getUpdateMember('id', $request->cekId, $dataUpdate);
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => 'POST /adm/admin user_code = '.$request->email
+            'detail_log' => 'POST /adm/admin user_code = ' . $request->email
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('addCrew')
-                ->with('message', 'Berhasil edit admin')
-                ->with('messageclass', 'success');
+            ->with('message', 'Berhasil edit admin')
+            ->with('messageclass', 'success');
     }
-    
+
     //Setting
-    public function getAddPinSetting(){
+    public function getAddPinSetting()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelSettingPin = New Pinsetting;
+        $modelSettingPin = new Pinsetting;
         $getPinSetting = $modelSettingPin->getActivePinSetting();
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         return view('admin.pin.pin-setting')
-                ->with('headerTitle', 'Pin')
-                ->with('data', $getPinSetting)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Pin')
+            ->with('data', $getPinSetting)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postPinSetting(Request $request){
+
+    public function postPinSetting(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $price = $request->price;
-        $modelSettingPin = New Pinsetting;
+        $modelSettingPin = new Pinsetting;
         $remove = array(
             'is_active' => 0,
             'deleted_at' => date('Y-m-d H:i:s')
@@ -163,42 +169,44 @@ class MasterAdminController extends Controller {
             'active_at' => date('Y-m-d H:i:s')
         );
         $modelSettingPin->getInsertPinSetting($dataInsert);
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
             'detail_log' => 'POST /adm/add/pin-setting'
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('addSettingPin')
-                ->with('message', 'Create Pin Setting Success')
-                ->with('messageclass', 'success');
+            ->with('message', 'Create Pin Setting Success')
+            ->with('messageclass', 'success');
     }
-    
-    public function getAllPackage(){
+
+    public function getAllPackage()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelSettingPin = New Pinsetting;
-        $modelPackage = New Package;
+        $modelSettingPin = new Pinsetting;
+        $modelPackage = new Package;
         $getActivePinSetting = $modelSettingPin->getActivePinSetting();
         $getAllPackage = $modelPackage->getAllPackage();
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         return view('admin.package.package-list')
-                ->with('headerTitle', 'Package')
-                ->with('pinSetting', $getActivePinSetting)
-                ->with('package', $getAllPackage)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Package')
+            ->with('pinSetting', $getActivePinSetting)
+            ->with('package', $getAllPackage)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postUpdatePackage(Request $request){
+
+    public function postUpdatePackage(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelPackage = New Package;
+        $modelPackage = new Package;
         $dataUpdate = array(
             'name' => $request->name,
             'short_desc' => $request->short_desc,
@@ -207,64 +215,66 @@ class MasterAdminController extends Controller {
             'discount' => $request->discount
         );
         $modelPackage->getUpdatePackage($request->cekId, $dataUpdate);
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => $request->method().' '.$request->path()
+            'detail_log' => $request->method() . ' ' . $request->path()
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('allPackage')
-                ->with('message', 'Update Package Success')
-                ->with('messageclass', 'success');
+            ->with('message', 'Update Package Success')
+            ->with('messageclass', 'success');
     }
-    
-    public function getListTransactions(Request $request){
+
+    public function getListTransactions(Request $request)
+    {
         $status = $request->s;
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelSettingTrans = New Transaction;
+        $modelSettingTrans = new Transaction;
         $getAllTransaction = $modelSettingTrans->getTransactionsByAdmin($status);
         return view('admin.pin.list-transaction')
-                ->with('headerTitle', 'Transaksi')
-                ->with('getData', $getAllTransaction)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Transaksi')
+            ->with('getData', $getAllTransaction)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postConfirmTransaction(Request $request){
+
+    public function postConfirmTransaction(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $id = $request->cekId;
         $user_id = $request->cekMemberId;
-        $modelSettingTrans = New Transaction;
+        $modelSettingTrans = new Transaction;
         $getData = $modelSettingTrans->getDetailTransactionsAdmin($id, $user_id);
-        if($getData == null){
+        if ($getData == null) {
             return redirect()->route('adm_listTransaction')
                 ->with('message', 'Data tidak ditemukan')
                 ->with('messageclass', 'danger');
         }
-        $modelSettingPin = New Pinsetting;
+        $modelSettingPin = new Pinsetting;
         $getPinSetting = $modelSettingPin->getActivePinSetting();
         $memberPin = array(
             'user_id' => $user_id,
             'total_pin' => $getData->total_pin,
             'setting_pin' => $getPinSetting->id,
             'transaction_code' => $getData->transaction_code,
-            'pin_code' => 'P'.date('Ymd').$user_id
+            'pin_code' => 'P' . date('Ymd') . $user_id
         );
-        $modelPin = New Pin;
-        $modelMasterPin = New Masterpin;
-        $modelMember = New Member;
-        $modePackage = New Package;
+        $modelPin = new Pin;
+        $modelMasterPin = new Masterpin;
+        $modelMember = new Member;
+        $modePackage = new Package;
         $modelPin->getInsertMemberPin($memberPin);
-        if($getData->type == 1){
+        if ($getData->type == 1) {
             $memberStatus = 1;
-            if($getData->total_pin >= 100){
+            if ($getData->total_pin >= 100) {
                 $memberStatus = 2;
             }
             $dataMemberUpdate = array(
@@ -274,8 +284,8 @@ class MasterAdminController extends Controller {
             $modelMember->getUpdateUsers('id', $user_id, $dataMemberUpdate);
             $reason = 'Member buy pin';
         }
-        if($getData->type == 10){
-            $modelRO = New RepeatOrder;
+        if ($getData->type == 10) {
+            $modelRO = new RepeatOrder;
             $getROPackage = $modePackage->getMyPackagePin($getData->total_pin);
             $dataRO = array(
                 'user_id' => $user_id,
@@ -284,7 +294,7 @@ class MasterAdminController extends Controller {
             $modelRO->getInsertRO($dataRO);
             $reason = 'Member Repeat Order';
         }
-        
+
         $dataUpdate = array(
             'status' => 2,
             'tuntas_at' => date('Y-m-d H:i:s'),
@@ -299,28 +309,29 @@ class MasterAdminController extends Controller {
             'reason' => $reason
         );
         $modelMasterPin->getInsertMasterPin($dataInsertMasterPin);
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => $request->method().' '.$request->path()
+            'detail_log' => $request->method() . ' ' . $request->path()
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listTransaction')
-                ->with('message', 'Berhasil konfirmasi transfer pin')
-                ->with('messageclass', 'success');
+            ->with('message', 'Berhasil konfirmasi transfer pin')
+            ->with('messageclass', 'success');
     }
-    
-    public function postRejectTransaction(Request $request){
+
+    public function postRejectTransaction(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $id = $request->cekId;
         $user_id = $request->cekMemberId;
-        $modelSettingTrans = New Transaction;
+        $modelSettingTrans = new Transaction;
         $getData = $modelSettingTrans->getDetailRejectTransactionsAdminByID($id, $user_id);
-        if($getData == null){
+        if ($getData == null) {
             return redirect()->route('adm_listTransaction')
                 ->with('message', 'Data tidak ditemukan')
                 ->with('messageclass', 'danger');
@@ -333,52 +344,55 @@ class MasterAdminController extends Controller {
             'submit_at' => date('Y-m-d H:i:s'),
         );
         $modelSettingTrans->getUpdateTransaction('id', $id, $dataUpdate);
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => $request->method().' '.$request->path()
+            'detail_log' => $request->method() . ' ' . $request->path()
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listTransaction')
-                    ->with('message', 'Transaksi dibatalkan')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Transaksi dibatalkan')
+            ->with('messageclass', 'success');
     }
-    
-    public function getListHistoryTransactions(){
+
+    public function getListHistoryTransactions()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelSettingTrans = New Transaction;
+        $modelSettingTrans = new Transaction;
         $getAllTransaction = $modelSettingTrans->getAdminHistoryTransactions();
         return view('admin.pin.history-transaction')
-                ->with('headerTitle', 'History Transaksi')
-                ->with('getData', $getAllTransaction)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'History Transaksi')
+            ->with('getData', $getAllTransaction)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getBankPerusahaan(){
+
+    public function getBankPerusahaan()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $modelBank = new Bank;
         $getPerusahaanBank = $modelBank->getBankPerusahaan();
         $getPerusahaanTron = $modelBank->getTronPerusahaan();
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         return view('admin.bank.list-bank')
-                ->with('headerTitle', 'Bank Perusahaan')
-                ->with('getData', $getPerusahaanBank)
-                ->with('getDataTron', $getPerusahaanTron)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Bank Perusahaan')
+            ->with('getData', $getPerusahaanBank)
+            ->with('getDataTron', $getPerusahaanTron)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postBankPerusahaan(Request $request){
+
+    public function postBankPerusahaan(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $modelBank = new Bank;
@@ -389,32 +403,34 @@ class MasterAdminController extends Controller {
             'account_name' => $request->account_name,
         );
         $modelBank->getUpdateBank('id', $request->id, $dataUpdate);
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
             'detail_log' => 'POST /adm/bank'
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_bankPerusahaan')
-                ->with('message', 'Berhasil update bank perusahaan')
-                ->with('messageclass', 'success');
+            ->with('message', 'Berhasil update bank perusahaan')
+            ->with('messageclass', 'success');
     }
-    
-    public function getAddBankPerusahaan(){
+
+    public function getAddBankPerusahaan()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         return view('admin.bank.add-bank')
-                ->with('headerTitle', 'Bank Perusahaan')
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Bank Perusahaan')
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postAddBankPerusahaan(Request $request){
+
+    public function postAddBankPerusahaan(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $modelBank = new Bank;
@@ -428,49 +444,52 @@ class MasterAdminController extends Controller {
         );
         $modelBank->getInsertBank($dataInsert);
         return redirect()->route('adm_bankPerusahaan')
-                ->with('message', 'Berhasil tambah bank perusahaan')
-                ->with('messageclass', 'success');
+            ->with('message', 'Berhasil tambah bank perusahaan')
+            ->with('messageclass', 'success');
     }
-    
-    public function postTronPerusahaan(Request $request){
+
+    public function postTronPerusahaan(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $modelBank = new Bank;
-//        $getPerusahaanTron = $modelBank->getTronPerusahaanID($request->id);
+        //        $getPerusahaanTron = $modelBank->getTronPerusahaanID($request->id);
         $dataUpdate = array(
             'tron' => $request->tron,
             'updated_at' => date('Y-m-d H:i:s')
         );
         $modelBank->getUpdateTron('id', $request->id, $dataUpdate);
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => $request->method().' '.$request->path()
+            'detail_log' => $request->method() . ' ' . $request->path()
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_bankPerusahaan')
-                ->with('message', 'Berhasil update tron perusahaan')
-                ->with('messageclass', 'success');
+            ->with('message', 'Berhasil update tron perusahaan')
+            ->with('messageclass', 'success');
     }
-    
-    public function getAddTronPerusahaan(){
+
+    public function getAddTronPerusahaan()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         return view('admin.bank.add-tron')
-                ->with('headerTitle', 'Tron Perusahaan')
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Tron Perusahaan')
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postAddTronPerusahaan(Request $request){
+
+    public function postAddTronPerusahaan(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $modelBank = new Bank;
@@ -483,50 +502,53 @@ class MasterAdminController extends Controller {
         );
         $modelBank->getInsertTron($dataInsert);
         return redirect()->route('adm_bankPerusahaan')
-                ->with('message', 'Berhasil tambah tron perusahaan')
-                ->with('messageclass', 'success');
+            ->with('message', 'Berhasil tambah tron perusahaan')
+            ->with('messageclass', 'success');
     }
-    
-    public function getListKirimPaket(){
+
+    public function getListKirimPaket()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $modelPengiriman = new Pengiriman;
         $getAllPengiriman = $modelPengiriman->getAdmPengiriman();
         return view('admin.pin.kirim-paket')
-                ->with('headerTitle', 'Kirim Paket')
-                ->with('getData', $getAllPengiriman)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Kirim Paket')
+            ->with('getData', $getAllPengiriman)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getKirimPaketByID($id, $user_id){
+
+    public function getKirimPaketByID($id, $user_id)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $modelPengiriman = new Pengiriman;
         $getPengiriman = $modelPengiriman->getAdmPengirimanByID($id, $user_id);
         return view('admin.pin.kirim-paket-detail')
-                ->with('headerTitle', 'Konfirmasi Pengiriman')
-                ->with('getData', $getPengiriman)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Konfirmasi Pengiriman')
+            ->with('getData', $getPengiriman)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postConfirmKirimPaket(Request $request){
+
+    public function postConfirmKirimPaket(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $modelPengiriman = new Pengiriman;
         $getPengiriman = $modelPengiriman->getAdmPengirimanByID($request->cekId, $request->cekUserId);
-        if($getPengiriman == null){
+        if ($getPengiriman == null) {
             return redirect()->route('adm_listKirimPaket')
-                    ->with('message', 'Data tidak ditemukan')
-                    ->with('messageclass', 'danger');
+                ->with('message', 'Data tidak ditemukan')
+                ->with('messageclass', 'danger');
         }
         $dataUpdate = array(
             'status' => 1,
@@ -536,29 +558,31 @@ class MasterAdminController extends Controller {
         );
         $modelPengiriman->getUpdatePengiriman($getPengiriman->id, $dataUpdate);
         return redirect()->route('adm_listKirimPaket')
-                    ->with('message', 'Paket sudah dikirim')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Paket sudah dikirim')
+            ->with('messageclass', 'success');
     }
-    
-    public function getBonusStart(){
+
+    public function getBonusStart()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $modelBonusSetting = new Bonussetting;
-        $getBonusStart =$modelBonusSetting->getActiveBonusStart();
-        $modelAdmin = New Admin;
+        $getBonusStart = $modelBonusSetting->getActiveBonusStart();
+        $modelAdmin = new Admin;
         return view('admin.setting.bonus-start')
-                ->with('headerTitle', 'Setting Bonus Sponsor')
-                ->with('getData', $getBonusStart)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Setting Bonus Sponsor')
+            ->with('getData', $getBonusStart)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postBonusStart(Request $request){
+
+    public function postBonusStart(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $modelBonusSetting = new Bonussetting;
@@ -572,88 +596,93 @@ class MasterAdminController extends Controller {
             'created_by' => $dataUser->id
         );
         $modelBonusSetting->getInsertBonusStart($dataInsert);
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
             'detail_log' => 'POST /adm/bonus-start'
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_bonusStart')
-                    ->with('message', 'Edit Setting bonus start berhasil')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Edit Setting bonus start berhasil')
+            ->with('messageclass', 'success');
     }
-    
-    public function getAllMember(){
+
+    public function getAllMember()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelMember = New Member;
+        $modelMember = new Member;
         $getData = $modelMember->getAllMemberByAdmin();
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         return view('admin.member.list-member')
-                ->with('headerTitle', 'Member')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Member')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getAllBonusSponsor(){
+
+    public function getAllBonusSponsor()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelMember = New Member;
-        $modelBonus = New Bonus;
+        $modelMember = new Member;
+        $modelBonus = new Bonus;
         $getData = $modelBonus->getBonusSponsorByAdmin();
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         return view('admin.bonus.bonus-sponsor')
-                ->with('headerTitle', 'Bonus Sponsor')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Bonus Sponsor')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getAllWD(){
+
+    public function getAllWD()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelBonus = New Bonus;
+        $modelBonus = new Bonus;
         $modelWD = new Transferwd;
         $getData = $modelWD->getAllRequestWD();
         return view('admin.member.list-wd')
-                ->with('headerTitle', 'Request Withdrawal')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Request Withdrawal')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getAllWDeIDR(){
+
+    public function getAllWDeIDR()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelBonus = New Bonus;
+        $modelBonus = new Bonus;
         $modelWD = new Transferwd;
         $getData = $modelWD->getAllRequestWDeIDR();
         return view('admin.member.list-wd-eidr')
-                ->with('headerTitle', 'Request Withdrawal Konversi eIDR')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Request Withdrawal Konversi eIDR')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postCheckWD(Request $request){
+
+    public function postCheckWD(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelBonus = New Bonus;
+        $modelBonus = new Bonus;
         $modelWD = new Transferwd;
         $getRowID = $request->id;
-        foreach($getRowID as $getID){
+        foreach ($getRowID as $getID) {
             $dataUpdate = array(
                 'status' => 1,
                 'transfer_at' => date('Y-m-d H:i:s'),
@@ -662,27 +691,28 @@ class MasterAdminController extends Controller {
             );
             $modelWD->getUpdateWD('id', $getID, $dataUpdate);
         }
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => $request->method().' '.$request->path()
+            'detail_log' => $request->method() . ' ' . $request->path()
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listWD')
-                    ->with('message', 'Konfirmasi Transfer WD berhasil')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Konfirmasi Transfer WD berhasil')
+            ->with('messageclass', 'success');
     }
-    
-    public function postCheckWDeIDR(Request $request){
+
+    public function postCheckWDeIDR(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelBonus = New Bonus;
+        $modelBonus = new Bonus;
         $modelWD = new Transferwd;
         $getRowID = $request->id;
-        foreach($getRowID as $getID){
+        foreach ($getRowID as $getID) {
             $dataUpdate = array(
                 'status' => 1,
                 'transfer_at' => date('Y-m-d H:i:s'),
@@ -691,24 +721,25 @@ class MasterAdminController extends Controller {
             );
             $modelWD->getUpdateWD('id', $getID, $dataUpdate);
         }
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => $request->method().' '.$request->path()
+            'detail_log' => $request->method() . ' ' . $request->path()
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listWDeIDR')
-                    ->with('message', 'Konfirmasi Transfer WD berhasil')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Konfirmasi Transfer WD berhasil')
+            ->with('messageclass', 'success');
     }
-    
-    public function postRejectWD(Request $request){
+
+    public function postRejectWD(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelBonus = New Bonus;
+        $modelBonus = new Bonus;
         $modelWD = new Transferwd;
         $getID = $request->cekId;
         $alesan = $request->reason;
@@ -721,134 +752,136 @@ class MasterAdminController extends Controller {
             'submit_at' => date('Y-m-d H:i:s'),
         );
         $modelWD->getUpdateWD('id', $getID, $dataUpdate);
-        $redirect = 'adm_listWD';
-        $wd = 'WD';
-        if($getData->is_tron == 1){
-            $redirect = 'adm_listWDeIDR';
-            $wd = 'Konversi';
-        }
-        $modelAdmin = New Admin;
+
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => $request->method().' '.$request->path()
+            'detail_log' => $request->method() . ' ' . $request->path()
         );
         $modelAdmin->getInsertLogHistory($logHistory);
-        return redirect()->route($redirect)
-                    ->with('message', 'Data '.$wd.' '.$getData->full_name.' senilai Rp. '.number_format($getData->wd_total + $getData->admin_fee, 0, ',', '.').' direject')
-                    ->with('messageclass', 'success');
+        return redirect()->back()
+            ->with('message', 'Data Request ' . $getData->full_name . ' senilai Rp. ' . number_format($getData->wd_total + $getData->admin_fee, 0, ',', '.') . ' direject')
+            ->with('messageclass', 'success');
     }
-    
-    public function getAllHistoryWD(){
+
+    public function getAllHistoryWD()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $modelWD = new Transferwd;
         $getData = $modelWD->getAllHistoryWD();
         return view('admin.member.history-wd')
-                ->with('headerTitle', 'History Withdrawal')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'History Withdrawal')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getAllHistoryWDeIDR(){
+
+    public function getAllHistoryWDeIDR()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $modelWD = new Transferwd;
         $getData = $modelWD->getAllHistoryWDeIDR();
         return view('admin.member.history-wd-eidr')
-                ->with('headerTitle', 'History Konversi eIDR')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'History Konversi eIDR')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getAllDaerah(){
+
+    public function getAllDaerah()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        ini_set("memory_limit",-1);
+        ini_set("memory_limit", -1);
         ini_set('max_execution_time', 1500);
-        $modelAdmin = New Admin;
-//        $getData = $modelAdmin->getDaerah();
-//        $jsonDaerah = json_encode($getData);
-//        $file = 'daerah.json';
-//        $destinationPath = storage_path()."/app/public/";
-//        File::put($destinationPath.$file, $jsonDaerah);
-//        return response()->download($destinationPath.$file);
-        $jsonFile = public_path().'/image/daerah_indonesia.json';
+        $modelAdmin = new Admin;
+        //        $getData = $modelAdmin->getDaerah();
+        //        $jsonDaerah = json_encode($getData);
+        //        $file = 'daerah.json';
+        //        $destinationPath = storage_path()."/app/public/";
+        //        File::put($destinationPath.$file, $jsonDaerah);
+        //        return response()->download($destinationPath.$file);
+        $jsonFile = public_path() . '/image/daerah_indonesia.json';
         $fileData = file_get_contents($jsonFile);
         $dataArray = json_decode($fileData, true);
-//        $dataArray = array(
-//            "daerahID" => 1,
-//            "kode" => "11.00.00.0000",
-//            "nama" => "Nanggroe Aceh Darussalaam",
-//            "propinsi" => 11,
-//            "kabupatenkota" => 0,
-//            "kecamatan" => 0,
-//            "kelurahan" => 0,
-//        );
-//        dd($dataArray[0]);
-        foreach($dataArray as $row){
+        //        $dataArray = array(
+        //            "daerahID" => 1,
+        //            "kode" => "11.00.00.0000",
+        //            "nama" => "Nanggroe Aceh Darussalaam",
+        //            "propinsi" => 11,
+        //            "kabupatenkota" => 0,
+        //            "kecamatan" => 0,
+        //            "kelurahan" => 0,
+        //        );
+        //        dd($dataArray[0]);
+        foreach ($dataArray as $row) {
             $modelAdmin->getInsertDaerah($row);
         }
         dd('done');
     }
-    
-    public function getAllRequestMemberStockist(){
+
+    public function getAllRequestMemberStockist()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelMember = New Member;
+        $modelMember = new Member;
         $getData = $modelMember->getAllMemberReqSotckist();
         return view('admin.member.req-stockist')
-                ->with('headerTitle', 'Request Stockist')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Request Stockist')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getHistoryRequestMemberStockist(){
+
+    public function getHistoryRequestMemberStockist()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelMember = New Member;
+        $modelMember = new Member;
         $getData = $modelMember->getHistoryAllMemberReqSotckist();
         return view('admin.member.history-req_stockist')
-                ->with('headerTitle', 'History Request Stockist')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'History Request Stockist')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getAllMemberStockists(){
+
+    public function getAllMemberStockists()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelMember = New Member;
+        $modelMember = new Member;
         $getData = $modelMember->getAdminAllStockist();
         return view('admin.member.all-stockists')
-                ->with('headerTitle', 'List Stockist')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'List Stockist')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postRequestMemberStockist(Request $request){ //disini
+
+    public function postRequestMemberStockist(Request $request)
+    { //disini
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelMember = New Member;
+        $modelMember = new Member;
         $date =  date('Y-m-d H:i:s');
         $dataUpdate = array(
             'status' => 1,
@@ -863,17 +896,18 @@ class MasterAdminController extends Controller {
         );
         $modelMember->getUpdateUsers('id', $request->id_user, $dataUpdateUser);
         return redirect()->route('adm_listReqStockist')
-                    ->with('message', 'Member berhasil menjadi stockist')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Member berhasil menjadi stockist')
+            ->with('messageclass', 'success');
     }
-    
-    public function postRejectMemberStockist(Request $request){
+
+    public function postRejectMemberStockist(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelMember = New Member;
+        $modelMember = new Member;
         $date =  date('Y-m-d H:i:s');
         $dataUpdate = array(
             'status' => 2,
@@ -883,17 +917,18 @@ class MasterAdminController extends Controller {
         );
         $modelMember->getUpdateStockist('id', $request->id, $dataUpdate);
         return redirect()->route('adm_listReqStockist')
-                    ->with('message', 'Member request stockist direject')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Member request stockist direject')
+            ->with('messageclass', 'success');
     }
-    
-    public function postRequestMemberVendor(Request $request){ //disini
+
+    public function postRequestMemberVendor(Request $request)
+    { //disini
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelMember = New Member;
+        $modelMember = new Member;
         $date =  date('Y-m-d H:i:s');
         $dataUpdate = array(
             'status' => 1,
@@ -908,17 +943,18 @@ class MasterAdminController extends Controller {
         );
         $modelMember->getUpdateUsers('id', $request->id_user, $dataUpdateUser);
         return redirect()->route('adm_listReqVendor')
-                    ->with('message', 'Member berhasil menjadi vendor')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Member berhasil menjadi vendor')
+            ->with('messageclass', 'success');
     }
-    
-    public function postRejectMemberVendor(Request $request){
+
+    public function postRejectMemberVendor(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelMember = New Member;
+        $modelMember = new Member;
         $date =  date('Y-m-d H:i:s');
         $dataUpdate = array(
             'status' => 2,
@@ -928,31 +964,33 @@ class MasterAdminController extends Controller {
         );
         $modelMember->getUpdateVendor('id', $request->id, $dataUpdate);
         return redirect()->route('adm_listReqVendor')
-                    ->with('message', 'Member request vendor direject')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Member request vendor direject')
+            ->with('messageclass', 'success');
     }
-    
-    public function getAllMemberVendor(){
+
+    public function getAllMemberVendor()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelMember = New Member;
+        $modelMember = new Member;
         $getData = $modelMember->getAdminAllVendor();
         return view('admin.member.all-vendor')
-                ->with('headerTitle', 'List Vendor')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'List Vendor')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postRemoveMemberStockist(Request $request){
+
+    public function postRemoveMemberStockist(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelMember = New Member;
+        $modelMember = new Member;
         $date =  date('Y-m-d H:i:s');
         $dataUpdate = array(
             'status' => 10,
@@ -966,118 +1004,121 @@ class MasterAdminController extends Controller {
             'stockist_at' => null
         );
         $modelMember->getUpdateUsers('id', $request->id_user, $dataUpdateUser);
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
             'detail_log' => 'hapus member stockist'
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listMemberStockist')
-                    ->with('message', 'stockist '.$request->user_code.' dihapus kememberannya')
-                    ->with('messageclass', 'success');
+            ->with('message', 'stockist ' . $request->user_code . ' dihapus kememberannya')
+            ->with('messageclass', 'success');
     }
-    
-    public function postEditMemberStockist(Request $request){
+
+    public function postEditMemberStockist(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelMember = New Member;
+        $modelMember = new Member;
         $date =  date('Y-m-d H:i:s');
-//        $dataUpdate = array(
-//            'status' => 10,
-//            'deleted_at' => $date,
-//            'submit_by' => $dataUser->id,
-//            'submit_at' => $date,
-//        );
-//        $modelMember->getUpdateStockist('id', $request->id, $dataUpdate);
+        //        $dataUpdate = array(
+        //            'status' => 10,
+        //            'deleted_at' => $date,
+        //            'submit_by' => $dataUser->id,
+        //            'submit_at' => $date,
+        //        );
+        //        $modelMember->getUpdateStockist('id', $request->id, $dataUpdate);
         $dataUpdateUser = array(
             'hp' => $request->hp,
         );
         $modelMember->getUpdateUsers('id', $request->id_user, $dataUpdateUser);
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
             'detail_log' => 'change hp'
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listMemberStockist')
-                    ->with('message', 'stockist '.$request->user_code.' dihapus kememberannya')
-                    ->with('messageclass', 'success');
+            ->with('message', 'stockist ' . $request->user_code . ' dihapus kememberannya')
+            ->with('messageclass', 'success');
     }
-    
-    public function getAllPurchase(){
+
+    public function getAllPurchase()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelSales = New Sales;
+        $modelSales = new Sales;
         $getData = $modelSales->getAllPurchase();
         return view('admin.sales.all_purchase')
-                ->with('headerTitle', 'All Products')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'All Products')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getAddPurchase(){
+
+    public function getAddPurchase()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelSales = New Sales;
-        $modelMember = New Member;
+        $modelSales = new Sales;
+        $modelMember = new Member;
         $getProvince = $modelMember->getProvinsi();
         return view('admin.sales.add_purchase')
-                ->with('headerTitle', 'Create Products')
-                ->with('provinsi', $getProvince)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Create Products')
+            ->with('provinsi', $getProvince)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postAddPurchase(Request $request){
+
+    public function postAddPurchase(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelSales = New Sales;
-        $modelMember = New Member;
-        if($request->provinsi == 0){
+        $modelSales = new Sales;
+        $modelMember = new Member;
+        if ($request->provinsi == 0) {
             return redirect()->route('adm_addPurchase')
-                    ->with('message', 'Anda Tidak memilih propinsi')
-                    ->with('messageclass', 'danger');
+                ->with('message', 'Anda Tidak memilih propinsi')
+                ->with('messageclass', 'danger');
         }
         $provinsiSearch = $modelMember->getProvinsiByID($request->provinsi);
         $provinsiName = $provinsiSearch->nama;
         $kota = 0;
         $kotaName = '';
-        if($request->kota != null){
-            if($request->kota != 0){
+        if ($request->kota != null) {
+            if ($request->kota != 0) {
                 $kotaSearch = $modelMember->getNamaByKode($request->kota);
                 $kota = $kotaSearch->kabupatenkota;
-                $kotaName = ' - '.$kotaSearch->nama;
+                $kotaName = ' - ' . $kotaSearch->nama;
             }
         }
         $kecamatan = 0;
         $kecamatanName = '';
-        if($request->kecamatan != null){
-            if($request->kecamatan != 0){
+        if ($request->kecamatan != null) {
+            if ($request->kecamatan != 0) {
                 $kecamatanSearch = $modelMember->getNamaByKode($request->kecamatan);
                 $kecamatan = $kecamatanSearch->kecamatan;
-                $kecamatanName = ' - '.$kecamatanSearch->nama;
+                $kecamatanName = ' - ' . $kecamatanSearch->nama;
             }
         }
         $kelurahan = 0;
         $kelurahanName = '';
-        if($request->kelurahan != null){
-            if($request->kelurahan != 0){
+        if ($request->kelurahan != null) {
+            if ($request->kelurahan != 0) {
                 $kelurahanSearch = $modelMember->getNamaByKode($request->kelurahan);
                 $kelurahan = $kelurahanSearch->kelurahan;
-                $kelurahanName = ' - '.$kelurahanSearch->nama;
+                $kelurahanName = ' - ' . $kelurahanSearch->nama;
             }
-            
         }
         $qty = 200000;
         $dataInsert = array(
@@ -1092,7 +1133,7 @@ class MasterAdminController extends Controller {
             'kecamatan' => $kecamatan,
             'kelurahan' => $kelurahan,
             'qty' => $qty,
-            'area' => $provinsiName.' '.$kotaName.' '.$kecamatanName.' '.$kelurahanName
+            'area' => $provinsiName . ' ' . $kotaName . ' ' . $kecamatanName . ' ' . $kelurahanName
         );
         $getInsertPurchase = $modelSales->getInsertPurchase($dataInsert);
         //insert stock
@@ -1103,35 +1144,37 @@ class MasterAdminController extends Controller {
             'amount' => $qty
         );
         $modelSales->getInsertStock($dataInsertStock);
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => $request->method().' '.$request->path()
+            'detail_log' => $request->method() . ' ' . $request->path()
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listPurchases')
-                    ->with('message', 'Produk berhasil ditambahkan')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Produk berhasil ditambahkan')
+            ->with('messageclass', 'success');
     }
-    
-    public function getNewBonusReward(){
+
+    public function getNewBonusReward()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $modelBonusSetting = new Bonussetting;
-        $getData =$modelBonusSetting->getActiveBonusReward();
+        $getData = $modelBonusSetting->getActiveBonusReward();
         return view('admin.setting.add-bonus-reward')
-                ->with('headerTitle', 'New Bonus Reward')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'New Bonus Reward')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postNewBonusReward(Request $request){
+
+    public function postNewBonusReward(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $modelBonusSetting = new Bonussetting;
@@ -1145,29 +1188,31 @@ class MasterAdminController extends Controller {
         );
         $modelBonusSetting->getInsertReward($dataInsert);
         return redirect()->route('adm_newReward')
-                    ->with('message', 'Reward berhasil ditambahkan')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Reward berhasil ditambahkan')
+            ->with('messageclass', 'success');
     }
-    
-    public function getBonusReward(){
+
+    public function getBonusReward()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $modelBonusSetting = new Bonussetting;
-        $getData =$modelBonusSetting->getActiveBonusReward();
-        $modelAdmin = New Admin;
+        $getData = $modelBonusSetting->getActiveBonusReward();
+        $modelAdmin = new Admin;
         return view('admin.setting.bonus-reward')
-                ->with('headerTitle', 'Bonus Reward')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Bonus Reward')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postBonusReward(Request $request){
+
+    public function postBonusReward(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $modelBonusSetting = new Bonussetting;
@@ -1176,40 +1221,42 @@ class MasterAdminController extends Controller {
             'reward_detail' => $request->reward_detail
         );
         $modelBonusSetting->getUpdateReward('id', $request->cekId, $dataUpdate);
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
             'detail_log' => 'POST /adm/bonus-reward'
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_Rewards')
-                    ->with('message', 'Edit Setting bonus reward berhasil')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Edit Setting bonus reward berhasil')
+            ->with('messageclass', 'success');
     }
-    
-    public function getAllClaimReward(){
+
+    public function getAllClaimReward()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelBonus = New Bonus;
+        $modelBonus = new Bonus;
         $getData = $modelBonus->getAdminAllReward();
         return view('admin.member.list-reward')
-                ->with('headerTitle', 'Claim Reward')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Claim Reward')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postCheckClaimReward(Request $request){
+
+    public function postCheckClaimReward(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelBonus = New Bonus;
+        $modelBonus = new Bonus;
         $getRowID = $request->id;
-        foreach($getRowID as $getID){
+        foreach ($getRowID as $getID) {
             $dataUpdate = array(
                 'status' => 1,
                 'transfer_at' => date('Y-m-d H:i:s'),
@@ -1218,24 +1265,25 @@ class MasterAdminController extends Controller {
             );
             $modelBonus->getUpdateClaimReward('id', $getID, $dataUpdate);
         }
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => $request->method().' '.$request->path()
+            'detail_log' => $request->method() . ' ' . $request->path()
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listClaimReward')
-                    ->with('message', 'Konfirmasi Reward berhasil')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Konfirmasi Reward berhasil')
+            ->with('messageclass', 'success');
     }
-    
-    public function postRejectClaimReward(Request $request){
+
+    public function postRejectClaimReward(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelBonus = New Bonus;
+        $modelBonus = new Bonus;
         $getID = $request->cekId;
         $alesan = $request->reason;
         $getData = $modelBonus->getAdminRewardByID($getID);
@@ -1247,52 +1295,55 @@ class MasterAdminController extends Controller {
             'submit_at' => date('Y-m-d H:i:s'),
         );
         $modelBonus->getUpdateClaimReward('id', $getID, $dataUpdate);
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => $request->method().' '.$request->path()
+            'detail_log' => $request->method() . ' ' . $request->path()
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listClaimReward')
-                    ->with('message', 'Data Claim Reject berhasil')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Data Claim Reject berhasil')
+            ->with('messageclass', 'success');
     }
-    
-    public function getHistoryClaimReward(){
+
+    public function getHistoryClaimReward()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelBonus = New Bonus;
+        $modelBonus = new Bonus;
         $getData = $modelBonus->getAdminHistoryReward();
         return view('admin.member.history-reward')
-                ->with('headerTitle', 'History Claim Reward')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'History Claim Reward')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getAllRequestMemberInputStock(){
+
+    public function getAllRequestMemberInputStock()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelSales = New Sales;
+        $modelSales = new Sales;
         $getData = $modelSales->getMemberReqInputStockist();
         return view('admin.member.req-input-stock')
-                ->with('headerTitle', 'Input Stock & Royalti')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Input Stock & Royalti')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postRequestMemberInputStock(Request $request){
+
+    public function postRequestMemberInputStock(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelSales = New Sales;
+        $modelSales = new Sales;
         $dataUpdate = array(
             'status' => 2,
             'submit_by' => $dataUser->id,
@@ -1300,17 +1351,18 @@ class MasterAdminController extends Controller {
         );
         $modelSales->getUpdateItemPurchaseMaster('id', $request->id, $dataUpdate);
         return redirect()->route('adm_listReqInputStock')
-                    ->with('message', 'Konfirmasi Member request input stock & royalti berhasil')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Konfirmasi Member request input stock & royalti berhasil')
+            ->with('messageclass', 'success');
     }
-    
-    public function postRejectMemberInputStock(Request $request){
+
+    public function postRejectMemberInputStock(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelSales = New Sales;
+        $modelSales = new Sales;
         $dataUpdate = array(
             'status' => 10,
             'deleted_at' => date('Y-m-d H:i:s'),
@@ -1320,70 +1372,74 @@ class MasterAdminController extends Controller {
         );
         $modelSales->getUpdateItemPurchaseMaster('id', $request->id, $dataUpdate);
         return redirect()->route('adm_listReqInputStock')
-                    ->with('message', 'Reject Member request input stock & royalti berhasil')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Reject Member request input stock & royalti berhasil')
+            ->with('messageclass', 'success');
     }
-    
-    public function getAllConfirmBelanjaStockist(){
+
+    public function getAllConfirmBelanjaStockist()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelSales = New Sales;
+        $modelSales = new Sales;
         $getData = $modelSales->getAdminConfirmBelanja();
         return view('admin.member.confirm-belanja')
-                ->with('headerTitle', 'Confirm Belanja')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Confirm Belanja')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postConfirmBelanjaStockist(Request $request){
+
+    public function postConfirmBelanjaStockist(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelSales = New Sales;
+        $modelSales = new Sales;
         $dataUpdate = array(
             'status' => 3
         );
         $modelSales->getUpdateMasterSales('id', $request->id, $dataUpdate);
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => $request->method().' '.$request->path()
+            'detail_log' => $request->method() . ' ' . $request->path()
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listConfirmBelanjaStockist')
-                    ->with('message', 'Konfirmasi belanja stockist berhasil')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Konfirmasi belanja stockist berhasil')
+            ->with('messageclass', 'success');
     }
-    
-    public function getAllVerificationRoyalti(){
+
+    public function getAllVerificationRoyalti()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelSales = New Sales;
+        $modelSales = new Sales;
         $getData = $modelSales->getAdminVerificationRoyalti();
         return view('admin.member.confirm-royalti')
-                ->with('headerTitle', 'Verification Royalti')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Verification Royalti')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postVerificationRoyalti(Request $request){
+
+    public function postVerificationRoyalti(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelSales = New Sales;
-        
+        $modelSales = new Sales;
+
         $getAllSales = $modelSales->getAdminRoyaltiSales($request->id);
-        foreach($getAllSales as $row){
+        foreach ($getAllSales as $row) {
             $dataInsertStock = array(
                 'purchase_id' => $row->purchase_id,
                 'user_id' => $row->user_id,
@@ -1399,33 +1455,35 @@ class MasterAdminController extends Controller {
         );
         $modelSales->getUpdateMasterSales('id', $request->id, $dataUpdate);
         return redirect()->route('adm_listVerificationRoyalti')
-                    ->with('message', 'Verifikasi royalti berhasil')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Verifikasi royalti berhasil')
+            ->with('messageclass', 'success');
     }
-    
-    public function getAllBelanjaReward(){
+
+    public function getAllBelanjaReward()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelBonus = New Bonus;
+        $modelBonus = new Bonus;
         $getData = $modelBonus->getAdminAllBelanjaReward();
         return view('admin.member.belanja-reward')
-                ->with('headerTitle', 'Claim Reward Belanja')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Claim Reward Belanja')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postCheckBelanjaReward(Request $request){
+
+    public function postCheckBelanjaReward(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelBonus = New Bonus;
+        $modelBonus = new Bonus;
         $getRowID = $request->id;
-        foreach($getRowID as $getID){
+        foreach ($getRowID as $getID) {
             $dataUpdate = array(
                 'status' => 1,
                 'tuntas_at' => date('Y-m-d H:i:s')
@@ -1433,17 +1491,18 @@ class MasterAdminController extends Controller {
             $modelBonus->getUpdateBelanjaReward('id', $getID, $dataUpdate);
         }
         return redirect()->route('adm_listBelanjaReward')
-                    ->with('message', 'Konfirmasi Reward Belanja berhasil')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Konfirmasi Reward Belanja berhasil')
+            ->with('messageclass', 'success');
     }
-    
-    public function postRejectBelanjaReward(Request $request){
+
+    public function postRejectBelanjaReward(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelBonus = New Bonus;
+        $modelBonus = new Bonus;
         $getID = $request->cekId;
         $alesan = $request->reason;
         $dataUpdate = array(
@@ -1452,103 +1511,105 @@ class MasterAdminController extends Controller {
             'deleted_at' => date('Y-m-d H:i:s')
         );
         $modelBonus->getUpdateBelanjaReward('id', $getID, $dataUpdate);
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => $request->method().' '.$request->path()
+            'detail_log' => $request->method() . ' ' . $request->path()
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listBelanjaReward')
-                    ->with('message', 'Data Reward Belanja berhasil direject')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Data Reward Belanja berhasil direject')
+            ->with('messageclass', 'success');
     }
-    
-    public function getHistoryBelanjaReward(){
+
+    public function getHistoryBelanjaReward()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelBonus = New Bonus;
+        $modelBonus = new Bonus;
         $getData = $modelBonus->getAdminHistoryBelanjaReward();
         return view('admin.member.history-reward-belanja')
-                ->with('headerTitle', 'History Reward Belanja')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'History Reward Belanja')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getEditPurchase($id){
+
+    public function getEditPurchase($id)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelSales = New Sales;
-        $modelMember = New Member;
+        $modelSales = new Sales;
+        $modelMember = new Member;
         $getData = $modelSales->getDetailPurchase($id);
         $getProvince = $modelMember->getProvinsi();
-        $geCodeProvince = $getData->provinsi.'.00.00.0000';
-         $cekLenght = strlen($getData->kota);
-         $kota = $getData->kota;
-         if($cekLenght == 1){
-             $kota = '0'.$getData->kota;
-         }
-        $getCodeKota = $getData->provinsi.'.'.$kota.'.00.0000';
+        $geCodeProvince = $getData->provinsi . '.00.00.0000';
+        $cekLenght = strlen($getData->kota);
+        $kota = $getData->kota;
+        if ($cekLenght == 1) {
+            $kota = '0' . $getData->kota;
+        }
+        $getCodeKota = $getData->provinsi . '.' . $kota . '.00.0000';
         $getDetailProvinsi = $modelMember->getNamaByKode($geCodeProvince);
         $getDetailKota = $modelMember->getNamaByKode($getCodeKota);
         $getAllKotaFromProvince = $modelMember->getKabupatenKotaByPropinsi($getData->provinsi);
         return view('admin.sales.edit_purchase')
-                ->with('headerTitle', 'Edit Products')
-                ->with('provinsi', $getProvince)
-                ->with('getData', $getData)
-                ->with('detailProvinsi', $getDetailProvinsi)
-                ->with('detailKota', $getDetailKota)
-                ->with('allKota', $getAllKotaFromProvince)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Edit Products')
+            ->with('provinsi', $getProvince)
+            ->with('getData', $getData)
+            ->with('detailProvinsi', $getDetailProvinsi)
+            ->with('detailKota', $getDetailKota)
+            ->with('allKota', $getAllKotaFromProvince)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postEditPurchase(Request $request){
+
+    public function postEditPurchase(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelSales = New Sales;
-        $modelMember = New Member;
-        if($request->provinsi == 0){
+        $modelSales = new Sales;
+        $modelMember = new Member;
+        if ($request->provinsi == 0) {
             return redirect()->route('adm_editPurchase', [$request->id])
-                    ->with('message', 'Provinsi harus dipilih')
-                    ->with('messageclass', 'danger');
+                ->with('message', 'Provinsi harus dipilih')
+                ->with('messageclass', 'danger');
         }
         $provinsiSearch = $modelMember->getProvinsiByID($request->provinsi);
         $provinsiName = $provinsiSearch->nama;
         $kota = 0;
         $kotaName = '';
-        if($request->kota != null){
-            if($request->kota != 0){
+        if ($request->kota != null) {
+            if ($request->kota != 0) {
                 $kotaSearch = $modelMember->getNamaByKode($request->kota);
                 $kota = $kotaSearch->kabupatenkota;
-                $kotaName = ' - '.$kotaSearch->nama;
+                $kotaName = ' - ' . $kotaSearch->nama;
             }
         }
         $kecamatan = 0;
         $kecamatanName = '';
-        if($request->kecamatan != null){
-            if($request->kecamatan != 0){
+        if ($request->kecamatan != null) {
+            if ($request->kecamatan != 0) {
                 $kecamatanSearch = $modelMember->getNamaByKode($request->kecamatan);
                 $kecamatan = $kecamatanSearch->kecamatan;
-                $kecamatanName = ' - '.$kecamatanSearch->nama;
+                $kecamatanName = ' - ' . $kecamatanSearch->nama;
             }
         }
         $kelurahan = 0;
         $kelurahanName = '';
-        if($request->kelurahan != null){
-            if($request->kelurahan != 0){
+        if ($request->kelurahan != null) {
+            if ($request->kelurahan != 0) {
                 $kelurahanSearch = $modelMember->getNamaByKode($request->kelurahan);
                 $kelurahan = $kelurahanSearch->kelurahan;
-                $kelurahanName = ' - '.$kelurahanSearch->nama;
+                $kelurahanName = ' - ' . $kelurahanSearch->nama;
             }
-            
         }
         $dataUpdate = array(
             'name' => $request->name,
@@ -1561,70 +1622,73 @@ class MasterAdminController extends Controller {
             'kota' => $kota,
             'kecamatan' => $kecamatan,
             'kelurahan' => $kelurahan,
-            'area' => $provinsiName.' '.$kotaName.' '.$kecamatanName.' '.$kelurahanName
+            'area' => $provinsiName . ' ' . $kotaName . ' ' . $kecamatanName . ' ' . $kelurahanName
         );
         $modelSales->getUpdatePurchase('id', $request->id, $dataUpdate);
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => $request->method().' '.$request->path()
+            'detail_log' => $request->method() . ' ' . $request->path()
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listPurchases')
-                    ->with('message', 'Produk berhasil diedit')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Produk berhasil diedit')
+            ->with('messageclass', 'success');
     }
-    
-    public function postRemovePurchase(Request $request){
+
+    public function postRemovePurchase(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelSales = New Sales;
+        $modelSales = new Sales;
         $dataUpdate = array(
             'deleted_at' => date('Y-m-d H:i:s')
         );
         $modelSales->getUpdatePurchase('id', $request->id, $dataUpdate);
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => $request->method().' '.$request->path()
+            'detail_log' => $request->method() . ' ' . $request->path()
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listPurchases')
-                    ->with('message', 'Produk berhasil dihapus')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Produk berhasil dihapus')
+            ->with('messageclass', 'success');
     }
-    
-    public function getAllPenjualanReward(){
+
+    public function getAllPenjualanReward()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelBonus = New Bonus;
+        $modelBonus = new Bonus;
         $getData = $modelBonus->getAdminAllPenjualanReward();
         return view('admin.member.penjualan-reward')
-                ->with('headerTitle', 'Claim Reward Penjualan')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Claim Reward Penjualan')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postCheckPenjualanReward(Request $request){
+
+    public function postCheckPenjualanReward(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelBonus = New Bonus;
+        $modelBonus = new Bonus;
         $getRowID = $request->id;
-        if($getRowID == null){
+        if ($getRowID == null) {
             return redirect()->route('adm_listPenjualanReward')
-                        ->with('message', 'Gagal, tidak ada yang di centang')
-                        ->with('messageclass', 'danger');
+                ->with('message', 'Gagal, tidak ada yang di centang')
+                ->with('messageclass', 'danger');
         }
-        foreach($getRowID as $getID){
+        foreach ($getRowID as $getID) {
             $dataUpdate = array(
                 'status' => 1,
                 'tuntas_at' => date('Y-m-d H:i:s'),
@@ -1633,24 +1697,25 @@ class MasterAdminController extends Controller {
             );
             $modelBonus->getUpdateBelanjaReward('id', $getID, $dataUpdate);
         }
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => $request->method().' '.$request->path()
+            'detail_log' => $request->method() . ' ' . $request->path()
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listPenjualanReward')
-                    ->with('message', 'Konfirmasi Reward Penjualan berhasil')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Konfirmasi Reward Penjualan berhasil')
+            ->with('messageclass', 'success');
     }
-    
-    public function postRejectPenjualanReward(Request $request){
+
+    public function postRejectPenjualanReward(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelBonus = New Bonus;
+        $modelBonus = new Bonus;
         $getID = $request->cekId;
         $alesan = $request->reason;
         $dataUpdate = array(
@@ -1661,47 +1726,49 @@ class MasterAdminController extends Controller {
             'submit_at' => date('Y-m-d H:i:s'),
         );
         $modelBonus->getUpdateBelanjaReward('id', $getID, $dataUpdate);
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => $request->method().' '.$request->path()
+            'detail_log' => $request->method() . ' ' . $request->path()
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listPenjualanReward')
-                    ->with('message', 'Data Reward Penjualan berhasil direject')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Data Reward Penjualan berhasil direject')
+            ->with('messageclass', 'success');
     }
-    
-    public function getHistoryPenjualanReward(){
+
+    public function getHistoryPenjualanReward()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelBonus = New Bonus;
+        $modelBonus = new Bonus;
         $getData = $modelBonus->getAdminHistoryPenjualanReward();
         return view('admin.member.history-reward-penjualan')
-                ->with('headerTitle', 'History Reward Penjualan')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'History Reward Penjualan')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postAdminChangeDataMember(Request $request){
+
+    public function postAdminChangeDataMember(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelMember = New Member;
+        $modelMember = new Member;
         $getCheck = $modelMember->getCheckUsercodeNotHim($request->user_code, $request->cekId);
-        if($getCheck->cekCode == 1){
+        if ($getCheck->cekCode == 1) {
             return redirect()->route('adm_listMember')
-                    ->with('message', 'Username sudah terpakai')
-                    ->with('messageclass', 'danger');
+                ->with('message', 'Username sudah terpakai')
+                ->with('messageclass', 'danger');
         }
         $getData = $modelMember->getUsers('id', $request->cekId);
         $full_name = null;
-        if($getData->full_name != null){
+        if ($getData->full_name != null) {
             $full_name = $request->full_name;
         }
         $dataUpdate = array(
@@ -1712,167 +1779,174 @@ class MasterAdminController extends Controller {
             'full_name' => $full_name
         );
         $modelMember->getUpdateUsers('id', $request->cekId, $dataUpdate);
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => 'POST /adm/change/data/member user_id '.$request->cekId
+            'detail_log' => 'POST /adm/change/data/member user_id ' . $request->cekId
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listMember')
-                    ->with('message', 'Berhasil')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Berhasil')
+            ->with('messageclass', 'success');
     }
-    
-    public function postAdminChangePasswordMember(Request $request){
+
+    public function postAdminChangePasswordMember(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        if($request->password != $request->repassword){
+        if ($request->password != $request->repassword) {
             return redirect()->route('adm_listMember')
-                    ->with('message', 'Password dn ktik ulang password tidak sama')
-                    ->with('messageclass', 'danger');
+                ->with('message', 'Password dn ktik ulang password tidak sama')
+                ->with('messageclass', 'danger');
         }
-        if(strlen($request->password) < 6){
+        if (strlen($request->password) < 6) {
             return redirect()->route('adm_listMember')
-                    ->with('message', 'Password terlalu pendek, minimal 6 karakter')
-                    ->with('messageclass', 'danger');
+                ->with('message', 'Password terlalu pendek, minimal 6 karakter')
+                ->with('messageclass', 'danger');
         }
-        $modelMember = New Member;
+        $modelMember = new Member;
         $dataUpdatePass = array(
             'password' => bcrypt($request->password),
         );
         $modelMember->getUpdateUsers('id', $request->cekId, $dataUpdatePass);
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => 'POST /adm/change/passwd/member user_id '.$request->cekId
+            'detail_log' => 'POST /adm/change/passwd/member user_id ' . $request->cekId
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listMember')
-                    ->with('message', 'Password username '.$request->user_code.' berhasil diubah')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Password username ' . $request->user_code . ' berhasil diubah')
+            ->with('messageclass', 'success');
     }
-    
-    public function postAdminChangeBlockMember(Request $request){
+
+    public function postAdminChangeBlockMember(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelMember = New Member;
+        $modelMember = new Member;
         $dataUpdate = array(
             'is_login' => 0,
         );
         $modelMember->getUpdateUsers('id', $request->cekId, $dataUpdate);
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => 'POST /adm/change/block/member user_id '.$request->cekId
+            'detail_log' => 'POST /adm/change/block/member user_id ' . $request->cekId
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listMember')
-                    ->with('message', 'Berhasil Blokir Member')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Berhasil Blokir Member')
+            ->with('messageclass', 'success');
     }
-    
-    public function postAdminChangeTronMember(Request $request){
+
+    public function postAdminChangeTronMember(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelMember = New Member;
+        $modelMember = new Member;
         $dataUpdate = array(
             'tron' => $request->tron,
         );
         $modelMember->getUpdateUsers('id', $request->cekId, $dataUpdate);
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => 'POST /adm/change/tron/member user_id '.$request->cekId
+            'detail_log' => 'POST /adm/change/tron/member user_id ' . $request->cekId
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listMember')
-                    ->with('message', 'Berhasil ubah tron Member')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Berhasil ubah tron Member')
+            ->with('messageclass', 'success');
     }
-    
-    public function postSearchMember(Request $request){
+
+    public function postSearchMember(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $cekLenght = strlen($request->name);
-        if($cekLenght < 3){
+        if ($cekLenght < 3) {
             return redirect()->route('adm_listMember')
-                    ->with('message', 'Minimal pencarian harus 3 karakter (huruf).')
-                    ->with('messageclass', 'danger');
+                ->with('message', 'Minimal pencarian harus 3 karakter (huruf).')
+                ->with('messageclass', 'danger');
         }
-        $modelMember = New Member;
+        $modelMember = new Member;
         $data = $modelMember->getSearchAllMemberByAdmin($request->name);
         $getData = $data->data;
         $getCountData = $data->total;
         return view('admin.member.list-member')
-                ->with('headerTitle', 'Search Member')
-                ->with('getData', $getData)
-                ->with('getTotal', $getCountData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Search Member')
+            ->with('getData', $getData)
+            ->with('getTotal', $getCountData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postSearchMemberStockist(Request $request){
+
+    public function postSearchMemberStockist(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $cekLenght = strlen($request->name);
-        if($cekLenght < 3){
+        if ($cekLenght < 3) {
             return redirect()->route('adm_listMemberStockist')
-                    ->with('message', 'Minimal pencarian harus 3 karakter (huruf).')
-                    ->with('messageclass', 'danger');
+                ->with('message', 'Minimal pencarian harus 3 karakter (huruf).')
+                ->with('messageclass', 'danger');
         }
-        $modelMember = New Member;
+        $modelMember = new Member;
         $data = $modelMember->getSearchAllMemberStockistByAdmin($request->name);
         $getData = $data->data;
         $getCountData = $data->total;
         return view('admin.member.all-stockists')
-                ->with('headerTitle', 'Search Member Stockist')
-                ->with('getData', $getData)
-                ->with('getTotal', $getCountData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Search Member Stockist')
+            ->with('getData', $getData)
+            ->with('getTotal', $getCountData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getAllWDRoyalti(){
+
+    public function getAllWDRoyalti()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $modelWD = new Transferwd;
         $getData = $modelWD->getAllRequestWDRoyalti();
         return view('admin.member.list-wd-royalti')
-                ->with('headerTitle', 'Request Withdrawal Royalti')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Request Withdrawal Royalti')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postCheckWDRoyalti(Request $request){
+
+    public function postCheckWDRoyalti(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $modelWD = new Transferwd;
-        if($request->id == null){
+        if ($request->id == null) {
             return redirect()->route('adm_listWDRoyalti')
-                        ->with('message', 'tidak ada data yang dipilih')
-                        ->with('messageclass', 'danger');
+                ->with('message', 'tidak ada data yang dipilih')
+                ->with('messageclass', 'danger');
         }
         $getRowID = $request->id;
-        foreach($getRowID as $getID){
+        foreach ($getRowID as $getID) {
             $dataUpdate = array(
                 'status' => 1,
                 'transfer_at' => date('Y-m-d H:i:s'),
@@ -1881,24 +1955,25 @@ class MasterAdminController extends Controller {
             );
             $modelWD->getUpdateWD('id', $getID, $dataUpdate);
         }
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => $request->method().' '.$request->path()
+            'detail_log' => $request->method() . ' ' . $request->path()
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listWDRoyalti')
-                    ->with('message', 'Konfirmasi Transfer WD Royalti berhasil')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Konfirmasi Transfer WD Royalti berhasil')
+            ->with('messageclass', 'success');
     }
-    
-    public function postRejectWDRoyalti(Request $request){
+
+    public function postRejectWDRoyalti(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelBonus = New Bonus;
+        $modelBonus = new Bonus;
         $modelWD = new Transferwd;
         $getID = $request->cekId;
         $alesan = $request->reason;
@@ -1913,66 +1988,69 @@ class MasterAdminController extends Controller {
         $modelWD->getUpdateWD('id', $getID, $dataUpdate);
         $redirect = 'adm_listWDRoyalti';
         $wd = 'WD Royalti';
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => $request->method().' '.$request->path()
+            'detail_log' => $request->method() . ' ' . $request->path()
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route($redirect)
-                    ->with('message', 'Data '.$wd.' '.$getData->full_name.' senilai Rp. '.number_format($getData->wd_total + $getData->admin_fee, 0, ',', '.').' direject')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Data ' . $wd . ' ' . $getData->full_name . ' senilai Rp. ' . number_format($getData->wd_total + $getData->admin_fee, 0, ',', '.') . ' direject')
+            ->with('messageclass', 'success');
     }
-    
-    public function getAllHistoryWDRoyalti(){
+
+    public function getAllHistoryWDRoyalti()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $modelWD = new Transferwd;
         $getData = $modelWD->getAllHistoryWDRoyalti();
         return view('admin.member.history-wd-royalti')
-                ->with('headerTitle', 'History Withdrawal Royalti')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'History Withdrawal Royalti')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getHistoryRequestInputStock(){
+
+    public function getHistoryRequestInputStock()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelSales = New Sales;
+        $modelSales = new Sales;
         $getData = $modelSales->getMemberReqInputStockistHistory();
         return view('admin.member.history-input-stock')
-                ->with('headerTitle', 'History Stock & Royalti')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'History Stock & Royalti')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getMemberStockistStock($id){
+
+    public function getMemberStockistStock($id)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelMember = New Member;
+        $modelMember = new Member;
         $getDataUser = $modelMember->getExplorerByID($id);
-        $modelSales = New Sales;
+        $modelSales = new Sales;
         $data = $modelSales->getMemberPurchaseShoping($getDataUser->id);
         $getData = array();
-        if($data != null){
-            foreach($data as $row){
+        if ($data != null) {
+            foreach ($data as $row) {
                 $jml_keluar = $modelSales->getSumStock($getDataUser->id, $row->id);
                 $total_sisa = $row->total_qty - $jml_keluar;
-                if($total_sisa < 0){
+                if ($total_sisa < 0) {
                     $total_sisa = 0;
                 }
                 $hapus = 0;
-                if($total_sisa == 0){
-                    if($row->deleted_at != null){
+                if ($total_sisa == 0) {
+                    if ($row->deleted_at != null) {
                         $hapus = 1;
                     }
                 }
@@ -1993,45 +2071,46 @@ class MasterAdminController extends Controller {
             }
         }
         return view('admin.member.stock-product')
-                ->with('headerTitle', 'Stock Product')
-                ->with('getData', $getData)
-                ->with('getStockist', $getDataUser)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Stock Product')
+            ->with('getData', $getData)
+            ->with('getStockist', $getDataUser)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postEditStock(Request $request){
+
+    public function postEditStock(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        if($request->jml_stock == null){
+        if ($request->jml_stock == null) {
             return redirect()->route('adm_memberStockistStock', [$request->stockist_id])
-                        ->with('message', 'Jumlah Stock harus diisi')
-                        ->with('messageclass', 'danger');
+                ->with('message', 'Jumlah Stock harus diisi')
+                ->with('messageclass', 'danger');
         }
-        if($request->jml_stock < 0){
+        if ($request->jml_stock < 0) {
             return redirect()->route('adm_memberStockistStock', [$request->stockist_id])
-                        ->with('message', 'Jumlah Stock tidak boleh kurang dari 0')
-                        ->with('messageclass', 'danger');
+                ->with('message', 'Jumlah Stock tidak boleh kurang dari 0')
+                ->with('messageclass', 'danger');
         }
         $metode = $request->metode;
         $purchase_id = $request->purchase_id;
         $stockist_id = $request->stockist_id;
-        $modelAdmin = New Admin;
-        $modelSales = New Sales;
+        $modelAdmin = new Admin;
+        $modelSales = new Sales;
         $data = $modelSales->getStockByPurchaseIdStockist($stockist_id, $purchase_id);
         $jml_keluar = $modelSales->getSumStock($stockist_id, $data->id);
         // klo nambah maka ubah qty di table item_purchase dan table stock yg sales_id, stockist_id is null
         // klo kurang insert di stock isi stockist_id
         $total_sisa = $data->total_qty - $jml_keluar;
         $getLastItemPurchase = $modelSales->getLastItemPurchase($purchase_id, $stockist_id);
-        if($getLastItemPurchase == null){
+        if ($getLastItemPurchase == null) {
             return redirect()->route('adm_memberStockistStock', [$request->stockist_id])
-                        ->with('message', 'tidak ada data')
-                        ->with('messageclass', 'danger');
+                ->with('message', 'tidak ada data')
+                ->with('messageclass', 'danger');
         }
-        if($metode == 1){
+        if ($metode == 1) {
             $idLastPurchase = $getLastItemPurchase->id;
             $tambahStock = $getLastItemPurchase->qty + $request->jml_stock;
             $dataUpdateItemPurchase = array(
@@ -2049,14 +2128,14 @@ class MasterAdminController extends Controller {
             );
             $modelAdmin->getInsertLogHistory($logHistory);
             return redirect()->route('adm_memberStockistStock', [$request->stockist_id])
-                            ->with('message', 'berhasil tambah stock')
-                            ->with('messageclass', 'success');
+                ->with('message', 'berhasil tambah stock')
+                ->with('messageclass', 'success');
         }
-        if($metode == 2){
-            if(($total_sisa - $request->jml_stock) < 0){
+        if ($metode == 2) {
+            if (($total_sisa - $request->jml_stock) < 0) {
                 return redirect()->route('adm_memberStockistStock', [$request->stockist_id])
-                                ->with('message', 'stock kurang dari 0')
-                                ->with('messageclass', 'danger');
+                    ->with('message', 'stock kurang dari 0')
+                    ->with('messageclass', 'danger');
             }
             $dataInsertStock = array(
                 'purchase_id' => $purchase_id,
@@ -2072,24 +2151,25 @@ class MasterAdminController extends Controller {
             );
             $modelAdmin->getInsertLogHistory($logHistory);
             return redirect()->route('adm_memberStockistStock', [$request->stockist_id])
-                            ->with('message', 'berhasil kurang stock')
-                            ->with('messageclass', 'success');
+                ->with('message', 'berhasil kurang stock')
+                ->with('messageclass', 'success');
         }
     }
-    
-    public function postRemoveStock(Request $request){
+
+    public function postRemoveStock(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $purchase_id = $request->purchase_id;
         $stockist_id = $request->stockist_id;
-        $modelAdmin = New Admin;
-        $modelSales = New Sales;
+        $modelAdmin = new Admin;
+        $modelSales = new Sales;
         $getAllItem = $modelSales->getAllItemPurchaseStockistPurchase($purchase_id, $stockist_id);
-        if($getAllItem != null){
-            foreach($getAllItem as $row){
+        if ($getAllItem != null) {
+            foreach ($getAllItem as $row) {
                 $dataUpdateItemPurchase = array(
                     'deleted_at' => date('Y-m-d H:i:s')
                 );
@@ -2097,47 +2177,48 @@ class MasterAdminController extends Controller {
             }
             $logHistory = array(
                 'user_id' => $dataUser->id,
-                'detail_log' => 'POST adm/rm-stock Hapus Stock, Purchase ID '.$purchase_id.', Stockist ID '.$stockist_id
+                'detail_log' => 'POST adm/rm-stock Hapus Stock, Purchase ID ' . $purchase_id . ', Stockist ID ' . $stockist_id
             );
             $modelAdmin->getInsertLogHistory($logHistory);
             return redirect()->route('adm_memberStockistStock', [$request->stockist_id])
-                        ->with('message', 'berhasil hapus stock')
-                        ->with('messageclass', 'success');
+                ->with('message', 'berhasil hapus stock')
+                ->with('messageclass', 'success');
         }
         return redirect()->route('adm_memberStockistStock', [$request->stockist_id])
-                        ->with('message', 'tidak ada data')
-                        ->with('messageclass', 'danger');
-        
+            ->with('message', 'tidak ada data')
+            ->with('messageclass', 'danger');
     }
-    
-    public function getAllTopup(){
+
+    public function getAllTopup()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelBonus = New Bonus;
+        $modelBonus = new Bonus;
         $getData = $modelBonus->getAllRequestTopup();
         return view('admin.member.list-topup')
-                ->with('headerTitle', 'Request Top Up Saldo')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Request Top Up Saldo')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postCheckTopup(Request $request){
+
+    public function postCheckTopup(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelBonus = New Bonus;
-        if($request->id == null){
+        $modelBonus = new Bonus;
+        if ($request->id == null) {
             return redirect()->route('adm_listTopup')
-                        ->with('message', 'tidak ada data yang dipilih')
-                        ->with('messageclass', 'danger');
+                ->with('message', 'tidak ada data yang dipilih')
+                ->with('messageclass', 'danger');
         }
         $getRowID = $request->id;
-        foreach($getRowID as $getID){
+        foreach ($getRowID as $getID) {
             $dataUpdate = array(
                 'status' => 2,
                 'tuntas_at' => date('Y-m-d H:i:s'),
@@ -2146,24 +2227,25 @@ class MasterAdminController extends Controller {
             );
             $modelBonus->getUpdateTopUp('id', $getID, $dataUpdate);
         }
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => $request->method().' '.$request->path()
+            'detail_log' => $request->method() . ' ' . $request->path()
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listTopup')
-                    ->with('message', 'Konfirmasi Transfer Top Up berhasil')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Konfirmasi Transfer Top Up berhasil')
+            ->with('messageclass', 'success');
     }
-    
-    public function postRejectTopup(Request $request){
+
+    public function postRejectTopup(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelBonus = New Bonus;
+        $modelBonus = new Bonus;
         $getID = $request->cekId;
         $alesan = $request->reason;
         $getData = $modelBonus->getTopUpSaldoID($getID);
@@ -2175,102 +2257,105 @@ class MasterAdminController extends Controller {
             'submit_at' => date('Y-m-d H:i:s'),
         );
         $modelBonus->getUpdateTopUp('id', $getID, $dataUpdate);
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => $request->method().' '.$request->path()
+            'detail_log' => $request->method() . ' ' . $request->path()
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listTopup')
-                    ->with('message', 'Data Top Up senilai Rp. '.number_format($getData->nominal + $getData->unique_digit, 0, ',', '.').' direject')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Data Top Up senilai Rp. ' . number_format($getData->nominal + $getData->unique_digit, 0, ',', '.') . ' direject')
+            ->with('messageclass', 'success');
     }
-    
-    public function getAllHistoryTopup(){
+
+    public function getAllHistoryTopup()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelBonus = New Bonus;
+        $modelBonus = new Bonus;
         $getData = $modelBonus->getAllHistoryTopup();
         return view('admin.member.history-topup')
-                ->with('headerTitle', 'History Top Up Saldo')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'History Top Up Saldo')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getAllVendorPurchase(){
+
+    public function getAllVendorPurchase()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelSales = New Sales;
+        $modelSales = new Sales;
         $getData = $modelSales->getAllPurchaseVendor();
         return view('admin.sales.all_purchase_vendor')
-                ->with('headerTitle', 'All Product Vendor')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'All Product Vendor')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getAddVendorPurchase(){
+
+    public function getAddVendorPurchase()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelSales = New Sales;
-        $modelMember = New Member;
+        $modelSales = new Sales;
+        $modelMember = new Member;
         $getProvince = $modelMember->getProvinsi();
         return view('admin.sales.add_vpurchase')
-                ->with('headerTitle', 'Create Product Vendor')
-                ->with('provinsi', $getProvince)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Create Product Vendor')
+            ->with('provinsi', $getProvince)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postAddVendorPurchase(Request $request){
+
+    public function postAddVendorPurchase(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelSales = New Sales;
-        $modelMember = New Member;
-        if($request->provinsi == 0){
+        $modelSales = new Sales;
+        $modelMember = new Member;
+        if ($request->provinsi == 0) {
             return redirect()->route('adm_addVendorPurchase')
-                    ->with('message', 'Anda Tidak memilih propinsi')
-                    ->with('messageclass', 'danger');
+                ->with('message', 'Anda Tidak memilih propinsi')
+                ->with('messageclass', 'danger');
         }
         $provinsiSearch = $modelMember->getProvinsiByID($request->provinsi);
         $provinsiName = $provinsiSearch->nama;
         $kota = 0;
         $kotaName = '';
-        if($request->kota != null){
-            if($request->kota != 0){
+        if ($request->kota != null) {
+            if ($request->kota != 0) {
                 $kotaSearch = $modelMember->getNamaByKode($request->kota);
                 $kota = $kotaSearch->kabupatenkota;
-                $kotaName = ' - '.$kotaSearch->nama;
+                $kotaName = ' - ' . $kotaSearch->nama;
             }
         }
         $kecamatan = 0;
         $kecamatanName = '';
-        if($request->kecamatan != null){
-            if($request->kecamatan != 0){
+        if ($request->kecamatan != null) {
+            if ($request->kecamatan != 0) {
                 $kecamatanSearch = $modelMember->getNamaByKode($request->kecamatan);
                 $kecamatan = $kecamatanSearch->kecamatan;
-                $kecamatanName = ' - '.$kecamatanSearch->nama;
+                $kecamatanName = ' - ' . $kecamatanSearch->nama;
             }
         }
         $kelurahan = 0;
         $kelurahanName = '';
-        if($request->kelurahan != null){
-            if($request->kelurahan != 0){
+        if ($request->kelurahan != null) {
+            if ($request->kelurahan != 0) {
                 $kelurahanSearch = $modelMember->getNamaByKode($request->kelurahan);
                 $kelurahan = $kelurahanSearch->kelurahan;
-                $kelurahanName = ' - '.$kelurahanSearch->nama;
+                $kelurahanName = ' - ' . $kelurahanSearch->nama;
             }
-            
         }
         $qty = 200000;
         $dataInsert = array(
@@ -2285,7 +2370,7 @@ class MasterAdminController extends Controller {
             'kecamatan' => $kecamatan,
             'kelurahan' => $kelurahan,
             'qty' => $qty,
-            'area' => $provinsiName.' '.$kotaName.' '.$kecamatanName.' '.$kelurahanName,
+            'area' => $provinsiName . ' ' . $kotaName . ' ' . $kecamatanName . ' ' . $kelurahanName,
             'type' => 2,
         );
         $getInsertPurchase = $modelSales->getInsertPurchase($dataInsert);
@@ -2297,89 +2382,90 @@ class MasterAdminController extends Controller {
             'amount' => $qty
         );
         $modelSales->getInsertVStock($dataInsertStock);
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => $request->method().' '.$request->path()
+            'detail_log' => $request->method() . ' ' . $request->path()
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listVendorPurchases')
-                    ->with('message', 'Produk Vendor berhasil ditambahkan')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Produk Vendor berhasil ditambahkan')
+            ->with('messageclass', 'success');
     }
-    
-    public function getEditVendorPurchase($id){
+
+    public function getEditVendorPurchase($id)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelSales = New Sales;
-        $modelMember = New Member;
+        $modelSales = new Sales;
+        $modelMember = new Member;
         $getData = $modelSales->getDetailPurchaseVendor($id);
         $getProvince = $modelMember->getProvinsi();
-        $geCodeProvince = $getData->provinsi.'.00.00.0000';
-         $cekLenght = strlen($getData->kota);
-         $kota = $getData->kota;
-         if($cekLenght == 1){
-             $kota = '0'.$getData->kota;
-         }
-        $getCodeKota = $getData->provinsi.'.'.$kota.'.00.0000';
+        $geCodeProvince = $getData->provinsi . '.00.00.0000';
+        $cekLenght = strlen($getData->kota);
+        $kota = $getData->kota;
+        if ($cekLenght == 1) {
+            $kota = '0' . $getData->kota;
+        }
+        $getCodeKota = $getData->provinsi . '.' . $kota . '.00.0000';
         $getDetailProvinsi = $modelMember->getNamaByKode($geCodeProvince);
         $getDetailKota = $modelMember->getNamaByKode($getCodeKota);
         $getAllKotaFromProvince = $modelMember->getKabupatenKotaByPropinsi($getData->provinsi);
         return view('admin.sales.edit_vpurchase')
-                ->with('headerTitle', 'Edit Products Vendor')
-                ->with('provinsi', $getProvince)
-                ->with('getData', $getData)
-                ->with('detailProvinsi', $getDetailProvinsi)
-                ->with('detailKota', $getDetailKota)
-                ->with('allKota', $getAllKotaFromProvince)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Edit Products Vendor')
+            ->with('provinsi', $getProvince)
+            ->with('getData', $getData)
+            ->with('detailProvinsi', $getDetailProvinsi)
+            ->with('detailKota', $getDetailKota)
+            ->with('allKota', $getAllKotaFromProvince)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postEditVendorPurchase(Request $request){
+
+    public function postEditVendorPurchase(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelSales = New Sales;
-        $modelMember = New Member;
-        if($request->provinsi == 0){
+        $modelSales = new Sales;
+        $modelMember = new Member;
+        if ($request->provinsi == 0) {
             return redirect()->route('adm_editVendorPurchase', [$request->id])
-                    ->with('message', 'Provinsi harus dipilih')
-                    ->with('messageclass', 'danger');
+                ->with('message', 'Provinsi harus dipilih')
+                ->with('messageclass', 'danger');
         }
         $provinsiSearch = $modelMember->getProvinsiByID($request->provinsi);
         $provinsiName = $provinsiSearch->nama;
         $kota = 0;
         $kotaName = '';
-        if($request->kota != null){
-            if($request->kota != 0){
+        if ($request->kota != null) {
+            if ($request->kota != 0) {
                 $kotaSearch = $modelMember->getNamaByKode($request->kota);
                 $kota = $kotaSearch->kabupatenkota;
-                $kotaName = ' - '.$kotaSearch->nama;
+                $kotaName = ' - ' . $kotaSearch->nama;
             }
         }
         $kecamatan = 0;
         $kecamatanName = '';
-        if($request->kecamatan != null){
-            if($request->kecamatan != 0){
+        if ($request->kecamatan != null) {
+            if ($request->kecamatan != 0) {
                 $kecamatanSearch = $modelMember->getNamaByKode($request->kecamatan);
                 $kecamatan = $kecamatanSearch->kecamatan;
-                $kecamatanName = ' - '.$kecamatanSearch->nama;
+                $kecamatanName = ' - ' . $kecamatanSearch->nama;
             }
         }
         $kelurahan = 0;
         $kelurahanName = '';
-        if($request->kelurahan != null){
-            if($request->kelurahan != 0){
+        if ($request->kelurahan != null) {
+            if ($request->kelurahan != 0) {
                 $kelurahanSearch = $modelMember->getNamaByKode($request->kelurahan);
                 $kelurahan = $kelurahanSearch->kelurahan;
-                $kelurahanName = ' - '.$kelurahanSearch->nama;
+                $kelurahanName = ' - ' . $kelurahanSearch->nama;
             }
-            
         }
         $dataUpdate = array(
             'name' => $request->name,
@@ -2392,105 +2478,111 @@ class MasterAdminController extends Controller {
             'kota' => $kota,
             'kecamatan' => $kecamatan,
             'kelurahan' => $kelurahan,
-            'area' => $provinsiName.' '.$kotaName.' '.$kecamatanName.' '.$kelurahanName
+            'area' => $provinsiName . ' ' . $kotaName . ' ' . $kecamatanName . ' ' . $kelurahanName
         );
         $modelSales->getUpdatePurchase('id', $request->id, $dataUpdate);
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => $request->method().' '.$request->path()
+            'detail_log' => $request->method() . ' ' . $request->path()
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listVendorPurchases')
-                    ->with('message', 'Produk Vendor berhasil diedit')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Produk Vendor berhasil diedit')
+            ->with('messageclass', 'success');
     }
-    
-    public function postRemoveVendorPurchase(Request $request){
+
+    public function postRemoveVendorPurchase(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelSales = New Sales;
+        $modelSales = new Sales;
         $dataUpdate = array(
             'deleted_at' => date('Y-m-d H:i:s')
         );
         $modelSales->getUpdatePurchase('id', $request->id, $dataUpdate);
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => $request->method().' '.$request->path()
+            'detail_log' => $request->method() . ' ' . $request->path()
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listVendorPurchases')
-                    ->with('message', 'Produk Vendor berhasil dihapus')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Produk Vendor berhasil dihapus')
+            ->with('messageclass', 'success');
     }
-    
-    public function getAllRequestMemberVendor(){
+
+    public function getAllRequestMemberVendor()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelMember = New Member;
+        $modelMember = new Member;
         $getData = $modelMember->getAllMemberReqVendor();
         return view('admin.member.req-vendor')
-                ->with('headerTitle', 'Request Vendor')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Request Vendor')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getHistoryRequestMemberVendor(){
+
+    public function getHistoryRequestMemberVendor()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelMember = New Member;
+        $modelMember = new Member;
         $getData = $modelMember->getHistoryAllMemberReqVendor();
         return view('admin.member.history-req_vendor')
-                ->with('headerTitle', 'History Request Vendor')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'History Request Vendor')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getHistoryRequestInputVStock(){
+
+    public function getHistoryRequestInputVStock()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelSales = New Sales;
+        $modelSales = new Sales;
         $getData = $modelSales->getMemberReqInputVStockistHistory();
         return view('admin.member.history-input-vstock')
-                ->with('headerTitle', 'History Vendor Stock & Royalti')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'History Vendor Stock & Royalti')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getAllRequestMemberInputVStock(){
+
+    public function getAllRequestMemberInputVStock()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelSales = New Sales;
+        $modelSales = new Sales;
         $getData = $modelSales->getMemberReqInputVendor();
         return view('admin.member.req-input-vstock')
-                ->with('headerTitle', 'Input Vendor Stock & Royalti')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Input Vendor Stock & Royalti')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postRequestMemberInputVStock(Request $request){
+
+    public function postRequestMemberInputVStock(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelSales = New Sales;
+        $modelSales = new Sales;
         $dataUpdate = array(
             'status' => 2,
             'submit_by' => $dataUser->id,
@@ -2498,17 +2590,18 @@ class MasterAdminController extends Controller {
         );
         $modelSales->getUpdateVendorItemPurchaseMaster('id', $request->id, $dataUpdate);
         return redirect()->route('adm_listReqInputVStock')
-                    ->with('message', 'Konfirmasi Member request vendor input stock & royalti berhasil')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Konfirmasi Member request vendor input stock & royalti berhasil')
+            ->with('messageclass', 'success');
     }
-    
-    public function postRejectMemberInputVStock(Request $request){
+
+    public function postRejectMemberInputVStock(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelSales = New Sales;
+        $modelSales = new Sales;
         $dataUpdate = array(
             'status' => 10,
             'deleted_at' => date('Y-m-d H:i:s'),
@@ -2518,31 +2611,32 @@ class MasterAdminController extends Controller {
         );
         $modelSales->getUpdateVendorItemPurchaseMaster('id', $request->id, $dataUpdate);
         return redirect()->route('adm_listReqInputVStock')
-                    ->with('message', 'Reject Member request input stock & royalti berhasil')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Reject Member request input stock & royalti berhasil')
+            ->with('messageclass', 'success');
     }
-    
-    public function getMemberVendorStock($id){
+
+    public function getMemberVendorStock($id)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelMember = New Member;
+        $modelMember = new Member;
         $getDataUser = $modelMember->getExplorerByID($id);
-        $modelSales = New Sales;
+        $modelSales = new Sales;
         $data = $modelSales->getMemberPurchaseVendorShoping($getDataUser->id);
         $getData = array();
-        if($data != null){
-            foreach($data as $row){
+        if ($data != null) {
+            foreach ($data as $row) {
                 $jml_keluar = $modelSales->getSumStockVendor($getDataUser->id, $row->id);
                 $total_sisa = $row->total_qty - $jml_keluar;
-                if($total_sisa < 0){
+                if ($total_sisa < 0) {
                     $total_sisa = 0;
                 }
                 $hapus = 0;
-                if($total_sisa == 0){
-                    if($row->deleted_at != null){
+                if ($total_sisa == 0) {
+                    if ($row->deleted_at != null) {
                         $hapus = 1;
                     }
                 }
@@ -2563,19 +2657,20 @@ class MasterAdminController extends Controller {
             }
         }
         return view('admin.member.stock-vproduct')
-                ->with('headerTitle', 'Stock Vendor Product')
-                ->with('getData', $getData)
-                ->with('getStockist', $getDataUser)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Stock Vendor Product')
+            ->with('getData', $getData)
+            ->with('getStockist', $getDataUser)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postRemoveMemberVendor(Request $request){
+
+    public function postRemoveMemberVendor(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelMember = New Member;
+        $modelMember = new Member;
         $date =  date('Y-m-d H:i:s');
         $dataUpdate = array(
             'status' => 10,
@@ -2588,45 +2683,47 @@ class MasterAdminController extends Controller {
             'is_vendor' => 0,
         );
         $modelMember->getUpdateUsers('id', $request->id_user, $dataUpdateUser);
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
             'detail_log' => 'hapus member vendor'
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listMemberVendor')
-                    ->with('message', 'vendor '.$request->user_code.' dihapus kememberannya')
-                    ->with('messageclass', 'success');
+            ->with('message', 'vendor ' . $request->user_code . ' dihapus kememberannya')
+            ->with('messageclass', 'success');
     }
-    
-    public function getAllVPenjualanReward(){
+
+    public function getAllVPenjualanReward()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelBonus = New Bonus;
+        $modelBonus = new Bonus;
         $getData = $modelBonus->getAdminAllVendorPenjualanReward();
         return view('admin.member.vpenjualan-reward')
-                ->with('headerTitle', 'Claim Reward Penjualan Vendor')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Claim Reward Penjualan Vendor')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postCheckVPenjualanReward(Request $request){
+
+    public function postCheckVPenjualanReward(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelBonus = New Bonus;
+        $modelBonus = new Bonus;
         $getRowID = $request->id;
-        if($getRowID == null){
+        if ($getRowID == null) {
             return redirect()->route('adm_listPenjualanReward')
-                        ->with('message', 'Gagal, tidak ada yang di centang')
-                        ->with('messageclass', 'danger');
+                ->with('message', 'Gagal, tidak ada yang di centang')
+                ->with('messageclass', 'danger');
         }
-        foreach($getRowID as $getID){
+        foreach ($getRowID as $getID) {
             $dataUpdate = array(
                 'status' => 1,
                 'tuntas_at' => date('Y-m-d H:i:s'),
@@ -2635,24 +2732,25 @@ class MasterAdminController extends Controller {
             );
             $modelBonus->getUpdateBelanjaReward('id', $getID, $dataUpdate);
         }
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => $request->method().' '.$request->path()
+            'detail_log' => $request->method() . ' ' . $request->path()
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listVPenjualanReward')
-                    ->with('message', 'Konfirmasi Reward Penjualan Vendor berhasil')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Konfirmasi Reward Penjualan Vendor berhasil')
+            ->with('messageclass', 'success');
     }
-    
-    public function postRejectVPenjualanReward(Request $request){
+
+    public function postRejectVPenjualanReward(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelBonus = New Bonus;
+        $modelBonus = new Bonus;
         $getID = $request->cekId;
         $alesan = $request->reason;
         $dataUpdate = array(
@@ -2663,59 +2761,62 @@ class MasterAdminController extends Controller {
             'submit_at' => date('Y-m-d H:i:s'),
         );
         $modelBonus->getUpdateBelanjaReward('id', $getID, $dataUpdate);
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => $request->method().' '.$request->path()
+            'detail_log' => $request->method() . ' ' . $request->path()
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listVPenjualanReward')
-                    ->with('message', 'Data Reward Penjualan Vendor berhasil direject')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Data Reward Penjualan Vendor berhasil direject')
+            ->with('messageclass', 'success');
     }
-    
-    public function getHistoryVPenjualanReward(){
+
+    public function getHistoryVPenjualanReward()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelBonus = New Bonus;
+        $modelBonus = new Bonus;
         $getData = $modelBonus->getAdminHistoryVPenjualanReward();
         return view('admin.member.history-reward-vpenjualan')
-                ->with('headerTitle', 'History Reward Penjualan Vendor')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'History Reward Penjualan Vendor')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getAllVBelanjaReward(){
+
+    public function getAllVBelanjaReward()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelBonus = New Bonus;
+        $modelBonus = new Bonus;
         $getData = $modelBonus->getAdminAllVendorBelanjaReward();
         return view('admin.member.vbelanja-reward')
-                ->with('headerTitle', 'Claim Reward Belanja Vendor')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Claim Reward Belanja Vendor')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postCheckVBelanjaReward(Request $request){
+
+    public function postCheckVBelanjaReward(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelBonus = New Bonus;
+        $modelBonus = new Bonus;
         $getRowID = $request->id;
-        if($getRowID == null){
+        if ($getRowID == null) {
             return redirect()->route('adm_listVBelanjaReward')
-                        ->with('message', 'Gagal, tidak ada yang di centang')
-                        ->with('messageclass', 'danger');
+                ->with('message', 'Gagal, tidak ada yang di centang')
+                ->with('messageclass', 'danger');
         }
-        foreach($getRowID as $getID){
+        foreach ($getRowID as $getID) {
             $dataUpdate = array(
                 'status' => 1,
                 'tuntas_at' => date('Y-m-d H:i:s'),
@@ -2724,24 +2825,25 @@ class MasterAdminController extends Controller {
             );
             $modelBonus->getUpdateBelanjaReward('id', $getID, $dataUpdate);
         }
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => $request->method().' '.$request->path()
+            'detail_log' => $request->method() . ' ' . $request->path()
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listVBelanjaReward')
-                    ->with('message', 'Konfirmasi Reward Belanja Vendor berhasil')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Konfirmasi Reward Belanja Vendor berhasil')
+            ->with('messageclass', 'success');
     }
-    
-    public function postRejectVBelanjaReward(Request $request){
+
+    public function postRejectVBelanjaReward(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelBonus = New Bonus;
+        $modelBonus = new Bonus;
         $getID = $request->cekId;
         $alesan = $request->reason;
         $dataUpdate = array(
@@ -2752,63 +2854,66 @@ class MasterAdminController extends Controller {
             'submit_at' => date('Y-m-d H:i:s'),
         );
         $modelBonus->getUpdateBelanjaReward('id', $getID, $dataUpdate);
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => $request->method().' '.$request->path()
+            'detail_log' => $request->method() . ' ' . $request->path()
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listVBelanjaReward')
-                    ->with('message', 'Data Reward Belanja Vendor berhasil direject')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Data Reward Belanja Vendor berhasil direject')
+            ->with('messageclass', 'success');
     }
-    
-    public function getHistoryVBelanjaReward(){
+
+    public function getHistoryVBelanjaReward()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelBonus = New Bonus;
+        $modelBonus = new Bonus;
         $getData = $modelBonus->getAdminHistoryVBelanjaReward();
         return view('admin.member.history-reward-vbelanja')
-                ->with('headerTitle', 'History Reward Belanja Vendor')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'History Reward Belanja Vendor')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getAllRequestIsiDeposit(){
+
+    public function getAllRequestIsiDeposit()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $modelPin = new Pin;
-        $modelTrans = New Transaction;
+        $modelTrans = new Transaction;
         $getTotalDeposit = $modelPin->getTotalDepositAll();
         $getTotalMasterDeposit = $modelPin->getTotalMasterDepositAll();
         $getAllTransaction = $modelTrans->getTransactionsIsiDepositByAdmin();
         $getAllTarikTransaction = $modelTrans->getTotalAllTarikDeposit();
         return view('admin.digital.list-req-deposit')
-                ->with('headerTitle', 'Transaksi Isi Deposit')
-                ->with('getData', $getAllTransaction)
-                ->with('getDataTarik', $getAllTarikTransaction)
-                ->with('localDeposit', $getTotalDeposit)
-                ->with('systemDeposit', $getTotalMasterDeposit)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Transaksi Isi Deposit')
+            ->with('getData', $getAllTransaction)
+            ->with('getDataTarik', $getAllTarikTransaction)
+            ->with('localDeposit', $getTotalDeposit)
+            ->with('systemDeposit', $getTotalMasterDeposit)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postConfirmTransactionIsiDeposit(Request $request){
+
+    public function postConfirmTransactionIsiDeposit(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $id = $request->cekId;
         $user_id = $request->cekMemberId;
-        $modelSettingTrans = New Transaction;
+        $modelSettingTrans = new Transaction;
         $getData = $modelSettingTrans->getDetailDepositTransactionsAdmin($id, $user_id);
-        if($getData == null){
+        if ($getData == null) {
             return redirect()->route('adm_listIsiDeposit')
                 ->with('message', 'Data tidak ditemukan')
                 ->with('messageclass', 'danger');
@@ -2818,7 +2923,7 @@ class MasterAdminController extends Controller {
             'total_deposito' => $getData->price,
             'transaction_code' => $getData->transaction_code,
         );
-        $modelPin = New Pin;
+        $modelPin = new Pin;
         $modelPin->getInsertMemberDeposit($memberDeposit);
         $dataUpdate = array(
             'status' => 2,
@@ -2828,21 +2933,22 @@ class MasterAdminController extends Controller {
         );
         $modelSettingTrans->getUpdateDepositTransaction('id', $id, $dataUpdate);
         return redirect()->route('adm_listIsiDeposit')
-                ->with('message', 'Berhasil konfirmasi isi deposit')
-                ->with('messageclass', 'success');
+            ->with('message', 'Berhasil konfirmasi isi deposit')
+            ->with('messageclass', 'success');
     }
-    
-    public function postRejectTransactionIsiDeposit(Request $request){
+
+    public function postRejectTransactionIsiDeposit(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $id = $request->cekId;
         $user_id = $request->cekMemberId;
-        $modelSettingTrans = New Transaction;
+        $modelSettingTrans = new Transaction;
         $getData = $modelSettingTrans->getDetailRejectDepositTransactionsAdminByID($id, $user_id);
-        if($getData == null){
+        if ($getData == null) {
             return redirect()->route('adm_listIsiDeposit')
                 ->with('message', 'Data tidak ditemukan')
                 ->with('messageclass', 'danger');
@@ -2856,33 +2962,35 @@ class MasterAdminController extends Controller {
         );
         $modelSettingTrans->getUpdateDepositTransaction('id', $id, $dataUpdate);
         return redirect()->route('adm_listIsiDeposit')
-                    ->with('message', 'Transaksi dibatalkan')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Transaksi dibatalkan')
+            ->with('messageclass', 'success');
     }
-    
-    public function getAllRequestTarikDeposit(){
+
+    public function getAllRequestTarikDeposit()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelSettingTrans = New Transaction;
+        $modelSettingTrans = new Transaction;
         $getAllTransaction = $modelSettingTrans->getTransactionsTarikDepositByAdmin();
         return view('admin.digital.list-tarik-deposit')
-                ->with('headerTitle', 'Transaksi Tarik Deposit')
-                ->with('getData', $getAllTransaction)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Transaksi Tarik Deposit')
+            ->with('getData', $getAllTransaction)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postConfirmTransactionTarikDeposit(Request $request){
+
+    public function postConfirmTransactionTarikDeposit(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $getRowID = $request->id;
-        $modelSettingTrans = New Transaction;
-        foreach($getRowID as $getID){
+        $modelSettingTrans = new Transaction;
+        foreach ($getRowID as $getID) {
             $getData = $modelSettingTrans->getTransactionsTarikDepositByAdminByID($getID);
             $memberDeposit = array(
                 'user_id' => $getData->user_id,
@@ -2890,7 +2998,7 @@ class MasterAdminController extends Controller {
                 'transaction_code' => $getData->transaction_code,
                 'deposito_status' => 1
             );
-            $modelPin = New Pin;
+            $modelPin = new Pin;
             $modelPin->getInsertMemberDeposit($memberDeposit);
             $dataUpdate = array(
                 'status' => 2,
@@ -2901,25 +3009,27 @@ class MasterAdminController extends Controller {
             $modelSettingTrans->getUpdateDepositTransaction('id', $getID, $dataUpdate);
         }
         return redirect()->route('adm_listTarikDeposit')
-                ->with('message', 'Berhasil konfirmasi tarik deposit')
-                ->with('messageclass', 'success');
+            ->with('message', 'Berhasil konfirmasi tarik deposit')
+            ->with('messageclass', 'success');
     }
-    
-    public function getTransferSystemDeposit(){
+
+    public function getTransferSystemDeposit()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         return view('admin.digital.transfer-deposit')
-                ->with('headerTitle', 'Transfer System Deposit')
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Transfer System Deposit')
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postTransferSystemDeposit(Request $request){
+
+    public function postTransferSystemDeposit(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $modelPin = new Pin;
@@ -2936,108 +3046,112 @@ class MasterAdminController extends Controller {
         //kirim email
         $dataEmail = array(
             'tgl_order' => date('d F Y'),
-            'total_deposit' => 'Rp '.number_format($request->total_deposit, 0, ',', '.'),
+            'total_deposit' => 'Rp ' . number_format($request->total_deposit, 0, ',', '.'),
             'bank_name' => $request->bank_name,
             'account_no' => $request->account_no,
             'account_name' => $request->account_name,
             'code' => $getCode,
-            'dataLink' => 'approve/deposit/'.$getCode,
+            'dataLink' => 'approve/deposit/' . $getCode,
         );
         $emailSend = 'bernaandya@gmail.com';
-        Mail::send('member.email.transfer_deposit', $dataEmail, function($message) use($emailSend){
+        Mail::send('member.email.transfer_deposit', $dataEmail, function ($message) use ($emailSend) {
             $message->to($emailSend, 'Konfirmasi Transfer Deposit Lumbung Network')
-                    ->subject('Konfirmasi Transfer Deposit Lumbung Network');
+                ->subject('Konfirmasi Transfer Deposit Lumbung Network');
         });
-        
+
         return redirect()->route('adm_listIsiDeposit')
-                ->with('message', 'Berhasil konfirmasi transfer system deposit')
-                ->with('messageclass', 'success');
+            ->with('message', 'Berhasil konfirmasi transfer system deposit')
+            ->with('messageclass', 'success');
     }
-    
-    public function getAllTransactionDeposit(){
+
+    public function getAllTransactionDeposit()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelTrans = New Transaction;
+        $modelTrans = new Transaction;
         $getAllTransaction = $modelTrans->getHistoryTransactionsDepositByAdmin();
-//        dd($getAllTransaction);
+        //        dd($getAllTransaction);
         return view('admin.digital.history-transaksi-deposit')
-                ->with('headerTitle', 'History Transaksi Deposit')
-                ->with('getAllTransaction', $getAllTransaction)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'History Transaksi Deposit')
+            ->with('getAllTransaction', $getAllTransaction)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getListVendorPPOBTransactionsEiDR(){
+
+    public function getListVendorPPOBTransactionsEiDR()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $modelPin = new Pin;
         $getData = $modelPin->getAdminTransactionPPOBEiDR();
-//        dd($getData);
+        //        dd($getData);
         return view('admin.digital.transaksi-eidr')
-                ->with('headerTitle', 'Transaksi eIDR')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Transaksi eIDR')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function geDetailVendorPPOBTransactionsEiDR($id){
+
+    public function geDetailVendorPPOBTransactionsEiDR($id)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $modelPin = new Pin;
         $getData = $modelPin->getAdminDetailTransactionPPOBEiDR($id);
-//        dd($getData);
+        //        dd($getData);
         return view('admin.digital.detail-transaksi-eidr')
-                ->with('headerTitle', 'Detail Transaksi eIDR')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Detail Transaksi eIDR')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function postApprovePPOBTransactionsEiDR(Request $request){
+
+    public function postApprovePPOBTransactionsEiDR(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $modelPin = new Pin;
-        $modelMember = New Member;
+        $modelMember = new Member;
         //cek deposit cukup ga
-        $modelTrans = New Transaction;
+        $modelTrans = new Transaction;
         $getDataMaster = $modelPin->getAdminDetailTransactionPPOBEiDR($request->ppob_id);
-//        $dataVendor =  $modelMember->getUsers('id', $getDataMaster->vendor_id);
-//        $getTransTarik = $modelTrans->getMyTotalTarikDeposit($dataVendor);
-//        $getTotalDeposit = $modelPin->getTotalDepositMember($dataVendor);
-//        $sum_deposit_masuk = 0;
-//        $sum_deposit_keluar1 = 0;
-//        $sum_deposit_keluar = 0;
-//        if($getTotalDeposit->sum_deposit_masuk != null){
-//            $sum_deposit_masuk = $getTotalDeposit->sum_deposit_masuk;
-//        }
-//        if($getTotalDeposit->sum_deposit_keluar != null){
-//            $sum_deposit_keluar1 = $getTotalDeposit->sum_deposit_keluar;
-//        }
-//        if($getTransTarik->deposit_keluar != null){
-//            $sum_deposit_keluar = $getTransTarik->deposit_keluar;
-//        }
-//        $totalDeposit = $sum_deposit_masuk - $sum_deposit_keluar - $sum_deposit_keluar1 - $getDataMaster->harga_modal;
-//        if($totalDeposit < 0){
-//            return redirect()->route('adm_listVendotPPOBTransactionsEiDR')
-//                    ->with('message', 'tidak dapat dilanjutkan, deposit kurang')
-//                    ->with('messageclass', 'danger');
-//        }
+        //        $dataVendor =  $modelMember->getUsers('id', $getDataMaster->vendor_id);
+        //        $getTransTarik = $modelTrans->getMyTotalTarikDeposit($dataVendor);
+        //        $getTotalDeposit = $modelPin->getTotalDepositMember($dataVendor);
+        //        $sum_deposit_masuk = 0;
+        //        $sum_deposit_keluar1 = 0;
+        //        $sum_deposit_keluar = 0;
+        //        if($getTotalDeposit->sum_deposit_masuk != null){
+        //            $sum_deposit_masuk = $getTotalDeposit->sum_deposit_masuk;
+        //        }
+        //        if($getTotalDeposit->sum_deposit_keluar != null){
+        //            $sum_deposit_keluar1 = $getTotalDeposit->sum_deposit_keluar;
+        //        }
+        //        if($getTransTarik->deposit_keluar != null){
+        //            $sum_deposit_keluar = $getTransTarik->deposit_keluar;
+        //        }
+        //        $totalDeposit = $sum_deposit_masuk - $sum_deposit_keluar - $sum_deposit_keluar1 - $getDataMaster->harga_modal;
+        //        if($totalDeposit < 0){
+        //            return redirect()->route('adm_listVendotPPOBTransactionsEiDR')
+        //                    ->with('message', 'tidak dapat dilanjutkan, deposit kurang')
+        //                    ->with('messageclass', 'danger');
+        //        }
         $getDataAPI = $modelMember->getDataAPIMobilePulsa();
         $username   = $getDataAPI->username;
         $apiKey   = $getDataAPI->api_key;
         $ref_id = $getDataMaster->ppob_code;
-        $sign = md5($username.$apiKey.$ref_id);
-        
-        if($getDataMaster->type == 1){
+        $sign = md5($username . $apiKey . $ref_id);
+
+        if ($getDataMaster->type == 1) {
             $array = array(
                 'username' => $username,
                 'buyer_sku_code' => $getDataMaster->buyer_code,
@@ -3046,7 +3160,7 @@ class MasterAdminController extends Controller {
                 'sign' => $sign,
             );
         }
-        if($getDataMaster->type == 2){
+        if ($getDataMaster->type == 2) {
             $array = array(
                 'username' => $username,
                 'buyer_sku_code' => $getDataMaster->buyer_code,
@@ -3055,7 +3169,7 @@ class MasterAdminController extends Controller {
                 'sign' => $sign,
             );
         }
-        if($getDataMaster->type == 3){
+        if ($getDataMaster->type == 3) {
             $array = array(
                 'username' => $username,
                 'buyer_sku_code' => $getDataMaster->buyer_code,
@@ -3064,7 +3178,7 @@ class MasterAdminController extends Controller {
                 'sign' => $sign,
             );
         }
-        if($getDataMaster->type == 4){
+        if ($getDataMaster->type == 4) {
             $array = array(
                 'commands' => 'pay-pasca',
                 'username' => $username,
@@ -3074,7 +3188,7 @@ class MasterAdminController extends Controller {
                 'sign' => $sign,
             );
         }
-        if($getDataMaster->type == 5){
+        if ($getDataMaster->type == 5) {
             $array = array(
                 'commands' => 'pay-pasca',
                 'username' => $username,
@@ -3084,7 +3198,7 @@ class MasterAdminController extends Controller {
                 'sign' => $sign,
             );
         }
-        if($getDataMaster->type == 6){
+        if ($getDataMaster->type == 6) {
             $array = array(
                 'commands' => 'pay-pasca',
                 'username' => $username,
@@ -3094,7 +3208,7 @@ class MasterAdminController extends Controller {
                 'sign' => $sign,
             );
         }
-        if($getDataMaster->type == 7){
+        if ($getDataMaster->type == 7) {
             $array = array(
                 'commands' => 'pay-pasca',
                 'username' => $username,
@@ -3104,7 +3218,7 @@ class MasterAdminController extends Controller {
                 'sign' => $sign,
             );
         }
-        if($getDataMaster->type == 8){
+        if ($getDataMaster->type == 8) {
             $array = array(
                 'username' => $username,
                 'buyer_sku_code' => $getDataMaster->buyer_code,
@@ -3114,14 +3228,14 @@ class MasterAdminController extends Controller {
             );
         }
 
-        $url = $getDataAPI->master_url.'/v1/transaction';
+        $url = $getDataAPI->master_url . '/v1/transaction';
         $json = json_encode($array);
         $cek = $modelMember->getAPIurlCheck($url, $json);
         $arrayData = json_decode($cek, true);
-//        $modelSettingTrans = New Transaction;
-//        $code =$modelSettingTrans->getCodeDepositTransaction();
-        
-        if($arrayData['data']['status'] == 'Sukses'){
+        //        $modelSettingTrans = New Transaction;
+        //        $code =$modelSettingTrans->getCodeDepositTransaction();
+
+        if ($arrayData['data']['status'] == 'Sukses') {
             $dataUpdate = array(
                 'status' => 2,
                 'tuntas_at' => date('Y-m-d H:i:s'),
@@ -3129,32 +3243,32 @@ class MasterAdminController extends Controller {
                 'vendor_approve' => 2
             );
             $modelPin->getUpdatePPOB('id', $request->ppob_id, $dataUpdate);
-//            $cekDuaKali = $modelPin->getJagaGaBolehDuaKali($getDataMaster->buyer_code.'-'.$ref_id);
-//            if($cekDuaKali == null){
-//                $memberDeposit = array(
-//                    'user_id' => $dataVendor->id,
-//                    'total_deposito' => $getDataMaster->harga_modal, //tambahin 2%
-//                    'transaction_code' => $getDataMaster->buyer_code.'-'.$ref_id,
-//                    'deposito_status' => 1
-//                );
-//                $modelPin->getInsertMemberDeposit($memberDeposit);
-//            }
+            //            $cekDuaKali = $modelPin->getJagaGaBolehDuaKali($getDataMaster->buyer_code.'-'.$ref_id);
+            //            if($cekDuaKali == null){
+            //                $memberDeposit = array(
+            //                    'user_id' => $dataVendor->id,
+            //                    'total_deposito' => $getDataMaster->harga_modal, //tambahin 2%
+            //                    'transaction_code' => $getDataMaster->buyer_code.'-'.$ref_id,
+            //                    'deposito_status' => 1
+            //                );
+            //                $modelPin->getInsertMemberDeposit($memberDeposit);
+            //            }
             return redirect()->route('adm_listVendotPPOBTransactionsEiDR')
-                        ->with('message', 'transaksi berhasil')
-                        ->with('messageclass', 'success');
+                ->with('message', 'transaksi berhasil')
+                ->with('messageclass', 'success');
         }
-        
-        if($arrayData['data']['status'] == 'Pending'){
+
+        if ($arrayData['data']['status'] == 'Pending') {
             $dataUpdate = array(
                 'vendor_cek' => $cek
             );
             $modelPin->getUpdatePPOB('id', $request->ppob_id, $dataUpdate);
             return redirect()->route('adm_listVendotPPOBTransactionsEiDR')
-                        ->with('message', 'transaksi sedang pending, tunggu beberapa saat. Kemudian cek status di halaman transaksi digital')
-                        ->with('messageclass', 'warning');
+                ->with('message', 'transaksi sedang pending, tunggu beberapa saat. Kemudian cek status di halaman transaksi digital')
+                ->with('messageclass', 'warning');
         }
-        
-        if($arrayData['data']['status'] == 'Gagal'){
+
+        if ($arrayData['data']['status'] == 'Gagal') {
             $dataUpdate = array(
                 'status' => 3,
                 'deleted_at' => date('Y-m-d H:i:s'),
@@ -3164,20 +3278,20 @@ class MasterAdminController extends Controller {
             );
             $modelPin->getUpdatePPOB('id', $request->ppob_id, $dataUpdate);
             return redirect()->route('adm_listVendotPPOBTransactionsEiDR')
-                        ->with('message', 'transaksi gagal')
-                        ->with('messageclass', 'danger');
+                ->with('message', 'transaksi gagal')
+                ->with('messageclass', 'danger');
         }
-        
+
         return redirect()->route('adm_listVendotPPOBTransactionsEiDR')
-                        ->with('message', 'tidak ada data')
-                        ->with('messageclass', 'danger');
-        
+            ->with('message', 'tidak ada data')
+            ->with('messageclass', 'danger');
     }
-    
-    public function postRejectPPOBTransactionsEiDR(Request $request){
+
+    public function postRejectPPOBTransactionsEiDR(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $modelPin = new Pin;
@@ -3188,43 +3302,44 @@ class MasterAdminController extends Controller {
         );
         $modelPin->getUpdatePPOB('id', $request->ppob_id, $dataUpdate);
         return redirect()->route('adm_listVendotPPOBTransactionsEiDR')
-                    ->with('message', 'Transaksi  dibatalkan')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Transaksi  dibatalkan')
+            ->with('messageclass', 'success');
     }
-    
-    public function getPPOBTransactionsAPI($id){
+
+    public function getPPOBTransactionsAPI($id)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1, 2, 3);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $modelPin = new Pin;
         $getData = $modelPin->getAdminDetailTransactionPPOBEiDR($id);
-        $modelTrans = New Transaction;
-        $modelMember = New Member;
+        $modelTrans = new Transaction;
+        $modelMember = new Member;
         $dataVendor =  $modelMember->getUsers('id', $getData->vendor_id);
         $getDataMaster = $modelPin->getVendorPPOBDetail($id, $dataVendor);
-        if($getDataMaster == null){
+        if ($getDataMaster == null) {
             return redirect()->route('adm_listVendotPPOBTransactionsEiDR')
-                    ->with('message', 'Tidak ada data')
-                    ->with('messageclass', 'danger');
+                ->with('message', 'Tidak ada data')
+                ->with('messageclass', 'danger');
         }
-        if($getDataMaster->status != 2){
+        if ($getDataMaster->status != 2) {
             return redirect()->route('adm_listVendotPPOBTransactionsEiDR')
-                    ->with('message', 'transaksi vendor belum tuntas')
-                    ->with('messageclass', 'danger');
+                ->with('message', 'transaksi vendor belum tuntas')
+                ->with('messageclass', 'danger');
         }
-        if($getDataMaster->vendor_approve != 0){
+        if ($getDataMaster->vendor_approve != 0) {
             return redirect()->route('adm_listVendotPPOBTransactionsEiDR')
-                    ->with('message', 'Tidak ada data')
-                    ->with('messageclass', 'danger');
+                ->with('message', 'Tidak ada data')
+                ->with('messageclass', 'danger');
         }
         $getDataAPI = $modelMember->getDataAPIMobilePulsa();
         $username   = $getDataAPI->username;
         $apiKey   = $getDataAPI->api_key;
-        $sign = md5($username.$apiKey.$getDataMaster->ppob_code);
-        
-        if($getDataMaster->type == 1){
+        $sign = md5($username . $apiKey . $getDataMaster->ppob_code);
+
+        if ($getDataMaster->type == 1) {
             $array = array(
                 'username' => $username,
                 'buyer_sku_code' => $getDataMaster->buyer_code,
@@ -3233,7 +3348,7 @@ class MasterAdminController extends Controller {
                 'sign' => $sign,
             );
         }
-        if($getDataMaster->type == 2){
+        if ($getDataMaster->type == 2) {
             $array = array(
                 'username' => $username,
                 'buyer_sku_code' => $getDataMaster->buyer_code,
@@ -3242,7 +3357,7 @@ class MasterAdminController extends Controller {
                 'sign' => $sign,
             );
         }
-        if($getDataMaster->type == 3){
+        if ($getDataMaster->type == 3) {
             $array = array(
                 'username' => $username,
                 'buyer_sku_code' => $getDataMaster->buyer_code,
@@ -3251,17 +3366,7 @@ class MasterAdminController extends Controller {
                 'sign' => $sign,
             );
         }
-        if($getDataMaster->type == 4){
-            $array = array(
-                'commands' => 'status-pasca',
-                'username' => $username,
-                'buyer_sku_code' => $getDataMaster->buyer_code,
-                'customer_no' => $getDataMaster->product_name,
-                'ref_id' => $getDataMaster->ppob_code,
-                'sign' => $sign,
-            );
-        }
-        if($getDataMaster->type == 5){
+        if ($getDataMaster->type == 4) {
             $array = array(
                 'commands' => 'status-pasca',
                 'username' => $username,
@@ -3271,7 +3376,7 @@ class MasterAdminController extends Controller {
                 'sign' => $sign,
             );
         }
-        if($getDataMaster->type == 6){
+        if ($getDataMaster->type == 5) {
             $array = array(
                 'commands' => 'status-pasca',
                 'username' => $username,
@@ -3281,7 +3386,7 @@ class MasterAdminController extends Controller {
                 'sign' => $sign,
             );
         }
-        if($getDataMaster->type == 7){
+        if ($getDataMaster->type == 6) {
             $array = array(
                 'commands' => 'status-pasca',
                 'username' => $username,
@@ -3291,7 +3396,17 @@ class MasterAdminController extends Controller {
                 'sign' => $sign,
             );
         }
-        if($getDataMaster->type == 8){
+        if ($getDataMaster->type == 7) {
+            $array = array(
+                'commands' => 'status-pasca',
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $getDataMaster->ppob_code,
+                'sign' => $sign,
+            );
+        }
+        if ($getDataMaster->type == 8) {
             $array = array(
                 'username' => $username,
                 'buyer_sku_code' => $getDataMaster->buyer_code,
@@ -3300,14 +3415,14 @@ class MasterAdminController extends Controller {
                 'sign' => $sign,
             );
         }
-        
-        $url = $getDataAPI->master_url.'/v1/transaction';
+
+        $url = $getDataAPI->master_url . '/v1/transaction';
         $json = json_encode($array);
         $cek = $modelMember->getAPIurlCheck($url, $json);
         $arrayData = json_decode($cek, true);
 
-        if($arrayData != null){
-            if($arrayData['data']['status'] == 'Sukses'){
+        if ($arrayData != null) {
+            if ($arrayData['data']['status'] == 'Sukses') {
                 $dataUpdate = array(
                     'status' => 2,
                     'tuntas_at' => date('Y-m-d H:i:s'),
@@ -3315,28 +3430,28 @@ class MasterAdminController extends Controller {
                     'vendor_approve' => 2
                 );
                 $modelPin->getUpdatePPOB('id', $getDataMaster->id, $dataUpdate);
-                $cekDuaKali = $modelPin->getJagaGaBolehDuaKali($getDataMaster->buyer_code.'-'.$getDataMaster->ppob_code);
-                if($cekDuaKali == null){
+                $cekDuaKali = $modelPin->getJagaGaBolehDuaKali($getDataMaster->buyer_code . '-' . $getDataMaster->ppob_code);
+                if ($cekDuaKali == null) {
                     $memberDeposit = array(
                         'user_id' => $dataVendor->id,
                         'total_deposito' => $getDataMaster->harga_modal,
-                        'transaction_code' => $getDataMaster->buyer_code.'-'.$getDataMaster->ppob_code,
+                        'transaction_code' => $getDataMaster->buyer_code . '-' . $getDataMaster->ppob_code,
                         'deposito_status' => 1
                     );
                     $modelPin->getInsertMemberDeposit($memberDeposit);
                 }
                 return redirect()->route('adm_listVendotPPOBTransactionsEiDR')
-                            ->with('message', 'transaksi berhasil')
-                            ->with('messageclass', 'success');
+                    ->with('message', 'transaksi berhasil')
+                    ->with('messageclass', 'success');
             }
 
-            if($arrayData['data']['status'] == 'Pending'){
+            if ($arrayData['data']['status'] == 'Pending') {
                 return redirect()->route('adm_listVendotPPOBTransactionsEiDR')
-                            ->with('message', 'transaksi sedang pending, tunggu beberapa saat. Kemudian cek status di halaman transaksi digital')
-                            ->with('messageclass', 'warning');
+                    ->with('message', 'transaksi sedang pending, tunggu beberapa saat. Kemudian cek status di halaman transaksi digital')
+                    ->with('messageclass', 'warning');
             }
 
-            if($arrayData['data']['status'] == 'Gagal'){
+            if ($arrayData['data']['status'] == 'Gagal') {
                 $dataUpdate = array(
                     'status' => 3,
                     'deleted_at' => date('Y-m-d H:i:s'),
@@ -3345,106 +3460,107 @@ class MasterAdminController extends Controller {
                     'vendor_cek' => $cek
                 );
                 $modelPin->getUpdatePPOB('id', $getDataMaster->id, $dataUpdate);
-                $cekDepositGagal = $modelPin->getJagaGaBolehDuaKali($getDataMaster->buyer_code.'-'.$getDataMaster->ppob_code);
-                if($cekDepositGagal != null){
+                $cekDepositGagal = $modelPin->getJagaGaBolehDuaKali($getDataMaster->buyer_code . '-' . $getDataMaster->ppob_code);
+                if ($cekDepositGagal != null) {
                     $modelPin->getDeleteMemberDeposit($cekDepositGagal->id);
                 }
                 return redirect()->route('adm_listVendotPPOBTransactionsEiDR')
-                            ->with('message', 'terjadi kesalahan pada transaksi, saldo dikembalikan')
-                            ->with('messageclass', 'success');
+                    ->with('message', 'terjadi kesalahan pada transaksi, saldo dikembalikan')
+                    ->with('messageclass', 'success');
             }
         }
         return redirect()->route('adm_listVendotPPOBTransactionsEiDR')
-                            ->with('message', 'tidak ada data transaksi, kesalahan pada api')
-                            ->with('messageclass', 'danger');
-        
-        
+            ->with('message', 'tidak ada data transaksi, kesalahan pada api')
+            ->with('messageclass', 'danger');
     }
-    
-    
-    
-    
-    
+
+
+
+
+
     //PPOB
-    
-    public function getMemberTestingCheckSaldo(){
+
+    public function getMemberTestingCheckSaldo()
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelMember = New Member;
+        $modelMember = new Member;
         $getDataAPI = $modelMember->getDataAPIMobilePulsa();
         $username   = $getDataAPI->username;
         $apiKey   = $getDataAPI->api_key;
-        $sign = md5($username.$apiKey.'depo');
+        $sign = md5($username . $apiKey . 'depo');
         $array = array(
             'cmd' => 'deposit',
             'username' => $username,
             'sign' => $sign
         );
         $json = json_encode($array);
-        $url = $getDataAPI->master_url.'/v1/cek-saldo';
+        $url = $getDataAPI->master_url . '/v1/cek-saldo';
         $cek = $modelMember->getAPIurlCheck($url, $json);
         $arrayData = json_decode($cek, true);
         dd($arrayData);
     }
-    
-    public function getMemberTestingCheckDaftarPulsa($cmd){
+
+    public function getMemberTestingCheckDaftarPulsa($cmd)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelMember = New Member;
+        $modelMember = new Member;
         $getDataAPI = $modelMember->getDataAPIMobilePulsa();
         $username   = $getDataAPI->username;
         $apiKey   = $getDataAPI->api_key;
-        
-        $sign = md5($username.$apiKey.'pricelist');
+
+        $sign = md5($username . $apiKey . 'pricelist');
         $array = array(
             'cmd' => $cmd,
             'username' => $username,
             'sign' => $sign
         );
         $json = json_encode($array);
-        $url = $getDataAPI->master_url.'/v1/price-list';
+        $url = $getDataAPI->master_url . '/v1/price-list';
         // category => pulsa
         // brand => TELKOMSEL
         $cek = $modelMember->getAPIurlCheck($url, $json);
         $arrayData = json_decode($cek, true);
         dd($arrayData);
     }
-    
-    public function getMemberTestingCheckTopupPulsa($buyer, $hp){
+
+    public function getMemberTestingCheckTopupPulsa($buyer, $hp)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelMember = New Member;
+        $modelMember = new Member;
         $getDataAPI = $modelMember->getDataAPIMobilePulsa();
         $username   = $getDataAPI->username;
         $apiKey   = $getDataAPI->api_key;
         $modelPin = new Pin;
         $rand = rand(11, 99);
         $ref_id = uniqid(); //$rand.$modelPin->getCodePPOBRef(1);
-        $sign = md5($username.$apiKey.$ref_id);
+        $sign = md5($username . $apiKey . $ref_id);
         $array = array(
             'username' => $username,
             'buyer_sku_code' => $buyer,
             'customer_no' => $hp,
             'ref_id' => $ref_id,
             'sign' => $sign,
-//            'testing' => true,
-//            'msg' => 'testing dengan admin'
+            //            'testing' => true,
+            //            'msg' => 'testing dengan admin'
         );
-        $url = $getDataAPI->master_url.'/v1/transaction';
+        $url = $getDataAPI->master_url . '/v1/transaction';
         $json = json_encode($array);
         $cek = $modelMember->getAPIurlCheck($url, $json);
         $arrayData = json_decode($cek, true);
-        
-        if($arrayData['data']['rc'] == '00'){
+
+        if ($arrayData['data']['rc'] == '00') {
             $dataUpdate = array(
                 'status' => 2,
                 'tuntas_at' => date('Y-m-d H:i:s'),
@@ -3457,8 +3573,8 @@ class MasterAdminController extends Controller {
             );
             dd($dataUpdate);
         }
-        
-        if($arrayData['data']['rc'] == '03'){
+
+        if ($arrayData['data']['rc'] == '03') {
             $dataUpdate = array(
                 'vendor_approve' => 1,
                 'vendor_cek' => $cek,
@@ -3469,7 +3585,7 @@ class MasterAdminController extends Controller {
             );
             dd($dataUpdate);
         }
-        
+
         $dataUpdate = array(
             'vendor_approve' => 3,
             'vendor_cek' => $cek,
@@ -3480,21 +3596,22 @@ class MasterAdminController extends Controller {
         );
         dd($dataUpdate);
     }
-    
-    public function getMemberTestingCheckStatus($id, $cek){
+
+    public function getMemberTestingCheckStatus($id, $cek)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
         $modelPin = new Pin;
-        $modelMember = New Member;
+        $modelMember = new Member;
         $getDataAPI = $modelMember->getDataAPIMobilePulsa();
         $username   = $getDataAPI->username;
         $apiKey   = $getDataAPI->api_key;
         $getData = $modelPin->getStatusPPOBDetail($id);
-        $ref_id = uniqid();// $getData->ppob_code;
-        $sign = md5($username.$apiKey.$ref_id);
+        $ref_id = uniqid(); // $getData->ppob_code;
+        $sign = md5($username . $apiKey . $ref_id);
         $array = array(
             'commands' => 'inq-pasca',
             'username' => $username,
@@ -3502,40 +3619,41 @@ class MasterAdminController extends Controller {
             'customer_no' => '0001772358478', //$getData->product_name,
             'ref_id' => $ref_id,
             'sign' => $sign,
-//            'testing' => true,
-//            'msg' => 'testing dengan admin'
+            //            'testing' => true,
+            //            'msg' => 'testing dengan admin'
         );
-        if($cek == 1){
+        if ($cek == 1) {
             dd($array);
         }
-        $url = $getDataAPI->master_url.'/v1/transaction';
+        $url = $getDataAPI->master_url . '/v1/transaction';
         $json = json_encode($array);
-        
+
         $cek = $modelMember->getAPIurlCheck($url, $json);
         $arrayData = json_decode($cek, true);
         dd($arrayData);
     }
-    
-    public function getMemberNewTestingCheckStatus(Request $request){
+
+    public function getMemberNewTestingCheckStatus(Request $request)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelMember = New Member;
+        $modelMember = new Member;
         $modelPin = new Pin;
-        $modelTrans = New Transaction;
+        $modelTrans = new Transaction;
         $getDataMaster = $modelPin->getStatusPPOBDetail($request->id);
-        if($getDataMaster == null){
+        if ($getDataMaster == null) {
             dd('empty');
         }
-        if($getDataMaster->status != 2){
+        if ($getDataMaster->status != 2) {
             dd('stop here');
         }
         $getDataAPI = $modelMember->getDataAPIMobilePulsa();
         $username   = $getDataAPI->username;
         $apiKey   = $getDataAPI->api_key;
-        $sign = md5($username.$apiKey.$getDataMaster->ppob_code);
+        $sign = md5($username . $apiKey . $getDataMaster->ppob_code);
         $array = array(
             'username' => $username,
             'buyer_sku_code' => $getDataMaster->buyer_code,
@@ -3543,28 +3661,29 @@ class MasterAdminController extends Controller {
             'ref_id' => $getDataMaster->ppob_code,
             'sign' => $sign,
         );
-        $url = $getDataAPI->master_url.'/v1/transaction';
+        $url = $getDataAPI->master_url . '/v1/transaction';
         $json = json_encode($array);
         $cek = $modelMember->getAPIurlCheck($url, $json);
         $arrayData = json_decode($cek, true);
         dd($arrayData);
     }
-    
-    public function getUpdateTransaction($id, $lihat){
+
+    public function getUpdateTransaction($id, $lihat)
+    {
         $dataUser = Auth::user();
         $onlyUser  = array(1);
-        if(!in_array($dataUser->user_type, $onlyUser)){
+        if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelMember = New Member;
+        $modelMember = new Member;
         $modelPin = new Pin;
         $getDataMaster = $modelPin->getStatusPPOBDetail($id);
         $getDataAPI = $modelMember->getDataAPIMobilePulsa();
         $username   = $getDataAPI->username;
         $apiKey   = $getDataAPI->api_key;
         $ref_id = $getDataMaster->ppob_code;
-        $sign = md5($username.$apiKey.$ref_id);
-        if($getDataMaster->type == 1){
+        $sign = md5($username . $apiKey . $ref_id);
+        if ($getDataMaster->type == 1) {
             $array = array(
                 'username' => $username,
                 'buyer_sku_code' => $getDataMaster->buyer_code,
@@ -3573,7 +3692,7 @@ class MasterAdminController extends Controller {
                 'sign' => $sign,
             );
         }
-        if($getDataMaster->type == 2){
+        if ($getDataMaster->type == 2) {
             $array = array(
                 'username' => $username,
                 'buyer_sku_code' => $getDataMaster->buyer_code,
@@ -3582,7 +3701,7 @@ class MasterAdminController extends Controller {
                 'sign' => $sign,
             );
         }
-        if($getDataMaster->type == 3){
+        if ($getDataMaster->type == 3) {
             $array = array(
                 'username' => $username,
                 'buyer_sku_code' => $getDataMaster->buyer_code,
@@ -3591,7 +3710,7 @@ class MasterAdminController extends Controller {
                 'sign' => $sign,
             );
         }
-        if($getDataMaster->type == 4){
+        if ($getDataMaster->type == 4) {
             $array = array(
                 'commands' => 'status-pasca',
                 'username' => $username,
@@ -3601,7 +3720,7 @@ class MasterAdminController extends Controller {
                 'sign' => $sign,
             );
         }
-        if($getDataMaster->type == 5){
+        if ($getDataMaster->type == 5) {
             $array = array(
                 'commands' => 'status-pasca',
                 'username' => $username,
@@ -3611,7 +3730,7 @@ class MasterAdminController extends Controller {
                 'sign' => $sign,
             );
         }
-        if($getDataMaster->type == 6){
+        if ($getDataMaster->type == 6) {
             $array = array(
                 'commands' => 'status-pasca',
                 'username' => $username,
@@ -3621,7 +3740,7 @@ class MasterAdminController extends Controller {
                 'sign' => $sign,
             );
         }
-        if($getDataMaster->type == 7){
+        if ($getDataMaster->type == 7) {
             $array = array(
                 'commands' => 'status-pasca',
                 'username' => $username,
@@ -3631,14 +3750,14 @@ class MasterAdminController extends Controller {
                 'sign' => $sign,
             );
         }
-        $url = $getDataAPI->master_url.'/v1/transaction';
+        $url = $getDataAPI->master_url . '/v1/transaction';
         $json = json_encode($array);
         $cek = $modelMember->getAPIurlCheck($url, $json);
         $arrayData = json_decode($cek, true);
-        if($lihat == 1){
+        if ($lihat == 1) {
             dd($arrayData);
         }
-        if($arrayData['data']['status'] == 'Sukses'){
+        if ($arrayData['data']['status'] == 'Sukses') {
             $dataUpdate1 = array(
                 'status' => 2,
                 'tuntas_at' => date('Y-m-d H:i:s'),
@@ -3646,20 +3765,20 @@ class MasterAdminController extends Controller {
                 'vendor_approve' => 2
             );
             $modelPin->getUpdatePPOB('id', $getDataMaster->id, $dataUpdate1);
-            $cekDuaKali = $modelPin->getJagaGaBolehDuaKali($getDataMaster->buyer_code.'-'.$ref_id);
-            if($cekDuaKali == null){
+            $cekDuaKali = $modelPin->getJagaGaBolehDuaKali($getDataMaster->buyer_code . '-' . $ref_id);
+            if ($cekDuaKali == null) {
                 $memberDeposit = array(
                     'user_id' => $getDataMaster->vendor_id,
                     'total_deposito' => $getDataMaster->harga_modal,
-                    'transaction_code' => $getDataMaster->buyer_code.'-'.$ref_id,
+                    'transaction_code' => $getDataMaster->buyer_code . '-' . $ref_id,
                     'deposito_status' => 1
                 );
                 $modelPin->getInsertMemberDeposit($memberDeposit);
             }
             dd('done. Transaksi sukses, update berhasil');
         }
-        
-        if($arrayData['data']['status'] == 'Pending'){
+
+        if ($arrayData['data']['status'] == 'Pending') {
             $dataUpdate = array(
                 'status' => 1,
                 'tuntas_at' => null,
@@ -3671,8 +3790,8 @@ class MasterAdminController extends Controller {
             $modelPin->getUpdatePPOB('id', $getDataMaster->id, $dataUpdate);
             dd('done. Transaksi pending, update berhasil');
         }
-        
-        if($arrayData['data']['status'] == 'Gagal'){
+
+        if ($arrayData['data']['status'] == 'Gagal') {
             $dataUpdate = array(
                 'status' => 3,
                 'deleted_at' => date('Y-m-d H:i:s'),
@@ -3681,14 +3800,11 @@ class MasterAdminController extends Controller {
                 'vendor_cek' => $cek
             );
             $modelPin->getUpdatePPOB('id', $getDataMaster->id, $dataUpdate);
-            $cekDepositGagal = $modelPin->getJagaGaBolehDuaKali($getDataMaster->buyer_code.'-'.$ref_id);
-            if($cekDepositGagal != null){
+            $cekDepositGagal = $modelPin->getJagaGaBolehDuaKali($getDataMaster->buyer_code . '-' . $ref_id);
+            if ($cekDepositGagal != null) {
                 $modelPin->getDeleteMemberDeposit($cekDepositGagal->id);
             }
             dd('done. Transaksi gagal, update berhasil');
         }
-
     }
-    
-
 }

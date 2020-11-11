@@ -2,11 +2,11 @@
 @section('content')
 
 <div class="wrapper">
-        
-    
+
+
         <!-- Page Content -->
         <div id="content">
-            
+
             <div class="bg-gradient-sm">
                 <nav class="navbar navbar-expand-lg navbar-light bg-transparent w-100">
                     <div class="container">
@@ -21,29 +21,43 @@
             </div>
             <div class="mt-min-10">
                 <div class="container">
-                    
+                    <div class="rounded-lg p-3 mb-3">
+                        <?php
+                            $saldo = $dataAll->total_bonus - $dataAll->total_wd - $dataAll->total_tunda - $dataAll->total_fee_admin - ($dataAll->total_wd_eidr + $dataAll->fee_tuntas_eidr + $dataAll->total_tunda_eidr + $dataAll->fee_tunda_eidr);
+                            if($saldo > -5000 && $saldo <= 0){
+                                $saldo = 0;
+                            }
+                        ?>
+                        <div class="rounded-lg shadow bg-white p-3">
+                            <p>Saldo Bonus Anda:</p>
+                            <h5 class="text-warning">Rp {{number_format($saldo, 0, ',', '.')}}</h5>
+                        </div>
+
+
+                    </div>
+
                     <div class="rounded-lg bg-white p-3 mb-3">
-                        <h6 class="mb-3">Ajukan withdraw anda disini</h6>
+                        <h6 class="mb-3 mt-2">Ajukan withdraw anda disini</h6>
                         @if ( Session::has('message') )
                             <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible" role="alert">
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">×</span>
                                 </button>
-                                {{  Session::get('message')    }} 
+                                {{  Session::get('message')    }}
                             </div>
                         @endif
-                        
+
                         <div class="row">
                             <div class="col-xl-8 col-xs-12">
                                 <fieldset class="form-group">
                                     <label for="input_jml">Jumlah (Rp.)</label>
-                                    <input type="text" class="form-control allownumericwithoutdecimal" id="input_jml" name="jml_wd" autocomplete="off" placeholder="Minimum Withdraw Rp. 20.000">
+                                    <input type="text" class="form-control allownumericwithoutdecimal" id="input_jml" name="jml_wd" autocomplete="off" placeholder="Minimum WD Rp20.000,-">
                                 </fieldset>
                             </div>
                             <div class="col-xl-4 col-xs-12">
                                 <fieldset class="form-group">
                                     <label>Admin Fee (Rp.)</label>
-                                    <input type="text" class="form-control" disabled="" value="6.500">
+                                    <input type="text" class="form-control" readonly value="6.500">
                                 </fieldset>
                             </div>
                         </div>
@@ -52,7 +66,7 @@
                                 <button type="submit" class="btn btn-success"  id="submitBtn" data-toggle="modal" data-target="#confirmSubmit" onClick="inputSubmit()">Submit</button>
                             </div>
                         </div>
-                        <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true" data-backdrop="false"> 
+                        <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true" data-backdrop="false">
                             <div class="modal-dialog" role="document" id="confirmDetail">
                             </div>
                         </div>
@@ -90,15 +104,15 @@
                 }
             });
         }
-        
+
         function confirmSubmit(){
             var dataInput = $("#form-add").serializeArray();
             $('#form-add').submit();
             $('#tutupModal').remove();
             $('#submit').remove();
         }
-        
-        $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {    
+
+        $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {
            $(this).val($(this).val().replace(/[^\d].+/, ""));
             if ((event.which < 48 || event.which > 57)) {
                 event.preventDefault();
