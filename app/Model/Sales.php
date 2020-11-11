@@ -1267,7 +1267,7 @@ class Sales extends Model
             . "union "
             . "select '2500' as sale_price, aa.ppob_date as sale_date "
             . "from ppob as aa "
-            . "where aa.vendor_id = $id "
+            . "where aa.user_id = $id "
             . "and aa.status = 2 "
             . "and aa.ppob_date < '$start_day' and aa.type > 2 "
             . "and aa.deleted_at is null) as sales "
