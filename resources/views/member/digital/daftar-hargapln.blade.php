@@ -62,11 +62,7 @@
                                             </thead>
                                             <tbody>
                                                 @foreach($daftarHarga as $row)
-
-
                                                 <tr>
-
-
                                                     <td>
                                                         <div class="pretty p-icon p-curve p-tada">
                                                             <input type="radio" name="harga" id="harga" value="{{$row['buyer_sku_code']}}__{{$row['price']}}__{{$row['brand']}}__{{$row['desc']}}__{{$row['real_price']}}">
@@ -184,15 +180,6 @@
             if ((event.which < 48 || event.which > 57)) {
                 event.preventDefault();
             }
-        });
-
-        $('#vendor_name').show();
-        $(".cod").click(function() {
-          $('#vendor_name').show();
-        });
-
-        $(".eidr").click(function() {
-          $('#vendor_name').hide();
         });
     </script>
 @stop

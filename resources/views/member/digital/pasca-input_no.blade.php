@@ -2,11 +2,11 @@
 @section('content')
 
 <div class="wrapper">
-        
-    
+
+
         <!-- Page Content -->
         <div id="content">
-            
+
             <div class="bg-gradient-sm">
                 <nav class="navbar navbar-expand-lg navbar-light bg-transparent w-100">
                     <div class="container">
@@ -28,7 +28,7 @@
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">×</span>
                                 </button>
-                                {{  Session::get('message')    }} 
+                                {{  Session::get('message')    }}
                             </div>
                         @endif
                         <form method="GET" action="/m/cek/tagihan/pascabayar" style="display: contents;">
@@ -46,6 +46,9 @@
                             if($type == 4){
                                 $nama = 'TELKOM PSTN';
                             }
+                            if($type == 5){
+                                $nama = 'PDAM';
+                            }
                             ?>
                             <div class="row">
                                 <div class="col-xl-12">
@@ -58,7 +61,7 @@
                             <div class="row">
                                 <div class="col-xl-12">
                                     <input type="hidden" name="type" value="{{$type}}">
-                                    <button type="submit" class="btn btn-success"  id="submitBtn">Submit</button>
+                                    <button type="submit" class="btn btn-success btn-lg btn-block"  id="submitBtn">Cek Tagihan</button>
                                 </div>
                             </div>
                         </form>

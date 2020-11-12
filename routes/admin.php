@@ -391,6 +391,7 @@ Route::prefix('/')->group(function () {
     Route::post('/m/tarik/deposit', 'Admin\MemberController@postTarikDeposit')->middleware('auth');
 
     //PPOB
+    Route::get('/m/list/emoney', 'Admin\MemberController@getListEmoney')->name('m_listEmoney')->middleware('auth');
     Route::get('/m/list/operator/{type}', 'Admin\MemberController@getListOperator')->name('m_listOperator')->middleware('auth');
     Route::get('/m/daftar-harga/{operator}', 'Admin\MemberController@getDaftarHargaOperator')->name('m_daftarHargaOperator')->middleware('auth');
     Route::get('/m/daftar-harga/data/{operator}', 'Admin\MemberController@getDaftarHargaDataOperator')->name('m_daftarHargaDataOperator')->middleware('auth');
@@ -411,6 +412,7 @@ Route::prefix('/')->group(function () {
     Route::get('/m/detail/pascabayar/{type}', 'Admin\MemberController@getPPOBPascabayar')->name('m_ppobPascabayar')->middleware('auth');
     Route::get('/m/cek/tagihan/pascabayar', 'Admin\MemberController@getPPOBPascabayarCekTagihan')->name('m_ppobPascabayarCekTagihan')->middleware('auth');
     Route::get('/m/list/hp-pascabayar', 'Admin\MemberController@getPPOBHPPascabayar')->name('m_ppobHPPascabayar')->middleware('auth');
+    Route::get('/m/list/pdam', 'Admin\MemberController@getPDAMPascabayar')->name('m_listPDAM')->middleware('auth');
     Route::get('/m/detail/hp-pascabayar/{sku}', 'Admin\MemberController@getDetailPPOBHpPascabayar')->name('m_detailppobHpPascabayar')->middleware('auth');
     Route::get('/m/list/tagihan-pascabayar', 'Admin\MemberController@getListTagihanPascabayar')->name('m_TagihanPascabayar')->middleware('auth');
     Route::get('/m/emoney/{operator}', 'Admin\MemberController@getEmoneyByOperator')->name('m_emoneyOperator')->middleware('auth');

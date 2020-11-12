@@ -3,9 +3,10 @@
 
 <div class="wrapper">
     <div id="content">
-        <input type="hidden" id="isTronWeb" value="0">
-        <input type="hidden" id="userTron" value="0" disabled>
-        <input type="hidden" id="txType" value="3" disabled>
+        <input type="hidden" id="isTronWeb" value="0" readonly>
+        <input type="hidden" id="userTron" value="0" readonly>
+        <input type="hidden" id="txType" value="3" readonly>
+        <input type="hidden" id="username" value="{{$dataUser->user_code}}" readonly>
         <div class="bg-gradient-sm">
             <nav class="navbar navbar-expand-lg navbar-light bg-transparent w-100">
                 <div class="container">
@@ -152,7 +153,7 @@
                                             <label for="radio{{$eidrno}}">
                                                 eIDR
                                                 <br>
-                                                <mark>TC1o89VSHMSPno2FE6SgoCsuy8i4mVSWge</mark>
+                                                <mark class="text-break">TC1o89VSHMSPno2FE6SgoCsuy8i4mVSWge</mark>
                                             </label>
                                         </div>
                                     </div>

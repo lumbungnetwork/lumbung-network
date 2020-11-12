@@ -54,6 +54,10 @@
                                     $nama = 'Telkom PTSN';
                                     $selling_price = $getData['selling_price'] + 1000;
                                 }
+                                if($type == 8){
+                                    $nama = 'PDAM';
+                                    $selling_price = $getData['selling_price'] + 900;
+                                }
                             ?>
 
                         <h4 class="mb-3">Pembayaran {{$nama}}</h4>
@@ -61,7 +65,7 @@
                         <div class="row">
                             <div class="col-xl-12 col-xs-12">
                                 <fieldset class="form-group">
-                                    <label>No Customer</label>
+                                    <label>No Pelanggan</label>
                                     <input type="text" class="form-control"  autocomplete="off" value="{{$getData['customer_no']}}">
                                 </fieldset>
                             </div>

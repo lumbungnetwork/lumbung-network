@@ -2,11 +2,11 @@
 @section('content')
 
 <div class="wrapper">
-        
-    
+
+
         <!-- Page Content -->
         <div id="content">
-            
+
             <div class="bg-gradient-sm">
                 <nav class="navbar navbar-expand-lg navbar-light bg-transparent w-100">
                     <div class="container">
@@ -19,7 +19,7 @@
                     </div>
                 </nav>
             </div>
-            
+
             <div class="mt-min-10">
                 <div class="container">
                     <div class="rounded-lg bg-white p-3 mb-3">
@@ -28,19 +28,29 @@
                                 <a href="/m/detail/pascabayar/2" class="text-decoration-none">
                                     <div class="rounded icon-ppob text-center">
                                         <div class="box-icon bg-green text-center">
-                                            <i class="mdi mdi-wifi icon-menu" style="color: #e5131d;"></i>
+                                            <i class="mdi mdi-flash icon-menu" style="color: #f5e12e;"></i>
                                         </div>
                                         <dd>PLN Pascabayar</dd>
                                     </div>
                                 </a>
                             </div>
                             <div class="col-6 mb-6">
-                                <a href="/m/emoney/1" class="text-decoration-none">
+                                <a href="/m/detail/pascabayar/4" class="text-decoration-none">
                                     <div class="rounded icon-ppob text-center">
                                         <div class="box-icon bg-green text-center">
-                                            <i class="mdi mdi-cellphone-arrow-down icon-menu" style="color: #4c2a86;"></i>
+                                            <i class="mdi mdi-wifi icon-menu" style="color: #db2c2c;"></i>
                                         </div>
-                                        <dd>OVO</dd>
+                                        <dd>Telkom</dd>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-6 mb-6">
+                                <a href="/m/list/hp-pascabayar" class="text-decoration-none">
+                                    <div class="rounded icon-ppob text-center">
+                                        <div class="box-icon bg-green text-center">
+                                            <i class="mdi mdi-cellphone-arrow-down icon-menu" style="color: #ac4937;"></i>
+                                        </div>
+                                        <dd>HP Pascabayar</dd>
                                     </div>
                                 </a>
                             </div>
@@ -48,7 +58,7 @@
                     </div>
                 </div>
             </div>
-            
+
             @include('layout.member.nav')
         </div>
         <div class="overlay"></div>

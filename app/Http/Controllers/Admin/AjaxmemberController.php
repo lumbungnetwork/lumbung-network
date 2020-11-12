@@ -1560,6 +1560,7 @@ class AjaxmemberController extends Controller
         $brand = $separate[2];
         $desc = $separate[3];
         $real_price = $separate[4];
+        $product_name = $separate[5];
         if ($buy_method == 1) {
             $getTransTarik = $modelTrans->getMyTotalTarikDeposit($dataVendor);
             $getTotalDeposit = $modelPin->getTotalDepositMember($dataVendor);
@@ -1598,7 +1599,7 @@ class AjaxmemberController extends Controller
             'vendor_id' => $vendor_id,
             'buy_method' => $buy_method,
             'harga_modal' => $real_price,
-            'message' => $desc
+            'message' => $product_name
         );
         $getVendor = $modelMember->getUsers('id', $vendor_id);
         $type = $request->type;
@@ -1695,7 +1696,10 @@ class AjaxmemberController extends Controller
             $typeName = 'Pembayaran HP Pascabayar';
         }
         if ($type == 7) {
-            $typeName = 'Pembayaran TELKOM PTSN';
+            $typeName = 'Pembayaran TELKOM PSTN';
+        }
+        if ($type == 8) {
+            $typeName = 'Pembayaran PDAM';
         }
         $getData = (object) array(
             'buyer_sku_code' => $buyer_sku_code,

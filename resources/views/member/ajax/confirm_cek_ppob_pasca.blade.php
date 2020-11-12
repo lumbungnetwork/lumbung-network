@@ -7,8 +7,8 @@
         <div class="row" id="loading" style="display:none;">
             <div class="col-md-12">
                 <div class="form-group">
-                    <h5 class="text-danger" style="display: block;text-align: center;">
-                        <div class="spinner-border" role="status">
+                    <h5 class="text-warning" style="display: block;text-align: center;">
+                        <div class="spinner-border m-5" role="status">
                             <span class="sr-only">Loading...</span>
                         </div>
                     </h5>
@@ -33,6 +33,10 @@
                 if($type == 7){
                     $textProductName = 'TELKOM PSTN'  ;
                     $typePPOB = 4;
+                }
+                if($type == 8){
+                    $textProductName = 'PDAM'  ;
+                    $typePPOB = 8;
                 }
 
             ?>
@@ -88,7 +92,7 @@
             <input type="hidden" name="harga_modal"  value="{{$data->harga_modal}}">
             <input type="hidden" name="message"  value="{{$data->message}}">
             <input type="hidden" name="ref_id"  value="{{$data->ref_id}}">
-        </form>    
+        </form>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary waves-effect" id="tutupModal" data-dismiss="modal">Tutup</button>
@@ -103,7 +107,7 @@
         <h5 class="modal-title" id="modalLabel">Konfirmasi Data</h5>
     </div>
     <div class="modal-body"  style="overflow-y: auto;max-height: 330px;">
-        <h5 class="text-danger">{{$message}}</h5> 
+        <h5 class="text-danger">{{$message}}</h5>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary waves-effect" id="tutupModal" data-dismiss="modal">Tutup</button>

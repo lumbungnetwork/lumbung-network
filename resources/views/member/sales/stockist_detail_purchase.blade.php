@@ -6,6 +6,7 @@
         <input type="hidden" id="isTronWeb" value="0">
         <input type="hidden" id="userTron" value="0" disabled>
         <input type="hidden" id="txType" value="1" disabled>
+        <input type="hidden" id="username" value="{{$dataUser->user_code}}" readonly>
         <div class="bg-gradient-sm">
             <nav class="navbar navbar-expand-lg navbar-light bg-transparent w-100">
                 <div class="container">

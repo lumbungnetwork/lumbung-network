@@ -3813,6 +3813,24 @@ class MemberController extends Controller
             ->with('dataUser', $dataUser);
     }
 
+    public function getListEmoney()
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_active == 0) {
+            return redirect()->route('mainDashboard');
+        }
+        return view('member.digital.list-emoney')
+            ->with('headerTitle', 'List Emoney')
+            ->with('dataUser', $dataUser);
+    }
+
     public function getDaftarHargaOperator($operator)
     {
         $dataUser = Auth::user();
@@ -4160,34 +4178,89 @@ class MemberController extends Controller
         $url = $getDataAPI->master_url . '/v1/price-list';
         $cek = $modelMember->getAPIurlCheck($url, $json);
         $arrayData = json_decode($cek, true);
-        //        dd($arrayData['data']);
-        //category => E-Money
-        //brand => 1 => OVO
+        $orderedArrayData = collect($arrayData['data'])->sortBy('price')->toArray();
+
+        $gopay = array();
+        $etoll = array();
         $ovo = array();
-        foreach ($arrayData['data'] as $row) {
+        $dana = array();
+        $linkaja = array();
+        $shopee = array();
+        foreach ($orderedArrayData as $row) {
             if ($row['category'] == 'E-Money') {
                 $priceAwal = $row['price'];
-                $pricePersen = $priceAwal + ($priceAwal * 4 / 100);
-                $priceRound = round($pricePersen, -2);
-                $cek3digit = substr($priceRound, -3);
+                $price3000 = $priceAwal + 1000;
+                $cek3digit = substr($price3000, -3);
                 $cek = 500 - $cek3digit;
                 if ($cek == 0) {
-                    $price = $priceRound;
+                    $price = $price3000;
                 }
                 if ($cek > 0 && $cek < 500) {
-                    $price = $priceRound + $cek;
+                    $price = $price3000 + $cek;
                 }
                 if ($cek == 500) {
-                    $price = $priceRound;
+                    $price = $price3000;
                 }
                 if ($cek < 0) {
-                    $price = $priceRound + (500 + $cek);
+                    $price = $price3000 + (500 + $cek);
+                }
+                $real_price = $price - 600;
+                if ($row['brand'] == 'GO PAY') {
+                    $gopay[] = array(
+                        'buyer_sku_code' => $row['buyer_sku_code'],
+                        'desc' => $row['desc'],
+                        'type' => $row['type'],
+                        'real_price' => $real_price,
+                        'price' => $price,
+                        'brand' => $row['brand'],
+                        'product_name' => $row['product_name']
+                    );
+                }
+                if ($row['brand'] == 'MANDIRI E-TOLL') {
+                    $etoll[] = array(
+                        'buyer_sku_code' => $row['buyer_sku_code'],
+                        'desc' => $row['desc'],
+                        'real_price' => $real_price,
+                        'price' => $price,
+                        'brand' => $row['brand'],
+                        'product_name' => $row['product_name']
+                    );
                 }
                 if ($row['brand'] == 'OVO') {
                     $ovo[] = array(
                         'buyer_sku_code' => $row['buyer_sku_code'],
                         'desc' => $row['desc'],
-                        'real_price' => ($row['price'] + ($price * 2 / 100)),
+                        'real_price' => $real_price,
+                        'price' => $price,
+                        'brand' => $row['brand'],
+                        'product_name' => $row['product_name']
+                    );
+                }
+                if ($row['brand'] == 'DANA') {
+                    $dana[] = array(
+                        'buyer_sku_code' => $row['buyer_sku_code'],
+                        'desc' => $row['desc'],
+                        'real_price' => $real_price,
+                        'price' => $price,
+                        'brand' => $row['brand'],
+                        'product_name' => $row['product_name']
+                    );
+                }
+                if ($row['brand'] == 'LinkAja') {
+                    $linkaja[] = array(
+                        'buyer_sku_code' => $row['buyer_sku_code'],
+                        'desc' => $row['desc'],
+                        'real_price' => $real_price,
+                        'price' => $price,
+                        'brand' => $row['brand'],
+                        'product_name' => $row['product_name']
+                    );
+                }
+                if ($row['brand'] == 'SHOPEE PAY') {
+                    $shopee[] = array(
+                        'buyer_sku_code' => $row['buyer_sku_code'],
+                        'desc' => $row['desc'],
+                        'real_price' => $real_price,
                         'price' => $price,
                         'brand' => $row['brand'],
                         'product_name' => $row['product_name']
@@ -4199,9 +4272,34 @@ class MemberController extends Controller
         $operatorName = null;
         $tipe = null;
         if ($operator == 1) {
+            $daftarHarga = collect($gopay)->sortBy('product_name')->toArray();
+            $operatorName = 'GO PAY';
+            $tipe = 21;
+        }
+        if ($operator == 2) {
+            $daftarHarga = $etoll;
+            $operatorName = 'MANDIRI E-TOLL';
+            $tipe = 22;
+        }
+        if ($operator == 3) {
             $daftarHarga = $ovo;
             $operatorName = 'OVO';
-            $tipe = 8;
+            $tipe = 23;
+        }
+        if ($operator == 4) {
+            $daftarHarga = $dana;
+            $operatorName = 'DANA';
+            $tipe = 24;
+        }
+        if ($operator == 5) {
+            $daftarHarga = $linkaja;
+            $operatorName = 'LinkAja';
+            $tipe = 25;
+        }
+        if ($operator == 6) {
+            $daftarHarga = $shopee;
+            $operatorName = 'SHOPEE PAY';
+            $tipe = 26;
         }
         return view('member.digital.harga-emoney')
             ->with('daftarHarga', $daftarHarga)
@@ -4418,6 +4516,28 @@ class MemberController extends Controller
                 ->with('messageclass', 'success');
         }
         if ($request->type == 2) {
+            //cek saldo vendor
+            $code = $modelPin->getCodePPOBRef($request->type);
+            $dataInsert = array(
+                'buy_metode' => $request->buy_method,
+                'user_id' => $dataUser->id,
+                'vendor_id' => $request->vendor_id,
+                'ppob_code' => $code,
+                'type' => $request->type,
+                'buyer_code' => $request->buyer_sku_code,
+                'product_name' => $request->no_hp,
+                'ppob_price' => $request->price,
+                'ppob_date' => date('Y-m-d'),
+                'harga_modal' => $request->harga_modal,
+                'message' => $request->message
+            );
+            $newPPOB = $modelPin->getInsertPPOB($dataInsert);
+            return redirect()->route('m_detailPPOBMemberTransaction', [$newPPOB->lastID])
+                ->with('message', 'Periksa kembali Order anda di bawah ini, lalu Konfirmasi')
+                ->with('messageclass', 'success');
+        }
+
+        if ($request->type >= 21 && $request->type < 27) {
             //cek saldo vendor
             $code = $modelPin->getCodePPOBRef($request->type);
             $dataInsert = array(
@@ -4811,7 +4931,7 @@ class MemberController extends Controller
         );
         $modelPin->getUpdatePPOB('id', $request->id, $dataUpdate);
         return redirect()->route('m_listPPOBTransaction')
-            ->with('message', 'konfirm pembelian berhasil, silakan hubungi vendor')
+            ->with('message', 'Konfirmasi pembelian berhasil, silakan hubungi vendor')
             ->with('messageclass', 'success');
     }
 
@@ -5247,7 +5367,7 @@ class MemberController extends Controller
         if ($dataUser->is_active == 0) {
             return redirect()->route('mainDashboard');
         }
-        if ($type > 4) {
+        if ($type > 6) {
             return redirect()->route('mainDashboard');
         }
         return view('member.digital.pasca-input_no')
@@ -5269,7 +5389,7 @@ class MemberController extends Controller
         if ($dataUser->is_active == 0) {
             return redirect()->route('mainDashboard');
         }
-        //1 BPJS. 2 PLN, 3 Hp Pasca, 4 TELKOM PSTN
+        //1 BPJS. 2 PLN, 3 Hp Pasca, 4 TELKOM PSTN, 5 PDAM
 
         if ($request->type == 1) {
             $buyer_sku_code = 'BPJS';
@@ -5286,6 +5406,10 @@ class MemberController extends Controller
         if ($request->type == 4) {
             $buyer_sku_code = 'TELKOM';
             $typePPOB = 7;
+        }
+        if ($request->type == 5) {
+            $buyer_sku_code = $request->buyer_sku_code;
+            $typePPOB = 8;
         }
         $modelMember = new Member;
         $modelPin = new Pin;
@@ -5359,6 +5483,51 @@ class MemberController extends Controller
         }
         return view('member.digital.daftar-hp_pascabayar')
             ->with('headerTitle', 'Daftar HP Pascabayar')
+            ->with('data', $data)
+            ->with('dataUser', $dataUser);
+    }
+
+    public function getPDAMPascabayar()
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_active == 0) {
+            return redirect()->route('mainDashboard');
+        }
+        $modelMember = new Member;
+        $getDataAPI = $modelMember->getDataAPIMobilePulsa();
+        $username   = $getDataAPI->username;
+        $apiKey   = $getDataAPI->api_key;
+        $sign = md5($username . $apiKey . 'pricelist');
+        $array = array(
+            'cmd' => 'pasca',
+            'username' => $username,
+            'sign' => $sign
+        );
+        $json = json_encode($array);
+        $url = $getDataAPI->master_url . '/v1/price-list';
+        $cek = $modelMember->getAPIurlCheck($url, $json);
+        $arrayData = json_decode($cek, true);
+        $data = array();
+        foreach ($arrayData['data'] as $row) {
+            if ($row['brand'] == 'PDAM') {
+                $data[] = array(
+                    'buyer_sku_code' => $row['buyer_sku_code'],
+                    'admin' => $row['admin'],
+                    'commission' => $row['commission'],
+                    'brand' => $row['brand'],
+                    'product_name' => $row['product_name']
+                );
+            }
+        }
+        return view('member.digital.list-pdam')
+            ->with('headerTitle', 'Daftar Pembayaran PDAM')
             ->with('data', $data)
             ->with('dataUser', $dataUser);
     }
