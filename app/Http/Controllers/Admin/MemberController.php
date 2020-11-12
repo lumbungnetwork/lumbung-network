@@ -4977,6 +4977,30 @@ class MemberController extends Controller
             ->with('dataUser', $dataUser);
     }
 
+    public function getDetailVendorPPOBnew($id)
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_active == 0) {
+            return redirect()->route('mainDashboard');
+        }
+        $modelPin = new Pin;
+        $modelMember = new Member;
+        $getDataMaster = $modelPin->getVendorPPOBDetail($id, $dataUser);
+        $getMember = $modelMember->getUsers('id', $getDataMaster->user_id);
+        return view('member.digital.m_detail_vppob_new')
+            ->with('headerTitle', 'Konfirmasi Transaksi')
+            ->with('getDataMaster', $getDataMaster)
+            ->with('getMember', $getMember)
+            ->with('dataUser', $dataUser);
+    }
+
     public function postVendorConfirmPPOB(Request $request)
     {
         $dataUser = Auth::user();
@@ -5088,7 +5112,7 @@ class MemberController extends Controller
                 'sign' => $sign,
             );
         }
-        if ($getDataMaster->type == 8) {
+        if ($getDataMaster->type >= 21 && $getDataMaster->type < 27) {
             $array = array(
                 'username' => $username,
                 'buyer_sku_code' => $getDataMaster->buyer_code,
@@ -5151,6 +5175,153 @@ class MemberController extends Controller
                 ->with('message', 'transaksi gagal')
                 ->with('messageclass', 'danger');
         }
+
+        return redirect()->route('m_listVendotPPOBTransactions')
+            ->with('message', 'tidak ada data')
+            ->with('messageclass', 'danger');
+    }
+
+    public function postVendorConfirmPPOBnew(Request $request)
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_active == 0) {
+            return redirect()->route('mainDashboard');
+        }
+        //loop with do-while
+        do {
+            $i = 0;
+            //deposit checking
+            $modelPin = new Pin;
+            $modelTrans = new Transaction;
+            $getDataMaster = $modelPin->getVendorPPOBDetail($request->ppob_id, $dataUser);
+            $getTransTarik = $modelTrans->getMyTotalTarikDeposit($dataUser);
+            $getTotalDeposit = $modelPin->getTotalDepositMember($dataUser);
+            $sum_deposit_masuk = 0;
+            $sum_deposit_keluar1 = 0;
+            $sum_deposit_keluar = 0;
+            if ($getTotalDeposit->sum_deposit_masuk != null) {
+                $sum_deposit_masuk = $getTotalDeposit->sum_deposit_masuk;
+            }
+            if ($getTotalDeposit->sum_deposit_keluar != null) {
+                $sum_deposit_keluar1 = $getTotalDeposit->sum_deposit_keluar;
+            }
+            if ($getTransTarik->deposit_keluar != null) {
+                $sum_deposit_keluar = $getTransTarik->deposit_keluar;
+            }
+            $totalDeposit = $sum_deposit_masuk - $sum_deposit_keluar - $sum_deposit_keluar1 - $getDataMaster->harga_modal;
+            if ($totalDeposit < 0) {
+                return redirect()->route('m_listVendotPPOBTransactions')
+                    ->with('message', 'tidak dapat dilanjutkan, deposit kurang')
+                    ->with('messageclass', 'danger');
+            }
+            $modelMember = new Member;
+            $getDataAPI = $modelMember->getDataAPIMobilePulsa();
+            $username   = $getDataAPI->username;
+            $apiKey   = $getDataAPI->api_key;
+            $ref_id = $getDataMaster->ppob_code;
+            $sign = md5($username . $apiKey . $ref_id);
+
+            //pulsa, data, pln prepaid
+            if ($getDataMaster->type >= 1 && $getDataMaster->type < 4) {
+                $array = array(
+                    'username' => $username,
+                    'buyer_sku_code' => $getDataMaster->buyer_code,
+                    'customer_no' => $getDataMaster->product_name,
+                    'ref_id' => $ref_id,
+                    'sign' => $sign,
+                );
+            }
+            //pasca
+            if ($getDataMaster->type >= 4 && $getDataMaster->type < 9) {
+                $array = array(
+                    'commands' => 'pay-pasca',
+                    'username' => $username,
+                    'buyer_sku_code' => $getDataMaster->buyer_code,
+                    'customer_no' => $getDataMaster->product_name,
+                    'ref_id' => $ref_id,
+                    'sign' => $sign,
+                );
+            }
+            //emoney
+            if ($getDataMaster->type >= 21 && $getDataMaster->type < 27) {
+                $array = array(
+                    'username' => $username,
+                    'buyer_sku_code' => $getDataMaster->buyer_code,
+                    'customer_no' => $getDataMaster->product_name,
+                    'ref_id' => $ref_id,
+                    'sign' => $sign,
+                );
+            }
+
+            $url = $getDataAPI->master_url . '/v1/transaction';
+            $json = json_encode($array);
+            sleep(3); //give it a break, brotha ;D
+            $cek = $modelMember->getAPIurlCheck($url, $json);
+            $arrayData = json_decode($cek, true);
+
+            $i++;
+            if ($i > 30) goto end;
+        } while ($arrayData['data']['status'] == 'Pending');
+
+        //deliver the bad news first
+        if ($arrayData['data']['status'] == 'Gagal') {
+            $dataUpdate = array(
+                'status' => 3,
+                'deleted_at' => date('Y-m-d H:i:s'),
+                'return_buy' => $cek,
+                'vendor_approve' => 3,
+                'vendor_cek' => $cek
+            );
+            $modelPin->getUpdatePPOB('id', $request->ppob_id, $dataUpdate);
+            return redirect()->route('m_listVendotPPOBTransactions')
+                ->with('message', 'Transaksi gagal')
+                ->with('messageclass', 'Danger');
+        }
+
+        //so the good news taste sweeter
+        if ($arrayData['data']['status'] == 'Sukses') {
+            $dataUpdate = array(
+                'status' => 2,
+                'tuntas_at' => date('Y-m-d H:i:s'),
+                'return_buy' => $cek,
+                'vendor_approve' => 2
+            );
+            $modelPin->getUpdatePPOB('id', $request->ppob_id, $dataUpdate);
+            $cekDuaKali = $modelPin->getJagaGaBolehDuaKali($getDataMaster->buyer_code . '-' . $ref_id);
+            if ($cekDuaKali == null) {
+                $memberDeposit = array(
+                    'user_id' => $dataUser->id,
+                    'total_deposito' => $request->harga_modal,
+                    'transaction_code' => $getDataMaster->buyer_code . '-' . $ref_id,
+                    'deposito_status' => 1
+                );
+                $modelPin->getInsertMemberDeposit($memberDeposit);
+            }
+            return redirect()->route('m_listVendotPPOBTransactions')
+                ->with('message', 'Transaksi Berhasil')
+                ->with('messageclass', 'success');
+        }
+
+        //get over it
+        end:
+        if ($arrayData['data']['status'] == 'Pending') {
+            $dataUpdate = array(
+                'vendor_cek' => $cek
+            );
+            $modelPin->getUpdatePPOB('id', $request->ppob_id, $dataUpdate);
+            return redirect()->route('m_listVendotPPOBTransactions')
+                ->with('message', 'Transaksi Pending, laporkan kepada Admin, dan ulang Konfirmasi kembali.')
+                ->with('messageclass', 'warning');
+        }
+
+
 
         return redirect()->route('m_listVendotPPOBTransactions')
             ->with('message', 'tidak ada data')
