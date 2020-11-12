@@ -2,11 +2,11 @@
 @section('content')
 
 <div class="wrapper">
-        
-    
+
+
         <!-- Page Content -->
         <div id="content">
-            
+
             <div class="bg-gradient-sm">
                 <nav class="navbar navbar-expand-lg navbar-light bg-transparent w-100">
                     <div class="container">
@@ -28,7 +28,7 @@
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">×</span>
                                 </button>
-                                {{  Session::get('message')    }} 
+                                {{  Session::get('message')    }}
                             </div>
                         @endif
                         <form method="GET" action="/m/cek/tagihan/pascabayar" style="display: contents;">
@@ -36,7 +36,7 @@
                             <div class="row">
                                 <div class="col-xl-12">
                                     <fieldset class="form-group">
-                                        <label for="customer_no">Masukan No HP {{$product_name}}</label>
+                                        <label for="customer_no">Masukan No {{$product_name}}</label>
                                         <input type="text" class="form-control" name="customer_no" id="customer_no" autocomplete="off">
                                     </fieldset>
                                 </div>
@@ -45,7 +45,7 @@
                                 <div class="col-xl-12">
                                     <input type="hidden" name="type" value="{{$type}}">
                                     <input type="hidden" name="buyer_sku_code" value="{{$buyer_sku_code}}">
-                                    <button type="submit" class="btn btn-success"  id="submitBtn">Submit</button>
+                                    <button type="submit" class="btn btn-lg btn-block btn-success"  id="submitBtn">Cek Tagihan</button>
                                 </div>
                             </div>
                         </form>

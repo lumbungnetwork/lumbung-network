@@ -85,7 +85,7 @@
                             </div>
                             <div class="col-xs-4 col-md-12 col-lg-12 col-xl-12">
                                 <fieldset class="form-group">
-                                    <label>Biaya</label>
+                                    <label>Tagihan</label>
                                     <input type="text" class="form-control" autocomplete="off" value="Rp. {{$selling_price}}">
                                 </fieldset>
                             </div>

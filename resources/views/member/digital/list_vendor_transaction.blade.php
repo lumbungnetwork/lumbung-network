@@ -81,7 +81,7 @@
                                                         $type = 'Paket Data';
                                                     }
                                                     if($row->type == 3){
-                                                        $type = 'PLN';
+                                                        $type = 'Token PLN';
                                                     }
 //                                                    if($row->type == 4){
 //                                                        $type = 'PLN Pascabayar';
@@ -98,8 +98,27 @@
                                                     if($row->type > 3 && $row->type < 8){
                                                         $type = $row->message;
                                                     }
+
                                                     if($row->type == 8){
+                                                        $type = 'PDAM';
+                                                    }
+                                                    if($row->type == 21){
+                                                        $type = 'GO PAY';
+                                                    }
+                                                    if($row->type == 22){
+                                                        $type = 'e-Toll';
+                                                    }
+                                                    if($row->type == 23){
                                                         $type = 'OVO';
+                                                    }
+                                                    if($row->type == 24){
+                                                        $type = 'DANA';
+                                                    }
+                                                    if($row->type == 25){
+                                                        $type = 'LinkAja';
+                                                    }
+                                                    if($row->type == 26){
+                                                        $type = 'Shopee Pay';
                                                     }
                                                 ?>
                                                 <tr>

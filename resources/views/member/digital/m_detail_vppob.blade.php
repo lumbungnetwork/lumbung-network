@@ -17,7 +17,7 @@
         </div>
         <div class="mt-min-10">
             <div class="container">
-                
+
                 <div class="rounded-lg bg-white p-3 mb-3">
                     <h6 class="mb-3">Keranjang Transaksi Member</h6>
                     @if ( Session::has('message') )
@@ -25,7 +25,7 @@
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">×</span>
                             </button>
-                            {{  Session::get('message')    }} 
+                            {{  Session::get('message')    }}
                         </div>
                     @endif
                 </div>
@@ -79,7 +79,7 @@
                                 </div>
                             </div>
                             @endif
-                            
+
                             <p class="card-text">Metode Pembayaran</p>
                             <div class="row" style="margin-bottom: 15px;">
                                 <div class="col-md-12">
@@ -116,13 +116,13 @@
                                                 &nbsp;
                                                 @endif
                                             @endif
-                                            <form method="POST" action="/m/confirm/vppob" style="display: contents;">
+                                            <form id="form-konfirmasi" method="POST" action="/m/confirm/vppob" style="display: contents;">
                                                 {{ csrf_field() }}
                                                 <input type="hidden" name="ppob_id" value="{{$getDataMaster->id}}">
                                                 <input type="hidden" name="harga_modal" value="{{$getDataMaster->harga_modal}}">
                                                 <button type="submit" class="btn btn-success" id="submitBtn">Konfirmasi</button>
                                             </form>
-                                            
+
                                         @endif
                                         @if($getDataMaster->status == 2)
                                             <a class="btn btn-dark" href="{{ URL::to('/') }}/m/list/vppob-transaction">Kembali</a>
@@ -138,6 +138,24 @@
                             </div>
                             <div class="modal fade" id="rejectSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true" data-backdrop="false">
                                 <div class="modal-dialog" role="document" id="rejectDetail">
+                                </div>
+                            </div>
+                            <div class="modal fade" id="loading-modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true" data-backdrop="false">
+                                <div class="modal-dialog" role="document" id="submitDetail">
+                                    <div class="modal-body"  style="overflow-y: auto;max-height: 330px;">
+                                        <div class="row" id="loading">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <h5 class="text-warning" style="display: block;text-align: center;">
+                                                        <div class="spinner-border m-7" role="status">
+                                                            <span class="sr-only">Loading...</span>
+                                                        </div>
+                                                        Sedang Mengkonfirmasi...
+                                                    </h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -160,7 +178,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/fonts/slick.woff">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
-    
+
 @stop
 
 @section('javascript')
@@ -169,6 +187,7 @@
     @if($getDataMaster->buy_metode == 1)
     @if($getDataMaster->status < 2)
     <script>
+
            function rejectSubmit(){
                  $.ajax({
                      type: "GET",
@@ -180,14 +199,10 @@
                  });
            }
 
-            function confirmSubmit(){
-                var dataInput = $("#form-add").serializeArray();
-                $('#form-add').submit();
-                $('#form-add').remove();
-                $('#loading').show();
-                $('#tutupModal').remove();
-                $('#submit').remove();
-            }
+            $("#form-konfirmasi").submit(function(e){
+                $('#loading-modal').modal('show');
+                return false;
+            });
     </script>
     @endif
     @endif

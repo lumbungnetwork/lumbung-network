@@ -2,11 +2,11 @@
 @section('content')
 
 <div class="wrapper">
-        
-    
+
+
         <!-- Page Content -->
         <div id="content">
-            
+
             <div class="bg-gradient-sm">
                 <nav class="navbar navbar-expand-lg navbar-light bg-transparent w-100">
                     <div class="container">
@@ -21,7 +21,7 @@
             </div>
             <div class="mt-min-10">
                 <div class="container">
-                    
+
                     <?php
                     /*
                     <div class="rounded-lg bg-white p-3 mb-3">
@@ -43,10 +43,10 @@
                             </div>
                         </div>
                     </div>
-                     * 
+                     *
                      */
                     ?>
-                    
+
                     <div class="rounded-lg bg-white p-3 mb-3">
                         <div class="row">
                             <div class="table-responsive">
@@ -55,13 +55,13 @@
                                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                             <span aria-hidden="true">×</span>
                                         </button>
-                                        {{  Session::get('message')    }} 
+                                        {{  Session::get('message')    }}
                                     </div>
                                 @endif
                                 <form class="login100-form validate-form m-b-20" method="get" action="/m/history/shoping">
                                     {{ csrf_field() }}
-                                    <div class="row">
-                                        <div class="col-xl-3 col-xs-12">
+                                    <div class="row p-4">
+                                        <div class="col-12">
                                             <fieldset>
                                                 <label>Search</label>
                                                 <select class="form-control" name="month" id="bank_name">
@@ -81,7 +81,7 @@
                                                 </select>
                                             </fieldset>
                                         </div>
-                                        <div class="col-xl-3 col-xs-12">
+                                        <div class="col-12">
                                             <fieldset>
                                                 <label>&nbsp;</label>
                                                 <select class="form-control" name="year" id="bank_name">
@@ -101,18 +101,14 @@
                                     </div>
                                 </form>
                                 <br><br>
-                                <h5 class="header-title m-t-0">Periode <b>{{$getDate->textMonth}}</b></h5>
+                                <div class="text-center"><h5 class="header-title m-t-0">Periode <b>{{$getDate->textMonth}}</b></h5></div>
                                 <table id="datatable" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
                                             <th>No.</th>
                                             <th>Tanggal</th>
                                             <th>Vendor</th>
-                                            <th>Nominal (Rp.)</th>
-                                            <th>Status</th>
-                                            <th>Pembayaran</th>
-                                            <th>Type</th>
-                                            <th>###</th>
+                                            <th>Produk</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -153,9 +149,9 @@
                                                         $type = 'PLN';
                                                     }
                                                     if($row->type == 8){
-                                                        $type = 'OVO';
+                                                        $type = 'PDAM';
                                                     }
-                                                    
+
 //                                                    if($row->type == 4){
 //                                                        $type = 'PLN Pascabayar';
 //                                                    }
@@ -168,9 +164,27 @@
 //                                                    if($row->type == 7){
 //                                                        $type = 'BPJS';
 //                                                    }
-                                                    
+
                                                     if($row->type > 3 && $row->type < 8){
                                                         $type = $row->message;
+                                                    }
+                                                    if($row->type == 21){
+                                                        $type = 'GO PAY';
+                                                    }
+                                                    if($row->type == 22){
+                                                        $type = 'e-Toll';
+                                                    }
+                                                    if($row->type == 23){
+                                                        $type = 'OVO';
+                                                    }
+                                                    if($row->type == 24){
+                                                        $type = 'DANA';
+                                                    }
+                                                    if($row->type == 25){
+                                                        $type = 'LinkAja';
+                                                    }
+                                                    if($row->type == 26){
+                                                        $type = 'Shopee Pay';
                                                     }
                                                     $siVendor = 'Admin';
                                                     if($row->vendor_id != 1){
@@ -179,24 +193,16 @@
                                                 ?>
                                                 <tr>
                                                     <td>{{$no}}</td>
-                                                    <td>{{date('d-m-Y', strtotime($row->ppob_date))}}</td>
-                                                    <td>{{$siVendor}}</td>
-                                                    <td>{{number_format($row->sale_price, 0, ',', ',')}}</td>
-                                                    <td>
-                                                            <span class="label label-{{$label}}">{{$status}}</span>
-                                                    </td>
-                                                    <td>
-                                                            <span class="label label-info">{{$buy}}</span>
-                                                    </td>
-                                                    <td>{{$type}}</td>
-                                                    <td>
-                                                        <a class="label label-primary" href="{{ URL::to('/') }}/m/detail/buy-ppob/{{$row->id}}">detail</a>
+                                                    <td>{{date('d-m-Y', strtotime($row->ppob_date))}}<br><span class="label label-{{$label}}">{{$status}}</span></td>
+                                                    <td>{{$siVendor}}<br><a class="label label-primary" href="{{ URL::to('/') }}/m/detail/buy-ppob/{{$row->id}}">detail</a>
                                                         @if($row->type > 2 && $row->type < 8)
                                                         @if($row->status == 2)
                                                         <a class="label label-primary" href="{{ URL::to('/') }}/m/invoice/ppob/{{$row->id}}">pdf</a>
                                                         @endif
-                                                        @endif
-                                                    </td>
+                                                        @endif</td>
+                                                    <td>{{$row->message}}</td>
+
+
                                                 </tr>
                                             @endforeach
                                         @endif
@@ -205,7 +211,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
             @include('layout.member.nav')
@@ -228,23 +234,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
     <script src="{{ asset('asset_new/js/sidebar.js') }}"></script>
     <script type="text/javascript">
-    $(document).ready(function(){
-        $("#get_id").keyup(function(){
-            $.ajax({
-                type: "GET",
-                url: "{{ URL::to('/') }}/m/cek/usercode-stockist" + "?name=" + $(this).val() ,
-                success: function(data){
-                    $("#get_id-box").show();
-                    $("#get_id-box").html(data);
-                }
+    $(document).ready(function() {
+            $('#datatable').DataTable({
+                lengthChange: false
             });
-        });
-    });
-    function selectUsername(val) {
-        var valNew = val.split("____");
-        $("#get_id").val(valNew[1]);
-        $("#id_get_id").val(valNew[0]);
-        $("#get_id-box").hide();
-    }
+
+    } );
 </script>
 @stop

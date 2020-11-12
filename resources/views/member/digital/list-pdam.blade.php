@@ -25,7 +25,7 @@
                         <div class="row mt-3">
                             @foreach($data as $row)
                             <div class="col-6 mb-6 p-3">
-                                <a href="/m/detail/hp-pascabayar/{{$row['buyer_sku_code']}}?product_name={{$row['product_name']}}" class="text-decoration-none">
+                                <a href="/m/detail/pdam/{{$row['buyer_sku_code']}}?product_name={{$row['product_name']}}" class="text-decoration-none">
                                     <div class="rounded icon-ppob text-center">
                                         <div class="box-icon bg-green text-center">
                                             <i class="mdi mdi-water icon-menu" style="color: #357db8;"></i>

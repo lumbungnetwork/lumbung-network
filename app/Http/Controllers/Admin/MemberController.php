@@ -4493,6 +4493,8 @@ class MemberController extends Controller
         if ($dataUser->is_active == 0) {
             return redirect()->route('mainDashboard');
         }
+        //4 = TELKOM, 5 = PLN Pasca, 6 = HP Pasca, 7 = BPJS, 8 = PDAM
+
         $modelPin = new Pin;
         if ($request->type == 1) {
             //cek saldo vendor
@@ -5538,7 +5540,7 @@ class MemberController extends Controller
         if ($dataUser->is_active == 0) {
             return redirect()->route('mainDashboard');
         }
-        if ($type > 6) {
+        if ($type > 9) {
             return redirect()->route('mainDashboard');
         }
         return view('member.digital.pasca-input_no')
@@ -5719,6 +5721,27 @@ class MemberController extends Controller
         return view('member.digital.hp-pasca-input_no')
             ->with('headerTitle', 'Cek Tagihan')
             ->with('type', 3)
+            ->with('buyer_sku_code', $sku)
+            ->with('product_name', $request->product_name)
+            ->with('dataUser', $dataUser);
+    }
+
+    public function getDetailPDAMPascabayar($sku, Request $request)
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_active == 0) {
+            return redirect()->route('mainDashboard');
+        }
+        return view('member.digital.hp-pasca-input_no')
+            ->with('headerTitle', 'Cek Tagihan')
+            ->with('type', 5)
             ->with('buyer_sku_code', $sku)
             ->with('product_name', $request->product_name)
             ->with('dataUser', $dataUser);
