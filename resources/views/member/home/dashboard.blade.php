@@ -285,22 +285,22 @@
                             </div>
                             <div class="row">
                                 <div class="col-3 px-2 mb-3">
-                                    <a href="/m/list/hp-pascabayar" class="text-decoration-none">
+                                    <a href="/m/list/pdam" class="text-decoration-none">
                                         <div class="icon-ppob p-1 text-center">
                                             <div class="box-icon bg-green text-center">
-                                                <i class="mdi mdi-cellphone-arrow-down icon-menu"></i>
+                                                <i class="mdi mdi-water icon-menu"></i>
                                             </div>
-                                            <dd>Pasca Bayar</dd>
+                                            <dd>PDAM</dd>
                                         </div>
                                     </a>
                                 </div>
                                 <div class="col-3 px-2 mb-3">
-                                    <a href="/m/detail/pascabayar/4" class="text-decoration-none">
+                                    <a href="/m/list/emoney" class="text-decoration-none">
                                         <div class="rounded icon-ppob p-1 text-center">
                                             <div class="box-icon bg-green text-center">
-                                                <i class="mdi mdi-wifi icon-menu"></i>
+                                                <i class="mdi mdi-credit-card-scan-outline icon-menu"></i>
                                             </div>
-                                            <dd>Telkom</dd>
+                                            <dd>e-Money</dd>
                                         </div>
                                     </a>
                                 </div>
