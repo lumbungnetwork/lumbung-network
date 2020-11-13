@@ -58,14 +58,14 @@
                                         {{  Session::get('message')    }}
                                     </div>
                                 @endif
-                                <form class="login100-form validate-form m-b-20" method="get" action="/m/history/shoping">
+                                <form class="login100-form validate-form m-b-20" method="get" action="/m/list/buy-ppob">
                                     {{ csrf_field() }}
-                                    <div class="row p-4">
-                                        <div class="col-12">
+                                    <div class="row px-3">
+                                        <div class="col-6">
                                             <fieldset>
                                                 <label>Search</label>
-                                                <select class="form-control" name="month" id="bank_name">
-                                                    <option value="none">- Pilih Bulan -</option>
+                                                <select class="form-control" name="month">
+                                                    <option value="none">- Bulan -</option>
                                                     <option value="01">Januari</option>
                                                     <option value="02">Februari</option>
                                                     <option value="03">Maret</option>
@@ -81,21 +81,24 @@
                                                 </select>
                                             </fieldset>
                                         </div>
-                                        <div class="col-12">
+                                        <div class="col-6">
                                             <fieldset>
                                                 <label>&nbsp;</label>
-                                                <select class="form-control" name="year" id="bank_name">
-                                                    <option value="none">- Pilih Tahun -</option>
+                                                <select class="form-control" name="year">
+                                                    <option value="none">- Tahun -</option>
                                                     <option value="2019">2019</option>
                                                     <option value="2020">2020</option>
                                                     <option value="2021">2021</option>
+                                                    <option value="2022">2022</option>
+                                                    <option value="2023">2023</option>
+                                                    <option value="2024">2024</option>
                                                 </select>
                                             </fieldset>
                                         </div>
-                                        <div class="col-xl-1  col-xs-12">
+                                        <div class="col-12">
                                             <fieldset>
                                                 <label>&nbsp;</label>
-                                                <button type="submit" class="form-control btn btn-success">Cari</button>
+                                                <button type="submit" class="form-control btn btn-success">Cari Data</button>
                                             </fieldset>
                                         </div>
                                     </div>
@@ -228,10 +231,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/fonts/slick.woff">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
 @stop
 
 @section('javascript')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
+    <script src="//cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
     <script src="{{ asset('asset_new/js/sidebar.js') }}"></script>
     <script type="text/javascript">
     $(document).ready(function() {
