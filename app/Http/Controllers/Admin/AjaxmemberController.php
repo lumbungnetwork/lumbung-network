@@ -1590,19 +1590,35 @@ class AjaxmemberController extends Controller
             }
         }
 
-        $modelMember = new Member;
-        $getData = (object) array(
-            'buyer_sku_code' => $buyer_sku_code,
-            'price' => $price,
-            'brand' => $brand,
-            'no_hp' => $no_hp,
-            'vendor_id' => $vendor_id,
-            'buy_method' => $buy_method,
-            'harga_modal' => $real_price,
-            'message' => $product_name
-        );
-        $getVendor = $modelMember->getUsers('id', $vendor_id);
         $type = $request->type;
+
+        $modelMember = new Member;
+        if ($type >= 21 && $type < 27) {
+            $getData = (object) array(
+                'buyer_sku_code' => $buyer_sku_code,
+                'price' => $price,
+                'brand' => $brand,
+                'no_hp' => $no_hp,
+                'vendor_id' => $vendor_id,
+                'buy_method' => $buy_method,
+                'harga_modal' => $real_price,
+                'message' => $product_name
+            );
+        } else {
+            $getData = (object) array(
+                'buyer_sku_code' => $buyer_sku_code,
+                'price' => $price,
+                'brand' => $brand,
+                'no_hp' => $no_hp,
+                'vendor_id' => $vendor_id,
+                'buy_method' => $buy_method,
+                'harga_modal' => $real_price,
+                'message' => $desc
+            );
+        }
+
+        $getVendor = $modelMember->getUsers('id', $vendor_id);
+
         return view('member.ajax.confirm_cek_ppob')
             ->with('data', $getData)
             ->with('type', $type)
