@@ -2,8 +2,9 @@
     <div class="modal-header">
         <h5 class="modal-title" id="modalLabel">Reject Pembayaran</h5>
     </div>
+    <form id="form-add" method="POST" action="/m/reject/vppob">
     <div class="modal-body"  style="overflow-y: auto;max-height: 330px;">
-        <form id="form-add" method="POST" action="/m/reject/vppob">
+
             {{ csrf_field() }}
             <div class="row">
                 <div class="col-md-12">
@@ -21,10 +22,11 @@
                 </div>
             </div>
             <input type="hidden" name="ppob_id"  value="{{$id_ppob}}">
-        </form>    
+
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Tutup</button>
-        <button type="button" class="btn btn-primary waves-effect waves-light" id="submit" onclick="confirmSubmit()">Submit</button>
+        <button type="submit" class="btn btn-primary waves-effect waves-light" id="submit">Batalkan</button>
     </div>
+    </form>
 </div>
