@@ -116,7 +116,7 @@
                                                 &nbsp;
                                                 @endif
                                             @endif
-                                            <form id="form-konfirmasi" method="POST" action="/m/confirm/vppob" style="display: contents;">
+                                            <form id="form-konfirmasi" method="POST" action="/m/confirm/vppob-new" style="display: contents;">
                                                 {{ csrf_field() }}
                                                 <input type="hidden" name="ppob_id" value="{{$getDataMaster->id}}">
                                                 <input type="hidden" name="harga_modal" value="{{$getDataMaster->harga_modal}}">
@@ -156,6 +156,7 @@
                                                             </div>
                                                             Sedang Mengkonfirmasi...
                                                         </h5>
+                                                        <h6 class="text-danger">Jangan tutup halaman ini!</h6>
                                                     </div>
                                                 </div>
                                             </div>

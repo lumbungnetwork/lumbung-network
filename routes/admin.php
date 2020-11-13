@@ -421,7 +421,6 @@ Route::prefix('/')->group(function () {
     //vendor
     Route::get('/m/list/vppob-transaction', 'Admin\MemberController@getListVendorPPOBTransactions')->name('m_listVendotPPOBTransactions')->middleware('auth');
     Route::get('/m/detail/vppob/{id}', 'Admin\MemberController@getDetailVendorPPOB')->middleware('auth');
-    Route::get('/m/detail/vppob-new/{id}', 'Admin\MemberController@getDetailVendorPPOBnew')->middleware('auth');
     Route::post('/m/confirm/vppob', 'Admin\MemberController@postVendorConfirmPPOB')->middleware('auth');
     Route::post('/m/confirm/vppob-new', 'Admin\MemberController@postVendorConfirmPPOBnew')->middleware('auth');
     Route::post('/m/reject/vppob', 'Admin\MemberController@postVendorRejectPPOB')->middleware('auth');

@@ -3981,9 +3981,11 @@ class MemberController extends Controller
             $arrayHarga = $smart;
         }
         $daftarHarga = collect($arrayHarga)->sortBy('price')->toArray();
+        $daftarHargaCall = null; //Placeholder Paket Telepon & SMS
         return view('member.digital.daftar-harga-operator')
             ->with('headerTitle', 'Isi Pulsa')
             ->with('daftarHarga', $daftarHarga)
+            ->with('daftarHargaCall', $daftarHargaCall)
             ->with('dataUser', $dataUser);
     }
 
