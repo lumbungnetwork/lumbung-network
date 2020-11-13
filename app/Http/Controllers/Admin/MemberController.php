@@ -4015,7 +4015,7 @@ class MemberController extends Controller
         $url = $getDataAPI->master_url . '/v1/price-list';
         $cek = $modelMember->getAPIurlCheck($url, $json);
         $arrayData = json_decode($cek, true);
-        //        dd($arrayData['data']);
+        // dd($arrayData['data']);
         //category => pulsa
         //brand =>
         //1 => TELKOMSEL
@@ -4030,6 +4030,13 @@ class MemberController extends Controller
         $axis = array();
         $tri = array();
         $smart = array();
+
+        $tcall = array();
+        $icall = array();
+        $xlcall = array();
+        $tricall = array();
+
+        //Paket Data
         foreach ($arrayData['data'] as $row) {
             if ($row['category'] == 'Data') {
                 if ($row['price'] <= 40000) {
@@ -4115,24 +4122,96 @@ class MemberController extends Controller
                     );
                 }
             }
+
+            //Paket SMS dan Telepon
+            if ($row['category'] == 'Paket SMS & Telpon') {
+                if ($row['price'] <= 40000) {
+                    $priceAwal = $row['price'] + 50;
+                }
+                if ($row['price'] > 40000) {
+                    $priceAwal = $row['price'] + 70;
+                }
+                $pricePersen = $priceAwal + ($priceAwal * 4 / 100); //jadi 2 dari 4
+                $priceRound = round($pricePersen, -2);
+                $cek3digit = substr($priceRound, -3);
+                $cek = 500 - $cek3digit;
+                if ($cek == 0) {
+                    $price = $priceRound;
+                }
+                if ($cek > 0 && $cek < 500) {
+                    $price = $priceRound + $cek;
+                }
+                if ($cek == 500) {
+                    $price = $priceRound;
+                }
+                if ($cek < 0) {
+                    $price = $priceRound + (500 + $cek);
+                }
+                if ($row['brand'] == 'TELKOMSEL') {
+                    $tcall[] = array(
+                        'buyer_sku_code' => $row['buyer_sku_code'],
+                        'desc' => $row['desc'],
+                        'real_price' => ($row['price'] + ($price * 2 / 100)),
+                        'price' => $price,
+                        'brand' => $row['brand'],
+                        'product_name' => $row['product_name']
+                    );
+                }
+                if ($row['brand'] == 'INDOSAT') {
+                    $icall[] = array(
+                        'buyer_sku_code' => $row['buyer_sku_code'],
+                        'desc' => $row['desc'],
+                        'real_price' => ($row['price'] + ($price * 2 / 100)),
+                        'price' => $price,
+                        'brand' => $row['brand'],
+                        'product_name' => $row['product_name']
+                    );
+                }
+                if ($row['brand'] == 'XL') {
+                    $xlcall[] = array(
+                        'buyer_sku_code' => $row['buyer_sku_code'],
+                        'desc' => $row['desc'],
+                        'real_price' => ($row['price'] + ($price * 2 / 100)),
+                        'price' => $price,
+                        'brand' => $row['brand'],
+                        'product_name' => $row['product_name']
+                    );
+                }
+                if ($row['brand'] == 'TRI') {
+                    $tricall[] = array(
+                        'buyer_sku_code' => $row['buyer_sku_code'],
+                        'desc' => $row['desc'],
+                        'real_price' => ($row['price'] + ($price * 2 / 100)),
+                        'price' => $price,
+                        'brand' => $row['brand'],
+                        'product_name' => $row['product_name']
+                    );
+                }
+            }
         }
         $arrayHarga = null;
+        $arrayHargaCall = null;
         $daftarHarga = null;
+        $daftarHargaCall = null;
 
         if ($operator == 1) {
             $arrayHarga = $telkomsel;
+            $arrayHargaCall = $tcall;
         }
         if ($operator == 2) {
             $arrayHarga = $indosat;
+            $arrayHargaCall = $icall;
         }
         if ($operator == 3) {
             $arrayHarga = $xl;
+            $arrayHargaCall = $xlcall;
         }
         if ($operator == 4) {
             $arrayHarga = $axis;
         }
         if ($operator == 5) {
             $arrayHarga = $tri;
+            $arrayHargaCall = $tricall;
         }
         if ($operator == 6) {
             $arrayHarga = $smart;
@@ -4143,10 +4222,12 @@ class MemberController extends Controller
                 ->with('messageclass', 'danger');
         }
         $daftarHarga = collect($arrayHarga)->sortBy('price')->toArray();
+        $daftarHargaCall = collect($arrayHargaCall)->sortBy('price')->toArray();
 
         return view('member.digital.daftar-harga-operator')
             ->with('headerTitle', 'Isi Paket Data')
             ->with('daftarHarga', $daftarHarga)
+            ->with('daftarHargaCall', $daftarHargaCall)
             ->with('dataUser', $dataUser);
     }
 

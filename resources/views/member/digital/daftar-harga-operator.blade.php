@@ -83,6 +83,46 @@
                         </div>
                         @endif
 
+                        @if($daftarHargaCall != null)
+                        <div class="rounded-lg bg-white p-3 mb-3">
+                            <div class="row">
+                                <div class="col-xs-12 col-md-12 col-lg-12 col-xl-12">
+                                    <h6>Paket Telepon dan SMS</h6>
+                                    <div class="card-box table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Produk</th>
+                                                    <th>Harga</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($daftarHargaCall as $row)
+
+
+                                                <tr>
+
+
+                                                    <td>
+                                                        <div class="pretty p-icon p-curve p-tada">
+                                                            <input type="radio" name="harga" id="harga" value="{{$row['buyer_sku_code']}}__{{$row['price']}}__{{$row['brand']}}__{{$row['desc']}}__{{$row['real_price']}}__{{$row['product_name']}}">
+                                                            <div class="state p-primary-o">
+                                                                <i class="icon mdi mdi-check"></i>
+                                                                <label>{{$row['product_name']}}</label>
+                                                            </div>
+                                                        </div>
+                                                        </td>
+                                                    <td>{{number_format($row['price'], 0, ',', ',')}}</td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+
                         <div class="rounded-lg bg-white p-3 mb-3">
                             <div class="row">
                                 <div class="col-xl-12 col-xs-12" id="vendor_name">
