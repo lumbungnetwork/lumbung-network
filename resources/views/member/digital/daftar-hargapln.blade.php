@@ -65,7 +65,7 @@
                                                 <tr>
                                                     <td>
                                                         <div class="pretty p-icon p-curve p-tada">
-                                                            <input type="radio" name="harga" id="harga" value="{{$row['buyer_sku_code']}}__{{$row['price']}}__{{$row['brand']}}__{{$row['desc']}}__{{$row['real_price']}}">
+                                                            <input type="radio" name="harga" id="harga" value="{{$row['buyer_sku_code']}}__{{$row['price']}}__{{$row['brand']}}__{{$row['desc']}}__{{$row['real_price']}}__{{$row['product_name']}}">
                                                             <div class="state p-primary-o">
                                                                 <i class="icon mdi mdi-check"></i>
                                                                 <label>{{$row['product_name']}}</label>
