@@ -142,16 +142,21 @@
                             </div>
                             <div class="modal fade" id="loading-modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true" data-backdrop="false">
                                 <div class="modal-dialog" role="document" id="submitDetail">
-                                    <div class="modal-body"  style="overflow-y: auto;max-height: 330px;">
-                                        <div class="row" id="loading">
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <h5 class="text-warning" style="display: block;text-align: center;">
-                                                        <div class="spinner-border m-7" role="status">
-                                                            <span class="sr-only">Loading...</span>
-                                                        </div>
-                                                        Sedang Mengkonfirmasi...
-                                                    </h5>
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="modalLabel">Proses Konfirmasi Transaksi</h5>
+                                        </div>
+                                        <div class="modal-body"  style="overflow-y: auto;max-height: 330px;">
+                                            <div class="row" id="loading">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <h5 class="text-warning" style="display: block;text-align: center;">
+                                                            <div class="spinner-border m-7" role="status">
+                                                                <span class="sr-only">Loading...</span>
+                                                            </div>
+                                                            Sedang Mengkonfirmasi...
+                                                        </h5>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

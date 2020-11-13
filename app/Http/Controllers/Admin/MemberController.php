@@ -5114,6 +5114,16 @@ class MemberController extends Controller
                 'sign' => $sign,
             );
         }
+        if ($getDataMaster->type == 8) {
+            $array = array(
+                'commands' => 'pay-pasca',
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $ref_id,
+                'sign' => $sign,
+            );
+        }
         if ($getDataMaster->type >= 21 && $getDataMaster->type < 27) {
             $array = array(
                 'username' => $username,
@@ -5126,6 +5136,8 @@ class MemberController extends Controller
 
         $url = $getDataAPI->master_url . '/v1/transaction';
         $json = json_encode($array);
+        $cek = $modelMember->getAPIurlCheck($url, $json);
+        sleep(6);
         $cek = $modelMember->getAPIurlCheck($url, $json);
         $arrayData = json_decode($cek, true);
         //        $modelSettingTrans = New Transaction;
@@ -5270,6 +5282,11 @@ class MemberController extends Controller
 
             $i++;
             if ($i > 30) goto end;
+            if ($arrayData == null) {
+                return redirect()->back()
+                    ->with('message', 'Ada gangguan koneksi, periksa jaringan internet anda, lalu ulangi kembali.')
+                    ->with('messageclass', 'warning');
+            }
         } while ($arrayData['data']['status'] == 'Pending');
 
         //deliver the bad news first
