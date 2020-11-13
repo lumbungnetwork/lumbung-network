@@ -207,7 +207,7 @@ class BonusmemberController extends Controller
         $daysleft = round((($timeleft / 24) / 60) / 60);
         if ($daysleft <= 0) {
             return redirect()->route('m_newPin')
-                ->with('message', 'masa Keanggotaan anda telah kadaluarsa, silakan beli pin untuk Resubscribe')
+                ->with('message', 'Keanggotaan anda telah EXPIRED, silakan beli pin untuk Resubscribe')
                 ->with('messageclass', 'danger');
         }
         $modelBonus = new Bonus;
@@ -419,7 +419,7 @@ class BonusmemberController extends Controller
         $daysleft = round((($timeleft / 24) / 60) / 60);
         if ($daysleft <= 0) {
             return redirect()->route('m_newPin')
-                ->with('message', 'masa Keanggotaan anda telah kadaluarsa, silakan beli pin untuk Resubscribe')
+                ->with('message', 'masa Keanggotaan anda telah EXPIRED, silakan beli pin untuk Resubscribe')
                 ->with('messageclass', 'danger');
         }
         $modelBonus = new Bonus;
@@ -491,6 +491,19 @@ class BonusmemberController extends Controller
         if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
+        $active_at = $dataUser->active_at;
+        if ($dataUser->pin_activate_at != null) {
+            $active_at = $dataUser->pin_activate_at;
+        }
+        $future =  strtotime('+1 years', strtotime($active_at));
+        $timefromdb = time();
+        $timeleft = $future - $timefromdb;
+        $daysleft = round((($timeleft / 24) / 60) / 60);
+        if ($daysleft <= 0) {
+            return redirect()->route('m_newPin')
+                ->with('message', 'Keanggotaan anda telah EXPIRED, silakan beli pin untuk Resubscribe')
+                ->with('messageclass', 'danger');
+        }
         $modelSales = new Sales;
         $modelBonus = new Bonus;
         //        $getData = $modelSales->getMemberMasterSalesMonthlyTerbaru($dataUser->id);
@@ -534,6 +547,19 @@ class BonusmemberController extends Controller
         $onlyUser  = array(10);
         if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
+        }
+        $active_at = $dataUser->active_at;
+        if ($dataUser->pin_activate_at != null) {
+            $active_at = $dataUser->pin_activate_at;
+        }
+        $future =  strtotime('+1 years', strtotime($active_at));
+        $timefromdb = time();
+        $timeleft = $future - $timefromdb;
+        $daysleft = round((($timeleft / 24) / 60) / 60);
+        if ($daysleft <= 0) {
+            return redirect()->route('m_newPin')
+                ->with('message', 'Keanggotaan anda telah EXPIRED, silakan beli pin untuk Resubscribe')
+                ->with('messageclass', 'danger');
         }
         $modelSales = new Sales;
         $modelBonus = new Bonus;
@@ -827,6 +853,19 @@ class BonusmemberController extends Controller
         $onlyUser  = array(10);
         if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
+        }
+        $active_at = $dataUser->active_at;
+        if ($dataUser->pin_activate_at != null) {
+            $active_at = $dataUser->pin_activate_at;
+        }
+        $future =  strtotime('+1 years', strtotime($active_at));
+        $timefromdb = time();
+        $timeleft = $future - $timefromdb;
+        $daysleft = round((($timeleft / 24) / 60) / 60);
+        if ($daysleft <= 0) {
+            return redirect()->route('m_newPin')
+                ->with('message', 'Keanggotaan anda telah EXPIRED, silakan beli pin untuk Resubscribe')
+                ->with('messageclass', 'danger');
         }
         $modelSales = new Sales;
         $modelBonus = new Bonus;
