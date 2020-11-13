@@ -1593,7 +1593,7 @@ class AjaxmemberController extends Controller
         $type = $request->type;
 
         $modelMember = new Member;
-        if ($type >= 21 && $type < 27) {
+        if ($type >= 21 && $type < 29) {
             $getData = (object) array(
                 'buyer_sku_code' => $buyer_sku_code,
                 'price' => $price,

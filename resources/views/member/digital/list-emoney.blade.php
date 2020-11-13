@@ -87,6 +87,27 @@
                             </div>
 
                         </div>
+                        <div class="d-flex flex-row justify-content-around">
+                            <div class="card p-3 m-3 media-body flex-column justify-content-center">
+                                <a href="/m/emoney/7" class="text-decoration-none">
+
+                                    <div class="text-center ">
+                                        <img src="/asset_new/img/emoney/brizzi.jpg" width="60px" alt="logo-brizzi">
+                                        <dd>BRIZZI</dd>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="card p-3 m-3 media-body flex-column justify-content-center">
+                                <a href="/m/emoney/8" class="text-decoration-none">
+
+                                    <div class="text-center">
+                                        <img src="/asset_new/img/emoney/tapcash.jpg" width="60px" alt="logo-tapcash">
+                                        <dd>Tapcash</dd>
+                                    </div>
+                                </a>
+                            </div>
+
+                        </div>
 
                     </div>
                 </div>

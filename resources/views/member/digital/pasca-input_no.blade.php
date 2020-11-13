@@ -49,6 +49,12 @@
                             if($type == 5){
                                 $nama = 'PDAM';
                             }
+                            if($type == 6){
+                                $nama = 'Gas Negara';
+                            }
+                            if($type == 7){
+                                $nama = 'Multifinance';
+                            }
                             ?>
                             <div class="row">
                                 <div class="col-xl-12">

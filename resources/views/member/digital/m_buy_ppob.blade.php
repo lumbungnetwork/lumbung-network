@@ -63,21 +63,23 @@
                 <div class="rounded-lg bg-white p-3 mb-3">
                     <div class="row">
                         <div class="col-sm-12 rounded-lg shadow-sm p-2">
-                            @if($getDataMaster->status == 2)
-                                <a class="label label-primary" href="/m/update/status-ppob/{{$getDataMaster->id}}">cek status klik disini</a>
-                            @endif
+
                             @if($getDataMaster->return_buy != null)
                             <?php
                                 $arrayData = json_decode($getDataMaster->return_buy, true);
                                 $data = $arrayData['data'];
                             ?>
-                            <p class="card-text">Pesan</p>
+                            <p class="card-text">Data Pesanan:</p>
 
                             <div class="row" style="margin-bottom: 15px;">
                                 <div class="col-md-12">
-                                    <b>Kode</b>
+                                    @if ($data['type'] == 3)
+                                    <b>Token PLN</b>
                                     <br>
-                                    {{$data['sn']}}<br>
+                                    <span>{{$data['sn']}}<span><br>
+                                    @endif
+                                    <b>Status:</b><span>{{$data['status']}}</span>
+                                    <b>Keterangan:</b><span>{{$data['message']}}</span>
                                 </div>
                             </div>
                             @endif

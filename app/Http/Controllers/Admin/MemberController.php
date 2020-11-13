@@ -4267,6 +4267,8 @@ class MemberController extends Controller
         $dana = array();
         $linkaja = array();
         $shopee = array();
+        $brizzi = array();
+        $bnitc = array();
         foreach ($orderedArrayData as $row) {
             if ($row['category'] == 'E-Money') {
                 $priceAwal = $row['price'];
@@ -4347,6 +4349,26 @@ class MemberController extends Controller
                         'product_name' => $row['product_name']
                     );
                 }
+                if ($row['brand'] == 'BRI BRIZZI') {
+                    $brizzi[] = array(
+                        'buyer_sku_code' => $row['buyer_sku_code'],
+                        'desc' => $row['desc'],
+                        'real_price' => $real_price,
+                        'price' => $price,
+                        'brand' => $row['brand'],
+                        'product_name' => $row['product_name']
+                    );
+                }
+                if ($row['brand'] == 'TAPCASH BNI') {
+                    $bnitc[] = array(
+                        'buyer_sku_code' => $row['buyer_sku_code'],
+                        'desc' => $row['desc'],
+                        'real_price' => $real_price,
+                        'price' => $price,
+                        'brand' => $row['brand'],
+                        'product_name' => $row['product_name']
+                    );
+                }
             }
         }
         $daftarHarga = null;
@@ -4381,6 +4403,16 @@ class MemberController extends Controller
             $daftarHarga = $shopee;
             $operatorName = 'SHOPEE PAY';
             $tipe = 26;
+        }
+        if ($operator == 7) {
+            $daftarHarga = $brizzi;
+            $operatorName = 'BRI BRIZZI';
+            $tipe = 27;
+        }
+        if ($operator == 8) {
+            $daftarHarga = $bnitc;
+            $operatorName = 'TAPCASH BNI';
+            $tipe = 28;
         }
         return view('member.digital.harga-emoney')
             ->with('daftarHarga', $daftarHarga)
@@ -4620,7 +4652,7 @@ class MemberController extends Controller
                 ->with('messageclass', 'success');
         }
 
-        if ($request->type >= 21 && $request->type < 27) {
+        if ($request->type >= 21 && $request->type < 29) {
             //cek saldo vendor
             $code = $modelPin->getCodePPOBRef($request->type);
             $dataInsert = array(
