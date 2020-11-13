@@ -1,7 +1,6 @@
-
 let txType = $('#txType').val();
 let userId = $('#username').val();
-var toAddress, userAddress, memo;
+var toAddress, userAddress;
 let sendAmount = 0;
 
 
@@ -54,29 +53,25 @@ function shortId(a,b){return a.substr(0,b)+"..."+a.substr(a.length-b,a.length)}
 $("#eidr-pay-button").click(async function () {
     if (txType == 1) {
         toAddress = "TZHYx9bVa4vQz8VpVvZtjwMb4AHqkUChiQ";
-        sendAmount = $("#royalti").val().trim() * 100;
-        // memo = "Pembayaran Royalti Lumbung Network (" + userId + ")";
+        sendAmount = $("#royalti").val() * 100;
     } else if (txType == 2) {
         toAddress = "TDtvo2jCoRftmRgzjkwMxekh8jqWLdDHNB";
         sendAmount = $('#nominal').val() * 100;
-        // memo = "Pembayaran PIN Aktivasi Lumbung Network (" + userId + ")";
-    } else {
+    } else if (txType == 3) {
         toAddress = "TC1o89VSHMSPno2FE6SgoCsuy8i4mVSWge";
         sendAmount = $('#deposit').val() * 100;
-        // memo = "Deposit Saldo Vendor Lumbung Network (" + userId + ")";
     }
 
-    var tronweb = window.tronWeb;
     try {
-        var tx = await tronweb.transactionBuilder.sendAsset(
+        var tx = await tronWeb.transactionBuilder.sendAsset(
         toAddress,
         sendAmount,
         "1002652",
         userAddress,
         );
-        // var txWithNote = await tronWeb.transactionBuilder.addUpdateData(tx, memo, 'utf8');
-        var signedTx = await tronweb.trx.sign(tx);
-        var broastTx = await tronweb.trx.sendRawTransaction(signedTx);
+
+        var signedTx = await tronWeb.trx.sign(tx);
+        var broastTx = await tronWeb.trx.sendRawTransaction(signedTx);
         if (broastTx.result) {
             alert("Transaksi Berhasil, Silakan Klik Konfirmasi!");
             $('#hash').val(broastTx.txid);

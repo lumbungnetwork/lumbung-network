@@ -203,9 +203,9 @@
                  });
            }
 
-            $("#form-konfirmasi").submit(function(e){
+            $("#form-konfirmasi").submit(function(){
                 $('#loading-modal').modal('show');
-                return false;
+
             });
     </script>
     @endif
