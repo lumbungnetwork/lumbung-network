@@ -1509,7 +1509,7 @@ class AjaxmemberController extends Controller
     {
         //cek validasi lg
         //cek vendor punya deposit ga
-        $dataUser = Auth::user();
+        $type = $request->type;
         $no_hp = $request->no_hp;
         if ($no_hp == null) {
             return view('member.ajax.confirm_cek_ppob')
@@ -1517,6 +1517,16 @@ class AjaxmemberController extends Controller
                 ->with('message', 'Anda belum memasukan nomor HP')
                 ->with('dataVendor', null);
         }
+
+        if ($type < 3) {
+            if (substr($no_hp, 0, 2) != '08') {
+                return view('member.ajax.confirm_cek_ppob')
+                    ->with('data', null)
+                    ->with('message', 'No HP harus berawalan 08...')
+                    ->with('dataVendor', null);
+            }
+        }
+
         $buy_method = $request->type_pay;
         if ($buy_method == 'undefined') {
             return view('member.ajax.confirm_cek_ppob')
@@ -1589,8 +1599,6 @@ class AjaxmemberController extends Controller
                     ->with('dataVendor', null);
             }
         }
-
-        $type = $request->type;
 
         $modelMember = new Member;
         if ($type >= 21 && $type < 29) {
@@ -1716,6 +1724,12 @@ class AjaxmemberController extends Controller
         }
         if ($type == 8) {
             $typeName = 'Pembayaran PDAM';
+        }
+        if ($type == 9) {
+            $typeName = 'Gas Negara';
+        }
+        if ($type == 10) {
+            $typeName = 'Multifinance';
         }
         $getData = (object) array(
             'buyer_sku_code' => $buyer_sku_code,
