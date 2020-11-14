@@ -5349,7 +5349,12 @@ class MemberController extends Controller
                 'vendor_cek' => $cek
             );
             $modelPin->getUpdatePPOB('id', $request->ppob_id, $dataUpdate);
-            return redirect()->route('m_listVendotPPOBTransactions')
+            if ($arrayData['data']['message'] != null) {
+                return redirect()->route('m_listVendotPPOBTransactions')
+                    ->with('message', $arrayData['data']['message'])
+                    ->with('messageclass', 'Danger');
+            }
+            return redirect()->back()
                 ->with('message', 'Transaksi gagal')
                 ->with('messageclass', 'Danger');
         }
@@ -5373,7 +5378,7 @@ class MemberController extends Controller
                 );
                 $modelPin->getInsertMemberDeposit($memberDeposit);
             }
-            return redirect()->route('m_listVendotPPOBTransactions')
+            return redirect()->back()
                 ->with('message', 'Transaksi Berhasil')
                 ->with('messageclass', 'success');
         }
@@ -5385,7 +5390,7 @@ class MemberController extends Controller
                 'vendor_cek' => $cek
             );
             $modelPin->getUpdatePPOB('id', $request->ppob_id, $dataUpdate);
-            return redirect()->route('m_listVendotPPOBTransactions')
+            return redirect()->back()
                 ->with('message', 'Transaksi Pending, laporkan kepada Admin, dan ulang Konfirmasi kembali.')
                 ->with('messageclass', 'warning');
         }
