@@ -5350,7 +5350,7 @@ class MemberController extends Controller
             );
             $modelPin->getUpdatePPOB('id', $request->ppob_id, $dataUpdate);
             if ($arrayData['data']['message'] != null) {
-                return redirect()->route('m_listVendotPPOBTransactions')
+                return redirect()->back()
                     ->with('message', $arrayData['data']['message'])
                     ->with('messageclass', 'Danger');
             }
