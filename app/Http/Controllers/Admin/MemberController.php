@@ -4608,31 +4608,10 @@ class MemberController extends Controller
         if ($dataUser->is_active == 0) {
             return redirect()->route('mainDashboard');
         }
-        //4 = TELKOM, 5 = PLN Pasca, 6 = HP Pasca, 7 = BPJS, 8 = PDAM
+        //4 = TELKOM, 5 = PLN Pasca, 6 = HP Pasca, 7 = BPJS, 8 = PDAM, 9 = PGN, 10 = Multifinance
 
         $modelPin = new Pin;
-        if ($request->type == 1) {
-            //cek saldo vendor
-            $code = $modelPin->getCodePPOBRef($request->type);
-            $dataInsert = array(
-                'buy_metode' => $request->buy_method,
-                'user_id' => $dataUser->id,
-                'vendor_id' => $request->vendor_id,
-                'ppob_code' => $code,
-                'type' => $request->type,
-                'buyer_code' => $request->buyer_sku_code,
-                'product_name' => $request->no_hp,
-                'ppob_price' => $request->price,
-                'ppob_date' => date('Y-m-d'),
-                'harga_modal' => $request->harga_modal,
-                'message' => $request->message
-            );
-            $newPPOB = $modelPin->getInsertPPOB($dataInsert);
-            return redirect()->route('m_detailPPOBMemberTransaction', [$newPPOB->lastID])
-                ->with('message', 'Periksa kembali Order anda di bawah ini, lalu Konfirmasi')
-                ->with('messageclass', 'success');
-        }
-        if ($request->type == 2) {
+        if ($request->type >= 1 && $request->type < 4) {
             //cek saldo vendor
             $code = $modelPin->getCodePPOBRef($request->type);
             $dataInsert = array(
@@ -4676,29 +4655,7 @@ class MemberController extends Controller
                 ->with('messageclass', 'success');
         }
 
-        if ($request->type == 3) {
-            //cek saldo vendor
-            $code = $modelPin->getCodePPOBRef($request->type);
-            $dataInsert = array(
-                'buy_metode' => $request->buy_method,
-                'user_id' => $dataUser->id,
-                'vendor_id' => $request->vendor_id,
-                'ppob_code' => $code,
-                'type' => $request->type,
-                'buyer_code' => $request->buyer_sku_code,
-                'product_name' => $request->no_hp,
-                'ppob_price' => $request->price,
-                'ppob_date' => date('Y-m-d'),
-                'harga_modal' => $request->harga_modal,
-                'message' => $request->message
-            );
-            $newPPOB = $modelPin->getInsertPPOB($dataInsert);
-            return redirect()->route('m_detailPPOBMemberTransaction', [$newPPOB->lastID])
-                ->with('message', 'Periksa kembali Order anda di bawah ini, lalu Konfirmasi')
-                ->with('messageclass', 'success');
-        }
-
-        if ($request->type == 4) {
+        if ($request->type == 4 || $request->type == 6 || $request->type == 8 || $request->type == 9) {
             //cek saldo vendor
             $dataInsert = array(
                 'buy_metode' => $request->buy_method,
@@ -4740,27 +4697,6 @@ class MemberController extends Controller
                 ->with('messageclass', 'success');
         }
 
-        if ($request->type == 6) {
-            //cek saldo vendor
-            $dataInsert = array(
-                'buy_metode' => $request->buy_method,
-                'user_id' => $dataUser->id,
-                'vendor_id' => $request->vendor_id,
-                'ppob_code' => $request->ref_id,
-                'type' => $request->type,
-                'buyer_code' => $request->buyer_sku_code,
-                'product_name' => $request->no_hp,
-                'ppob_price' => $request->price,
-                'ppob_date' => date('Y-m-d'),
-                'harga_modal' => $request->harga_modal,
-                'message' => $request->message
-            );
-            $newPPOB = $modelPin->getInsertPPOB($dataInsert);
-            return redirect()->route('m_detailPPOBMemberTransaction', [$newPPOB->lastID])
-                ->with('message', 'Periksa kembali Order anda di bawah ini, lalu Konfirmasi')
-                ->with('messageclass', 'success');
-        }
-
         if ($request->type == 7) {
             //cek saldo vendor
             $dataInsert = array(
@@ -4782,7 +4718,7 @@ class MemberController extends Controller
                 ->with('messageclass', 'success');
         }
 
-        if ($request->type == 8) {
+        if ($request->type == 10) {
             //cek saldo vendor
             $dataInsert = array(
                 'buy_metode' => $request->buy_method,
@@ -4794,7 +4730,7 @@ class MemberController extends Controller
                 'product_name' => $request->no_hp,
                 'ppob_price' => $request->price,
                 'ppob_date' => date('Y-m-d'),
-                'harga_modal' => $request->harga_modal,
+                'harga_modal' => ($request->harga_modal + 2600),
                 'message' => $request->message
             );
             $newPPOB = $modelPin->getInsertPPOB($dataInsert);
@@ -5028,7 +4964,6 @@ class MemberController extends Controller
             return redirect()->route('mainDashboard');
         }
         $modelPin = new Pin;
-        $modelMember = new Member;
         $getDataMaster = $modelPin->getMemberPembayaranPPOB($request->id, $dataUser);
         if ($getDataMaster == null) {
             return redirect()->route('mainDashboard');
@@ -5368,7 +5303,7 @@ class MemberController extends Controller
                 );
             }
             //pasca
-            if ($getDataMaster->type >= 4 && $getDataMaster->type < 9) {
+            if ($getDataMaster->type >= 4 && $getDataMaster->type < 11) {
                 $array = array(
                     'commands' => 'pay-pasca',
                     'username' => $username,
@@ -5694,7 +5629,7 @@ class MemberController extends Controller
         if ($dataUser->is_active == 0) {
             return redirect()->route('mainDashboard');
         }
-        //1 BPJS. 2 PLN, 3 Hp Pasca, 4 TELKOM PSTN, 5 PDAM
+        //1 BPJS. 2 PLN, 3 Hp Pasca, 4 TELKOM PSTN, 5 PDAM, 6 Gas Negara, 7 Multifinance
 
         if ($request->type == 1) {
             $buyer_sku_code = 'BPJS';
@@ -5716,6 +5651,15 @@ class MemberController extends Controller
             $buyer_sku_code = $request->buyer_sku_code;
             $typePPOB = 8;
         }
+        if ($request->type == 6) {
+            $buyer_sku_code = 'PGN';
+            $typePPOB = 9;
+        }
+        if ($request->type == 7) {
+            $buyer_sku_code = $request->buyer_sku_code;
+            $typePPOB = 10;
+        }
+
         $modelMember = new Member;
         $modelPin = new Pin;
         $getDataAPI = $modelMember->getDataAPIMobilePulsa();
@@ -5736,8 +5680,8 @@ class MemberController extends Controller
         $cek = $modelMember->getAPIurlCheck($url, $json);
         $getData = json_decode($cek, true);
         if ($getData == null) {
-            return redirect()->route('mainDashboard')
-                ->with('message', 'data tidak ditemukan')
+            return redirect()->back()
+                ->with('message', 'Tidak ada tagihan di nomor ini.')
                 ->with('messageclass', 'danger');
         }
         return view('member.digital.pasca-cek_tagihan')
@@ -5788,6 +5732,51 @@ class MemberController extends Controller
         }
         return view('member.digital.daftar-hp_pascabayar')
             ->with('headerTitle', 'Daftar HP Pascabayar')
+            ->with('data', $data)
+            ->with('dataUser', $dataUser);
+    }
+
+    public function getPPOBMultifinance()
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_active == 0) {
+            return redirect()->route('mainDashboard');
+        }
+        $modelMember = new Member;
+        $getDataAPI = $modelMember->getDataAPIMobilePulsa();
+        $username   = $getDataAPI->username;
+        $apiKey   = $getDataAPI->api_key;
+        $sign = md5($username . $apiKey . 'pricelist');
+        $array = array(
+            'cmd' => 'pasca',
+            'username' => $username,
+            'sign' => $sign
+        );
+        $json = json_encode($array);
+        $url = $getDataAPI->master_url . '/v1/price-list';
+        $cek = $modelMember->getAPIurlCheck($url, $json);
+        $arrayData = json_decode($cek, true);
+        $data = array();
+        foreach ($arrayData['data'] as $row) {
+            if ($row['brand'] == 'MULTIFINANCE') {
+                $data[] = array(
+                    'buyer_sku_code' => $row['buyer_sku_code'],
+                    'admin' => $row['admin'],
+                    'commission' => $row['commission'],
+                    'brand' => $row['brand'],
+                    'product_name' => $row['product_name']
+                );
+            }
+        }
+        return view('member.digital.daftar-multifinance')
+            ->with('headerTitle', 'Daftar Multifinance')
             ->with('data', $data)
             ->with('dataUser', $dataUser);
     }
@@ -5853,6 +5842,27 @@ class MemberController extends Controller
         return view('member.digital.hp-pasca-input_no')
             ->with('headerTitle', 'Cek Tagihan')
             ->with('type', 3)
+            ->with('buyer_sku_code', $sku)
+            ->with('product_name', $request->product_name)
+            ->with('dataUser', $dataUser);
+    }
+
+    public function getDetailPPOBMultifinance($sku, Request $request)
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_active == 0) {
+            return redirect()->route('mainDashboard');
+        }
+        return view('member.digital.hp-pasca-input_no')
+            ->with('headerTitle', 'Cek Tagihan')
+            ->with('type', 7)
             ->with('buyer_sku_code', $sku)
             ->with('product_name', $request->product_name)
             ->with('dataUser', $dataUser);

@@ -75,7 +75,7 @@
                                 <div class="col-md-12">
                                     {{$getDataMaster->message}}
                                             <br>
-                                            ID Pel: {{$getDataMaster->product_name}}
+                                            No Pel: {{$getDataMaster->product_name}}
                                             @if($getDataMaster->type > 3 && $getDataMaster->type < 21)
                                             <br>
                                             a/n: {{$return_buy['data']['customer_name']}}
@@ -131,6 +131,12 @@
                                             Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan']}}
                                             <br>
                                             Jumlah Peserta: {{$return_buy['data']['desc']['jumlah_peserta']}}
+                                            @endif
+
+                                            {{-- Pulsa & Data --}}
+                                            @if ($getDataMaster->type >= 1 && $getDataMaster->type < 3)
+                                            <br>
+                                            <b>SN:</b> {{$return_buy['data']['sn']}}
                                             @endif
                                 </div>
                             </div>

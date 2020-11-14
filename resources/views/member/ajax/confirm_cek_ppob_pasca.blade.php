@@ -38,6 +38,14 @@
                     $textProductName = 'PDAM'  ;
                     $typePPOB = 8;
                 }
+                if($type == 9){
+                    $textProductName = 'Gas Negara'  ;
+                    $typePPOB = 9;
+                }
+                if($type == 10){
+                    $textProductName = 'Multifinance'  ;
+                    $typePPOB = 10;
+                }
 
             ?>
             <div class="row">

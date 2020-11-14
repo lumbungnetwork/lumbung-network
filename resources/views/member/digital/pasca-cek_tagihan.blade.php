@@ -58,6 +58,14 @@
                                     $nama = 'PDAM';
                                     $selling_price = $getData['selling_price'] + 900;
                                 }
+                                if($type == 9){
+                                    $nama = 'PGN';
+                                    $selling_price = $getData['selling_price'] + 800;
+                                }
+                                if($type == 10){
+                                    $nama = 'Multifinance';
+                                    $selling_price = $getData['selling_price'] + 5000;
+                                }
                             ?>
 
                         <h4 class="mb-3">Pembayaran {{$nama}}</h4>

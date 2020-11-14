@@ -45,12 +45,32 @@
                                 </a>
                             </div>
                             <div class="col-6 mb-6">
+                                <a href="/m/detail/pascabayar/6" class="text-decoration-none">
+                                    <div class="rounded icon-ppob text-center">
+                                        <div class="box-icon bg-green text-center">
+                                            <i class="mdi mdi-fire icon-menu" style="color: #2590e7;"></i>
+                                        </div>
+                                        <dd>Gas Negara</dd>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-6 mb-6">
                                 <a href="/m/list/hp-pascabayar" class="text-decoration-none">
                                     <div class="rounded icon-ppob text-center">
                                         <div class="box-icon bg-green text-center">
                                             <i class="mdi mdi-cellphone-arrow-down icon-menu" style="color: #ac4937;"></i>
                                         </div>
                                         <dd>HP Pascabayar</dd>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-6 mb-6">
+                                <a href="/m/list/multifinance" class="text-decoration-none">
+                                    <div class="rounded icon-ppob text-center">
+                                        <div class="box-icon bg-green text-center">
+                                            <i class="mdi mdi-bank-outline icon-menu" style="color: #f0d458;"></i>
+                                        </div>
+                                        <dd>Multifinance</dd>
                                     </div>
                                 </a>
                             </div>

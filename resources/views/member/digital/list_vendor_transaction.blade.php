@@ -95,12 +95,8 @@
 //                                                    if($row->type == 7){
 //                                                        $type = 'BPJS';
 //                                                    }
-                                                    if($row->type > 3 && $row->type < 8){
+                                                    if($row->type > 3 && $row->type < 11){
                                                         $type = $row->message;
-                                                    }
-
-                                                    if($row->type == 8){
-                                                        $type = 'PDAM';
                                                     }
                                                     if($row->type == 21){
                                                         $type = 'GO PAY';
