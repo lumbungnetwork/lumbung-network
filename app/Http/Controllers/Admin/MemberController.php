@@ -5352,11 +5352,11 @@ class MemberController extends Controller
             if ($arrayData['data']['message'] != null) {
                 return redirect()->back()
                     ->with('message', $arrayData['data']['message'])
-                    ->with('messageclass', 'Danger');
+                    ->with('messageclass', 'danger');
             }
             return redirect()->back()
                 ->with('message', 'Transaksi gagal')
-                ->with('messageclass', 'Danger');
+                ->with('messageclass', 'danger');
         }
 
         //so the good news taste sweeter
@@ -5391,7 +5391,7 @@ class MemberController extends Controller
             );
             $modelPin->getUpdatePPOB('id', $request->ppob_id, $dataUpdate);
             return redirect()->back()
-                ->with('message', 'Transaksi Pending, laporkan kepada Admin, dan ulang Konfirmasi kembali.')
+                ->with('message', 'Transaksi sedang Pending, silakan tekan tombol Konfirmasi lagi.')
                 ->with('messageclass', 'warning');
         }
 

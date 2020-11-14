@@ -129,6 +129,9 @@
                                         @endif
                                         @if($getDataMaster->status == 2)
                                             <a class="btn btn-dark" href="{{ URL::to('/') }}/m/list/vppob-transaction">Kembali</a>
+                                            @if($getDataMaster->type >= 3 && $getDataMaster->type < 11)
+                                            <a class="btn btn-warning" href="{{ URL::to('/') }}/m/vinvoice/ppob/{{$getDataMaster->id}}">Cetak Struk Transaksi</a>
+                                            @endif
                                         @endif
                                         @if($getDataMaster->status == 3)
                                             <a class="btn btn-dark" href="{{ URL::to('/') }}/m/list/vppob-transaction">Kembali</a>
@@ -159,7 +162,7 @@
                                                             </div>
                                                             Sedang Mengkonfirmasi...
                                                         </h5>
-                                                        <h6 class="text-danger">Jangan tutup halaman ini!</h6>
+                                                        <h6 class="text-danger my-3" style="text-align: center;">Jangan tutup halaman ini!</h6>
                                                     </div>
                                                 </div>
                                             </div>
