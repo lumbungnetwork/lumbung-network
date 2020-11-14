@@ -127,7 +127,7 @@
                                                     <td>{{$row->user_code}}<br><a class="badge badge-primary" href="{{ URL::to('/') }}/m/detail/vppob/{{$row->id}}">Detail</a>
                                                         @if($row->status == 2)
                                                             &nbsp;
-                                                            @if($row->type > 2 && $row->type < 8)
+                                                            @if($row->type > 2 && $row->type < 11)
                                                                 <a class="badge badge-warning" href="{{ URL::to('/') }}/m/vinvoice/ppob/{{$row->id}}">Struk</a>
                                                             @endif
                                                         @endif

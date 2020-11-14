@@ -4,12 +4,12 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Invoice</title>
+        <title>Invoice {{$getDataMaster->message}}</title>
         <style>
             body{
             font-family:'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
             text-align:center;
-            color:#777;
+            color:rgb(0, 0, 0);
             font-weight: 700;
             }
             body h1{
@@ -29,14 +29,14 @@
             color:#06F;
             }
             .invoice-box{
-            max-width:800px;
+            max-width:318px;
             margin:auto;
-            padding:30px;
+            padding:10px;
             border:1px solid #eee;
-            font-size:16px;
-            line-height:24px;
+            font-size:12px;
+            line-height:14px;
             font-family:'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
-            color:#555;
+            color:rgb(0, 0, 0);
             }
             .invoice-box table{
             width:100%;
@@ -55,8 +55,8 @@
             }
             .invoice-box table tr.top table td.title{
             font-size:30px;
-            line-height:30px;
-            color:#333;
+            line-height:20px;
+            color:rgb(0, 0, 0);
             text-align: center;
             }
             .invoice-box table tr.information table td{
@@ -79,7 +79,7 @@
             border-top:2px solid #eee;
             font-weight:bold;
             }
-            @media only screen and (max-width: 600px) {
+            /* @media only screen and (max-width: 600px) {
             .invoice-box table tr.top table td{
             width:100%;
             display:block;
@@ -90,7 +90,7 @@
             display:block;
             text-align:center;
             }
-            }
+            } */
         </style>
     </head>
     <?php
@@ -107,10 +107,10 @@
                                 <tbody>
                                     <tr>
                                         <td class="title">
-                                            LUMBUNG NETWORK
+                                            <span style="font-size: 19px;margin: 0;">LUMBUNG NETWORK</span>
                                             <br>
-                                            <p style="font-size: 20px;margin: 0;">
-                                                <span style="border-bottom: 1px dotted;">Memberdayakan Pengeluaran Menjadi Penghasilan</span>
+                                            <p style="font-size: 13px;margin: 0;">
+                                                <span style="border-bottom: 1px dotted;">Memberdayakan Pengeluaran<br>Menjadi Penghasilan</span>
                                             </p>
                                         </td>
                                     </tr>
@@ -126,7 +126,7 @@
                                         <td>
                                             {{$getDataMaster->confirm_at}}
                                             <br>
-                                            {{$getDataMaster->ppob_code}}
+                                            <small>{{$getDataMaster->ppob_code}}</small>
                                         </td>
                                         <td>
                                             Vendor: {{$dataUser->user_code}}
@@ -144,6 +144,7 @@
                                 <tbody>
                                     <tr>
                                         <td>
+                                            {{-- 4 = TELKOM, 5 = PLN Pasca, 6 = HP Pasca, 7 = BPJS, 8 = PDAM --}}
                                             {{$getDataMaster->message}}
                                             <br>
                                             ID Pel: {{$getDataMaster->product_name}}
@@ -151,13 +152,65 @@
                                             <br>
                                             a/n: {{$return_buy['data']['customer_name']}}
                                             @endif
+
+                                            {{-- PDAM & PLN Pasca --}}
+                                            @if ($getDataMaster->type == 8)
+                                            <br>
+                                            Alamat: {{$return_buy['data']['desc']['alamat']}}
+                                            @endif
+                                            @if ($getDataMaster->type == 8 || $getDataMaster->type == 5)
+                                            <br>
+                                            <br>
+                                            Detail:
+                                            <br>
+                                            Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan']}}
+                                            <br>
+                                            @foreach ($return_buy['data']['desc']['detail'] as $detail)
+                                            <br>
+                                            Periode Tagihan: {{date('M Y', strtotime($detail['periode']))}}
+                                            <br>
+                                            Meter Awal: {{$detail['meter_awal']}}
+                                            <br>
+                                            Meter Akhir: {{$detail['meter_akhir']}}
+                                            <br>
+                                            Denda: {{$detail['denda']}}
+                                            <br>
+
+                                            @endforeach
+                                            @endif
+
+                                            {{-- PLN Prepaid --}}
+                                            @if ($getDataMaster->type == 3)
+                                            <?php $separate = explode('/', $return_buy['data']['sn']) ?>
+                                            <br>
+                                            a/n: {{$separate[1]}}
+                                            <br>
+                                            Tipe/Daya: {{$separate[2]}} / {{$separate[3]}}
+                                            <br>
+                                            Jumlah KWh: {{$separate[4]}}
+                                            <br>
+                                            Kode Token:
+                                            <br>
+                                            <span style="font-size: 18px;">{{$separate[0]}}</span>
+
+                                            @endif
+
+                                            {{-- BPJS --}}
+                                            @if ($getDataMaster->type == 7)
+                                            <br>
+                                            Alamat: {{$return_buy['data']['desc']['alamat']}}
+                                            <br>
+                                            Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan']}}
+                                            <br>
+                                            Jumlah Peserta: {{$return_buy['data']['desc']['jumlah_peserta']}}
+                                            @endif
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </td>
                     </tr>
-                    
+
                     <tr class="heading">
                         <td>
                             Detail
@@ -188,16 +241,18 @@
                             Total: Rp {{$getDataMaster->ppob_price}}
                         </td>
                     </tr>
-                    
+
                     <tr class="information">
                         <td colspan="2">
                             <table>
                                 <tbody>
                                     <tr>
                                         <td>
+                                            @if ($getDataMaster->type != 3)
                                             No Ref/SN:
                                             <br>
                                             {{$return_buy['data']['sn']}}
+                                            @endif
                                         </td>
                                     </tr>
                                 </tbody>
@@ -210,9 +265,9 @@
                                 <tbody>
                                     <tr>
                                         <td class="title">
-                                            <p style="font-size: 20px;margin: 0;"><span style="border-bottom: 1px dotted;">Struk ini merupakan bukti pembayaran yang sah.</span></p>
-                                            <p style="font-size: 20px;margin: 0;">Terima Kasih</p>
-                                            <p style="font-size: 20px;margin: 0;">https://lumbung.network/</p>
+                                            <p style="font-size: 11px;margin: 0;"><span style="border-bottom: 1px dotted;">Struk ini merupakan bukti pembayaran yang sah.</span></p>
+                                            <p style="font-size: 14px;margin: 0;">Terima Kasih</p>
+                                            <p style="font-size: 12px;margin: 0;">https://lumbung.network/</p>
                                         </td>
                                     </tr>
                                 </tbody>

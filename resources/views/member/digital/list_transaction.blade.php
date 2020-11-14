@@ -200,7 +200,7 @@
                                                     <td>{{$siVendor}}<br><a class="label label-primary" href="{{ URL::to('/') }}/m/detail/buy-ppob/{{$row->id}}">detail</a>
                                                         @if($row->type > 2 && $row->type < 8)
                                                         @if($row->status == 2)
-                                                        <a class="label label-primary" href="{{ URL::to('/') }}/m/invoice/ppob/{{$row->id}}">pdf</a>
+                                                        <a class="label label-warning" href="{{ URL::to('/') }}/m/invoice/ppob/{{$row->id}}">Struk</a>
                                                         @endif
                                                         @endif</td>
                                                     <td>{{$row->message}}</td>
