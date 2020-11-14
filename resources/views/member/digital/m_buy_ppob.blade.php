@@ -66,20 +66,72 @@
 
                             @if($getDataMaster->return_buy != null)
                             <?php
-                                $arrayData = json_decode($getDataMaster->return_buy, true);
-                                $data = $arrayData['data'];
+                                $return_buy = json_decode($getDataMaster->return_buy, true);
+
                             ?>
                             <p class="card-text">Data Pesanan:</p>
 
                             <div class="row" style="margin-bottom: 15px;">
                                 <div class="col-md-12">
-                                    @if ($data['type'] == 3)
-                                    <b>Token PLN</b>
-                                    <br>
-                                    <span>{{$data['sn']}}<span><br>
-                                    @endif
-                                    <b>Status:</b><span>{{$data['status']}}</span>
-                                    <b>Keterangan:</b><span>{{$data['message']}}</span>
+                                    {{$getDataMaster->message}}
+                                            <br>
+                                            ID Pel: {{$getDataMaster->product_name}}
+                                            @if($getDataMaster->type > 3 && $getDataMaster->type < 21)
+                                            <br>
+                                            a/n: {{$return_buy['data']['customer_name']}}
+                                            @endif
+
+                                            {{-- PDAM & PLN Pasca --}}
+                                            @if ($getDataMaster->type == 8)
+                                            <br>
+                                            Alamat: {{$return_buy['data']['desc']['alamat']}}
+                                            @endif
+                                            @if ($getDataMaster->type == 8 || $getDataMaster->type == 5)
+                                            <br>
+                                            <br>
+                                            Detail:
+                                            <br>
+                                            Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan']}}
+                                            <br>
+                                            @foreach ($return_buy['data']['desc']['detail'] as $detail)
+                                            <br>
+                                            Periode Tagihan: {{date('M Y', strtotime($detail['periode']))}}
+                                            <br>
+                                            Meter Awal: {{$detail['meter_awal']}}
+                                            <br>
+                                            Meter Akhir: {{$detail['meter_akhir']}}
+                                            <br>
+                                            Denda: {{$detail['denda']}}
+                                            <br>
+
+                                            @endforeach
+                                            @endif
+
+                                            {{-- PLN Prepaid --}}
+                                            @if ($getDataMaster->type == 3)
+                                            <?php $separate = explode('/', $return_buy['data']['sn']) ?>
+                                            <br>
+                                            a/n: {{$separate[1]}}
+                                            <br>
+                                            Tipe/Daya: {{$separate[2]}} / {{$separate[3]}}
+                                            <br>
+                                            Jumlah KWh: {{$separate[4]}}
+                                            <br>
+                                            Kode Token:
+                                            <br>
+                                            <span style="font-size: 18px;">{{$separate[0]}}</span>
+
+                                            @endif
+
+                                            {{-- BPJS --}}
+                                            @if ($getDataMaster->type == 7)
+                                            <br>
+                                            Alamat: {{$return_buy['data']['desc']['alamat']}}
+                                            <br>
+                                            Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan']}}
+                                            <br>
+                                            Jumlah Peserta: {{$return_buy['data']['desc']['jumlah_peserta']}}
+                                            @endif
                                 </div>
                             </div>
                             @endif

@@ -198,7 +198,7 @@
                                                     <td>{{$no}}</td>
                                                     <td>{{date('d-m-Y', strtotime($row->ppob_date))}}<br><span class="label label-{{$label}}">{{$status}}</span></td>
                                                     <td>{{$siVendor}}<br><a class="label label-primary" href="{{ URL::to('/') }}/m/detail/buy-ppob/{{$row->id}}">detail</a>
-                                                        @if($row->type > 2 && $row->type < 8)
+                                                        @if($row->type > 2 && $row->type < 12)
                                                         @if($row->status == 2)
                                                         <a class="label label-warning" href="{{ URL::to('/') }}/m/invoice/ppob/{{$row->id}}">Struk</a>
                                                         @endif
