@@ -1109,6 +1109,14 @@ class AjaxmemberController extends Controller
                 ->with('dataRequest', null)
                 ->with('check', $canInsert);
         }
+
+        $shame = '1111 1234 12345 123456 1234567 123123 1212 654321 4321 7777 8888 9999 0000';
+        if (strpos($shame, $request->password) !== false) {
+            $canInsert = (object) array('can' => false, 'pesan' => 'Kode Pin yang anda buat TERLALU MUDAH DITEBAK');
+            return view('member.ajax.confirm_edit_2fa')
+                ->with('dataRequest', null)
+                ->with('check', $canInsert);
+        }
         $data = (object) array(
             'password' => $request->password
         );
