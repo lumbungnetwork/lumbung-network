@@ -2,11 +2,11 @@
 @section('content')
 
 <div class="wrapper">
-        
-    
+
+
         <!-- Page Content -->
         <div id="content">
-            
+
             <div class="bg-gradient-sm">
                 <nav class="navbar navbar-expand-lg navbar-light bg-transparent w-100">
                     <div class="container">
@@ -21,7 +21,7 @@
             </div>
             <div class="mt-min-10">
                 <div class="container">
-                    
+
                     <div class="rounded-lg bg-white p-3 mb-3">
                         <form class="row" method="get" action="/m/history/vshoping">
                             {{ csrf_field() }}
@@ -73,10 +73,7 @@
                                             <th>No.</th>
                                             <th>Tanggal</th>
                                             <th>Vendor</th>
-                                            <th>Nominal Belanja (Rp.)</th>
-                                            <th>Status</th>
-                                            <th>Pembayaran</th>
-                                            <th>###</th>
+                                            <th>Nominal / Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -113,17 +110,9 @@
                                                 <tr>
                                                     <td>{{$no}}</td>
                                                     <td>{{date('d-m-Y', strtotime($row->sale_date))}}</td>
-                                                    <td>{{$row->user_code}}</td>
-                                                    <td>{{number_format($row->sale_price, 0, ',', ',')}}</td>
-                                                    <td>
-                                                            <span class="label label-{{$label}}">{{$status}}</span>
-                                                    </td>
-                                                    <td>
-                                                            <span class="label label-info">{{$buy}}</span>
-                                                    </td>
-                                                    <td>
-                                                        <a class="label label-primary" href="{{ URL::to('/') }}/m/vpembayaran/{{$row->id}}">detail</a>
-                                                    </td>
+                                                    <td>{{$row->user_code}}<br><a class="label label-primary" href="{{ URL::to('/') }}/m/vpembayaran/{{$row->id}}">detail</a></td>
+                                                    <td>{{number_format($row->sale_price, 0, ',', ',')}}<br><span class="label label-{{$label}}">{{$status}}</span></td>
+
                                                 </tr>
                                             @endforeach
                                         @endif
@@ -132,7 +121,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
             @include('layout.member.nav')
@@ -161,6 +150,6 @@
             lengthChange: false
         });
     } );
-    
+
 </script>
 @stop

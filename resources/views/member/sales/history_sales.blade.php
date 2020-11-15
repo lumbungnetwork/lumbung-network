@@ -2,11 +2,11 @@
 @section('content')
 
 <div class="wrapper">
-        
-    
+
+
         <!-- Page Content -->
         <div id="content">
-            
+
             <div class="bg-gradient-sm">
                 <nav class="navbar navbar-expand-lg navbar-light bg-transparent w-100">
                     <div class="container">
@@ -21,12 +21,11 @@
             </div>
             <div class="mt-min-10">
                 <div class="container">
-                    
+
                     <div class="rounded-lg bg-white p-3 mb-3">
                         <div class="row">
-                            <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
+                            <div class="col-12">
                                 <div class="card-box tilebox-one">
-                                    <i class="icon-trophy pull-xs-right text-muted text-warning"></i>
                                     <?php
                                         $text = '*Anda belum memenuhi Belanja Wajib';
                                         $color = 'danger';
@@ -41,7 +40,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="rounded-lg bg-white p-3 mb-3">
                         <div class="row">
                             <div class="table-responsive">
@@ -50,49 +49,47 @@
                                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                             <span aria-hidden="true">×</span>
                                         </button>
-                                        {{  Session::get('message')    }} 
+                                        {{  Session::get('message')    }}
                                     </div>
                                 @endif
-                                <form class="login100-form validate-form m-b-20" method="get" action="/m/history/shoping">
+                                <form class="login100-form validate-form m-b-20 py-0" method="get" action="/m/history/shoping">
                                     {{ csrf_field() }}
-                                    <div class="row">
-                                        <div class="col-xl-3 col-xs-12">
-                                            <fieldset>
-                                                <label>Search</label>
-                                                <select class="form-control" name="month" id="bank_name">
-                                                    <option value="none">- Pilih Bulan -</option>
-                                                    <option value="01">Januari</option>
-                                                    <option value="02">Februari</option>
-                                                    <option value="03">Maret</option>
-                                                    <option value="04">April</option>
-                                                    <option value="05">Mei</option>
-                                                    <option value="06">Juni</option>
-                                                    <option value="07">Juli</option>
-                                                    <option value="08">Agustus</option>
-                                                    <option value="09">September</option>
-                                                    <option value="10">Oktober</option>
-                                                    <option value="11">November</option>
-                                                    <option value="12">Desember</option>
-                                                </select>
-                                            </fieldset>
-                                        </div>
-                                        <div class="col-xl-3 col-xs-12">
-                                            <fieldset>
-                                                <label>&nbsp;</label>
-                                                <select class="form-control" name="year" id="bank_name">
-                                                    <option value="none">- Pilih Tahun -</option>
-                                                    <option value="2019">2019</option>
-                                                    <option value="2020">2020</option>
-                                                    <option value="2021">2021</option>
-                                                </select>
-                                            </fieldset>
-                                        </div>
-                                        <div class="col-xl-1  col-xs-12">
-                                            <fieldset>
-                                                <label>&nbsp;</label>
-                                                <button type="submit" class="form-control btn btn-success">Cari</button>
-                                            </fieldset>
-                                        </div>
+                                    <div class="col-xl-12 col-xs-12">
+                                        <fieldset>
+                                            <label>Search</label>
+                                            <select class="form-control" name="month" id="bank_name">
+                                                <option value="none">- Pilih Bulan -</option>
+                                                <option value="01">Januari</option>
+                                                <option value="02">Februari</option>
+                                                <option value="03">Maret</option>
+                                                <option value="04">April</option>
+                                                <option value="05">Mei</option>
+                                                <option value="06">Juni</option>
+                                                <option value="07">Juli</option>
+                                                <option value="08">Agustus</option>
+                                                <option value="09">September</option>
+                                                <option value="10">Oktober</option>
+                                                <option value="11">November</option>
+                                                <option value="12">Desember</option>
+                                            </select>
+                                        </fieldset>
+                                    </div>
+                                    <div class="col-xl-12 col-xs-12">
+                                        <fieldset>
+                                            <label>&nbsp;</label>
+                                            <select class="form-control" name="year" id="bank_name">
+                                                <option value="none">- Pilih Tahun -</option>
+                                                <option value="2019">2019</option>
+                                                <option value="2020">2020</option>
+                                                <option value="2021">2021</option>
+                                            </select>
+                                        </fieldset>
+                                    </div>
+                                    <div class="col-xl-12  col-xs-12">
+                                        <fieldset>
+                                            <label>&nbsp;</label>
+                                            <button type="submit" class="form-control btn btn-success">Cari</button>
+                                        </fieldset>
                                     </div>
                                 </form>
                                 <br><br>
@@ -103,10 +100,7 @@
                                             <th>No.</th>
                                             <th>Tanggal</th>
                                             <th>Stockist</th>
-                                            <th>Nominal Belanja (Rp.)</th>
-                                            <th>Status</th>
-                                            <th>Pembayaran</th>
-                                            <th>###</th>
+                                            <th>Nominal / Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -143,17 +137,9 @@
                                                 <tr>
                                                     <td>{{$no}}</td>
                                                     <td>{{date('d-m-Y', strtotime($row->sale_date))}}</td>
-                                                    <td>{{$row->user_code}}</td>
-                                                    <td>{{number_format($row->sale_price, 0, ',', ',')}}</td>
-                                                    <td>
-                                                            <span class="label label-{{$label}}">{{$status}}</span>
-                                                    </td>
-                                                    <td>
-                                                            <span class="label label-info">{{$buy}}</span>
-                                                    </td>
-                                                    <td>
-                                                        <a class="label label-primary" href="{{ URL::to('/') }}/m/pembayaran/{{$row->id}}">detail</a>
-                                                    </td>
+                                                    <td>{{$row->user_code}}<br><a class="label label-primary" href="{{ URL::to('/') }}/m/pembayaran/{{$row->id}}">detail</a></td>
+                                                    <td>{{number_format($row->sale_price, 0, ',', ',')}}<br><span class="label label-{{$label}}">{{$status}}</span></td>
+
                                                 </tr>
                                             @endforeach
                                         @endif
@@ -162,7 +148,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
             @include('layout.member.nav')

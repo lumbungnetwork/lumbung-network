@@ -2,11 +2,11 @@
 @section('content')
 
 <div class="wrapper">
-        
-    
+
+
         <!-- Page Content -->
         <div id="content">
-            
+
             <div class="bg-gradient-sm">
                 <nav class="navbar navbar-expand-lg navbar-light bg-transparent w-100">
                     <div class="container">
@@ -21,13 +21,13 @@
             </div>
             <div class="mt-min-10">
                 <div class="container">
-                    
+
                     <div class="rounded-lg bg-white p-3 mb-3">
                         <div class="row">
                             <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
                                 <div class="card-box tilebox-one">
                                     <i class="icon-trophy pull-xs-right text-muted text-warning"></i>
-                                    <h6 class="text-muted text-uppercase m-b-20">Report Vendor</h6>
+                                    <h6 class="text-muted text-uppercase m-b-20">Report Penjualan Produk Fisik</h6>
                                 </div>
                             </div>
                         </div>
@@ -39,7 +39,7 @@
                                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                             <span aria-hidden="true">×</span>
                                         </button>
-                                        {{  Session::get('message')    }} 
+                                        {{  Session::get('message')    }}
                                     </div>
                                 @endif
                                 <table id="datatable" class="table table-striped table-bordered">
@@ -48,10 +48,7 @@
                                             <th>No.</th>
                                             <th>Tanggal</th>
                                             <th>UserID</th>
-                                            <th>Nominal Belanja (Rp.)</th>
-                                            <th>Pembayaran</th>
-                                            <th>Status</th>
-                                            <th>###</th>
+                                            <th>Nominal / Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -88,17 +85,9 @@
                                                 <tr>
                                                     <td>{{$no}}</td>
                                                     <td>{{date('d-m-Y', strtotime($row->sale_date))}}</td>
-                                                    <td>{{$row->user_code}}</td>
-                                                    <td>{{number_format($row->sale_price, 0, ',', ',')}}</td>
-                                                    <td>
-                                                            <span class="label label-info">{{$buy}}</span>
-                                                    </td>
-                                                    <td>
-                                                            <span class="label label-{{$label}}">{{$status}}</span>
-                                                    </td>
-                                                    <td>
-                                                        <a class="text-primary" href="{{ URL::to('/') }}/m/detail/vendor-report/{{$row->id}}">detail</a>
-                                                    </td>
+                                                    <td>{{$row->user_code}}<br><a class="badge badge-primary" href="{{ URL::to('/') }}/m/detail/vendor-report/{{$row->id}}">detail</a></td>
+                                                    <td>{{number_format($row->sale_price, 0, ',', ',')}}<span class="label label-{{$label}}">{{$status}}</span></td>
+
                                                 </tr>
                                             @endforeach
                                         @endif
@@ -107,9 +96,9 @@
                             </div>
                         </div>
                     </div>
-                    
-                    
-                    
+
+
+
                 </div>
             </div>
             @include('layout.member.nav')
@@ -136,11 +125,10 @@
 <script src="/asset_member/plugins/datatables/dataTables.bootstrap4.min.js"></script>
     <script type="text/javascript">
     $(document).ready(function() {
-        $('#datatable').DataTable();
-        var table = $('#datatable-buttons').DataTable({
-            lengthChange: false,
+        $('#datatable').DataTable({
+            lengthChange: false
         });
     } );
-    
+
 </script>
 @stop
