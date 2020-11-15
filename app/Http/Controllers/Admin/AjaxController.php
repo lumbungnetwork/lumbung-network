@@ -17,95 +17,104 @@ use App\Model\Bonussetting;
 use App\Model\Sales;
 use App\Model\Pin;
 
-class AjaxController extends Controller {
+class AjaxController extends Controller
+{
 
-    public function __construct(){
-        
+    public function __construct()
+    {
     }
-    
-    public function getAdminById($type, $id){
+
+    public function getAdminById($type, $id)
+    {
         $dataUser = Auth::user();
         $getType = 0;
         $header = 'Empty';
-        if($type == 1){
+        if ($type == 1) {
             $header = 'Edit';
             $getType = 1;
         }
-        if($type == 2){
+        if ($type == 2) {
             $header = 'Delete';
             $getType = 2;
         }
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $getData = null;
-        if($id > 2){
+        if ($id > 2) {
             $getData = $modelAdmin->getAdminById($id);
         }
         return view('admin.ajax.admin')
-                ->with('headerTitle', $header.' Admin')
-                ->with('getData', $getData)
-                ->with('type', $getType)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', $header . ' Admin')
+            ->with('getData', $getData)
+            ->with('type', $getType)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getPackageById($id){
+
+    public function getPackageById($id)
+    {
         $dataUser = Auth::user();
-        $modelPackage = New Package;
+        $modelPackage = new Package;
         $getPackageId = $modelPackage->getPackageId($id);
         return view('admin.ajax.package')
-                ->with('headerTitle', 'Edit Package')
-                ->with('getData', $getPackageId)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Edit Package')
+            ->with('getData', $getPackageId)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getCekTransactionById($id, $user_id, $is_tron){
-        $modelSettingTrans = New Transaction;
+
+    public function getCekTransactionById($id, $user_id, $is_tron)
+    {
+        $modelSettingTrans = new Transaction;
         $getData = $modelSettingTrans->getDetailTransactionsAdminNew($id, $user_id, $is_tron);
         return view('admin.ajax.transaction')
-                ->with('headerTitle', 'Cek Transaksi')
-                ->with('getData', $getData);
+            ->with('headerTitle', 'Cek Transaksi')
+            ->with('getData', $getData);
     }
-    
-    public function getRejectTransactionById($id, $user_id, $is_tron){
-        $modelSettingTrans = New Transaction;
+
+    public function getRejectTransactionById($id, $user_id, $is_tron)
+    {
+        $modelSettingTrans = new Transaction;
         $getData = $modelSettingTrans->getDetailRejectTransactionsAdmin($id, $user_id, $is_tron);
         return view('admin.ajax.reject-transaction')
-                ->with('headerTitle', 'Reject Transaksi')
-                ->with('getData', $getData);
+            ->with('headerTitle', 'Reject Transaksi')
+            ->with('getData', $getData);
     }
-    
-    public function getBankPerusahaan($id){
+
+    public function getBankPerusahaan($id)
+    {
         $dataUser = Auth::user();
         $modelBank = new Bank;
         $getPerusahaanBank = $modelBank->getBankPerusahaanID($id);
         return view('admin.ajax.bank')
-                ->with('headerTitle', 'Edit Bank Perusahaan')
-                ->with('getData', $getPerusahaanBank)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Edit Bank Perusahaan')
+            ->with('getData', $getPerusahaanBank)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getTronPerusahaan($id){
+
+    public function getTronPerusahaan($id)
+    {
         $dataUser = Auth::user();
         $modelBank = new Bank;
         $getPerusahaanTron = $modelBank->getTronPerusahaanID($id);
         return view('admin.ajax.tron')
-                ->with('headerTitle', 'Edit Tron Perusahaan')
-                ->with('getData', $getPerusahaanTron)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Edit Tron Perusahaan')
+            ->with('getData', $getPerusahaanTron)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getKirimPaket($id, $user_id){
+
+    public function getKirimPaket($id, $user_id)
+    {
         $dataUser = Auth::user();
         $modelPengiriman = new Pengiriman;
         $getPengiriman = $modelPengiriman->getAdmPengirimanByID($id, $user_id);
         return view('admin.ajax.pengiriman')
-                ->with('headerTitle', 'Confirm Pengiriman')
-                ->with('getData', $getPengiriman)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Confirm Pengiriman')
+            ->with('getData', $getPengiriman)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getCekKirimPaket(Request $request){
+
+    public function getCekKirimPaket(Request $request)
+    {
         $dataUser = Auth::user();
-        $id =$request->cekId;
+        $id = $request->cekId;
         $user_id = $request->cekUserId;
         $kurir_name = $request->kurir_name;
         $no_resi = $request->no_resi;
@@ -118,327 +127,370 @@ class AjaxController extends Controller {
             'no_resi' => $no_resi
         );
         return view('admin.ajax.pengiriman')
-                ->with('headerTitle', 'Confirm Pengiriman')
-                ->with('getData', $getPengiriman)
-                ->with('data', $data)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Confirm Pengiriman')
+            ->with('getData', $getPengiriman)
+            ->with('data', $data)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getCekRejectWD($id){
+
+    public function getCekRejectWD($id)
+    {
         $dataUser = Auth::user();
         $modelWD = new Transferwd;
         $getData = $modelWD->getIDRequestWD($id);
         return view('admin.ajax.reject-wd')
-                ->with('headerTitle', 'Reject Withdrawal')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Reject Withdrawal')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getCekDetailWD($id){
+
+    public function getCekDetailWD($id)
+    {
         $dataUser = Auth::user();
         $modelWD = new Transferwd;
         $getData = $modelWD->getIDRequestWD($id);
         return view('admin.ajax.detail-wd')
-                ->with('headerTitle', 'Detail Withdrawal')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Detail Withdrawal')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getCekRejectWDeIDR($id){
+
+    public function getCekRejectWDeIDR($id)
+    {
         $dataUser = Auth::user();
         $modelWD = new Transferwd;
         $getData = $modelWD->getIDRequestWDeIDR($id);
         return view('admin.ajax.reject-wd-eidr')
-                ->with('headerTitle', 'Reject Withdrawal')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Reject Withdrawal')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getCekDetailWDeIDR($id){
+
+    public function getCekDetailWDeIDR($id)
+    {
         $dataUser = Auth::user();
         $modelWD = new Transferwd;
         $getData = $modelWD->getIDRequestWDeIDR($id);
         return view('admin.ajax.detail-wd-eidr')
-                ->with('headerTitle', 'Detail Withdrawal')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Detail Withdrawal')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getCekRejectWDRoyalti($id){
+
+    public function getCekRejectWDRoyalti($id)
+    {
         $dataUser = Auth::user();
         $modelWD = new Transferwd;
         $getData = $modelWD->getIDRequestWDRoyalti($id);
         return view('admin.ajax.reject-wd-royalti')
-                ->with('headerTitle', 'Reject Withdrawal')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Reject Withdrawal')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getCekDetailWDRoyalti($id){
+
+    public function getCekDetailWDRoyalti($id)
+    {
         $dataUser = Auth::user();
         $modelWD = new Transferwd;
         $getData = $modelWD->getIDRequestWDRoyalti($id);
         return view('admin.ajax.detail-wd-royalti')
-                ->with('headerTitle', 'Detail Withdrawal')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Detail Withdrawal')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getCekRequestMemberStockist($id){
-        $modelMember = New Member;
+
+    public function getCekRequestMemberStockist($id)
+    {
+        $modelMember = new Member;
         $getData = $modelMember->getCekMemberReqSotckist($id);
         return view('admin.ajax.cek_req_stockist')
-                ->with('headerTitle', 'Cek Request Stockist')
-                ->with('getData', $getData);
+            ->with('headerTitle', 'Cek Request Stockist')
+            ->with('getData', $getData);
     }
-    
-    public function getCekRejectMemberStockist($id){
-        $modelMember = New Member;
+
+    public function getCekRejectMemberStockist($id)
+    {
+        $modelMember = new Member;
         $getData = $modelMember->getCekMemberReqSotckist($id);
         return view('admin.ajax.cek_reject_stockist')
-                ->with('headerTitle', 'Reject Request Stockist')
-                ->with('getData', $getData);
+            ->with('headerTitle', 'Reject Request Stockist')
+            ->with('getData', $getData);
     }
-    
-    public function getCekRemoveMemberStockist($id){
-        $modelMember = New Member;
+
+    public function getCekRemoveMemberStockist($id)
+    {
+        $modelMember = new Member;
         $getData = $modelMember->getCekMemberSotckistToRemove($id);
         return view('admin.ajax.cek_remove_stockist')
-                ->with('headerTitle', 'Remove Member Stockist')
-                ->with('getData', $getData);
+            ->with('headerTitle', 'Remove Member Stockist')
+            ->with('getData', $getData);
     }
-    
-    public function getCekEditMemberStockist($id){
-        $modelMember = New Member;
+
+    public function getCekEditMemberStockist($id)
+    {
+        $modelMember = new Member;
         $getData = $modelMember->getCekMemberSotckistToRemove($id);
         return view('admin.ajax.cek_edit_stockist')
-                ->with('headerTitle', 'Edit Member Stockist')
-                ->with('getData', $getData);
+            ->with('headerTitle', 'Edit Member Stockist')
+            ->with('getData', $getData);
     }
-    
-    public function getEditBonusReward($id){
+
+    public function getEditBonusReward($id)
+    {
         $modelBonusSetting = new Bonussetting;
         $getData = $modelBonusSetting->getActiveBonusRewardByID($id);
         return view('admin.ajax.cek_reward')
-                ->with('headerTitle', 'Edit Bonus Reward')
-                ->with('getData', $getData);
+            ->with('headerTitle', 'Edit Bonus Reward')
+            ->with('getData', $getData);
     }
-    
-    public function getCekRejectClaimReward($id){
+
+    public function getCekRejectClaimReward($id)
+    {
         $dataUser = Auth::user();
         $modelBonus = new Bonus;
         $getData = $modelBonus->getAdminRewardByID($id);
         return view('admin.ajax.reject-claim-reward')
-                ->with('headerTitle', 'Reject Claim Reward')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Reject Claim Reward')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getCekDetailClaimReward($id){
+
+    public function getCekDetailClaimReward($id)
+    {
         $dataUser = Auth::user();
         $modelBonus = new Bonus;
         $getData = $modelBonus->getAdminDetailRewardByID($id);
         return view('admin.ajax.detail-claim')
-                ->with('headerTitle', 'Detail Withdrawal')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Detail Withdrawal')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getCekRequestMemberInputStock($id, $user_id){
-        $modelSales = New Sales;
+
+    public function getCekRequestMemberInputStock($id, $user_id)
+    {
+        $modelSales = new Sales;
         $getData = $modelSales->getMemberReqInputStockistItem($id);
         $getDataMaster = $modelSales->getMemberReqInputStockistID($id);
         return view('admin.ajax.cek_req_input_stock')
-                ->with('headerTitle', 'Konfirmasi Input Stock & Royalti')
-                ->with('getDataMaster', $getDataMaster)
-                ->with('master_item_id', $id)
-                ->with('user_id', $user_id)
-                ->with('getData', $getData);
+            ->with('headerTitle', 'Konfirmasi Input Stock & Royalti')
+            ->with('getDataMaster', $getDataMaster)
+            ->with('master_item_id', $id)
+            ->with('user_id', $user_id)
+            ->with('getData', $getData);
     }
-    
-    public function getCekRejectMemberInputStock($id, $user_id){
-        $modelSales = New Sales;
+
+    public function getCekRejectMemberInputStock($id, $user_id)
+    {
+        $modelSales = new Sales;
         $getData = $modelSales->getMemberReqInputStockistItem($id);
         $getDataMaster = $modelSales->getMemberReqInputStockistID($id);
         return view('admin.ajax.cek_reject_input_stock')
-                ->with('headerTitle', 'Reject Input Stock & Royalti')
-                ->with('getDataMaster', $getDataMaster)
-                ->with('master_item_id', $id)
-                ->with('user_id', $user_id)
-                ->with('getData', $getData);
+            ->with('headerTitle', 'Reject Input Stock & Royalti')
+            ->with('getDataMaster', $getDataMaster)
+            ->with('master_item_id', $id)
+            ->with('user_id', $user_id)
+            ->with('getData', $getData);
     }
-    
-    public function getCekConfirmBelanjaStockist($id){
-        $modelSales = New Sales;
-        $modelMember = New Member;
+
+    public function getCekConfirmBelanjaStockist($id)
+    {
+        $modelSales = new Sales;
+        $modelMember = new Member;
         $getData = $modelSales->getAdminConfirmBelanjaID($id);
         return view('admin.ajax.cek_confirm_belanja')
-                ->with('headerTitle', 'Detail Confirm Belanja')
-                ->with('getData', $getData);
+            ->with('headerTitle', 'Detail Confirm Belanja')
+            ->with('getData', $getData);
     }
-    
-    public function getCekVerificationRoyalti($id){
-        $modelSales = New Sales;
+
+    public function getCekVerificationRoyalti($id)
+    {
+        $modelSales = new Sales;
         $getData = $modelSales->getAdminVerificationRoyaltiID($id);
         return view('admin.ajax.cek_confirm_royalti')
-                ->with('headerTitle', 'Detail Verification Royalti')
-                ->with('getData', $getData);
+            ->with('headerTitle', 'Detail Verification Royalti')
+            ->with('getData', $getData);
     }
-    
-    public function getCekRejectBelanjaReward($id){
+
+    public function getCekRejectBelanjaReward($id)
+    {
         $dataUser = Auth::user();
         $modelBonus = new Bonus;
         $getData = $modelBonus->getAdminAllBelanjaRewardByID($id);
         return view('admin.ajax.reject-belanja-reward')
-                ->with('headerTitle', 'Reject Belanja Reward')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Reject Belanja Reward')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getCekRejectVBelanjaReward($id){
+
+    public function getCekRejectVBelanjaReward($id)
+    {
         $dataUser = Auth::user();
         $modelBonus = new Bonus;
         $getData = $modelBonus->getAdminAllVBelanjaRewardByID($id);
         return view('admin.ajax.reject-vbelanja-reward')
-                ->with('headerTitle', 'Reject Vendor Belanja Reward')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Reject Vendor Belanja Reward')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getCekDetailBelanjaReward($id){
+
+    public function getCekDetailBelanjaReward($id)
+    {
         $dataUser = Auth::user();
         $modelBonus = new Bonus;
         $getData = $modelBonus->getAdminDetailBelanjaReward($id);
         return view('admin.ajax.detail-belanja')
-                ->with('headerTitle', 'Detail Belanja Reward')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Detail Belanja Reward')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getCekDetailVBelanjaReward($id){
+
+    public function getCekDetailVBelanjaReward($id)
+    {
         $dataUser = Auth::user();
         $modelBonus = new Bonus;
         $getData = $modelBonus->getAdminDetailVBelanjaReward($id);
         return view('admin.ajax.detail-vbelanja')
-                ->with('headerTitle', 'Detail Vendor Belanja Reward')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Detail Vendor Belanja Reward')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getRemovePurchaseId($id){
-        $modelSales = New Sales;
+
+    public function getRemovePurchaseId($id)
+    {
+        $modelSales = new Sales;
         $getData = $modelSales->getDetailPurchase($id);
         return view('admin.ajax.cek_rm_product')
-                ->with('headerTitle', 'Hapus Produk')
-                ->with('getData', $getData);
+            ->with('headerTitle', 'Hapus Produk')
+            ->with('getData', $getData);
     }
-    
-    public function getCekRejectPenjualanReward($id){
+
+    public function getCekRejectPenjualanReward($id)
+    {
         $dataUser = Auth::user();
         $modelBonus = new Bonus;
         $getData = $modelBonus->getAdminAllPenjualanRewardByID($id);
         return view('admin.ajax.reject-penjualan-reward')
-                ->with('headerTitle', 'Reject Penjualan Reward')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Reject Penjualan Reward')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getCekRejectVPenjualanReward($id){
+
+    public function getCekRejectVPenjualanReward($id)
+    {
         $dataUser = Auth::user();
         $modelBonus = new Bonus;
         $getData = $modelBonus->getAdminAllVendorPenjualanRewardByID($id);
         return view('admin.ajax.reject-vpenjualan-reward')
-                ->with('headerTitle', 'Reject Penjualan Reward')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Reject Penjualan Reward')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getCekDetailPenjualanReward($id){
+
+    public function getCekDetailPenjualanReward($id)
+    {
         $dataUser = Auth::user();
         $modelBonus = new Bonus;
         $getData = $modelBonus->getAdminDetailPenjualanReward($id);
         return view('admin.ajax.detail-penjualan')
-                ->with('headerTitle', 'Detail Penjualan Reward')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Detail Penjualan Reward')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getCekDetailVPenjualanReward($id){
+
+    public function getCekDetailVPenjualanReward($id)
+    {
         $dataUser = Auth::user();
         $modelBonus = new Bonus;
         $getData = $modelBonus->getAdminDetailVPenjualanReward($id);
         return view('admin.ajax.detail-penjualan')
-                ->with('headerTitle', 'Detail Penjualan Reward')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Detail Penjualan Reward')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getAdminChangeDataMember($id){
+
+    public function getAdminChangeDataMember($id)
+    {
         $dataUser = Auth::user();
-        $modelMember = New Member;
+        $modelMember = new Member;
         $getData = $modelMember->getUsers('id', $id);
         return view('admin.ajax.change-data')
-                ->with('headerTitle', 'Change Data Member')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Change Data Member')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getAdminChangePasswordMember($id){
+
+    public function getAdminChangePasswordMember($id)
+    {
         $dataUser = Auth::user();
-        $modelMember = New Member;
+        $modelMember = new Member;
         $getData = $modelMember->getUsers('id', $id);
         return view('admin.ajax.change-passwd')
-                ->with('headerTitle', 'Change Password Member')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Change Password Member')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getAdminChangeBlockMember($id){
+
+    public function getAdminChange2faMember($id)
+    {
         $dataUser = Auth::user();
-        $modelMember = New Member;
+        $modelMember = new Member;
+        $getData = $modelMember->getUsers('id', $id);
+        return view('admin.ajax.change-2fa')
+            ->with('headerTitle', 'Change 2FA Member')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
+    }
+
+    public function getAdminChangeBlockMember($id)
+    {
+        $dataUser = Auth::user();
+        $modelMember = new Member;
         $getData = $modelMember->getUsers('id', $id);
         return view('admin.ajax.change-block')
-                ->with('headerTitle', 'Blokir Data Member')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Blokir Data Member')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getAdminChangeTronMember($id){
+
+    public function getAdminChangeTronMember($id)
+    {
         $dataUser = Auth::user();
-        $modelMember = New Member;
+        $modelMember = new Member;
         $getData = $modelMember->getUsers('id', $id);
         return view('admin.ajax.change-tron')
-                ->with('headerTitle', 'Change Tron Member')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Change Tron Member')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getAdminGetCurrentPage(Request $request){
+
+    public function getAdminGetCurrentPage(Request $request)
+    {
         $dataUser = Auth::user();
-        $modelAdmin = New Admin;
+        $modelAdmin = new Admin;
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => 'GET '.$request->page
+            'detail_log' => 'GET ' . $request->page
         );
         $modelAdmin->getInsertLogHistory($logHistory);
     }
-    
-    public function getAdminEditStock($stockist_id, $purchase_id){
+
+    public function getAdminEditStock($stockist_id, $purchase_id)
+    {
         $dataUser = Auth::user();
-        $modelMember = New Member;
-        $modelSales = New Sales;
+        $modelMember = new Member;
+        $modelSales = new Sales;
         $getDataUser = $modelMember->getExplorerByID($stockist_id);
         $data = $modelSales->getStockByPurchaseIdStockist($getDataUser->id, $purchase_id);
         $getData = null;
-        if($data != null){
+        if ($data != null) {
             $jml_keluar = $modelSales->getSumStock($getDataUser->id, $data->id);
             $total_sisa = $data->total_qty - $jml_keluar;
-            if($total_sisa < 0){
+            if ($total_sisa < 0) {
                 $total_sisa = 0;
             }
             $hapus = 0;
-            if($total_sisa == 0){
-                if($data->deleted_at != null){
+            if ($total_sisa == 0) {
+                if ($data->deleted_at != null) {
                     $hapus = 1;
                 }
             }
@@ -458,28 +510,29 @@ class AjaxController extends Controller {
             );
         }
         return view('admin.ajax.edit-stock')
-                ->with('headerTitle', 'Edit Stock')
-                ->with('getData', $getData)
-                ->with('getDataUser', $getDataUser)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Edit Stock')
+            ->with('getData', $getData)
+            ->with('getDataUser', $getDataUser)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getAdminRemoveStock($stockist_id, $purchase_id){
+
+    public function getAdminRemoveStock($stockist_id, $purchase_id)
+    {
         $dataUser = Auth::user();
-        $modelMember = New Member;
-        $modelSales = New Sales;
+        $modelMember = new Member;
+        $modelSales = new Sales;
         $getDataUser = $modelMember->getExplorerByID($stockist_id);
         $data = $modelSales->getStockByPurchaseIdStockist($getDataUser->id, $purchase_id);
         $getData = null;
-        if($data != null){
+        if ($data != null) {
             $jml_keluar = $modelSales->getSumStock($getDataUser->id, $data->id);
             $total_sisa = $data->total_qty - $jml_keluar;
-            if($total_sisa < 0){
+            if ($total_sisa < 0) {
                 $total_sisa = 0;
             }
             $hapus = 0;
-            if($total_sisa == 0){
-                if($data->deleted_at != null){
+            if ($total_sisa == 0) {
+                if ($data->deleted_at != null) {
                     $hapus = 1;
                 }
             }
@@ -499,106 +552,110 @@ class AjaxController extends Controller {
             );
         }
         return view('admin.ajax.rm-stock')
-                ->with('headerTitle', 'Remove Stock')
-                ->with('getData', $getData)
-                ->with('getDataUser', $getDataUser)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Remove Stock')
+            ->with('getData', $getData)
+            ->with('getDataUser', $getDataUser)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getCekRejectTopup($id, $user_id){
+
+    public function getCekRejectTopup($id, $user_id)
+    {
         $dataUser = Auth::user();
         $modelBonus = new Bonus;
         $getData = $modelBonus->getAdminTopUpSaldoIDUserId($id, $user_id);
         return view('admin.ajax.reject-topup')
-                ->with('headerTitle', 'Reject Top Up')
-                ->with('getData', $getData)
-                ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Reject Top Up')
+            ->with('getData', $getData)
+            ->with('dataUser', $dataUser);
     }
-    
-    public function getRemoveVendorPurchaseId($id){
-        $modelSales = New Sales;
+
+    public function getRemoveVendorPurchaseId($id)
+    {
+        $modelSales = new Sales;
         $getData = $modelSales->getDetailPurchaseVendor($id);
         return view('admin.ajax.cek_rm_vproduct')
-                ->with('headerTitle', 'Hapus Produk Vendor')
-                ->with('getData', $getData);
+            ->with('headerTitle', 'Hapus Produk Vendor')
+            ->with('getData', $getData);
     }
-    
-    public function getCekRequestMemberVendor($id){
-        $modelMember = New Member;
+
+    public function getCekRequestMemberVendor($id)
+    {
+        $modelMember = new Member;
         $getData = $modelMember->getCekMemberReqVendor($id);
         return view('admin.ajax.cek_req_vendor')
-                ->with('headerTitle', 'Cek Request Vendor')
-                ->with('getData', $getData);
+            ->with('headerTitle', 'Cek Request Vendor')
+            ->with('getData', $getData);
     }
-    
-    public function getCekRejectMemberVendor($id){
-        $modelMember = New Member;
+
+    public function getCekRejectMemberVendor($id)
+    {
+        $modelMember = new Member;
         $getData = $modelMember->getCekMemberReqVendor($id);
         return view('admin.ajax.cek_reject_vendor')
-                ->with('headerTitle', 'Reject Request Vendor')
-                ->with('getData', $getData);
+            ->with('headerTitle', 'Reject Request Vendor')
+            ->with('getData', $getData);
     }
-    
-    public function getCekRemoveMemberVendor($id){
-        $modelMember = New Member;
+
+    public function getCekRemoveMemberVendor($id)
+    {
+        $modelMember = new Member;
         $getData = $modelMember->getCekMemberVendorToRemove($id);
         return view('admin.ajax.cek_remove_vendor')
-                ->with('headerTitle', 'Remove Member Vendor')
-                ->with('getData', $getData);
+            ->with('headerTitle', 'Remove Member Vendor')
+            ->with('getData', $getData);
     }
-    
-    public function getCekRequestMemberInputVStock($id, $user_id){
-        $modelSales = New Sales;
+
+    public function getCekRequestMemberInputVStock($id, $user_id)
+    {
+        $modelSales = new Sales;
         $getData = $modelSales->getMemberReqInputVStockistItem($id);
         $getDataMaster = $modelSales->getMemberReqInputVStockistID($id);
         return view('admin.ajax.cek_req_input_vstock')
-                ->with('headerTitle', 'Konfirmasi Vendor Input Stock & Royalti')
-                ->with('getDataMaster', $getDataMaster)
-                ->with('master_item_id', $id)
-                ->with('user_id', $user_id)
-                ->with('getData', $getData);
+            ->with('headerTitle', 'Konfirmasi Vendor Input Stock & Royalti')
+            ->with('getDataMaster', $getDataMaster)
+            ->with('master_item_id', $id)
+            ->with('user_id', $user_id)
+            ->with('getData', $getData);
     }
-    
-    public function getCekRejectMemberInputVStock($id, $user_id){
-        $modelSales = New Sales;
+
+    public function getCekRejectMemberInputVStock($id, $user_id)
+    {
+        $modelSales = new Sales;
         $getData = $modelSales->getMemberReqInputVStockistItem($id);
         $getDataMaster = $modelSales->getMemberReqInputVStockistID($id);
         return view('admin.ajax.cek_reject_input_vstock')
-                ->with('headerTitle', 'Reject Vendor Input Stock & Royalti')
-                ->with('getDataMaster', $getDataMaster)
-                ->with('master_item_id', $id)
-                ->with('user_id', $user_id)
-                ->with('getData', $getData);
+            ->with('headerTitle', 'Reject Vendor Input Stock & Royalti')
+            ->with('getDataMaster', $getDataMaster)
+            ->with('master_item_id', $id)
+            ->with('user_id', $user_id)
+            ->with('getData', $getData);
     }
-    
-    public function getCekIsiDepositTransactionById($id, $user_id, $is_tron){
-        $modelSettingTrans = New Transaction;
+
+    public function getCekIsiDepositTransactionById($id, $user_id, $is_tron)
+    {
+        $modelSettingTrans = new Transaction;
         $getData = $modelSettingTrans->getDetailDepositTransactionsMemberNew($id, $user_id, $is_tron);
         return view('admin.ajax.transaction-isideposit')
-                ->with('headerTitle', 'Cek Transaksi')
-                ->with('getData', $getData);
+            ->with('headerTitle', 'Cek Transaksi')
+            ->with('getData', $getData);
     }
-    
-    public function getRejectIsiDepositTransactionById($id, $user_id, $is_tron){
-        $modelSettingTrans = New Transaction;
+
+    public function getRejectIsiDepositTransactionById($id, $user_id, $is_tron)
+    {
+        $modelSettingTrans = new Transaction;
         $getData = $modelSettingTrans->getDetailRejectDepositTransactionsAdmin($id, $user_id, $is_tron);
         return view('admin.ajax.reject-transaction-isideposit')
-                ->with('headerTitle', 'Reject Transaksi')
-                ->with('getData', $getData);
+            ->with('headerTitle', 'Reject Transaksi')
+            ->with('getData', $getData);
     }
-    
-    public function getCekPPOBTransactionById($id, $type){
+
+    public function getCekPPOBTransactionById($id, $type)
+    {
         $modelPin = new Pin;
         $getData = $modelPin->getAdminDetailTransactionPPOBEiDR($id);
         return view('admin.ajax.cek-transaksi-ppob')
-                ->with('headerTitle', 'Detail Transaksi')
-                ->with('type', $type)
-                ->with('getData', $getData);
+            ->with('headerTitle', 'Detail Transaksi')
+            ->with('type', $type)
+            ->with('getData', $getData);
     }
-    
-    
-      
-    
-    
-
 }

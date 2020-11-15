@@ -101,8 +101,10 @@ Route::prefix('/')->group(function () {
     Route::get('/adm/history/penjualan-reward', 'Admin\MasterAdminController@getHistoryPenjualanReward')->name('adm_historyPenjualanReward')->middleware('auth');
     Route::post('/adm/change/data/member', 'Admin\MasterAdminController@postAdminChangeDataMember')->middleware('auth');
     Route::post('/adm/change/passwd/member', 'Admin\MasterAdminController@postAdminChangePasswordMember')->middleware('auth');
+    Route::post('/adm/change/2fa/member', 'Admin\MasterAdminController@postAdminChange2faMember')->middleware('auth');
     Route::post('/adm/change/block/member', 'Admin\MasterAdminController@postAdminChangeBlockMember')->middleware('auth');
     Route::post('/adm/search-list/member', 'Admin\MasterAdminController@postSearchMember')->middleware('auth');
+    Route::post('/adm/search-list/member-by-month', 'Admin\MasterAdminController@postSearchMemberByMonth')->middleware('auth');
     Route::post('/adm/change/tron/member', 'Admin\MasterAdminController@postAdminChangeTronMember')->middleware('auth');
     Route::post('/adm/search-list/member-stockist', 'Admin\MasterAdminController@postSearchMemberStockist')->middleware('auth');
     Route::get('/adm/history/req-stockist', 'Admin\MasterAdminController@getHistoryRequestMemberStockist')->name('adm_historyReqStockist')->middleware('auth');
@@ -205,6 +207,7 @@ Route::prefix('/')->group(function () {
     Route::get('/ajax/adm/cek/detail-vpenjualan-reward/{id}', 'Admin\AjaxController@getCekDetailVPenjualanReward')->middleware('auth');
     Route::get('/ajax/adm/change-data/member/{id}', 'Admin\AjaxController@getAdminChangeDataMember')->middleware('auth');
     Route::get('/ajax/adm/change-passwd/member/{id}', 'Admin\AjaxController@getAdminChangePasswordMember')->middleware('auth');
+    Route::get('/ajax/adm/change-2fa/member/{id}', 'Admin\AjaxController@getAdminChange2faMember')->middleware('auth');
     Route::get('/ajax/adm/change-block/member/{id}', 'Admin\AjaxController@getAdminChangeBlockMember')->middleware('auth');
     Route::get('/ajax/adm/change-tron/member/{id}', 'Admin\AjaxController@getAdminChangeTronMember')->middleware('auth');
     Route::get('/ajax/adm/get-page', 'Admin\AjaxController@getAdminGetCurrentPage')->middleware('auth');

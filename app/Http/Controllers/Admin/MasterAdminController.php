@@ -614,12 +614,9 @@ class MasterAdminController extends Controller
         if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelMember = new Member;
-        $getData = $modelMember->getAllMemberByAdmin();
-        $modelAdmin = new Admin;
         return view('admin.member.list-member')
             ->with('headerTitle', 'Member')
-            ->with('getData', $getData)
+            ->with('getData', null)
             ->with('dataUser', $dataUser);
     }
 
@@ -1823,6 +1820,44 @@ class MasterAdminController extends Controller
             ->with('messageclass', 'success');
     }
 
+    public function postAdminChange2faMember(Request $request)
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($request->password != $request->repassword) {
+            return redirect()->route('adm_listMember')
+                ->with('message', 'Pin dn ktik ulang password tidak sama')
+                ->with('messageclass', 'danger');
+        }
+        if (strlen($request->password) < 4) {
+            return redirect()->route('adm_listMember')
+                ->with('message', 'Pin terlalu pendek, minimal 4 karakter')
+                ->with('messageclass', 'danger');
+        }
+        if (!is_numeric($request->password)) {
+            return redirect()->route('adm_listMember')
+                ->with('message', 'Pin harus angka')
+                ->with('messageclass', 'danger');
+        }
+        $modelMember = new Member;
+        $dataUpdatePass = array(
+            '2fa' => bcrypt($request->password),
+        );
+        $modelMember->getUpdateUsers('id', $request->cekId, $dataUpdatePass);
+        $modelAdmin = new Admin;
+        $logHistory = array(
+            'user_id' => $dataUser->id,
+            'detail_log' => 'POST /adm/change/2fa/member user_id ' . $request->cekId
+        );
+        $modelAdmin->getInsertLogHistory($logHistory);
+        return redirect()->route('adm_listMember')
+            ->with('message', 'Kode Pin 2FA dari ' . $request->user_code . ' berhasil diubah')
+            ->with('messageclass', 'success');
+    }
+
     public function postAdminChangeBlockMember(Request $request)
     {
         $dataUser = Auth::user();
@@ -1876,14 +1911,50 @@ class MasterAdminController extends Controller
         if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $cekLenght = strlen($request->name);
+
+        $cekLenght = strlen($request->input);
         if ($cekLenght < 3) {
             return redirect()->route('adm_listMember')
                 ->with('message', 'Minimal pencarian harus 3 karakter (huruf).')
                 ->with('messageclass', 'danger');
         }
+        if ($request->selector == 1) {
+            $modelMember = new Member;
+            $data = $modelMember->getSearchAllMemberByAdmin($request->input);
+        }
+        if ($request->selector == 2) {
+            $modelMember = new Member;
+            $data = $modelMember->getSearchAllMemberByTron($request->input);
+        }
+
+        $getData = $data->data;
+        $getCountData = $data->total;
+        return view('admin.member.list-member')
+            ->with('headerTitle', 'Search Member')
+            ->with('getData', $getData)
+            ->with('getTotal', $getCountData)
+            ->with('dataUser', $dataUser);
+    }
+
+    public function postSearchMemberByMonth(Request $request)
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($request->month != null && $request->year != null) {
+            $start_day = date('Y-m-01', strtotime($request->year . '-' . $request->month));
+            $end_day = date('Y-m-t', strtotime($request->year . '-' . $request->month));
+            $text_month = date('F Y', strtotime($request->year . '-' . $request->month));
+            $getMonth = (object) array(
+                'startDay' => $start_day,
+                'endDay' => $end_day,
+                'textMonth' => $text_month
+            );
+        }
         $modelMember = new Member;
-        $data = $modelMember->getSearchAllMemberByAdmin($request->name);
+        $data = $modelMember->getSearchMemberByMonthByAdmin($getMonth);
         $getData = $data->data;
         $getCountData = $data->total;
         return view('admin.member.list-member')

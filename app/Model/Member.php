@@ -80,6 +80,55 @@ class Member extends Model
         return $return;
     }
 
+    public function getSearchAllMemberByTron($search)
+    {
+        $sql = DB::table('users')
+            ->selectRaw('users.id, users.name, users.email, users.hp, users.is_active, users.active_at, u1.user_code as sp_name, '
+                . 'users.user_code, users.is_tron, users.tron, users.pin_activate_at')
+            ->leftJoin('users as u1', 'users.sponsor_id', '=', 'u1.id')
+            ->where('users.is_active', '=', 1)
+            ->where('users.user_type', '=', 10)
+            ->where('users.tron', '=', $search)
+            ->orderBy('users.active_at', 'ASC')
+            ->get();
+        $return = (object) array(
+            'total' => 0,
+            'data' => null
+        );
+        if (count($sql) > 0) {
+            $return = (object) array(
+                'total' => count($sql),
+                'data' => $sql
+            );
+        }
+        return $return;
+    }
+
+    public function getSearchMemberByMonthByAdmin($date)
+    {
+        $sql = DB::table('users')
+            ->selectRaw('users.id, users.name, users.email, users.hp, users.is_active, users.active_at, u1.user_code as sp_name, '
+                . 'users.user_code, users.is_tron, users.tron, users.pin_activate_at')
+            ->leftJoin('users as u1', 'users.sponsor_id', '=', 'u1.id')
+            ->where('users.is_active', '=', 1)
+            ->where('users.user_type', '=', 10)
+            ->where('users.active_at', '>=', $date->startDay)
+            ->where('users.active_at', '<=', $date->endDay)
+            ->orderBy('users.active_at', 'ASC')
+            ->get();
+        $return = (object) array(
+            'total' => 0,
+            'data' => null
+        );
+        if (count($sql) > 0) {
+            $return = (object) array(
+                'total' => count($sql),
+                'data' => $sql
+            );
+        }
+        return $return;
+    }
+
     public function getSearchAllMemberStockistByAdmin($search)
     {
         $sql = DB::table('users')

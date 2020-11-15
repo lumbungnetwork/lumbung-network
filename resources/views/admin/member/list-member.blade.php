@@ -2,7 +2,7 @@
 @section('content')
 @include('layout.admin.sidebar')
 <div class="main-panel">
-    
+
     <?php //MENU HEADER  ?>
     <nav class="navbar navbar-expand-lg navbar-absolute fixed-top navbar-transparent">
         <div class="container-fluid">
@@ -18,36 +18,94 @@
             </div>
         </div>
     </nav>
-    
+
     <?php //MENU CONTENT  ?>
     <div class="content">
         <div class="row">
-            <div class="col-md-12">
-                <div class="card card-user">
-                    <div class="card-header">
-                    </div>
-                    <div class="card-body" style="min-height: auto;">
-                        <form class="login100-form validate-form" method="post" action="/adm/search-list/member">
-                            {{ csrf_field() }}
-                            <div id="addPenjualan">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Relevant Search</label>
-                                            <input type="text" class="form-control" name="name" placeholder="Minimal 3 karakter">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label>&nbsp;</label>
-                                             <button type="submit" class="form-control btn btn-sm btn-info " title="cari" style="margin: 0;">Cari</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>    
-                        </form>
+            <div class="col-12">
+                <div class="col-6">
+                    <div class="card card-user">
+                        <div class="card-body" style="min-height: auto;">
+
+                                <form class="login100-form validate-form" method="post" action="/adm/search-list/member">
+                                    {{ csrf_field() }}
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="selector" id="inlineRadio1" value="1" checked>
+                                                        <label class="form-check-label" for="inlineRadio1">Name</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="selector" id="inlineRadio2" value="2">
+                                                        <label class="form-check-label" for="inlineRadio2">Tron Address</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-9">
+                                                    <div class="form-group">
+                                                        <input type="text" class="form-control" name="input" placeholder="Minimal 3 karakter">
+                                                    </div>
+                                                </div>
+                                                <div class="col-3">
+                                                    <div class="form-group">
+                                                        <button type="submit" class="form-control btn btn-sm btn-info " title="cari" style="margin: 0;">Cari</button>
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+                                </form>
+                        </div>
                     </div>
                 </div>
+
+                <div class="col-6">
+                    <div class="card card-user">
+                        <div class="card-body">
+
+                                <form class="login100-form validate-form" method="post" action="/adm/search-list/member-by-month">
+                                    {{ csrf_field() }}
+                                    <div class="col-xl-12 col-xs-12">
+                                    <fieldset>
+                                        <select class="form-control" name="month" id="bank_name">
+                                            <option value="none">- Bulan -</option>
+                                            <option value="01">Januari</option>
+                                            <option value="02">Februari</option>
+                                            <option value="03">Maret</option>
+                                            <option value="04">April</option>
+                                            <option value="05">Mei</option>
+                                            <option value="06">Juni</option>
+                                            <option value="07">Juli</option>
+                                            <option value="08">Agustus</option>
+                                            <option value="09">September</option>
+                                            <option value="10">Oktober</option>
+                                            <option value="11">November</option>
+                                            <option value="12">Desember</option>
+                                        </select>
+                                    </fieldset>
+                                </div>
+                                <div class="col-xl-12 col-xs-12">
+                                    <fieldset>
+                                        <label>&nbsp;</label>
+                                        <select class="form-control" name="year" id="bank_name">
+                                            <option value="none">- Tahun -</option>
+                                            <option value="2019">2019</option>
+                                            <option value="2020">2020</option>
+                                            <option value="2021">2021</option>
+                                        </select>
+                                    </fieldset>
+                                </div>
+                                <div class="col-xl-12  col-xs-12">
+                                    <fieldset>
+                                        <label>&nbsp;</label>
+                                        <button type="submit" class="form-control btn btn-success">Cari</button>
+                                    </fieldset>
+                                </div>
+                                </form>
+                        </div>
+                    </div>
+                </div>
+
+
                 <div class="card">
                     <div class="card-header">
                         <h5 class="card-title">List</h5>
@@ -57,7 +115,7 @@
                             <div class="widget-content mt10 mb10 mr15">
                                 <div class="alert alert-{{ Session::get('messageclass') }}">
                                     <button class="close" type="button" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
-                                    {{  Session::get('message')    }} 
+                                    {{  Session::get('message')    }}
                                 </div>
                             </div>
                         @endif
@@ -76,14 +134,14 @@
                                         <th>###</th>
                                     </tr>
                                 </thead>
-                                
+
                                 <tbody>
                                     @if($getData != null)
-                                        <?php 
-                                        $no = 0; 
+                                        <?php
+                                        $no = 0;
                                         ?>
                                         @foreach($getData as $row)
-                                        <?php 
+                                        <?php
                                             $no++;
                                             $sp = 'Top 001';
                                             if($row->sp_name != null){
@@ -121,13 +179,15 @@
                                                     <div class="table-icons">
                                                         <a rel="tooltip"  data-toggle="modal" data-target="#popUp"  href="{{ URL::to('/') }}/ajax/adm/change-passwd/member/{{$row->id}}" class="text-warning">passwd</a>
                                                         &nbsp;&nbsp;
+                                                        <a rel="tooltip"  data-toggle="modal" data-target="#popUp4"  href="{{ URL::to('/') }}/ajax/adm/change-2fa/member/{{$row->id}}" class="text-warning">2fa</a>
+                                                        &nbsp;&nbsp;
                                                         <a rel="tooltip"  data-toggle="modal" data-target="#popUp1"  href="{{ URL::to('/') }}/ajax/adm/change-data/member/{{$row->id}}" class="text-primary">data</a>
                                                         @if($row->is_tron == 1)
                                                         &nbsp;&nbsp;
                                                         <a rel="tooltip"  data-toggle="modal" data-target="#popUp2"  href="{{ URL::to('/') }}/ajax/adm/change-tron/member/{{$row->id}}" class="text-help">tron</a>
                                                         @endif
-<!--                                                        &nbsp;&nbsp;
-                                                        <a rel="tooltip"  data-toggle="modal" data-target="#popUp2"  href="{{ URL::to('/') }}/ajax/adm/change-block/member/{{$row->id}}" class="text-danger">blokir</a>-->
+                                                        &nbsp;&nbsp;
+                                                        <a rel="tooltip"  data-toggle="modal" data-target="#popUp3"  href="{{ URL::to('/') }}/ajax/adm/change-block/member/{{$row->id}}" class="text-danger">blokir</a>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -140,12 +200,22 @@
                                     <div class="modal-content"></div>
                                 </div>
                             </div>
-                             <div class="modal fade" id="popUp1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="false">
+                             <div class="modal fade" id="popUp1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content"></div>
                                 </div>
                             </div>
-                             <div class="modal fade" id="popUp2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="false">
+                             <div class="modal fade" id="popUp2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content"></div>
+                                </div>
+                            </div>
+                             <div class="modal fade" id="popUp3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content"></div>
+                                </div>
+                            </div>
+                             <div class="modal fade" id="popUp4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content"></div>
                                 </div>
@@ -184,6 +254,14 @@
         var link = $(e.relatedTarget);
         $(this).find(".modal-content").load(link.attr("href"));
     });
+    $("#popUp3").on("show.bs.modal", function(e) {
+        var link = $(e.relatedTarget);
+        $(this).find(".modal-content").load(link.attr("href"));
+    });
+    $("#popUp4").on("show.bs.modal", function(e) {
+        var link = $(e.relatedTarget);
+        $(this).find(".modal-content").load(link.attr("href"));
+    });
     $(document).ready(function() {
         $('#myTable').DataTable( {
                 dom: 'Bfrtip',
@@ -195,7 +273,27 @@
                     {
                         extend: 'excelHtml5',
                         title: 'export_xls' ,
-                   }
+                   },
+                   {
+                        extend: 'copyHtml5',
+                        text: 'Copy All',
+                        header: false,
+
+                        exportOptions: {
+
+                            columns: [1, 2, 3, 4, 5, 6, 7, 8]
+                        }
+                   },
+                   {
+                        extend: 'copyHtml5',
+                        text: 'Copy Laporan',
+                        header: false,
+
+                        exportOptions: {
+
+                            columns: [2, 4, 6]
+                        }
+                   },
                 ],
                 searching: false,
                  pagingType: "full_numbers",

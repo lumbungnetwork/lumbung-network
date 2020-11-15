@@ -12,3 +12,7 @@ npm-debug.log
 yarn-error.log
 .env
 nbproject/*
+public/.DS_Store
+public/asset_new/.DS_Store
+public/asset_new/img/.DS_Store
+.DS_Store
