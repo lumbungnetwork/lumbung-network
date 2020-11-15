@@ -46,6 +46,21 @@
                                     </fieldset>
                                 </div>
                             </div>
+                            <div class="row">
+                                        <div class="col-12 my-3">
+                                                <div class="pretty p-icon p-toggle p-plain">
+                                                    <input type="checkbox" id="show-password" />
+                                                        <div class="state p-success-o p-on">
+                                                            <i class="icon mdi mdi-eye"></i>
+                                                            <label>Sembunyikan Kode Pin</label>
+                                                        </div>
+                                                        <div class="state p-off">
+                                                            <i class="icon mdi mdi-eye-off"></i>
+                                                            <label>Tampilkan Kode Pin</label>
+                                                        </div>
+                                                </div>
+                                        </div>
+                            </div>
                         @endif
 
                         @if($dataUser->{'2fa'} != null)
@@ -73,6 +88,21 @@
                                 </fieldset>
                             </div>
                         </div>
+                        <div class="row">
+                                        <div class="col-12 my-3">
+                                                <div class="pretty p-icon p-toggle p-plain">
+                                                    <input type="checkbox" id="show-password" />
+                                                        <div class="state p-success-o p-on">
+                                                            <i class="icon mdi mdi-eye"></i>
+                                                            <label>Sembunyikan Kode Pin</label>
+                                                        </div>
+                                                        <div class="state p-off">
+                                                            <i class="icon mdi mdi-eye-off"></i>
+                                                            <label>Tampilkan Kode Pin</label>
+                                                        </div>
+                                                </div>
+                                        </div>
+                            </div>
                         @endif
 
                         <div class="row">
@@ -102,13 +132,24 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/fonts/slick.woff">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css">
 @stop
 
 @section('javascript')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
     <script src="{{ asset('asset_new/js/sidebar.js') }}"></script>
     <script>
-
+        $(document).ready(function(){
+                $('#show-password').click(function(){
+                    if($(this).is(':checked')){
+                            $('#password').attr('type','text');
+                            $('#repassword').attr('type','text');
+                    }else{
+                            $('#password').attr('type','password');
+                            $('#repassword').attr('type','password');
+                    }
+                });
+            });
 
         @if($dataUser->{'2fa'} == null)
             function inputSubmit(){
