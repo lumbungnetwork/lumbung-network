@@ -482,6 +482,7 @@ Route::prefix('/')->group(function () {
     Route::get('/m/cek/reject-vpembelian', 'Admin\AjaxmemberController@postCekRejectVPembelian')->middleware('auth');
     Route::get('/m/cek/confirm-vpenjualan-reward', 'Admin\AjaxmemberController@getCekConfirmVPenjualanReward')->middleware('auth');
     Route::get('/m/cek/confirm-vbelanja-reward', 'Admin\AjaxmemberController@getCekConfirmVBelanjaReward')->middleware('auth');
+    Route::get('/m/cek/confirm-2fa-ppob', 'Admin\AjaxmemberController@getCek2FAConfirmPPOB')->middleware('auth');
 
     Route::get('/m/search/{type}', 'Admin\AjaxmemberController@getSearchByType')->middleware('auth');
     Route::get('/m/cek/pulsa', 'Admin\AjaxmemberController@getCekPOBX')->middleware('auth');

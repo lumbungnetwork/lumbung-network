@@ -123,13 +123,7 @@
                                                 &nbsp;
                                                 @endif
                                             @endif
-                                            <form id="form-konfirmasi" method="POST" action="/m/confirm/vppob-new" style="display: contents;">
-                                                {{ csrf_field() }}
-                                                <input type="hidden" name="ppob_id" value="{{$getDataMaster->id}}">
-                                                <input type="hidden" name="harga_modal" value="{{$getDataMaster->harga_modal}}">
-                                                <button type="submit" class="btn btn-success" id="submitBtn">Konfirmasi</button>
-                                            </form>
-
+                                            <button type="button" class="btn btn-success"  id="submitBtn" data-toggle="modal" data-target="#confirmSubmit" onClick="inputSubmit()">Konfirmasi</button>
                                         @endif
                                         @if($getDataMaster->status == 2)
                                             <a class="btn btn-dark" href="{{ URL::to('/') }}/m/list/vppob-transaction">Kembali</a>
@@ -150,28 +144,8 @@
                                 <div class="modal-dialog" role="document" id="rejectDetail">
                                 </div>
                             </div>
-                            <div class="modal fade" id="loading-modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true" data-backdrop="false">
-                                <div class="modal-dialog" role="document" id="submitDetail">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="modalLabel">Proses Konfirmasi Transaksi</h5>
-                                        </div>
-                                        <div class="modal-body"  style="overflow-y: auto;max-height: 330px;">
-                                            <div class="row" id="loading">
-                                                <div class="col-md-12">
-                                                    <div class="form-group">
-                                                        <h5 class="text-warning" style="display: block;text-align: center;">
-                                                            <div class="spinner-border m-7" role="status">
-                                                                <span class="sr-only">Loading...</span>
-                                                            </div>
-                                                            Sedang Mengkonfirmasi...
-                                                        </h5>
-                                                        <h6 class="text-danger my-3" style="text-align: center;">Jangan tutup halaman ini!</h6>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true" data-backdrop="false">
+                                <div class="modal-dialog" role="document" id="confirmDetail">
                                 </div>
                             </div>
                         </div>
@@ -194,6 +168,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/fonts/slick.woff">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css">
 
 @stop
 
@@ -203,6 +178,26 @@
     @if($getDataMaster->buy_metode == 1)
     @if($getDataMaster->status < 2)
     <script>
+            $(document).ready(function(){
+                $('#show-password').click(function(){
+                    if($(this).is(':checked')){
+                            $('#2fa').attr('type','text');
+                    }else{
+                            $('#2fa').attr('type','password');
+                    }
+                });
+            });
+
+            function inputSubmit(){
+                 $.ajax({
+                     type: "GET",
+                     url: "{{ URL::to('/') }}/m/cek/confirm-2fa-ppob?id_ppob="+{{$getDataMaster->id}},
+                     success: function(url){
+                         $("#confirmDetail" ).empty();
+                         $("#confirmDetail").html(url);
+                     }
+                 });
+           }
 
            function rejectSubmit(){
                  $.ajax({
@@ -215,9 +210,14 @@
                  });
            }
 
-            $("#form-konfirmasi").submit(function(){
-                $('#loading-modal').modal('show');
-            });
+            function confirmSubmit(){
+                var dataInput = $("#form-add").serializeArray();
+                $('#form-add').submit();
+                $('#form-add').remove();
+                $('#loading').show();
+                $('#tutupModal').remove();
+                $('#submit').remove();
+            }
     </script>
     @endif
     @endif

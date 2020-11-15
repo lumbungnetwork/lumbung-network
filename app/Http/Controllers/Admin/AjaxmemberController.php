@@ -1838,6 +1838,22 @@ class AjaxmemberController extends Controller
             ->with('dataVendor', $getVendor);
     }
 
+    public function getCek2FAConfirmPPOB(Request $request)
+    {
+        $dataUser = Auth::user();
+        $modelPin = new Pin;
+        $getDataMaster = $modelPin->getVendorPPOBDetail($request->id_ppob, $dataUser);
+        $is_2fa = false;
+        if ($dataUser->{'2fa'} != null) {
+            $is_2fa = true;
+        }
+
+        return view('member.ajax.confirm_2fa_cek_vppob')
+            ->with('ppobId', $getDataMaster->id)
+            ->with('is_2fa', $is_2fa)
+            ->with('vendorId', $dataUser->id);
+    }
+
     public function postRejectBuyPPOBHP(Request $request)
     {
         $dataUser = Auth::user();
