@@ -154,7 +154,7 @@ class MemberController extends Controller
             $message->to($emailSend, 'Lumbung Network Registration')
                 ->subject('Welcome to Lumbung Network');
         });
-        return redirect()->route('m_newSponsor')
+        return redirect()->back()
             ->with('message', 'Registrasi member baru berhasil')
             ->with('messageclass', 'success');
     }
@@ -2541,6 +2541,20 @@ class MemberController extends Controller
             ->with('dataUser', $dataUser);
     }
 
+    public function getEdit2FA()
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        return view('member.profile.my-2fa')
+            ->with('headerTitle', '2FA PIN')
+            ->with('dataUser', $dataUser);
+    }
     public function getEditPassword()
     {
         $dataUser = Auth::user();

@@ -1012,6 +1012,9 @@ class AjaxmemberController extends Controller
                 ->with('dataRequest', null)
                 ->with('check', $canInsert);
         }
+        $ucl = preg_match('/[A-Z]/', $request->password); // Uppercase Letter
+        $lcl = preg_match('/[a-z]/', $request->password); // Lowercase Letter
+        $dig = preg_match('/\d/', $request->password); // Numeral
         if ($request->password == null) {
             $canInsert = (object) array('can' => false, 'pesan' => 'Password harus diisii');
             return view('member.ajax.confirm_edit_password')
@@ -1032,6 +1035,12 @@ class AjaxmemberController extends Controller
         }
         if (strlen($request->password) < 6) {
             $canInsert = (object) array('can' => false, 'pesan' => 'Password terlalu pendek, minimal 6 karakter');
+            return view('member.ajax.confirm_edit_password')
+                ->with('dataRequest', null)
+                ->with('check', $canInsert);
+        }
+        if (!$ucl || !$lcl || !$dig) {
+            $canInsert = (object) array('can' => false, 'pesan' => 'Password harus mengandung minimal 1 Huruf Besar, 1 Huruf Kecil dan 1 Angka. (Contoh: iniP4sswoRdku777)');
             return view('member.ajax.confirm_edit_password')
                 ->with('dataRequest', null)
                 ->with('check', $canInsert);

@@ -245,9 +245,19 @@
                                 }
                                 $totalDeposit = $sum_deposit_masuk - $sum_deposit_keluar - $sum_deposit_keluar1;
                             ?>
-                            <div class="col-9 mb-3">
+                            <div class="col-6 mb-3">
                                 <p class="f-14">Saldo Deposit Vendor</p>
                                 <h4 class="text-warning"> Rp {{number_format($totalDeposit, 0, ',', '.')}}</h4>
+                            </div>
+                            <div class="col-3 mb-3">
+                                <a href="{{ URL::to('/') }}/m/edit/2fa" class="text-decoration-none">
+                                    <div class="rounded icon-ppob text-center">
+                                        <div class="box-icon bg-green text-center">
+                                            <i class="mdi mdi-bank-transfer icon-menu text-warning"></i>
+                                        </div>
+                                        <dd>2FA PIN</dd>
+                                    </div>
+                                </a>
                             </div>
                             <div class="col-3 mb-3">
                                 <a href="{{ URL::to('/') }}/m/list/vppob-transaction" class="text-decoration-none">

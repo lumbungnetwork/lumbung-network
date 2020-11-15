@@ -12,6 +12,11 @@ class Validation extends Model
     public function getCheckNewSponsor($request)
     {
         $canInsert = (object) array('can' => true, 'pesan' => '');
+        $pass = $request->password;
+        $ucl = preg_match('/[A-Z]/', $pass); // Uppercase Letter
+        $lcl = preg_match('/[a-z]/', $pass); // Lowercase Letter
+        $dig = preg_match('/\d/', $pass); // Numeral
+
         if ($request->email == null) {
             $canInsert = (object) array('can' => false, 'pesan' => 'Email tidak boleh kosong');
             return $canInsert;
@@ -42,6 +47,10 @@ class Validation extends Model
         }
         if (strlen($request->password) < 6) {
             $canInsert = (object) array('can' => false, 'pesan' => 'Password terlalu pendek, minimal 6 karakter');
+            return $canInsert;
+        }
+        if (!$ucl || !$lcl || !$dig) {
+            $canInsert = (object) array('can' => false, 'pesan' => 'Password harus mengandung minimal 1 Huruf Besar, 1 Huruf Kecil dan 1 Angka. (Contoh: iniP4sswoRdku777)');
             return $canInsert;
         }
         if (!is_numeric($request->hp)) {

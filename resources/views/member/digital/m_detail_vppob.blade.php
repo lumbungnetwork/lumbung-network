@@ -73,6 +73,10 @@
                                     <h5 class="label label-success">Tuntas</h5>
                                 </div>
                             </div>
+                            @if ($getDataMaster->type >=1 && $getDataMaster->type <3)
+                            <?php   $array = json_decode($getDataMaster->return_buy, true);?>
+                        <p class="card-text"><b>SN:</b> {{$array['data']['sn']}}</p>
+                            @endif
                             @endif
                             @if($getDataMaster->status == 3)
                             <p class="card-text">Status</p>

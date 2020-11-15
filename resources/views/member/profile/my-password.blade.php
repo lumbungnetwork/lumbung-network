@@ -2,11 +2,11 @@
 @section('content')
 
 <div class="wrapper">
-        
-    
+
+
         <!-- Page Content -->
         <div id="content">
-            
+
             <div class="bg-gradient-sm">
                 <nav class="navbar navbar-expand-lg navbar-light bg-transparent w-100">
                     <div class="container">
@@ -27,27 +27,27 @@
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">×</span>
                                 </button>
-                                {{  Session::get('message')    }} 
+                                {{  Session::get('message')    }}
                             </div>
                         @endif
-                        
+
                         <div class="row">
-                            <div class="col-xl-12 col-xs-12">
+                            <div class="col-12">
                                 <fieldset class="form-group">
                                     <label for="password">Konfirmasi Password Lama</label>
                                     <input type="password" class="form-control" id="old_password" name="old_password" autocomplete="off">
                                 </fieldset>
                             </div>
                         </div>
-                        
+
                         <div class="row">
-                            <div class="col-xl-6 col-xs-12">
+                            <div class="col-12">
                                 <fieldset class="form-group">
                                     <label for="password">Password</label>
                                     <input type="password" class="form-control" id="password" name="password" autocomplete="off">
                                 </fieldset>
                             </div>
-                            <div class="col-xl-6 col-xs-12">
+                            <div class="col-12">
                                 <fieldset class="form-group">
                                     <label for="repassword">Ketik Ulang Password</label>
                                     <input type="password" class="form-control" id="repassword" name="repassword" autocomplete="off">
@@ -56,7 +56,7 @@
                         </div>
                         <div class="row">
                             <div class="col-xl-6">
-                                <button type="submit" class="btn btn-success"  id="submitBtn" data-toggle="modal" data-target="#confirmSubmit" onClick="inputSubmit()">Submit</button>
+                                <button type="submit" class="btn btn-success"  id="submitBtn" data-toggle="modal" data-target="#confirmSubmit" onClick="inputSubmit()">Ganti Password</button>
                             </div>
                         </div>
                         <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true" data-backdrop="false">
@@ -100,13 +100,13 @@
                 }
             });
         }
-        
+
         function confirmSubmit(){
             var dataInput = $("#form-add").serializeArray();
             $('#form-add').submit();
         }
-        
-        $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {    
+
+        $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {
            $(this).val($(this).val().replace(/[^\d].+/, ""));
             if ((event.which < 48 || event.which > 57)) {
                 event.preventDefault();
