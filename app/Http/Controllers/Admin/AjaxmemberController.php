@@ -1054,6 +1054,70 @@ class AjaxmemberController extends Controller
             ->with('dataUser', $dataUser);
     }
 
+    public function getCek2FA(Request $request)
+    {
+        $dataUser = Auth::user();
+        $canInsert = (object) array('can' => true, 'pesan' => '');
+        if ($request->type == 1) {
+            //Change pin
+            if ($request->old_password == null) {
+                $canInsert = (object) array('can' => false, 'pesan' => 'Kode Pin Lama harus diisi');
+                return view('member.ajax.confirm_edit_2fa')
+                    ->with('dataRequest', null)
+                    ->with('check', $canInsert);
+            }
+
+            $cekOld = false;
+            if (Hash::check($request->old_password, $dataUser->{'2fa'})) {
+                $cekOld = true;
+            }
+            if ($cekOld == false) {
+                $canInsert = (object) array('can' => false, 'pesan' => 'Kode Pin lama tidak benar');
+                return view('member.ajax.confirm_edit_2fa')
+                    ->with('dataRequest', null)
+                    ->with('check', $canInsert);
+            }
+        }
+
+        if ($request->password == null) {
+            $canInsert = (object) array('can' => false, 'pesan' => 'Kode Pin harus diisii');
+            return view('member.ajax.confirm_edit_2fa')
+                ->with('dataRequest', null)
+                ->with('check', $canInsert);
+        }
+        if (strpos($request->repassword, ' ') !== false) {
+            $canInsert = (object) array('can' => false, 'pesan' => 'Ketik ulang Kode Pin harus diisi');
+            return view('member.ajax.confirm_edit_2fa')
+                ->with('dataRequest', null)
+                ->with('check', $canInsert);
+        }
+        if ($request->password != $request->repassword) {
+            $canInsert = (object) array('can' => false, 'pesan' => 'Kode Pin tidak sama');
+            return view('member.ajax.confirm_edit_2fa')
+                ->with('dataRequest', null)
+                ->with('check', $canInsert);
+        }
+        if (strlen($request->password) < 4) {
+            $canInsert = (object) array('can' => false, 'pesan' => 'Kode Pin terlalu pendek, minimal 4 digit');
+            return view('member.ajax.confirm_edit_2fa')
+                ->with('dataRequest', null)
+                ->with('check', $canInsert);
+        }
+        if (!is_numeric($request->password)) {
+            $canInsert = (object) array('can' => false, 'pesan' => 'Kode Pin hanya menggunakan Angka saja');
+            return view('member.ajax.confirm_edit_2fa')
+                ->with('dataRequest', null)
+                ->with('check', $canInsert);
+        }
+        $data = (object) array(
+            'password' => $request->password
+        );
+        return view('member.ajax.confirm_edit_2fa')
+            ->with('dataRequest', $data)
+            ->with('check', $canInsert)
+            ->with('dataUser', $dataUser);
+    }
+
     public function getCekRequestMemberVendor(Request $request)
     {
         $dataUser = Auth::user();

@@ -2590,6 +2590,26 @@ class MemberController extends Controller
             ->with('messageclass', 'success');
     }
 
+    public function postEdit2FA(Request $request)
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        $dataUpdatePass = array(
+            '2fa' => bcrypt($request->password),
+        );
+        $modelMember = new Member;
+        $modelMember->getUpdateUsers('id', $dataUser->id, $dataUpdatePass);
+        return redirect()->route('m_edit2FA')
+            ->with('message', 'Berhasil edit Pin 2FA')
+            ->with('messageclass', 'success');
+    }
+
     public function getRequestMemberVendor()
     {
         $dataUser = Auth::user();
