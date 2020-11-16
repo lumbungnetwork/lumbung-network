@@ -5293,11 +5293,7 @@ class MemberController extends Controller
             return redirect()->route('mainDashboard');
         }
 
-        $modelPin = new Pin;
-        $modelTrans = new Transaction;
-        $getDataMaster = $modelPin->getVendorPPOBDetail($request->ppob_id, $dataUser);
-        $getTransTarik = $modelTrans->getMyTotalTarikDeposit($dataUser);
-        $getTotalDeposit = $modelPin->getTotalDepositMember($dataUser);
+
 
         //2FA pin checking
         if (!Hash::check($request->password, $dataUser->{'2fa'})) {
@@ -5310,6 +5306,11 @@ class MemberController extends Controller
         do {
             $i = 0;
             //deposit checking
+            $modelPin = new Pin;
+            $modelTrans = new Transaction;
+            $getDataMaster = $modelPin->getVendorPPOBDetail($request->ppob_id, $dataUser);
+            $getTransTarik = $modelTrans->getMyTotalTarikDeposit($dataUser);
+            $getTotalDeposit = $modelPin->getTotalDepositMember($dataUser);
 
             $sum_deposit_masuk = 0;
             $sum_deposit_keluar1 = 0;
@@ -5416,7 +5417,7 @@ class MemberController extends Controller
             if ($cekDuaKali == null) {
                 $memberDeposit = array(
                     'user_id' => $dataUser->id,
-                    'total_deposito' => $$getDataMaster->harga_modal,
+                    'total_deposito' => $getDataMaster->harga_modal,
                     'transaction_code' => $getDataMaster->buyer_code . '-' . $ref_id,
                     'deposito_status' => 1
                 );
