@@ -5376,7 +5376,7 @@ class MemberController extends Controller
             $arrayData = json_decode($cek, true);
 
             $i++;
-            if ($i > 18) goto end;
+            if ($i > 14) goto end;
             if ($arrayData == null) {
                 return redirect()->back()
                     ->with('message', 'Ada gangguan koneksi, periksa jaringan internet anda, lalu ulangi kembali.')
