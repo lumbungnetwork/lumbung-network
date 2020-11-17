@@ -4,6 +4,7 @@ namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Config;
 use Validator;
 
 class Member extends Model
@@ -1239,11 +1240,10 @@ class Member extends Model
 
     public function getDataAPIMobilePulsa()
     {
-        // production 975e6ad1-4e40-55ba-a795-0f904296b8e3
-        // development dev-0815ad60-a0f3-11ea-9ccb-25dc8f4bbb19
+
         $data = (object) array(
-            'username' => 'wekurugKvNdW',
-            'api_key' => '975e6ad1-4e40-55ba-a795-0f904296b8e3',
+            'username' => Config::get('services.digiflazz.user'),
+            'api_key' => Config::get('services.digiflazz.key'),
             'master_url' => 'https://api.digiflazz.com'
         );
         return $data;
