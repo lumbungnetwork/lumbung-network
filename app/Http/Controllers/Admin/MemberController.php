@@ -2620,9 +2620,9 @@ class MemberController extends Controller
             return redirect()->route('m_newPackage');
         }
         if ($dataUser->is_profile == 0) {
-            return redirect()->route('m_SearchVendor')
-                ->with('message', 'Data profil anda belum lengkap')
-                ->with('messageclass', 'danger');
+            return redirect()->route('m_myProfile')
+                ->with('message', 'Silakan isi data profile anda terlebih dahulu')
+                ->with('messageclass', 'warning');
         }
         if ($dataUser->is_stockist == 1 || $dataUser->is_vendor == 1) {
             return redirect()->route('m_SearchVendor')
@@ -2682,7 +2682,6 @@ class MemberController extends Controller
         $getDataKota = null;
         $getData = null;
         if ($dataUser->kode_daerah != null) {
-            $dataDaerah = explode('.', $dataUser->kode_daerah);
             $kelurahan = $dataUser->kelurahan;
             $kecamatan = $dataUser->kecamatan;
             $kota = $dataUser->kota;
