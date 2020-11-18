@@ -35,6 +35,10 @@ return [
         'key' => env('DF_AK'),
     ],
 
+    'telegram' => [
+        'eidr' => env('BEIDR'),
+    ],
+
     'stripe' => [
         'model' => App\User::class,
         'key' => env('STRIPE_KEY'),

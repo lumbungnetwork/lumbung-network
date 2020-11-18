@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Config;
 use App\Model\Member;
 use App\Model\Pinsetting;
 use App\Model\Masterpin;
@@ -24,10 +25,6 @@ use App\Model\Sales;
 use App\Model\Transferwd;
 use GuzzleHttp\Client;
 
-//1.  Kartu Halo 1500
-//2.  PLN 500
-//3.  Telkom 1000
-//4.  Finance (Cicilan) 1000
 
 class MemberController extends Controller
 {
@@ -5452,6 +5449,15 @@ class MemberController extends Controller
                     'deposito_status' => 1
                 );
                 $modelPin->getInsertMemberDeposit($memberDeposit);
+            }
+            if ($arrayData['data']['buyer_last_saldo'] < 2000000) {
+                $tgArray = array(
+                    'chat_id' => '365874331',
+                    'text' => 'Saldo Digiflazz tinggal' . $arrayData['data']['buyer_last_saldo'],
+                    'parse_mode' => 'markdown'
+                );
+                $jsonTg = json_encode($tgArray);
+                $modelMember->getAPIurlCheckSimple("https://api.telegram.org/bot" . Config::get('services.telegram.eidr') . '/sendMessage', $jsonTg);
             }
             return redirect()->back()
                 ->with('message', 'Transaksi Berhasil')
