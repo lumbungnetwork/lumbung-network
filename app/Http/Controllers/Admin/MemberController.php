@@ -5681,6 +5681,12 @@ class MemberController extends Controller
         }
         //1 BPJS. 2 PLN, 3 Hp Pasca, 4 TELKOM PSTN, 5 PDAM, 6 Gas Negara, 7 Multifinance
 
+        if (!is_numeric($request->customer_no)) {
+            return redirect()->back()
+                ->with('message', 'Pergunakan hanya angka saja')
+                ->with('messageclass', 'danger');
+        }
+
         if ($request->type == 1) {
             $buyer_sku_code = 'BPJS';
             $typePPOB = 4;
