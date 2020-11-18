@@ -1434,13 +1434,13 @@ class MemberController extends Controller
             return redirect()->route('m_newPackage');
         }
         if ($dataUser->is_profile == 0) {
-            return redirect()->route('m_SearchStockist')
-                ->with('message', 'Data profil anda belum lengkap')
-                ->with('messageclass', 'danger');
+            return redirect()->route('m_myProfile')
+                ->with('message', 'Silakan mengisi data profile anda terlebih dahulu')
+                ->with('messageclass', 'warning');
         }
-        if ($dataUser->is_stockist == 1 && $dataUser->is_vendor == 1) {
+        if ($dataUser->is_stockist == 1 || $dataUser->is_vendor == 1) {
             return redirect()->route('mainDashboard')
-                ->with('message', 'Anda sudah menjadi member salah satu stockist atau vendor')
+                ->with('message', 'Anda sudah menjadi stockist atau vendor')
                 ->with('messageclass', 'danger');
         }
         $modelMember = new Member;
@@ -1466,9 +1466,9 @@ class MemberController extends Controller
             return redirect()->route('m_newPackage');
         }
         if ($dataUser->is_profile == 0) {
-            return redirect()->route('m_SearchStockist')
-                ->with('message', 'Data profil anda belum lengkap')
-                ->with('messageclass', 'danger');
+            return redirect()->route('m_myProfile')
+                ->with('message', 'Silakan mengisi data profile anda terlebih dahulu')
+                ->with('messageclass', 'warning');
         }
         $modelMember = new Member;
         $dataInsert = array(
@@ -1495,9 +1495,11 @@ class MemberController extends Controller
         $getDataKecamatan = null;
         $getDataKota = null;
         $getData = null;
-        if ($dataUser->kode_daerah != null) {
-            $dataDaerah = explode('.', $dataUser->kode_daerah);
-            $provKota = $dataDaerah[0] . '.' . $dataDaerah[1];
+        if ($dataUser->kode_daerah == null) {
+            return redirect()->route('m_myProfile')
+                ->with('message', 'Lengkapi terlebih dahulu data profil anda')
+                ->with('messageclass', 'danger');
+        } else {
             $kelurahan = $dataUser->kelurahan;
             $kecamatan = $dataUser->kecamatan;
             $kota = $dataUser->kota;

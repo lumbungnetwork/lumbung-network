@@ -593,13 +593,7 @@ class AjaxmemberController extends Controller
         $dataUser = Auth::user();
         $modelMember = new Member;
         $modelValidasi = new Validation;
-        $cekHU1 = null;
-        if ($request->hu1 != null) {
-            $getHU1 = $modelMember->getCekHakUsaha($dataUser, $request->hu1);
-            if ($getHU1 != null) {
-                $cekHU1 = $getHU1->id;
-            }
-        }
+
         $cekHU2 = null;
         if ($request->hu2 != null) {
             $getHU2 = $modelMember->getCekHakUsaha($dataUser, $request->hu2);
@@ -616,10 +610,8 @@ class AjaxmemberController extends Controller
         }
         $dataAll = (object) array(
             'syarat1' => $request->syarat1,
-            'syarat2' => $request->syarat2,
             'syarat3' => $request->syarat3,
             'syarat4' => $request->syarat4,
-            'hu1' => $cekHU1,
             'hu2' => $cekHU2,
             'hu3' => $cekHU3,
             'total_sp' => $dataUser->total_sponsor,
