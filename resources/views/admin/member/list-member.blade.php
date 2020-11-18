@@ -9,9 +9,9 @@
             <div class="navbar-wrapper">
                 <div class="navbar-toggle">
                     <button type="button" class="navbar-toggler">
-                    <span class="navbar-toggler-bar bar1"></span>
-                    <span class="navbar-toggler-bar bar2"></span>
-                    <span class="navbar-toggler-bar bar3"></span>
+                        <span class="navbar-toggler-bar bar1"></span>
+                        <span class="navbar-toggler-bar bar2"></span>
+                        <span class="navbar-toggler-bar bar3"></span>
                     </button>
                 </div>
                 <p class="navbar-brand">{{$headerTitle}}</p>
@@ -22,49 +22,54 @@
     <?php //MENU CONTENT  ?>
     <div class="content">
         <div class="row">
-            <div class="col-12">
-                <div class="col-6">
-                    <div class="card card-user">
-                        <div class="card-body" style="min-height: auto;">
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-body" style="min-height: auto;">
 
-                                <form class="login100-form validate-form" method="post" action="/adm/search-list/member">
-                                    {{ csrf_field() }}
-                                            <div class="row">
-                                                <div class="col-12">
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="radio" name="selector" id="inlineRadio1" value="1" checked>
-                                                        <label class="form-check-label" for="inlineRadio1">Name</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="radio" name="selector" id="inlineRadio2" value="2">
-                                                        <label class="form-check-label" for="inlineRadio2">Tron Address</label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-9">
-                                                    <div class="form-group">
-                                                        <input type="text" class="form-control" name="input" placeholder="Minimal 3 karakter">
-                                                    </div>
-                                                </div>
-                                                <div class="col-3">
-                                                    <div class="form-group">
-                                                        <button type="submit" class="form-control btn btn-sm btn-info " title="cari" style="margin: 0;">Cari</button>
-                                                    </div>
-                                                </div>
+                        <form class="login100-form validate-form" method="post" action="/adm/search-list/member">
+                            {{ csrf_field() }}
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="ml-2 form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="selector" id="inlineRadio1"
+                                            value="1" style="margin-right: -30%;" checked>
+                                        <label class="form-check-label" for="inlineRadio1">Name</label>
+                                    </div>
+                                    <div class="ml-5 form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="selector" id="inlineRadio2"
+                                            value="2" style="margin-right: -20%;">
+                                        <label class="form-check-label" for="inlineRadio2">Tron Address</label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-md-9">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" name="input"
+                                            placeholder="Minimal 3 karakter">
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-md-3">
+                                    <div class="form-group">
+                                        <button type="submit" class="form-control btn btn-sm btn-info " title="cari"
+                                            style="margin: 0;">Cari</button>
+                                    </div>
+                                </div>
 
 
-                                            </div>
-                                </form>
-                        </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
+            </div>
 
-                <div class="col-6">
-                    <div class="card card-user">
-                        <div class="card-body">
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-body">
 
-                                <form class="login100-form validate-form" method="post" action="/adm/search-list/member-by-month">
-                                    {{ csrf_field() }}
-                                    <div class="col-xl-12 col-xs-12">
+                        <form class="login100-form validate-form" method="post"
+                            action="/adm/search-list/member-by-month">
+                            {{ csrf_field() }}
+                            <div class="row">
+                                <div class="col-6">
                                     <fieldset>
                                         <select class="form-control" name="month" id="bank_name">
                                             <option value="none">- Bulan -</option>
@@ -83,9 +88,8 @@
                                         </select>
                                     </fieldset>
                                 </div>
-                                <div class="col-xl-12 col-xs-12">
+                                <div class="col-6">
                                     <fieldset>
-                                        <label>&nbsp;</label>
                                         <select class="form-control" name="year" id="bank_name">
                                             <option value="none">- Tahun -</option>
                                             <option value="2019">2019</option>
@@ -94,16 +98,23 @@
                                         </select>
                                     </fieldset>
                                 </div>
-                                <div class="col-xl-12  col-xs-12">
+                                <div class="col-12">
                                     <fieldset>
-                                        <label>&nbsp;</label>
                                         <button type="submit" class="form-control btn btn-success">Cari</button>
                                     </fieldset>
                                 </div>
-                                </form>
-                        </div>
+                            </div>
+
+                        </form>
                     </div>
                 </div>
+            </div>
+
+            <div class="col-12">
+
+
+
+
 
 
                 <div class="card">
@@ -112,14 +123,15 @@
                     </div>
                     <div class="card-body">
                         @if ( Session::has('message') )
-                            <div class="widget-content mt10 mb10 mr15">
-                                <div class="alert alert-{{ Session::get('messageclass') }}">
-                                    <button class="close" type="button" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
-                                    {{  Session::get('message')    }}
-                                </div>
+                        <div class="widget-content mt10 mb10 mr15">
+                            <div class="alert alert-{{ Session::get('messageclass') }}">
+                                <button class="close" type="button" data-dismiss="alert"><span
+                                        aria-hidden="true">&times;</span></button>
+                                {{  Session::get('message')    }}
                             </div>
+                        </div>
                         @endif
-                         <div class="table-responsive">
+                        <div class="table-responsive">
                             <table class="table table-striped nowrap" id="myTable">
                                 <thead class=" text-primary">
                                     <tr>
@@ -137,11 +149,11 @@
 
                                 <tbody>
                                     @if($getData != null)
-                                        <?php
+                                    <?php
                                         $no = 0;
                                         ?>
-                                        @foreach($getData as $row)
-                                        <?php
+                                    @foreach($getData as $row)
+                                    <?php
                                             $no++;
                                             $sp = 'Top 001';
                                             if($row->sp_name != null){
@@ -166,56 +178,71 @@
                                                 $tron = $row->tron;
                                             }
                                         ?>
-                                            <tr>
-                                                <td>{{$no}}</td>
-                                                <td>{{$row->user_code}}</td>
-                                                <td>{{$row->hp}}</td>
-                                                <td>{{$sp}}</td>
-                                                <td><span class="badge badge-pill badge-{{$label}}">{{$active}}</span></td>
-                                                <td>{{date('d F Y', strtotime($active_at))}}</td>
-                                                <td>{{date('d F Y', strtotime('+365 days', strtotime($active_at)))}}</td>
-                                                <td>{{$tron}}</td>
-                                                <td class="td-actions text-left" >
-                                                    <div class="table-icons">
-                                                        <a rel="tooltip"  data-toggle="modal" data-target="#popUp"  href="{{ URL::to('/') }}/ajax/adm/change-passwd/member/{{$row->id}}" class="text-warning">passwd</a>
-                                                        &nbsp;&nbsp;
-                                                        <a rel="tooltip"  data-toggle="modal" data-target="#popUp4"  href="{{ URL::to('/') }}/ajax/adm/change-2fa/member/{{$row->id}}" class="text-warning">2fa</a>
-                                                        &nbsp;&nbsp;
-                                                        <a rel="tooltip"  data-toggle="modal" data-target="#popUp1"  href="{{ URL::to('/') }}/ajax/adm/change-data/member/{{$row->id}}" class="text-primary">data</a>
-                                                        @if($row->is_tron == 1)
-                                                        &nbsp;&nbsp;
-                                                        <a rel="tooltip"  data-toggle="modal" data-target="#popUp2"  href="{{ URL::to('/') }}/ajax/adm/change-tron/member/{{$row->id}}" class="text-help">tron</a>
-                                                        @endif
-                                                        &nbsp;&nbsp;
-                                                        <a rel="tooltip"  data-toggle="modal" data-target="#popUp3"  href="{{ URL::to('/') }}/ajax/adm/change-block/member/{{$row->id}}" class="text-danger">blokir</a>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
+                                    <tr>
+                                        <td>{{$no}}</td>
+                                        <td>{{$row->user_code}}</td>
+                                        <td>{{$row->hp}}</td>
+                                        <td>{{$sp}}</td>
+                                        <td><span class="badge badge-pill badge-{{$label}}">{{$active}}</span></td>
+                                        <td>{{date('d F Y', strtotime($active_at))}}</td>
+                                        <td>{{date('d F Y', strtotime('+365 days', strtotime($active_at)))}}</td>
+                                        <td>{{$tron}}</td>
+                                        <td class="td-actions text-left">
+                                            <div class="table-icons">
+                                                <a rel="tooltip" data-toggle="modal" data-target="#popUp"
+                                                    href="{{ URL::to('/') }}/ajax/adm/change-passwd/member/{{$row->id}}"
+                                                    class="text-warning">passwd</a>
+                                                &nbsp;&nbsp;
+                                                <a rel="tooltip" data-toggle="modal" data-target="#popUp4"
+                                                    href="{{ URL::to('/') }}/ajax/adm/change-2fa/member/{{$row->id}}"
+                                                    class="text-warning">2fa</a>
+                                                &nbsp;&nbsp;
+                                                <a rel="tooltip" data-toggle="modal" data-target="#popUp1"
+                                                    href="{{ URL::to('/') }}/ajax/adm/change-data/member/{{$row->id}}"
+                                                    class="text-primary">data</a>
+                                                @if($row->is_tron == 1)
+                                                &nbsp;&nbsp;
+                                                <a rel="tooltip" data-toggle="modal" data-target="#popUp2"
+                                                    href="{{ URL::to('/') }}/ajax/adm/change-tron/member/{{$row->id}}"
+                                                    class="text-help">tron</a>
+                                                @endif
+                                                &nbsp;&nbsp;
+                                                <a rel="tooltip" data-toggle="modal" data-target="#popUp3"
+                                                    href="{{ URL::to('/') }}/ajax/adm/change-block/member/{{$row->id}}"
+                                                    class="text-danger">blokir</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @endforeach
                                     @endif
                                 </tbody>
                             </table>
-                             <div class="modal fade" id="popUp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="false">
+                            <div class="modal fade" id="popUp" tabindex="-1" role="dialog"
+                                aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="false">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content"></div>
                                 </div>
                             </div>
-                             <div class="modal fade" id="popUp1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="true">
+                            <div class="modal fade" id="popUp1" tabindex="-1" role="dialog"
+                                aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content"></div>
                                 </div>
                             </div>
-                             <div class="modal fade" id="popUp2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="true">
+                            <div class="modal fade" id="popUp2" tabindex="-1" role="dialog"
+                                aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content"></div>
                                 </div>
                             </div>
-                             <div class="modal fade" id="popUp3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="true">
+                            <div class="modal fade" id="popUp3" tabindex="-1" role="dialog"
+                                aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content"></div>
                                 </div>
                             </div>
-                             <div class="modal fade" id="popUp4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="true">
+                            <div class="modal fade" id="popUp4" tabindex="-1" role="dialog"
+                                aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content"></div>
                                 </div>
