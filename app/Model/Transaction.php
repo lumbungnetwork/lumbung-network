@@ -453,6 +453,17 @@ class Transaction extends Model
         return $sql;
     }
 
+    public function getAllRequestTarikDeposit()
+    {
+        $sql = DB::table('deposit_transaction')
+            ->selectRaw('sum(price) as total_request_tarik')
+            ->where('type', '=', 2)
+            ->where('status', '=', 1)
+            ->first();
+
+        return $sql;
+    }
+
     public function getHistoryTransactionsDepositByAdmin()
     {
         $sql1 = DB::table('deposit_transaction')

@@ -427,4 +427,13 @@ class Pin extends Model
             ->first();
         return $sql;
     }
+
+    public function getPPOBFlyAll()
+    {
+        $sql = DB::table('ppob')
+            ->selectRaw('sum(harga_modal) as deposit_out')
+            ->whereIn('status', array(0, 1))
+            ->first();
+        return $sql;
+    }
 }

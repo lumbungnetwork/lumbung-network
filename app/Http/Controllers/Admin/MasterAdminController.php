@@ -2958,18 +2958,40 @@ class MasterAdminController extends Controller
         if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
+        //get Saldo Digiflazz
+        $modelMember = new Member;
+        $getDataAPI = $modelMember->getDataAPIMobilePulsa();
+        $username   = $getDataAPI->username;
+        $apiKey   = $getDataAPI->api_key;
+        $sign = md5($username . $apiKey . 'depo');
+        $array = array(
+            'cmd' => 'deposit',
+            'username' => $username,
+            'sign' => $sign
+        );
+        $json = json_encode($array);
+        $url = $getDataAPI->master_url . '/v1/cek-saldo';
+        $cek = $modelMember->getAPIurlCheck($url, $json);
+        $arrayResult = json_decode($cek, true);
+        $saldoDigiflazz = $arrayResult['data']['deposit'];
+
         $modelPin = new Pin;
         $modelTrans = new Transaction;
         $getTotalDeposit = $modelPin->getTotalDepositAll();
-        $getTotalMasterDeposit = $modelPin->getTotalMasterDepositAll();
         $getAllTransaction = $modelTrans->getTransactionsIsiDepositByAdmin();
-        $getAllTarikTransaction = $modelTrans->getTotalAllTarikDeposit();
+        $saldoFly = $modelPin->getPPOBFlyAll();
+        $requestTarik = 0;
+        if ($modelTrans->getAllRequestTarikDeposit() != null) {
+            $cekRequestTarik = $modelTrans->getAllRequestTarikDeposit();
+            $requestTarik = $cekRequestTarik->total_request_tarik;
+        };
         return view('admin.digital.list-req-deposit')
             ->with('headerTitle', 'Transaksi Isi Deposit')
             ->with('getData', $getAllTransaction)
-            ->with('getDataTarik', $getAllTarikTransaction)
+            ->with('requestTarik', $requestTarik)
             ->with('localDeposit', $getTotalDeposit)
-            ->with('systemDeposit', $getTotalMasterDeposit)
+            ->with('saldoGantung', $saldoFly->deposit_out)
+            ->with('saldoDigiflazz', $saldoDigiflazz)
             ->with('dataUser', $dataUser);
     }
 
