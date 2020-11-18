@@ -5293,8 +5293,6 @@ class MemberController extends Controller
             return redirect()->route('mainDashboard');
         }
 
-
-
         //2FA pin checking
         if (!Hash::check($request->password, $dataUser->{'2fa'})) {
             return redirect()->back()
@@ -5302,64 +5300,92 @@ class MemberController extends Controller
                 ->with('messageclass', 'danger');
         }
 
-        //loop with do-while
-        do {
-            $i = 0;
-            //deposit checking
-            $modelPin = new Pin;
-            $modelTrans = new Transaction;
-            $getDataMaster = $modelPin->getVendorPPOBDetail($request->ppob_id, $dataUser);
-            $getTransTarik = $modelTrans->getMyTotalTarikDeposit($dataUser);
-            $getTotalDeposit = $modelPin->getTotalDepositMember($dataUser);
+        //deposit checking
+        $modelPin = new Pin;
+        $modelTrans = new Transaction;
+        $getDataMaster = $modelPin->getVendorPPOBDetail($request->ppob_id, $dataUser);
+        $getTransTarik = $modelTrans->getMyTotalTarikDeposit($dataUser);
+        $getTotalDeposit = $modelPin->getTotalDepositMember($dataUser);
 
-            $sum_deposit_masuk = 0;
-            $sum_deposit_keluar1 = 0;
-            $sum_deposit_keluar = 0;
-            if ($getTotalDeposit->sum_deposit_masuk != null) {
-                $sum_deposit_masuk = $getTotalDeposit->sum_deposit_masuk;
-            }
-            if ($getTotalDeposit->sum_deposit_keluar != null) {
-                $sum_deposit_keluar1 = $getTotalDeposit->sum_deposit_keluar;
-            }
-            if ($getTransTarik->deposit_keluar != null) {
-                $sum_deposit_keluar = $getTransTarik->deposit_keluar;
-            }
-            $totalDeposit = $sum_deposit_masuk - $sum_deposit_keluar - $sum_deposit_keluar1 - $getDataMaster->harga_modal;
-            if ($totalDeposit < 0) {
-                return redirect()->route('m_listVendotPPOBTransactions')
-                    ->with('message', 'tidak dapat dilanjutkan, deposit kurang')
-                    ->with('messageclass', 'danger');
-            }
-            $modelMember = new Member;
-            $getDataAPI = $modelMember->getDataAPIMobilePulsa();
-            $username   = $getDataAPI->username;
-            $apiKey   = $getDataAPI->api_key;
-            $ref_id = $getDataMaster->ppob_code;
-            $sign = md5($username . $apiKey . $ref_id);
+        $sum_deposit_masuk = 0;
+        $sum_deposit_keluar1 = 0;
+        $sum_deposit_keluar = 0;
+        if ($getTotalDeposit->sum_deposit_masuk != null) {
+            $sum_deposit_masuk = $getTotalDeposit->sum_deposit_masuk;
+        }
+        if ($getTotalDeposit->sum_deposit_keluar != null) {
+            $sum_deposit_keluar1 = $getTotalDeposit->sum_deposit_keluar;
+        }
+        if ($getTransTarik->deposit_keluar != null) {
+            $sum_deposit_keluar = $getTransTarik->deposit_keluar;
+        }
+        $totalDeposit = $sum_deposit_masuk - $sum_deposit_keluar - $sum_deposit_keluar1 - $getDataMaster->harga_modal;
+        if ($totalDeposit < 0) {
+            return redirect()->route('m_listVendotPPOBTransactions')
+                ->with('message', 'tidak dapat dilanjutkan, deposit kurang')
+                ->with('messageclass', 'danger');
+        }
+        $modelMember = new Member;
+        $getDataAPI = $modelMember->getDataAPIMobilePulsa();
+        $username   = $getDataAPI->username;
+        $apiKey   = $getDataAPI->api_key;
+        $ref_id = $getDataMaster->ppob_code;
+        $sign = md5($username . $apiKey . $ref_id);
 
-            //pulsa, data, pln prepaid
-            if ($getDataMaster->type >= 1 && $getDataMaster->type < 4) {
-                $array = array(
-                    'username' => $username,
-                    'buyer_sku_code' => $getDataMaster->buyer_code,
-                    'customer_no' => $getDataMaster->product_name,
-                    'ref_id' => $ref_id,
-                    'sign' => $sign,
-                );
-            }
-            //pasca
+        //pulsa, data, pln prepaid
+        if ($getDataMaster->type >= 1 && $getDataMaster->type < 4) {
+            $array = array(
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $ref_id,
+                'sign' => $sign,
+            );
+        }
+        //pasca
+        if ($getDataMaster->type >= 4 && $getDataMaster->type < 11) {
+            $array = array(
+                'commands' => 'pay-pasca',
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $ref_id,
+                'sign' => $sign,
+            );
+        }
+        //emoney
+        if ($getDataMaster->type >= 21 && $getDataMaster->type < 27) {
+            $array = array(
+                'username' => $username,
+                'buyer_sku_code' => $getDataMaster->buyer_code,
+                'customer_no' => $getDataMaster->product_name,
+                'ref_id' => $ref_id,
+                'sign' => $sign,
+            );
+        }
+
+        $url = $getDataAPI->master_url . '/v1/transaction';
+        $json = json_encode($array);
+        $cek = $modelMember->getAPIurlCheck($url, $json);
+        $arrayData = json_decode($cek, true);
+
+        if ($arrayData == null) {
+            return redirect()->back()
+                ->with('message', 'Ada gangguan koneksi, periksa jaringan internet anda, lalu ulangi kembali.')
+                ->with('messageclass', 'warning');
+        }
+
+        if ($arrayData['data']['status'] == 'Pending') {
             if ($getDataMaster->type >= 4 && $getDataMaster->type < 11) {
                 $array = array(
-                    'commands' => 'pay-pasca',
+                    'commands' => 'status-pasca',
                     'username' => $username,
                     'buyer_sku_code' => $getDataMaster->buyer_code,
                     'customer_no' => $getDataMaster->product_name,
                     'ref_id' => $ref_id,
                     'sign' => $sign,
                 );
-            }
-            //emoney
-            if ($getDataMaster->type >= 21 && $getDataMaster->type < 27) {
+            } else {
                 $array = array(
                     'username' => $username,
                     'buyer_sku_code' => $getDataMaster->buyer_code,
@@ -5371,18 +5397,22 @@ class MemberController extends Controller
 
             $url = $getDataAPI->master_url . '/v1/transaction';
             $json = json_encode($array);
-            sleep(3); //give it a break, brotha ;D
-            $cek = $modelMember->getAPIurlCheck($url, $json);
-            $arrayData = json_decode($cek, true);
 
-            $i++;
-            if ($i > 14) goto end;
-            if ($arrayData == null) {
-                return redirect()->back()
-                    ->with('message', 'Ada gangguan koneksi, periksa jaringan internet anda, lalu ulangi kembali.')
-                    ->with('messageclass', 'warning');
-            }
-        } while ($arrayData['data']['status'] == 'Pending');
+            do {
+                $i = 0;
+                if ($i > 16) goto end;
+                sleep(3); //give it a break, brotha ;D
+                $cek = $modelMember->getAPIurlCheck($url, $json);
+                $arrayData = json_decode($cek, true);
+                $i++;
+
+                if ($arrayData == null) {
+                    return redirect()->back()
+                        ->with('message', 'Ada gangguan koneksi, periksa jaringan internet anda, lalu ulangi kembali.')
+                        ->with('messageclass', 'warning');
+                }
+            } while ($arrayData['data']['status'] == 'Pending');
+        }
 
         //deliver the bad news first
         if ($arrayData['data']['status'] == 'Gagal') {
