@@ -1067,7 +1067,7 @@ class MasterAdminController extends Controller
         }
         $modelSales = new Sales;
         $modelMember = new Member;
-        $getProvince = $modelMember->getProvinsi();
+        $getProvince = $modelMember->getProvinsiNew();
         return view('admin.sales.add_purchase')
             ->with('headerTitle', 'Create Products')
             ->with('provinsi', $getProvince)
@@ -1089,34 +1089,9 @@ class MasterAdminController extends Controller
                 ->with('messageclass', 'danger');
         }
         $provinsiSearch = $modelMember->getProvinsiByID($request->provinsi);
+        $kotaSearch = $modelMember->getKabByID($request->kota);
         $provinsiName = $provinsiSearch->nama;
-        $kota = 0;
-        $kotaName = '';
-        if ($request->kota != null) {
-            if ($request->kota != 0) {
-                $kotaSearch = $modelMember->getNamaByKode($request->kota);
-                $kota = $kotaSearch->kabupatenkota;
-                $kotaName = ' - ' . $kotaSearch->nama;
-            }
-        }
-        $kecamatan = 0;
-        $kecamatanName = '';
-        if ($request->kecamatan != null) {
-            if ($request->kecamatan != 0) {
-                $kecamatanSearch = $modelMember->getNamaByKode($request->kecamatan);
-                $kecamatan = $kecamatanSearch->kecamatan;
-                $kecamatanName = ' - ' . $kecamatanSearch->nama;
-            }
-        }
-        $kelurahan = 0;
-        $kelurahanName = '';
-        if ($request->kelurahan != null) {
-            if ($request->kelurahan != 0) {
-                $kelurahanSearch = $modelMember->getNamaByKode($request->kelurahan);
-                $kelurahan = $kelurahanSearch->kelurahan;
-                $kelurahanName = ' - ' . $kelurahanSearch->nama;
-            }
-        }
+        $kotaName = $kotaSearch->nama;
         $qty = 200000;
         $dataInsert = array(
             'name' => $request->name,
@@ -1126,11 +1101,11 @@ class MasterAdminController extends Controller
             'code' => $request->code,
             'image' => $request->image,
             'provinsi' => $request->provinsi,
-            'kota' => $kota,
-            'kecamatan' => $kecamatan,
-            'kelurahan' => $kelurahan,
+            'kota' => $request->kota,
+            'kecamatan' => 0,
+            'kelurahan' => 0,
             'qty' => $qty,
-            'area' => $provinsiName . ' ' . $kotaName . ' ' . $kecamatanName . ' ' . $kelurahanName
+            'area' => $provinsiName . ' ' . $kotaName
         );
         $getInsertPurchase = $modelSales->getInsertPurchase($dataInsert);
         //insert stock
@@ -2378,7 +2353,7 @@ class MasterAdminController extends Controller
         }
         $modelSales = new Sales;
         $modelMember = new Member;
-        $getProvince = $modelMember->getProvinsi();
+        $getProvince = $modelMember->getProvinsiNew();
         return view('admin.sales.add_vpurchase')
             ->with('headerTitle', 'Create Product Vendor')
             ->with('provinsi', $getProvince)
@@ -2401,33 +2376,8 @@ class MasterAdminController extends Controller
         }
         $provinsiSearch = $modelMember->getProvinsiByID($request->provinsi);
         $provinsiName = $provinsiSearch->nama;
-        $kota = 0;
-        $kotaName = '';
-        if ($request->kota != null) {
-            if ($request->kota != 0) {
-                $kotaSearch = $modelMember->getNamaByKode($request->kota);
-                $kota = $kotaSearch->kabupatenkota;
-                $kotaName = ' - ' . $kotaSearch->nama;
-            }
-        }
-        $kecamatan = 0;
-        $kecamatanName = '';
-        if ($request->kecamatan != null) {
-            if ($request->kecamatan != 0) {
-                $kecamatanSearch = $modelMember->getNamaByKode($request->kecamatan);
-                $kecamatan = $kecamatanSearch->kecamatan;
-                $kecamatanName = ' - ' . $kecamatanSearch->nama;
-            }
-        }
-        $kelurahan = 0;
-        $kelurahanName = '';
-        if ($request->kelurahan != null) {
-            if ($request->kelurahan != 0) {
-                $kelurahanSearch = $modelMember->getNamaByKode($request->kelurahan);
-                $kelurahan = $kelurahanSearch->kelurahan;
-                $kelurahanName = ' - ' . $kelurahanSearch->nama;
-            }
-        }
+        $kotaSearch = $modelMember->getKabByID($request->kota);
+        $kotaName = $kotaSearch->nama;
         $qty = 200000;
         $dataInsert = array(
             'name' => $request->name,
@@ -2437,11 +2387,11 @@ class MasterAdminController extends Controller
             'code' => $request->code,
             'image' => $request->image,
             'provinsi' => $request->provinsi,
-            'kota' => $kota,
-            'kecamatan' => $kecamatan,
-            'kelurahan' => $kelurahan,
+            'kota' => $request->kota,
+            'kecamatan' => 0,
+            'kelurahan' => 0,
             'qty' => $qty,
-            'area' => $provinsiName . ' ' . $kotaName . ' ' . $kecamatanName . ' ' . $kelurahanName,
+            'area' => $provinsiName . ' ' . $kotaName,
             'type' => 2,
         );
         $getInsertPurchase = $modelSales->getInsertPurchase($dataInsert);

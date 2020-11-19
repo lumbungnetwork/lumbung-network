@@ -47,28 +47,26 @@ class Sales extends Model
         return $return;
     }
 
-    public function getAllPurchaseByRegion($prov, $kota)
+    //Get all products for Stockist/Vendor Input stock
+    public function getAllPurchaseByRegion($prov, $kota, $type)
     {
-        $sql = DB::table('purchase')
+        $sql1 = DB::table('purchase')
             ->where('provinsi', '=', $prov)
             ->where('kota', '=', $kota)
             ->whereNull('deleted_at')
-            ->where('type', '=', 1)
+            ->where('type', '=', $type)
+            ->get();
+
+        $sql2 = DB::table('purchase')
+            ->where('provinsi', '=', $prov)
+            ->where('kota', '=', substr($kota, 2, 2))
+            ->whereNull('deleted_at')
+            ->where('type', '=', $type)
             ->get();
         $return = null;
-        if (count($sql) > 0) {
-            $return = $sql;
-        } else {
-            $sql = DB::table('purchase')
-                ->where('provinsi', '=', $prov)
-                ->where('kota', '=', substr($kota, 2, 2))
-                ->whereNull('deleted_at')
-                ->where('type', '=', 1)
-                ->get();
-            if (count($sql) > 0) {
-                $return = $sql;
-            }
-        }
+        $merged = $sql1->merge($sql2);
+        $return = $merged->all();
+
         return $return;
     }
 

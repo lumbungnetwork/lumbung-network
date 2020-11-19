@@ -1937,7 +1937,7 @@ class MemberController extends Controller
         if ($dataUser->kode_daerah != null) {
             $provinsi = $modelMember->getProvinsiIdByName($dataUser->provinsi);
             $kabupaten = $modelMember->getKabupatenIdByName($dataUser->kota);
-            $getData = $modelSales->getAllPurchaseByRegion($provinsi->id_prov, $kabupaten->id_kab);
+            $getData = $modelSales->getAllPurchaseByRegion($provinsi->id_prov, $kabupaten->id_kab, 1); //type 1 = Stockist, 2 = Vendor
         }
         return view('member.sales.stockist_input_stock')
             ->with('getData', $getData)
@@ -2811,7 +2811,7 @@ class MemberController extends Controller
         if ($dataUser->kode_daerah != null) {
             $provinsi = $modelMember->getProvinsiIdByName($dataUser->provinsi);
             $kabupaten = $modelMember->getKabupatenIdByName($dataUser->kota);
-            $getData = $modelSales->getAllPurchaseByRegion($provinsi->id_prov, $kabupaten->id_kab);
+            $getData = $modelSales->getAllPurchaseByRegion($provinsi->id_prov, $kabupaten->id_kab, 2); //type 1 = Stockist, 2 = Vendor
         }
         return view('member.sales.vendor_input_stock')
             ->with('getData', $getData)
