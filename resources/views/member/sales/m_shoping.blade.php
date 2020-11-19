@@ -33,7 +33,8 @@
                             <div class="sc-product-item thumbnail rounded-lg bg-white shadow p-2 px-0">
 
                                 <div style="line-height: 5px;" class="caption">
-                                    <img data-name="product_image" src="{{$row->image}}" alt="..." style="width: auto;">
+                                    <img data-name="product_image" src="{{$row->image}}" alt="..."
+                                        style="width: auto; max-width: 100%;">
                                     <h6 style="font-size: 14px; font-weight:200;" data-name="product_name">
                                         {{$row->name}} </h6>
                                     <dd style="font-size:12px" data-name="product_desc">{{$row->ukuran}} </dd>

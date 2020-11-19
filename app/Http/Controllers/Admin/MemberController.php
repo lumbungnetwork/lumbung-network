@@ -1707,7 +1707,7 @@ class MemberController extends Controller
         }
 
         return redirect()->route('m_MemberPembayaran', [$insertMasterSales->lastID])
-            ->with('message', 'Berhasil member belanja')
+            ->with('message', 'Silakan pilih metode pembayaran anda, lalu Konfirmasi')
             ->with('messageclass', 'success');
     }
 
@@ -3233,7 +3233,7 @@ class MemberController extends Controller
         }
 
         return redirect()->route('m_MemberVPembayaran', [$insertMasterSales->lastID])
-            ->with('message', 'Berhasil member belanja')
+            ->with('message', 'Silakan pilih metode pembayaran anda lalu Konfirmasi')
             ->with('messageclass', 'success');
     }
 

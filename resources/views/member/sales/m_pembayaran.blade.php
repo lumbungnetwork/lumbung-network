@@ -83,10 +83,16 @@
                                         <label for="radio2">
                                             Transfer
                                         </label>
-                                        <dd>a/n {{$getStockistBank->account_name}} ({{$getStockistBank->bank_name}})
-                                        </dd>
-                                        <input class="form-control" type="text" value="{{$getStockistBank->account_no}}"
-                                            readonly>
+                                        <label>{{$getStockistBank->bank_name}} a/n
+                                            {{$getStockistBank->account_name}}</label>
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control"
+                                                value="{{$getStockistBank->account_no}}" id="bank" readonly>
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary" type="button" id="copy-bank"
+                                                    onclick="copy('bank')">Copy</button>
+                                            </div>
+                                        </div>
                                     </div>
                                     @endif
                                     @if($getStockist->is_tron != null)
@@ -95,7 +101,14 @@
                                         <label for="radio3">
                                             eIDR
                                         </label>
-                                        <input class="form-control" type="text" value="{{$dataUser->tron}}" readonly>
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control" value="{{$getStockist->tron}}"
+                                                id="tron" readonly>
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary" type="button" id="copy-tron"
+                                                    onclick="copy('tron')">Copy</button>
+                                            </div>
+                                        </div>
                                     </div>
                                     @endif
                                 </div>
@@ -207,6 +220,14 @@
        $('#form-add').submit();
        $('#tutupModal').remove();
        $('#submit').remove();
+    }
+
+    function copy(id) {
+        var copyText = document.getElementById(id);
+        copyText.select();
+        copyText.setSelectionRange(0, 99999)
+        document.execCommand("copy");
+        alert("Berhasil menyalin: " + copyText.value);
     }
 
 </script>
