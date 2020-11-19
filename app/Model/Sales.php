@@ -58,6 +58,16 @@ class Sales extends Model
         $return = null;
         if (count($sql) > 0) {
             $return = $sql;
+        } else {
+            $sql = DB::table('purchase')
+                ->where('provinsi', '=', $prov)
+                ->where('kota', '=', substr($kota, 2, 2))
+                ->whereNull('deleted_at')
+                ->where('type', '=', 1)
+                ->get();
+            if (count($sql) > 0) {
+                $return = $sql;
+            }
         }
         return $return;
     }

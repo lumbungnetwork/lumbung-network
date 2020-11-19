@@ -66,7 +66,7 @@ class MemberController extends Controller
                 ->with('messageclass', 'danger');
         }
         $modelMember = new Member;
-        $getProvince = $modelMember->getProvinsi();
+        $getProvince = $modelMember->getProvinsiNew();
         return view('member.profile.add-profile')
             ->with('headerTitle', 'Profile')
             ->with('provinsi', $getProvince)
@@ -1763,7 +1763,7 @@ class MemberController extends Controller
             return redirect()->route('m_newPackage');
         }
         $modelMember = new Member;
-        $getProvince = $modelMember->getProvinsi();
+        $getProvince = $modelMember->getProvinsiNew();
         return view('member.profile.edit-address')
             ->with('headerTitle', 'Alamat')
             ->with('provinsi', $getProvince)
@@ -1932,10 +1932,12 @@ class MemberController extends Controller
             return redirect()->route('m_SearchStockist');
         }
         $modelSales = new Sales;
+        $modelMember = new Member;
         $getData = null;
         if ($dataUser->kode_daerah != null) {
-            $dataDaerah = explode('.', $dataUser->kode_daerah);
-            $getData = $modelSales->getAllPurchaseByRegion($dataDaerah[0], $dataDaerah[1]);
+            $provinsi = $modelMember->getProvinsiIdByName($dataUser->provinsi);
+            $kabupaten = $modelMember->getKabupatenIdByName($dataUser->kota);
+            $getData = $modelSales->getAllPurchaseByRegion($provinsi->id_prov, $kabupaten->id_kab);
         }
         return view('member.sales.stockist_input_stock')
             ->with('getData', $getData)
@@ -2804,10 +2806,12 @@ class MemberController extends Controller
             return redirect()->route('m_SearchVendor');
         }
         $modelSales = new Sales;
+        $modelMember = new Member;
         $getData = null;
         if ($dataUser->kode_daerah != null) {
-            $dataDaerah = explode('.', $dataUser->kode_daerah);
-            $getData = $modelSales->getAllPurchaseVendorByRegion($dataDaerah[0], $dataDaerah[1]);
+            $provinsi = $modelMember->getProvinsiIdByName($dataUser->provinsi);
+            $kabupaten = $modelMember->getKabupatenIdByName($dataUser->kota);
+            $getData = $modelSales->getAllPurchaseByRegion($provinsi->id_prov, $kabupaten->id_kab);
         }
         return view('member.sales.vendor_input_stock')
             ->with('getData', $getData)

@@ -725,6 +725,17 @@ class Member extends Model
         return $return;
     }
 
+    public function getProvinsiNew()
+    {
+        $sql = DB::table('provinsi')
+            ->get();
+        $return = null;
+        if (count($sql) > 0) {
+            $return = $sql;
+        }
+        return $return;
+    }
+
     public function getNamaByKode($kode)
     {
         $sql = DB::table('daerah')
@@ -735,11 +746,46 @@ class Member extends Model
 
     public function getProvinsiByID($id)
     {
-        $sql = DB::table('daerah')
-            ->where('propinsi', '=', $id)
-            ->where('kabupatenkota', '=', 0)
-            ->where('kecamatan', '=', 0)
-            ->where('kelurahan', '=', 0)
+        $sql = DB::table('provinsi')
+            ->where('id_prov', '=', $id)
+            ->first();
+        return $sql;
+    }
+
+    public function getProvinsiIdByName($name)
+    {
+        $sql = DB::table('provinsi')
+            ->where('nama', '=', $name)
+            ->first();
+        return $sql;
+    }
+
+    public function getKabupatenIdByName($name)
+    {
+        $sql = DB::table('kabupaten')
+            ->where('nama', '=', $name)
+            ->first();
+        return $sql;
+    }
+
+    public function getKabByID($id)
+    {
+        $sql = DB::table('kabupaten')
+            ->where('id_kab', '=', $id)
+            ->first();
+        return $sql;
+    }
+    public function getKecByID($id)
+    {
+        $sql = DB::table('kecamatan')
+            ->where('id_kec', '=', $id)
+            ->first();
+        return $sql;
+    }
+    public function getKelByID($id)
+    {
+        $sql = DB::table('kelurahan')
+            ->where('id_kel', '=', $id)
             ->first();
         return $sql;
     }
@@ -752,6 +798,19 @@ class Member extends Model
             ->where('kecamatan', '=', 0)
             ->where('kelurahan', '=', 0)
             ->orderBy('daerahID', 'ASC')
+            ->get();
+        $return = null;
+        if (count($sql) > 0) {
+            $return = $sql;
+        }
+        return $return;
+    }
+
+    public function getKabupatenKotaByPropinsiNew($provinsi)
+    {
+        $sql = DB::table('kabupaten')
+            ->where('id_prov', '=', $provinsi)
+            ->orderBy('id_kab', 'ASC')
             ->get();
         $return = null;
         if (count($sql) > 0) {
@@ -776,6 +835,19 @@ class Member extends Model
         return $return;
     }
 
+    public function getKecamatanByKabupatenKotaNew($kota)
+    {
+        $sql = DB::table('kecamatan')
+            ->where('id_kab', '=', $kota)
+            ->orderBy('id_kec', 'ASC')
+            ->get();
+        $return = null;
+        if (count($sql) > 0) {
+            $return = $sql;
+        }
+        return $return;
+    }
+
     public function getKelurahanByKecamatan($provinsi, $kota, $kec)
     {
         $sql = DB::table('daerah')
@@ -784,6 +856,19 @@ class Member extends Model
             ->where('kecamatan', '=', $kec)
             ->where('kelurahan', '>', 0)
             ->orderBy('nama', 'ASC')
+            ->get();
+        $return = null;
+        if (count($sql) > 0) {
+            $return = $sql;
+        }
+        return $return;
+    }
+
+    public function getKelurahanByKecamatanNew($kec)
+    {
+        $sql = DB::table('kelurahan')
+            ->where('id_kec', '=', $kec)
+            ->orderBy('id_kel', 'ASC')
             ->get();
         $return = null;
         if (count($sql) > 0) {

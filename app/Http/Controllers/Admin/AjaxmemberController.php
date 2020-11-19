@@ -64,7 +64,7 @@ class AjaxmemberController extends Controller
                 ->with('check', $canInsert)
                 ->with('dataUser', $dataUser);
         }
-        $kota = $modelMember->getNamaByKode($request->kota);
+        $kota = $modelMember->getKabByID($request->kota);
         if ($kota == null) {
             $canInsert = (object) array('can' => false, 'pesan' => 'Kabupaten/Kota harus dipilih');
             return view('member.ajax.confirm_add_profile')
@@ -72,8 +72,7 @@ class AjaxmemberController extends Controller
                 ->with('check', $canInsert)
                 ->with('dataUser', $dataUser);
         }
-        $kode = $kota->kode;
-        $kecamatan = $modelMember->getNamaByKode($request->kecamatan);
+        $kecamatan = $modelMember->getKecByID($request->kecamatan);
         if ($kecamatan == null) {
             $canInsert = (object) array('can' => false, 'pesan' => 'Kecamatan harus dipilih');
             return view('member.ajax.confirm_add_profile')
@@ -81,8 +80,7 @@ class AjaxmemberController extends Controller
                 ->with('check', $canInsert)
                 ->with('dataUser', $dataUser);
         }
-        $kode = $kecamatan->kode;
-        $kelurahan = $modelMember->getNamaByKode($request->kelurahan);
+        $kelurahan = $modelMember->getKelByID($request->kelurahan);
         if ($kelurahan == null) {
             $canInsert = (object) array('can' => false, 'pesan' => 'Kelurahan harus dipilih');
             return view('member.ajax.confirm_add_profile')
@@ -90,7 +88,6 @@ class AjaxmemberController extends Controller
                 ->with('check', $canInsert)
                 ->with('dataUser', $dataUser);
         }
-        $kode = $kelurahan->kode;
         $data = (object) array(
             'full_name' => $request->full_name,
             'gender' => $request->gender,
@@ -100,7 +97,7 @@ class AjaxmemberController extends Controller
             'kota' => $kota->nama,
             'kecamatan' => $kecamatan->nama,
             'kelurahan' => $kelurahan->nama,
-            'kode_daerah' => $kode,
+            'kode_daerah' => $request->kelurahan,
         );
         return view('member.ajax.confirm_add_profile')
             ->with('dataRequest', $data)
@@ -588,6 +585,30 @@ class AjaxmemberController extends Controller
             ->with('getData', $getData);
     }
 
+    public function getSearchByTypeNew($type, Request $request)
+    {
+        $modelMember = new Member;
+        $getData = null;
+        if ($type == 'kota') {
+            if ($request->provinsi != 0) {
+                $getData = $modelMember->getKabupatenKotaByPropinsiNew($request->provinsi);
+            }
+        }
+        if ($type == 'kecamatan') {
+            if ($request->kota != 0) {
+                $getData = $modelMember->getKecamatanByKabupatenKotaNew($request->kota);
+            }
+        }
+        if ($type == 'kelurahan') {
+            if ($request->kecamatan != 0) {
+                $getData = $modelMember->getKelurahanByKecamatanNew($request->kecamatan);
+            }
+        }
+        return view('member.ajax.searchDaerah')
+            ->with('type', $type)
+            ->with('getData', $getData);
+    }
+
     public function getCekRequestMemberStockist(Request $request)
     {
         $dataUser = Auth::user();
@@ -654,9 +675,15 @@ class AjaxmemberController extends Controller
     public function getCekEditAddress(Request $request)
     {
         $dataUser = Auth::user();
-        $modelValidasi = new Validation;
         $modelMember = new Member;
-        $canInsert = $modelValidasi->getCheckEditAddress($request);
+        $canInsert = (object) array('can' => true, 'pesan' => '');
+        if ($request->alamat == null) {
+            $canInsert = (object) array('can' => false, 'pesan' => 'Alamat harus diisi');
+            return view('member.ajax.confirm_add_profile')
+                ->with('dataRequest', null)
+                ->with('check', $canInsert)
+                ->with('dataUser', $dataUser);
+        }
         $provinsi = $modelMember->getProvinsiByID($request->provinsi);
         if ($provinsi == null) {
             $canInsert = (object) array('can' => false, 'pesan' => 'Provinsi harus dipilih');
@@ -665,7 +692,7 @@ class AjaxmemberController extends Controller
                 ->with('check', $canInsert)
                 ->with('dataUser', $dataUser);
         }
-        $kota = $modelMember->getNamaByKode($request->kota);
+        $kota = $modelMember->getKabByID($request->kota);
         if ($kota == null) {
             $canInsert = (object) array('can' => false, 'pesan' => 'Kabupaten/Kota harus dipilih');
             return view('member.ajax.confirm_add_profile')
@@ -673,8 +700,7 @@ class AjaxmemberController extends Controller
                 ->with('check', $canInsert)
                 ->with('dataUser', $dataUser);
         }
-        $kode = $kota->kode;
-        $kecamatan = $modelMember->getNamaByKode($request->kecamatan);
+        $kecamatan = $modelMember->getKecByID($request->kecamatan);
         if ($kecamatan == null) {
             $canInsert = (object) array('can' => false, 'pesan' => 'Kecamatan harus dipilih');
             return view('member.ajax.confirm_add_profile')
@@ -682,8 +708,7 @@ class AjaxmemberController extends Controller
                 ->with('check', $canInsert)
                 ->with('dataUser', $dataUser);
         }
-        $kode = $kecamatan->kode;
-        $kelurahan = $modelMember->getNamaByKode($request->kelurahan);
+        $kelurahan = $modelMember->getKelByID($request->kelurahan);
         if ($kelurahan == null) {
             $canInsert = (object) array('can' => false, 'pesan' => 'Kelurahan harus dipilih');
             return view('member.ajax.confirm_add_profile')
@@ -691,15 +716,13 @@ class AjaxmemberController extends Controller
                 ->with('check', $canInsert)
                 ->with('dataUser', $dataUser);
         }
-        $kode = $kelurahan->kode;
         $data = (object) array(
             'alamat' => $request->alamat,
             'provinsi' => $provinsi->nama,
-            'kode_pos' => $request->kode_pos,
             'kota' => $kota->nama,
             'kecamatan' => $kecamatan->nama,
             'kelurahan' => $kelurahan->nama,
-            'kode_daerah' => $kode,
+            'kode_daerah' => $request->kelurahan,
         );
         return view('member.ajax.confirm_edit_address')
             ->with('dataRequest', $data)

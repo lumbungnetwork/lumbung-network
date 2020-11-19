@@ -488,6 +488,7 @@ Route::prefix('/')->group(function () {
     Route::get('/m/cek/confirm-2fa-ppob', 'Admin\AjaxmemberController@getCek2FAConfirmPPOB')->middleware('auth');
 
     Route::get('/m/search/{type}', 'Admin\AjaxmemberController@getSearchByType')->middleware('auth');
+    Route::get('/m/search-new/{type}', 'Admin\AjaxmemberController@getSearchByTypeNew')->middleware('auth');
     Route::get('/m/cek/pulsa', 'Admin\AjaxmemberController@getCekPOBX')->middleware('auth');
 
     Route::get('/m/cek/add-deposit', 'Admin\AjaxmemberController@postCekAddDeposit')->middleware('auth');
