@@ -38,7 +38,7 @@
                                     <h6 style="font-size: 14px; font-weight:200;" data-name="product_name">
                                         {{$row->name}} </h6>
                                     <dd style="font-size:12px" data-name="product_desc">{{$row->ukuran}} </dd>
-                                    <dd style="font-size: 15px; margin-top: 15px;" data-name="product_name">
+                                    <dd style="font-size: 15px; margin-top: 15px;">
                                         <b>Rp{{number_format($row->member_price, 0, ',', ',')}}</b></dd>
                                     <small>Stok tersedia:
                                         <b>{{number_format($row->total_sisa, 0, ',', ',')}}</b>
