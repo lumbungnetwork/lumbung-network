@@ -29,7 +29,7 @@
                     <div class="row">
                         @foreach($getData as $row)
                         @if($row->hapus == 0)
-                        <div class="col-6" style="margin-bottom: 20px;text-align: center;">
+                        <div class="col-6 p-2" style="margin-bottom: 20px;text-align: center;">
                             <div class="sc-product-item thumbnail rounded-lg bg-white shadow p-2 px-0">
 
                                 <div style="line-height: 5px;" class="caption">

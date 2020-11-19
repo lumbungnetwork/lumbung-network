@@ -42,8 +42,8 @@ class MemberController extends Controller
         }
         if ($dataUser->is_profile == 0) {
             return redirect()->route('m_newProfile')
-                ->with('message', 'Profil data disri belum ada, silakan isi data profil anda')
-                ->with('messageclass', 'danger');
+                ->with('message', 'Data profil anda belum ada, silakan isi data profil anda')
+                ->with('messageclass', 'warning');
         }
         return view('member.profile.my-profile')
             ->with('headerTitle', 'Profil Saya')
