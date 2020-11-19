@@ -5452,13 +5452,15 @@ class MemberController extends Controller
                 $modelPin->getInsertMemberDeposit($memberDeposit);
             }
             if ($arrayData['data']['buyer_last_saldo'] < 2000000) {
-                $tgArray = array(
-                    'chat_id' => '365874331',
-                    'text' => 'Saldo Digiflazz tinggal' . $arrayData['data']['buyer_last_saldo'],
-                    'parse_mode' => 'markdown'
-                );
-                $jsonTg = json_encode($tgArray);
-                $modelMember->getAPIurlCheckSimple("https://api.telegram.org/bot" . Config::get('services.telegram.eidr') . '/sendMessage', $jsonTg);
+
+                $client = new Client;
+                $client->request('GET', 'https://api.telegram.org/bot' . Config::get('services.telegram.eidr') . '/sendMessage', [
+                    'query' => [
+                        'chat_id' => '365874331',
+                        'text' => 'Saldo Digiflazz tinggal' . $arrayData['data']['buyer_last_saldo'],
+                        'parse_mode' => 'markdown'
+                    ]
+                ]);
             }
             return redirect()->back()
                 ->with('message', 'Transaksi Berhasil')
