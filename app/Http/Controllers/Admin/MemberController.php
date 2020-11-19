@@ -5451,10 +5451,10 @@ class MemberController extends Controller
                 );
                 $modelPin->getInsertMemberDeposit($memberDeposit);
             }
-            if ($arrayData['data']['buyer_last_saldo'] < 2000000) {
-
+            if ($arrayData['data']['buyer_last_saldo'] < 1000000) {
+                $tgAk = Config::get('services.telegram.eidr');
                 $client = new Client;
-                $client->request('GET', 'https://api.telegram.org/bot' . Config::get('services.telegram.eidr') . '/sendMessage', [
+                $client->request('GET', 'https://api.telegram.org/bot' . $tgAk . '/sendMessage', [
                     'query' => [
                         'chat_id' => '365874331',
                         'text' => 'Saldo Digiflazz tinggal' . $arrayData['data']['buyer_last_saldo'],

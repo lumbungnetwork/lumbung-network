@@ -36,7 +36,7 @@ return [
     ],
 
     'telegram' => [
-        'eidr' => env('BEIDR'),
+        'eidr' => '1300893823:' . env('BEIDR'),
     ],
 
     'stripe' => [
