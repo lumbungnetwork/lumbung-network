@@ -33,15 +33,17 @@
                             <div class="sc-product-item thumbnail rounded-lg bg-white shadow p-2 px-0">
 
                                 <div style="line-height: 5px;" class="caption">
-                                    <img data-name="product_image" src="{{$row->image}}" alt="..." style="width: 80px;">
-                                    <h6 style="font-size: 13px; font-weight:300;" data-name="product_name">
+                                    <img data-name="product_image" src="{{$row->image}}" alt="..." style="width: auto;">
+                                    <h6 style="font-size: 14px; font-weight:200;" data-name="product_name">
                                         {{$row->name}} </h6>
-                                    <dd data-name="product_desc">{{$row->ukuran}} </dd>
-                                    <dd style="font-size: 13px; margin-top: 15px;" data-name="product_name">
+                                    <dd style="font-size:12px" data-name="product_desc">{{$row->ukuran}} </dd>
+                                    <dd style="font-size: 15px; margin-top: 15px;" data-name="product_name">
                                         <b>Rp{{number_format($row->member_price, 0, ',', ',')}}</b></dd>
-                                    <dd>Stok tersedia: <b>{{number_format($row->total_sisa, 0, ',', ',')}}</b> </dd>
+                                    <small>Stok tersedia:
+                                        <b>{{number_format($row->total_sisa, 0, ',', ',')}}</b>
+                                    </small>
                                     <div>
-                                        <div class="form-group2">
+                                        <div class="mt-2 form-group2">
                                             <input class="sc-cart-item-qty cekInput{{$row->id}}" name="product_quantity"
                                                 min="1" max="{{number_format($row->total_sisa, 0, ',', '')}}" value="1"
                                                 type="number">
