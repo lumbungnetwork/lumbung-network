@@ -3,7 +3,7 @@
         <h5 class="modal-title" id="modalLabel">Konfirmasi Transfer</h5>
     </div>
     @if($bankPerusahaan != null)
-    <div class="modal-body"  style="overflow-y: auto;max-height: 330px;">
+    <div class="modal-body" style="overflow-y: auto;max-height: 330px;">
         <div class="row" id="loading" style="display:none;">
             <div class="col-md-12">
                 <div class="form-group">
@@ -24,8 +24,8 @@
                         <input type="hidden" name="id_trans" value="{{$data->id_trans}}">
                         <input type="hidden" name="bank_perusahaan_id" value="{{$bankPerusahaan->id}}">
                         <input type="hidden" name="is_tron" value="{{$cekType}}">
-                        <p class="lead text-muted" style="display: block;text-align: center;">Untuk mendapatkan Pin,</p>
-                        <p class="lead text-muted" style="display: block;text-align: center;">Silakan transfer ke rekening tersebut.</p>
+                        <p class="lead text-muted" style="display: block;text-align: center;">Sudahkah anda Transfer?
+                        </p>
                     </div>
                 </div>
             </div>
@@ -84,20 +84,22 @@
                 <div class="col-md-8 col-xs-12">
                     <div class="form-group">
                         <label>Total</label>
-                        <input type="text" class="form-control" disabled="" value="Rp. {{number_format($total, 0, ',', '.')}}">
+                        <input type="text" class="form-control" disabled=""
+                            value="Rp. {{number_format($total, 0, ',', '.')}}">
                     </div>
                 </div>
             </div>
-        </form>    
+        </form>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary waves-effect" id="tutupModal" data-dismiss="modal">Tutup</button>
-        <button type="button" class="btn btn-primary waves-effect waves-light" id="submit" onclick="confirmSubmit()">Submit</button>
+        <button type="button" class="btn btn-primary waves-effect waves-light" id="submit"
+            onclick="confirmSubmit()">Submit</button>
     </div>
     @endif
     @if($cekType == null)
     @if($bankPerusahaan == null)
-    <div class="modal-body"  style="overflow-y: auto;max-height: 330px;">
+    <div class="modal-body" style="overflow-y: auto;max-height: 330px;">
         <h4 class="text-danger" style="text-align: center;"> Anda belum memilih metode pembayaran</h4>
     </div>
     <div class="modal-footer">
@@ -105,5 +107,5 @@
     </div>
     @endif
     @endif
-    
+
 </div>

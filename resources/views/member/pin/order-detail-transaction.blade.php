@@ -183,7 +183,7 @@
 
                 <div class="rounded-lg bg-white p-3 mb-3">
                     <div class="row">
-                        <div class="col-sm-6 col-xs-6">
+                        <div class="col-12">
                             <p class="text-xs-right"><b>Sub-total:</b> Rp.
                                 {{number_format($getData->price, 0, ',', ',')}}</p>
                             <p class="text-xs-right"><b>Kode Unik:</b>
@@ -197,7 +197,7 @@
                     </div>
                     <div class="row">
 
-                        <div class="col-sm-6 col-xs-6 col-md-offset-6">
+                        <div class="col-12">
                             @if($getData->status == 0)
                             <div class="hidden-print">
                                 <div class="pull-xs-right">
@@ -335,6 +335,7 @@
                 var dataInput = $("#form-add").serializeArray();
                 $('#form-add').submit();
                 $('#form-add').remove();
+                $('#loading').show();
                 $('#tutupModal').remove();
                 $('#submit').remove();
             }
