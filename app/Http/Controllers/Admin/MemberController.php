@@ -2936,26 +2936,10 @@ class MemberController extends Controller
         $modelSales = new Sales;
         $tron = null;
         $tron_transfer = null;
-        $bank_name = null;
-        $account_no = null;
-        $account_name = null;
-        $buy_metode = 0;
-        if ($request->metode == 2) {
-            $buy_metode = 2;
-            $bank_name = $request->bank_name;
-            $account_no = $request->account_no;
-            $account_name = $request->account_name;
-        }
-        if ($request->metode == 3) {
-            $buy_metode = 3;
-            $tron = $request->tron;
-            if ($request->transfer == null) {
-                return redirect()->route('m_VendorDetailPruchase', [$request->id_master])
-                    ->with('message', 'Hash transaksi transfer dari Blockchain TRON belum diisi')
-                    ->with('messageclass', 'danger');
-            }
-            $tron_transfer = $request->transfer;
-        }
+        $bank_name = $request->bank_name;
+        $account_no = $request->account_no;
+        $account_name = $request->account_name;
+        $buy_metode = 2;
         $dataUpdate = array(
             'status' => 1,
             'buy_metode' => $buy_metode,
@@ -2984,6 +2968,11 @@ class MemberController extends Controller
         }
         if ($dataUser->is_vendor == 0) {
             return redirect()->route('m_SearchVendor');
+        }
+        if ($request->transfer == null) {
+            return redirect()->route('m_VendorDetailPruchase', [$request->id_master])
+                ->with('message', 'Hash transaksi transfer dari Blockchain TRON belum diisi')
+                ->with('messageclass', 'danger');
         }
         $modelSales = new Sales;
         $bank_name = 'TronWeb';
@@ -3504,7 +3493,7 @@ class MemberController extends Controller
         );
         $getIDTrans = $modelSettingTrans->getInsertDepositTransaction($dataInsert);
         return redirect()->route('m_addDepositTransaction', [$getIDTrans->lastID])
-            ->with('message', 'Pengajuan Deposit berhasil, silakan lakukan proses transfer')
+            ->with('message', 'Silakan pilih metode pembayaran anda')
             ->with('messageclass', 'success');
     }
 

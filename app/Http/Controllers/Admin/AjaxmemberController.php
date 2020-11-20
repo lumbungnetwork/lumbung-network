@@ -809,14 +809,11 @@ class AjaxmemberController extends Controller
         if ($request->metode == 3) {
             $tron = 'TZHYx9bVa4vQz8VpVvZtjwMb4AHqkUChiQ';
         }
-        if ($request->metode == 4) {
-            $tron = 'TZHYx9bVa4vQz8VpVvZtjwMb4AHqkUChiQ';
-        }
         $data = (object) array(
             'id_master' => $request->id_master,
             'royalti' => $request->royalti,
             'buy_metode' => $request->metode,
-            'sender' => $request->sender,
+            'sender' => $dataUser->tron, //user default tron address
             'timestamp' => $request->timestamp,
             'bank_name' => $bank_name,
             'account_no' => $account_no,
@@ -824,10 +821,23 @@ class AjaxmemberController extends Controller
             'tron' => $tron
         );
         if ($request->metode == 4) {
+            $tron = 'TZHYx9bVa4vQz8VpVvZtjwMb4AHqkUChiQ';
+            $data = (object) array(
+                'id_master' => $request->id_master,
+                'royalti' => $request->royalti,
+                'buy_metode' => $request->metode,
+                'sender' => $request->sender,
+                'timestamp' => $request->timestamp,
+                'bank_name' => $bank_name,
+                'account_no' => $account_no,
+                'account_name' => $account_name,
+                'tron' => $tron
+            );
             return view('member.ajax.confirm_add_stock_tron')
                 ->with('check', $canInsert)
                 ->with('data', $data);
         }
+
         return view('member.ajax.confirm_add_stock')
             ->with('check', $canInsert)
             ->with('data', $data);
@@ -1230,14 +1240,23 @@ class AjaxmemberController extends Controller
             'id_master' => $request->id_master,
             'royalti' => $request->royalti,
             'buy_metode' => $request->metode,
-            'sender' => $request->sender,
-            'timestamp' => $request->timestamp,
+            'sender' => $dataUser->tron, //user default tron address
             'bank_name' => $bank_name,
             'account_no' => $account_no,
             'account_name' => $account_name,
             'tron' => $tron
         );
         if ($request->metode == 4) {
+            $data = (object) array(
+                'id_master' => $request->id_master,
+                'royalti' => $request->royalti,
+                'buy_metode' => $request->metode,
+                'sender' => $request->sender,
+                'bank_name' => $bank_name,
+                'account_no' => $account_no,
+                'account_name' => $account_name,
+                'tron' => $tron
+            );
             return view('member.ajax.confirm_add_vstock_tron')
                 ->with('check', $canInsert)
                 ->with('data', $data);
@@ -1392,7 +1411,7 @@ class AjaxmemberController extends Controller
             }
         }
         $getTrans = $modelTrans->getDetailDepositTransactionsMember($request->id_trans, $dataUser);
-        $data = (object) array('id_trans' => $request->id_trans);
+        $data = (object) array('id_trans' => $request->id_trans, 'sender' => $dataUser->tron);
         return view('member.ajax.confirm_add_deposit_transaction')
             ->with('bankPerusahaan', $getPerusahaanBank)
             ->with('getTrans', $getTrans)
@@ -1405,7 +1424,7 @@ class AjaxmemberController extends Controller
         $dataUser = Auth::user();
         $modelTrans = new Transaction;
         $getTrans = $modelTrans->getDetailDepositTransactionsMember($request->id_trans, $dataUser);
-        $data = (object) array('id_trans' => $request->id_trans, 'sender' => $request->sender, 'user_id' => $dataUser->id);
+        $data = (object) array('id_trans' => $request->id_trans, 'sender' => $request->sender);
         return view('member.ajax.confirm_add_deposit_transaction_tron')
             ->with('getTrans', $getTrans)
             ->with('data', $data);

@@ -167,8 +167,13 @@
                                                 <input size="50" type="text" id="eidr-addr"
                                                     style="border: 0; font-size:9.5px; font-weight:200;"
                                                     value="TZHYx9bVa4vQz8VpVvZtjwMb4AHqkUChiQ" readonly>
-                                                <button type="button" class="btn btn-sm btn-outline-primary"
+                                                <button type="button"
+                                                    class="btn btn-sm btn-outline-primary float-right mb-3"
                                                     onclick="copy('eidr-addr')">Copy</button>
+                                                <br><small class="text-danger" style="display:none"
+                                                    id="address-warning">Harus ditransfer dari
+                                                    alamat TRON akun
+                                                    ini</small>
                                             </label>
                                         </div>
                                     </div>
@@ -285,7 +290,13 @@
                 $('#submitBtn').hide();
                 $('#eidr-pay-button').show();
                 }
-        }, 3000);
+        }, 2000);
+
+        setTimeout(function(){
+            if($('#isTronWeb').val() == 0){
+                $('#address-warning').show();
+            }
+        }, 2500);
 
             $('#bankbutton').click(function() {
                 $('#radio1').prop('checked', true)
@@ -358,6 +369,13 @@
                 document.execCommand("copy");
                 alert("Berhasil menyalin: " + copyText.value);
             }
+
+            function cleanHash() {
+                if ($("#hash").val().includes("tronscan")) {
+                    let hashOnly = $("#hash").val().split("/")[5];
+                    $("#hash").val(hashOnly);
+                }
+            };
 </script>
 @endif
 @stop

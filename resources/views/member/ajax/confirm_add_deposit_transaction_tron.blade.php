@@ -3,7 +3,7 @@
         <h5 class="modal-title" id="modalLabel">Konfirmasi Isi Deposit Vendor</h5>
     </div>
 
-    <div class="modal-body"  style="overflow-y: auto;max-height: 330px;">
+    <div class="modal-body" style="overflow-y: auto;max-height: 330px;">
         <div class="row" id="loading" style="display:none;">
             <div class="col-md-12">
                 <div class="form-group">
@@ -23,7 +23,6 @@
                     <div class="form-group">
                         <input type="hidden" name="id_trans" value="{{$data->id_trans}}">
                         <input type="hidden" name="sender" value="{{$data->sender}}">
-                        <input type="hidden" name="user_id" value="{{$data->user_id}}">
                     </div>
                 </div>
             </div>
@@ -34,7 +33,8 @@
                 <div class="col-md-12 col-xs-12">
                     <div class="form-group">
                         <label>Nominal Transfer</label>
-                        <input type="text" class="form-control" disabled="" value="Rp. {{number_format($total, 0, ',', '.')}}">
+                        <input type="text" class="form-control" disabled=""
+                            value="Rp. {{number_format($total, 0, ',', '.')}}">
                     </div>
                 </div>
             </div>
@@ -53,7 +53,8 @@
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary waves-effect" id="tutupModal" data-dismiss="modal">Tutup</button>
-        <button type="button" class="btn btn-primary waves-effect waves-light" id="submit" disabled onclick="confirmSubmitTron()">Konfirmasi</button>
+        <button type="button" class="btn btn-primary waves-effect waves-light" id="submit" disabled
+            onclick="confirmSubmitTron()">Konfirmasi</button>
     </div>
 
 

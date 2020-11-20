@@ -26,11 +26,13 @@
                     <span id="showAddress"></span>
 
                     @if ( Session::has('message') )
-                    <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible" role="alert">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                        {{  Session::get('message')    }}
+                    <div class="container">
+                        <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                            {{  Session::get('message')    }}
+                        </div>
                     </div>
                     @endif
 
@@ -167,8 +169,13 @@
                                                 <input size="50" type="text" id="eidr-addr"
                                                     style="border: 0; font-size:9.5px; font-weight:200;"
                                                     value="TC1o89VSHMSPno2FE6SgoCsuy8i4mVSWge" readonly>
-                                                <button type="button" class="btn btn-sm btn-outline-primary"
+                                                <button type="button"
+                                                    class="btn btn-sm btn-outline-primary float-right mb-3"
                                                     onclick="copy('eidr-addr')">Copy</button>
+                                                <br><small class="text-danger" style="display:none"
+                                                    id="address-warning">Harus ditransfer dari
+                                                    alamat TRON akun
+                                                    ini</small>
                                             </label>
                                         </div>
                                     </div>
@@ -198,7 +205,7 @@
                     </div>
                     <div class="row">
 
-                        <div class="col-sm-6 col-xs-6 col-md-offset-6">
+                        <div class="col-12">
                             @if($getData->status == 0)
                             <div class="hidden-print">
                                 <div class="pull-xs-right">
@@ -275,8 +282,13 @@
                 if($('#isTronWeb').val() > 0 && $('#eidr-balance').val() >= {{$total}}){
                     $('#submitBtn').hide();
                     $('#eidr-pay-button').show();
-                    }
+                }
             }, 2000);
+            setTimeout(function(){
+                if($('#isTronWeb').val() == 0){
+                    $('#address-warning').show();
+                }
+            }, 2500);
         })
 
         @for ($i = 1; $i < $eidrno; $i++)
@@ -359,6 +371,13 @@
                 document.execCommand("copy");
                 alert("Berhasil menyalin: " + copyText.value);
             }
+
+            function cleanHash() {
+                if ($("#hash").val().includes("tronscan")) {
+                    let hashOnly = $("#hash").val().split("/")[5];
+                    $("#hash").val(hashOnly);
+                }
+            };
     </script>
     @endif
     @stop
