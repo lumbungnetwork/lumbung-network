@@ -664,7 +664,7 @@ class BonusmemberController extends Controller
             return redirect()->route('mainDashboard');
         }
         $modelBonus = new Bonus;
-        $rand = rand(101, 249);
+        $rand = rand(69, 149);
         $dataInsert = array(
             'user_id' => $dataUser->id,
             'nominal' => $request->req_topup,
@@ -672,7 +672,7 @@ class BonusmemberController extends Controller
         );
         $getIDTrans = $modelBonus->getInsertTopUp($dataInsert);
         return redirect()->route('m_MemberTopupPembayaran', [$getIDTrans->lastID])
-            ->with('message', 'request Top Up Saldo berhasil')
+            ->with('message', 'Silakan pilih Metode Pembayaran anda')
             ->with('messageclass', 'success');
     }
 
@@ -709,7 +709,7 @@ class BonusmemberController extends Controller
         } else {
             $getPerusahaanBank = $modelBank->getBankPerusahaan();
         }
-        return view('member.bonus.detail-pembayaran')
+        return view('member.bonus.detail-topup-eidr')
             ->with('headerTitle', 'Pembayaran')
             ->with('getData', $getData)
             ->with('bankPerusahaan', $getPerusahaanBank)
@@ -757,17 +757,12 @@ class BonusmemberController extends Controller
         if ($dataUser->is_active == 0) {
             return redirect()->route('mainDashboard');
         }
-        if ($request->reason == null) {
-            return redirect()->route('m_addTransaction', [$request->id_trans])
-                ->with('message', 'Alasan harus diisi')
-                ->with('messageclass', 'danger');
-        }
         $modelBonus = new Bonus;
         $id_topup = $request->id_topup;
         $dataUpdate = array(
             'status' => 3,
             'deleted_at' => date('Y-m-d H:i:s'),
-            'reason' => $request->reason,
+            'reason' => null,
             'submit_by' => $dataUser->id,
             'submit_at' => date('Y-m-d H:i:s'),
         );

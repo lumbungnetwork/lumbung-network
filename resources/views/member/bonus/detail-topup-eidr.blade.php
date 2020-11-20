@@ -3,10 +3,6 @@
 
 <div class="wrapper">
     <div id="content">
-        <input type="hidden" id="isTronWeb" value="0" readonly>
-        <input type="hidden" id="userTron" value="0" readonly>
-        <input type="hidden" id="txType" value="3" readonly>
-        <input type="hidden" id="username" value="{{$dataUser->user_code}}" readonly>
         <div class="bg-gradient-sm">
             <nav class="navbar navbar-expand-lg navbar-light bg-transparent w-100">
                 <div class="container">
@@ -22,7 +18,7 @@
         <div class="mt-min-10">
             <div class="container">
                 <div class="card shadow rounded bg-white p-3 mb-3">
-                    <h4 class="mb-3">Request Input Stock</h4>
+                    <h4 class="mb-3">Top-up eIDR</h4>
                     <span id="showAddress"></span>
 
                     @if ( Session::has('message') )
@@ -55,9 +51,7 @@
                 <div class="card rounded shadow bg-white p-3 mb-3">
                     <div class="row">
                         <div class="col-xl-12 col-xs-12">
-                            <h5 class="mb-3">Invoice # <br>
-                                <small>{{$getData->transaction_code}}</small>
-                            </h5>
+
                             <p><strong>Tanggal Order: </strong>{{date('d F Y', strtotime($getData->created_at))}}</p>
                             <p class="m-t-10"><strong>Order Status: </strong> <span
                                     class="label label-{{$label}}">{{$status}}</span></p>
@@ -67,18 +61,20 @@
                                 <thead class="bg-faded">
                                     <tr>
                                         <th>#</th>
-                                        <th>Total Deposit (Rp.)</th>
+                                        <th>Total Top-up (Rp.)</th>
+                                        <th>Unique Digit</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
                                         <td>1</td>
-                                        <td>{{number_format($getData->price, 0, ',', ',')}}</td>
+                                        <td>{{number_format($getData->nominal, 0, ',', ',')}}</td>
+                                        <td>{{number_format($getData->unique_digit, 0, ',', ',')}}</td>
                                     </tr>
                                 </tbody>
                             </table>
                             <?php
-                                $total = $getData->price + $getData->unique_digit;
+                                $total = $getData->nominal + $getData->unique_digit;
                             ?>
                         </div>
 
@@ -89,26 +85,13 @@
                     <h5>Pilih Metode Pembayaran</h5>
                     <address>
                         @if($getData->bank_perusahaan_id != null)
-                        @if($getData->is_tron == 0)
                         <br>
                         Nama Rekening: <strong>{{$bankPerusahaan->account_name}}</strong>
                         <br>
                         Nama Bank: <strong>{{$bankPerusahaan->bank_name}}</strong>
                         <br>
                         No. Rekening: <strong>{{$bankPerusahaan->account_no}}</strong>
-                        @endif
-                        @if($getData->is_tron == 1 && $getData->bank_perusahaan_id != 9)
-                        <br>
-                        Nama: <strong>Pembayaran via eIDR</strong>
-                        <br>
-                        Alamat Tron: <strong>TC1o89VSHMSPno2FE6SgoCsuy8i4mVSWge</strong>
-                        @endif
-                        @if($getData->is_tron == 1 && $getData->bank_perusahaan_id == 9)
-                        <br>
-                        Nama: <strong>Pembayaran via eIDR Autoconfirm</strong>
-                        <br>
-                        Alamat Tron: <strong>TC1o89VSHMSPno2FE6SgoCsuy8i4mVSWge</strong>
-                        @endif
+
                         @endif
                         <div class="accordion mt-2" id="accordionExample">
                             @if($getData->bank_perusahaan_id == null)
@@ -145,35 +128,7 @@
                             </div>
                             <?php $no++; ?>
                             @endforeach
-                            <?php $eidrno = count($bankPerusahaan) + 1; ?>
-                            <div class="card">
-                                <div class="card-header" id="headingTwo">
-                                    <h1 class="mb-0">
-                                        <button class="btn btn-outline-warning btn-lg" id="eidrbutton" type="button"
-                                            data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false"
-                                            aria-controls="collapseTwo">
-                                            Bayar via eIDR
-                                        </button>
-                                    </h1>
-                                </div>
-                                <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo"
-                                    data-parent="#accordionExample">
-                                    <div class="card-body">
-                                        <div class="radio radio-primary">
-                                            <input type="radio" name="radio" id="radio{{$eidrno}}" value="1_1" checked>
-                                            <label for="radio{{$eidrno}}">
-                                                eIDR
-                                                <br>
-                                                <input size="50" type="text" id="eidr-addr"
-                                                    style="border: 0; font-size:9.5px; font-weight:200;"
-                                                    value="TC1o89VSHMSPno2FE6SgoCsuy8i4mVSWge" readonly>
-                                                <button type="button" class="btn btn-sm btn-outline-primary"
-                                                    onclick="copy('eidr-addr')">Copy</button>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
                             @endif
                         </div>
                     </address>
@@ -186,7 +141,7 @@
                     <div class="row">
                         <div class="col-sm-6 col-xs-6">
                             <p class="text-xs-right"><b>Sub-total:</b> Rp.
-                                {{number_format($getData->price, 0, ',', ',')}}</p>
+                                {{number_format($getData->nominal, 0, ',', ',')}}</p>
                             <p class="text-xs-right"><b>Kode Unik:</b>
                                 {{number_format($getData->unique_digit, 0, ',', ',')}}</p>
                             <hr>
@@ -198,20 +153,16 @@
                     </div>
                     <div class="row">
 
-                        <div class="col-sm-6 col-xs-6 col-md-offset-6">
+                        <div class="col-12 p-3">
                             @if($getData->status == 0)
                             <div class="hidden-print">
                                 <div class="pull-xs-right">
-                                    <input type="hidden" value="{{$getData->id}}" name="id_trans" id="id_trans">
-                                    <input type="hidden" value="{{$total}}" name="deposit" id="deposit">
+                                    <input type="hidden" value="{{$getData->id}}" name="id_topup" id="id_topup">
                                     <button type="submit" class="btn btn-danger" id="rejectBtn" data-toggle="modal"
                                         data-target="#rejectSubmit" onClick="rejectSubmit()">Batal</button>
                                     <button type="submit" class="btn btn-success" id="submitBtn" data-toggle="modal"
                                         data-target="#confirmSubmit" onClick="inputSubmit()">Saya sudah
                                         transfer</button>
-                                    <button type="submit" class="btn btn-success" id="eidr-pay-button"
-                                        data-toggle="modal" data-target="#confirmSubmit"
-                                        onClick="inputSubmitTron()">Bayar via eIDR</button>
                                 </div>
                                 <div class="clearfix"></div>
                             </div>
@@ -219,7 +170,8 @@
                             @if($getData->status == 1 || $getData->status == 2 || $getData->status == 3)
                             <div class="hidden-print">
                                 <div class="pull-xs-right">
-                                    <a class="btn btn-success" href="{{ URL::to('/') }}/m/list/transactions">Kembali</a>
+                                    <a class="btn btn-success"
+                                        href="{{ URL::to('/') }}/m/history/topup-saldo">Kembali</a>
                                 </div>
                                 <div class="clearfix"></div>
                             </div>
@@ -269,17 +221,7 @@
     <script src="{{ asset('asset_new/js/tronweb.js') }}"></script>
     @if($getData->status == 0)
     <script>
-        $(function() {
-            $('#eidr-pay-button').hide();
-            setTimeout(function(){
-                if($('#isTronWeb').val() > 0 && $('#eidr-balance').val() >= {{$total}}){
-                    $('#submitBtn').hide();
-                    $('#eidr-pay-button').show();
-                    }
-            }, 2000);
-        })
-
-        @for ($i = 1; $i < $eidrno; $i++)
+        @for ($i = 1; $i < 3; $i++)
             $('#bankbutton{{$i}}').click(function() {
                 $('#radio{{$i}}').prop('checked', true)
                 $('#submitBtn').show();
@@ -287,34 +229,13 @@
             })
         @endfor
 
-            $('#eidrbutton').click(function() {
-                $('#radio{{$eidrno}}').prop('checked', true)
-                if($('#isTronWeb').val() > 0 && $('#eidr-balance').val() >= {{$total}}){
-                    $('#submitBtn').hide();
-                    $('#eidr-pay-button').show();
-                }
-            })
-
 
            function inputSubmit(){
-                var id_trans = $("#id_trans").val();
+                var id_topup = $("#id_topup").val();
                 var id_bank = $('input[name=radio]:checked').val();
                  $.ajax({
                      type: "GET",
-                     url: "{{ URL::to('/') }}/m/cek/add/deposit-transaction?id_trans="+id_trans+"&id_bank="+id_bank,
-                     success: function(url){
-                         $("#confirmDetail" ).empty();
-                         $("#confirmDetail").html(url);
-                     }
-                 });
-           }
-
-           function inputSubmitTron(){
-                var id_trans = $("#id_trans").val();
-                var sender = $("#userTron").val();
-                 $.ajax({
-                     type: "GET",
-                     url: "{{ URL::to('/') }}/m/cek/add/deposit-transaction-tron?id_trans="+id_trans+"&sender="+sender,
+                     url: "{{ URL::to('/') }}/m/cek/topup-transaction?id_topup="+id_topup+"&id_bank="+id_bank,
                      success: function(url){
                          $("#confirmDetail" ).empty();
                          $("#confirmDetail").html(url);
@@ -323,10 +244,10 @@
            }
 
            function rejectSubmit(){
-                var id_trans = $("#id_trans").val();
+                var id_topup = $("#id_topup").val();
                  $.ajax({
                      type: "GET",
-                     url: "{{ URL::to('/') }}/m/cek/reject/deposit-transaction?id_trans="+id_trans,
+                     url: "{{ URL::to('/') }}/m/cek/reject-topup?id_topup="+id_topup,
                      success: function(url){
                          $("#rejectDetail" ).empty();
                          $("#rejectDetail").html(url);
@@ -338,15 +259,6 @@
                 var dataInput = $("#form-add").serializeArray();
                 $('#form-add').submit();
                 $('#form-add').remove();
-                $('#loading').show();
-                $('#tutupModal').remove();
-                $('#submit').remove();
-            }
-
-            function confirmSubmitTron(){
-                var dataInput = $("#form-add-tron").serializeArray();
-                $('#form-add-tron').submit();
-                $('#form-add-tron').remove();
                 $('#loading').show();
                 $('#tutupModal').remove();
                 $('#submit').remove();

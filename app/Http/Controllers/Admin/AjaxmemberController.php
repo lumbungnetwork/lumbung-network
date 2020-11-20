@@ -964,8 +964,6 @@ class AjaxmemberController extends Controller
     {
         $dataUser = Auth::user();
         $modelValidasi = new Validation;
-        $modelBonus = new Bonus;
-        $modelWD = new Transferwd;
         $totalTopUp = $request->input_jml_topup;
 
         $dataAll = (object) array(
