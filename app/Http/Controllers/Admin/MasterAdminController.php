@@ -1963,6 +1963,30 @@ class MasterAdminController extends Controller
             ->with('dataUser', $dataUser);
     }
 
+    public function postSearchMemberVendor(Request $request)
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2, 3);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        $cekLenght = strlen($request->name);
+        if ($cekLenght < 3) {
+            return redirect()->route('adm_listMemberStockist')
+                ->with('message', 'Minimal pencarian harus 3 karakter (huruf).')
+                ->with('messageclass', 'danger');
+        }
+        $modelMember = new Member;
+        $data = $modelMember->getSearchAllMemberVendorByAdmin($request->name);
+        $getData = $data->data;
+        $getCountData = $data->total;
+        return view('admin.member.all-vendor')
+            ->with('headerTitle', 'Search Member Vendor')
+            ->with('getData', $getData)
+            ->with('getTotal', $getCountData)
+            ->with('dataUser', $dataUser);
+    }
+
     public function getAllWDRoyalti()
     {
         $dataUser = Auth::user();

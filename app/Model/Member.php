@@ -152,6 +152,28 @@ class Member extends Model
         return $return;
     }
 
+    public function getSearchAllMemberVendorByAdmin($search)
+    {
+        $sql = DB::table('users')
+            ->where('user_type', '=', 10)
+            ->where('is_active', '=', 1)
+            ->where('is_vendor', '=', 1)
+            ->where('users.user_code', 'LIKE', '%' . $search . '%')
+            ->orderBy('vendor_at', 'DESC')
+            ->get();
+        $return = (object) array(
+            'total' => 0,
+            'data' => null
+        );
+        if (count($sql) > 0) {
+            $return = (object) array(
+                'total' => count($sql),
+                'data' => $sql
+            );
+        }
+        return $return;
+    }
+
     public function getUsers($where, $data)
     {
         $sql = DB::table('users')->where($where, '=', $data)->first();

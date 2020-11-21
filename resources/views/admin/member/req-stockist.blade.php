@@ -2,23 +2,23 @@
 @section('content')
 @include('layout.admin.sidebar')
 <div class="main-panel">
-    
+
     <?php //MENU HEADER  ?>
     <nav class="navbar navbar-expand-lg navbar-absolute fixed-top navbar-transparent">
         <div class="container-fluid">
             <div class="navbar-wrapper">
                 <div class="navbar-toggle">
                     <button type="button" class="navbar-toggler">
-                    <span class="navbar-toggler-bar bar1"></span>
-                    <span class="navbar-toggler-bar bar2"></span>
-                    <span class="navbar-toggler-bar bar3"></span>
+                        <span class="navbar-toggler-bar bar1"></span>
+                        <span class="navbar-toggler-bar bar2"></span>
+                        <span class="navbar-toggler-bar bar3"></span>
                     </button>
                 </div>
                 <p class="navbar-brand">{{$headerTitle}}</p>
             </div>
         </div>
     </nav>
-    
+
     <?php //MENU CONTENT  ?>
     <div class="content">
         <div class="row">
@@ -29,14 +29,15 @@
                     </div>
                     <div class="card-body">
                         @if ( Session::has('message') )
-                            <div class="widget-content mt10 mb10 mr15">
-                                <div class="alert alert-{{ Session::get('messageclass') }}">
-                                    <button class="close" type="button" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
-                                    {{  Session::get('message')    }} 
-                                </div>
+                        <div class="widget-content mt10 mb10 mr15">
+                            <div class="alert alert-{{ Session::get('messageclass') }}">
+                                <button class="close" type="button" data-dismiss="alert"><span
+                                        aria-hidden="true">&times;</span></button>
+                                {{  Session::get('message')    }}
                             </div>
+                        </div>
                         @endif
-                         <div class="table-responsive">
+                        <div class="table-responsive">
                             <table class="table table-striped nowrap" id="myTable">
                                 <thead class=" text-primary">
                                     <tr>
@@ -47,46 +48,52 @@
                                         <th>###</th>
                                     </tr>
                                 </thead>
-                                
+
                                 <tbody>
                                     @if($getData != null)
-                                        <?php 
-                                        $no = 0; 
+                                    <?php
+                                        $no = 0;
                                         ?>
-                                        @foreach($getData as $row)
-                                        <?php 
+                                    @foreach($getData as $row)
+                                    <?php
                                             $no++;
                                         ?>
-                                            <tr>
-                                                <td>{{$no}}</td>
-                                                <td>{{$row->user_code}}</td>
-                                                <td>{{$row->total_sponsor}}</td>
-                                                <td>{{date('d F Y', strtotime($row->created_at))}}</td>
-                                                <td>
-                                                    <a rel="tooltip"  data-toggle="modal" data-target="#popUp" class="text-info" href="{{ URL::to('/') }}/ajax/adm/cek/req-stockist/{{$row->id}}">confirm</a>
-                                                    &nbsp;&nbsp;
-                                                    <a rel="tooltip"  data-toggle="modal" data-target="#popUp1" class="text-danger" href="{{ URL::to('/') }}/ajax/adm/reject/req-stockist/{{$row->id}}">reject</a>
-                                                </td>
-                                            </tr>
-                                        @endforeach
+                                    <tr>
+                                        <td>{{$no}}</td>
+                                        <td>{{$row->user_code}}</td>
+                                        <td>{{$row->total_sponsor}}</td>
+                                        <td>{{date('d F Y', strtotime($row->created_at))}}</td>
+                                        <td>
+                                            <a rel="tooltip" data-toggle="modal" data-target="#popUp" class="text-info"
+                                                href="{{ URL::to('/') }}/ajax/adm/cek/req-stockist/{{$row->id}}">confirm</a>
+                                            &nbsp;&nbsp;
+                                            <a rel="tooltip" data-toggle="modal" data-target="#popUp1"
+                                                class="text-danger"
+                                                href="{{ URL::to('/') }}/ajax/adm/reject/req-stockist/{{$row->id}}">reject</a>
+                                        </td>
+                                    </tr>
+                                    @endforeach
                                     @endif
                                 </tbody>
                             </table>
-                             <div class="modal fade" id="popUp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="false">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content"></div>
-                                </div>
-                            </div>
-                             <div class="modal fade" id="popUp1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="false">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content"></div>
-                                </div>
-                            </div>
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+<div class="modal fade" id="popUp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    data-backdrop="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
+    </div>
+</div>
+<div class="modal fade" id="popUp1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    data-backdrop="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
     </div>
 </div>
 @stop

@@ -161,23 +161,24 @@
                                     @endif
                                 </tbody>
                             </table>
-                            <div class="modal fade" id="popUp" tabindex="-1" role="dialog"
-                                aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="false">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content"></div>
-                                </div>
-                            </div>
-                            <div class="modal fade" id="popUpReject" tabindex="-1" role="dialog"
-                                aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="false">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content"></div>
-                                </div>
-                            </div>
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+<div class="modal fade" id="popUp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    data-backdrop="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
+    </div>
+</div>
+<div class="modal fade" id="popUpReject" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true" data-backdrop="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
     </div>
 </div>
 @stop

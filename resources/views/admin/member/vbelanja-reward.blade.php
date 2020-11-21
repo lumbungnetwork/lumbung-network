@@ -9,9 +9,9 @@
             <div class="navbar-wrapper">
                 <div class="navbar-toggle">
                     <button type="button" class="navbar-toggler">
-                    <span class="navbar-toggler-bar bar1"></span>
-                    <span class="navbar-toggler-bar bar2"></span>
-                    <span class="navbar-toggler-bar bar3"></span>
+                        <span class="navbar-toggler-bar bar1"></span>
+                        <span class="navbar-toggler-bar bar2"></span>
+                        <span class="navbar-toggler-bar bar3"></span>
                     </button>
                 </div>
                 <p class="navbar-brand">{{$headerTitle}}</p>
@@ -29,35 +29,39 @@
                     </div>
                     <div class="card-body">
                         @if ( Session::has('message') )
-                            <div class="widget-content mt10 mb10 mr15">
-                                <div class="alert alert-{{ Session::get('messageclass') }}">
-                                    <button class="close" type="button" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
-                                    {{  Session::get('message')    }}
-                                </div>
+                        <div class="widget-content mt10 mb10 mr15">
+                            <div class="alert alert-{{ Session::get('messageclass') }}">
+                                <button class="close" type="button" data-dismiss="alert"><span
+                                        aria-hidden="true">&times;</span></button>
+                                {{  Session::get('message')    }}
                             </div>
+                        </div>
                         @endif
-                         <div class="table-responsive">
-                             <form method="post" name="emailCompose" id="emailCompose" action="/adm/check/vbelanja-reward">
-                                 {{ csrf_field() }}
-                             <p class="form-group">
-                                <button type="submit" class="btn btn-primary" id="formCheck">Submit Transfer</button>
-                             </p>
-                            <table class="table table-striped nowrap" id="myTable">
-                                <thead class=" text-primary">
-                                    <tr>
-                                         <th><input type="checkbox" name="select_all" value="1" id="example-select-all"></th>
-                                        <th>No</th>
-                                        <th>UserID</th>
-                                        <th>Alamat Tron</th>
-                                        <th>Periode</th>
-                                        <th>Tgl. Claim</th>
-                                        <th>Reward (LMB)</th>
-                                        <th>###</th>
-                                    </tr>
-                                </thead>
+                        <div class="table-responsive">
+                            <form method="post" name="emailCompose" id="emailCompose"
+                                action="/adm/check/vbelanja-reward">
+                                {{ csrf_field() }}
+                                <p class="form-group">
+                                    <button type="submit" class="btn btn-primary" id="formCheck">Submit
+                                        Transfer</button>
+                                </p>
+                                <table class="table table-striped nowrap" id="myTable">
+                                    <thead class=" text-primary">
+                                        <tr>
+                                            <th><input type="checkbox" name="select_all" value="1"
+                                                    id="example-select-all"></th>
+                                            <th>No</th>
+                                            <th>UserID</th>
+                                            <th>Alamat Tron</th>
+                                            <th>Periode</th>
+                                            <th>Tgl. Claim</th>
+                                            <th>Reward (LMB)</th>
+                                            <th>###</th>
+                                        </tr>
+                                    </thead>
 
-                                <tbody>
-                                    @if($getData != null)
+                                    <tbody>
+                                        @if($getData != null)
                                         <?php $no = 0; ?>
                                         @foreach($getData as $row)
                                         <?php
@@ -69,33 +73,37 @@
                                             $reward = $kelipatan;
                                         }
                                         ?>
-                                            <tr>
-                                                <td><input type="checkbox" name="id[]" value="{{$row->id}}"></td>
-                                                <td>{{$no}}</td>
-                                                <td>{{$row->user_code}}</td>
-                                                <td>{{$row->tron}}</td>
-                                                <td>{{$row->monthly}}</td>
-                                                <td>{{date('d M Y', strtotime($row->created_at))}}</td>
-                                                <td>{{$reward}}</td>
-                                                <td>
-                                                    <a rel="tooltip"  data-toggle="modal" data-target="#popUp" class="text-danger" href="{{ URL::to('/') }}/ajax/adm/cek/reject-vbelanja-reward/{{$row->id}}">reject</a>
-                                                </td>
-                                            </tr>
+                                        <tr>
+                                            <td><input type="checkbox" name="id[]" value="{{$row->id}}"></td>
+                                            <td>{{$no}}</td>
+                                            <td>{{$row->user_code}}</td>
+                                            <td>{{$row->tron}}</td>
+                                            <td>{{$row->monthly}}</td>
+                                            <td>{{date('d M Y', strtotime($row->created_at))}}</td>
+                                            <td>{{$reward}}</td>
+                                            <td>
+                                                <a rel="tooltip" data-toggle="modal" data-target="#popUp"
+                                                    class="text-danger"
+                                                    href="{{ URL::to('/') }}/ajax/adm/cek/reject-vbelanja-reward/{{$row->id}}">reject</a>
+                                            </td>
+                                        </tr>
                                         @endforeach
-                                    @endif
-                                </tbody>
-                            </table>
-                             </form>
-                             <div class="modal fade" id="popUp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="false">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content"></div>
-                                </div>
-                            </div>
+                                        @endif
+                                    </tbody>
+                                </table>
+                            </form>
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+<div class="modal fade" id="popUp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    data-backdrop="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
     </div>
 </div>
 @stop

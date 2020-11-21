@@ -137,13 +137,13 @@
                                     <tr>
                                         <th>No</th>
                                         <th>UserID</th>
-                                        <th>No. HP</th>
+                                        <th>Actions</th>
                                         <th>Sponsor</th>
                                         <th>Status</th>
                                         <th>Tgl. Aktif</th>
                                         <th>Tgl. Expired</th>
                                         <th>Tron</th>
-                                        <th>###</th>
+                                        <th>No. HP</th>
                                     </tr>
                                 </thead>
 
@@ -181,12 +181,6 @@
                                     <tr>
                                         <td>{{$no}}</td>
                                         <td>{{$row->user_code}}</td>
-                                        <td>{{$row->hp}}</td>
-                                        <td>{{$sp}}</td>
-                                        <td><span class="badge badge-pill badge-{{$label}}">{{$active}}</span></td>
-                                        <td>{{date('d F Y', strtotime($active_at))}}</td>
-                                        <td>{{date('d F Y', strtotime('+365 days', strtotime($active_at)))}}</td>
-                                        <td>{{$tron}}</td>
                                         <td class="td-actions text-left">
                                             <div class="table-icons">
                                                 <a rel="tooltip" data-toggle="modal" data-target="#popUp"
@@ -212,46 +206,54 @@
                                                     class="text-danger">blokir</a>
                                             </div>
                                         </td>
+                                        <td>{{$sp}}</td>
+                                        <td><span class="badge badge-pill badge-{{$label}}">{{$active}}</span></td>
+                                        <td>{{date('d F Y', strtotime($active_at))}}</td>
+                                        <td>{{date('d F Y', strtotime('+365 days', strtotime($active_at)))}}</td>
+                                        <td>{{$tron}}</td>
+                                        <td>{{$row->hp}}</td>
+
                                     </tr>
                                     @endforeach
                                     @endif
                                 </tbody>
                             </table>
-                            <div class="modal fade" id="popUp" tabindex="-1" role="dialog"
-                                aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="false">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content"></div>
-                                </div>
-                            </div>
-                            <div class="modal fade" id="popUp1" tabindex="-1" role="dialog"
-                                aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="false">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content"></div>
-                                </div>
-                            </div>
-                            <div class="modal fade" id="popUp2" tabindex="-1" role="dialog"
-                                aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="false">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content"></div>
-                                </div>
-                            </div>
-                            <div class="modal fade" id="popUp3" tabindex="-1" role="dialog"
-                                aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="false">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content"></div>
-                                </div>
-                            </div>
-                            <div class="modal fade" id="popUp4" tabindex="-1" role="dialog"
-                                aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="false">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content"></div>
-                                </div>
-                            </div>
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+<div class="modal fade" id="popUp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    data-backdrop="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
+    </div>
+</div>
+<div class="modal fade" id="popUp1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    data-backdrop="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
+    </div>
+</div>
+<div class="modal fade" id="popUp2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    data-backdrop="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
+    </div>
+</div>
+<div class="modal fade" id="popUp3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    data-backdrop="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
+    </div>
+</div>
+<div class="modal fade" id="popUp4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    data-backdrop="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
     </div>
 </div>
 @stop
