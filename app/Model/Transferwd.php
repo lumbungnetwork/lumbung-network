@@ -265,6 +265,7 @@ class Transferwd extends Model
             ->selectRaw('transfer_wd.id, users.user_code, users.hp, users.tron, '
                 . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee')
             ->where('transfer_wd.status', '=', 0)
+            ->where('transfer_wd.type', '=', 5)
             ->where('transfer_wd.is_tron', '=', 1)
             ->orderBy('transfer_wd.id', 'DESC')
             ->get();
