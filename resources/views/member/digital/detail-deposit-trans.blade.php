@@ -169,8 +169,7 @@
                                                 <input size="50" type="text" id="eidr-addr"
                                                     style="border: 0; font-size:9.5px; font-weight:200;"
                                                     value="TC1o89VSHMSPno2FE6SgoCsuy8i4mVSWge" readonly>
-                                                <button type="button"
-                                                    class="btn btn-sm btn-outline-primary float-right mb-3"
+                                                <button type="button" class="btn btn-sm btn-outline-primary"
                                                     onclick="copy('eidr-addr')">Copy</button>
                                                 <br><small class="text-danger" style="display:none"
                                                     id="address-warning">Harus ditransfer dari
