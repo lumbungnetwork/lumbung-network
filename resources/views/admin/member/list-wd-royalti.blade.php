@@ -115,17 +115,18 @@
                                     </tbody>
                                 </table>
                             </form>
-                            <div class="modal fade" id="popUp" tabindex="-1" role="dialog"
-                                aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content"></div>
-                                </div>
-                            </div>
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+<div class="modal fade" id="popUp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    data-backdrop="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
     </div>
 </div>
 @stop
@@ -146,7 +147,6 @@
     $("#popUp").on("show.bs.modal", function(e) {
         var link = $(e.relatedTarget);
         $(this).find(".modal-content").load(link.attr("href"));
-        $(this).find('[autofocus]').focus();
     });
     $(document).ready(function() {
         var myTableRow =  $('#myTable').DataTable( {
