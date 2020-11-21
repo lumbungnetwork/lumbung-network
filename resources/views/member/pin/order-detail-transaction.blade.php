@@ -162,10 +162,14 @@
                                                 eIDR
                                                 <br>
                                                 <input size="50" type="text" id="eidr-addr"
-                                                    style="border: 0; font-size:9.5px; font-weight:200;"
+                                                    style="border: 0; font-size:10px; font-weight:200;"
                                                     value="TDtvo2jCoRftmRgzjkwMxekh8jqWLdDHNB" readonly>
                                                 <button type="button" class="btn btn-sm btn-outline-primary"
                                                     onclick="copy('eidr-addr')">Copy</button>
+                                                <br><small class="text-danger" style="display:none"
+                                                    id="address-warning">Harus ditransfer dari
+                                                    alamat TRON akun
+                                                    ini</small>
                                             </label>
                                         </div>
                                     </div>
@@ -275,6 +279,11 @@
                     $('#eidr-pay-button').show();
                     }
             }, 2000);
+            setTimeout(function(){
+                if($('#isTronWeb').val() == 0){
+                    $('#address-warning').show();
+                }
+            }, 2500);
         })
 
         @for ($i = 1; $i < $eidrno; $i++)
@@ -347,6 +356,13 @@
                 document.execCommand("copy");
                 alert("Berhasil menyalin: " + copyText.value);
             }
+
+            function cleanHash() {
+                if ($("#hash").val().includes("tronscan")) {
+                    let hashOnly = $("#hash").val().split("/")[5];
+                    $("#hash").val(hashOnly);
+                }
+            };
     </script>
     @endif
     @stop

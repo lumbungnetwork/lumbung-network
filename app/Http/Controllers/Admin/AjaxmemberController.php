@@ -160,7 +160,7 @@ class AjaxmemberController extends Controller
             }
         }
         $getTrans = $modelTrans->getDetailTransactionsMember($request->id_trans, $dataUser);
-        $data = (object) array('id_trans' => $request->id_trans);
+        $data = (object) array('id_trans' => $request->id_trans, 'sender' => $dataUser->tron);
         return view('member.ajax.confirm_add_transaction')
             ->with('bankPerusahaan', $getPerusahaanBank)
             ->with('getTrans', $getTrans)

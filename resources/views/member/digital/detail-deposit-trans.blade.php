@@ -167,7 +167,7 @@
                                                 eIDR
                                                 <br>
                                                 <input size="50" type="text" id="eidr-addr"
-                                                    style="border: 0; font-size:9.5px; font-weight:200;"
+                                                    style="border: 0; font-size:10px; font-weight:200;"
                                                     value="TC1o89VSHMSPno2FE6SgoCsuy8i4mVSWge" readonly>
                                                 <button type="button" class="btn btn-sm btn-outline-primary"
                                                     onclick="copy('eidr-addr')">Copy</button>

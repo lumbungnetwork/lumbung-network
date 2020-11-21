@@ -400,7 +400,7 @@ class MemberController extends Controller
         $discAwal = $hargaAwal * $disc / 100;
         $harga = $hargaAwal - $discAwal;
         $code = $modelSettingTrans->getCodeTransaction();
-        $rand = rand(49, 148);
+        $rand = rand(49, 99);
         $dataInsert = array(
             'user_id' => $dataUser->id,
             'transaction_code' => 'TR' . date('Ymd') . $dataUser->id . $code,
@@ -410,7 +410,7 @@ class MemberController extends Controller
         );
         $getIDTrans = $modelSettingTrans->getInsertTransaction($dataInsert);
         return redirect()->route('m_addTransaction', [$getIDTrans->lastID])
-            ->with('message', 'Order Pin berhasil, silakan lakukan proses transfer')
+            ->with('message', 'Silakan pilih metode pembayaran anda')
             ->with('messageclass', 'success');
     }
 
@@ -549,7 +549,7 @@ class MemberController extends Controller
         $timestamp = strtotime($getTrans->created_at);
 
         if (strlen($hash) != 64) {
-            return redirect()->route('m_listTransactions')
+            return redirect()->back()
                 ->with('message', 'Hash Transaksi Salah atau Typo!')
                 ->with('messageclass', 'danger');
         }
@@ -2122,6 +2122,12 @@ class MemberController extends Controller
         $amount = $request->royalti;
         $timestamp = $modelSales->getItemPurchaseMasterTimestamp($request->id_master);
 
+        if (strlen($hash) != 64) {
+            return redirect()->back()
+                ->with('message', 'Hash Transaksi Salah atau Typo!')
+                ->with('messageclass', 'danger');
+        }
+
         $client = new Client();
         sleep(3);
         $response = $client->request('GET', 'https://apilist.tronscan.org/api/transaction-info', [
@@ -3629,8 +3635,11 @@ class MemberController extends Controller
         $id_trans = $request->id_trans;
         $user_id = $dataUser->id;
 
-
-
+        if (strlen($hash) != 64) {
+            return redirect()->back()
+                ->with('message', 'Hash Transaksi Salah atau Typo!')
+                ->with('messageclass', 'danger');
+        }
 
         $client = new Client();
         sleep(3);

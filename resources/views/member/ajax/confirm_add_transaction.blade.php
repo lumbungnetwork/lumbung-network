@@ -2,20 +2,23 @@
     <div class="modal-header">
         <h5 class="modal-title" id="modalLabel">Konfirmasi Transfer</h5>
     </div>
+    <?php $total = $getTrans->price + $getTrans->unique_digit; ?>
     @if($bankPerusahaan != null)
     <div class="modal-body" style="overflow-y: auto;max-height: 330px;">
         <div class="row" id="loading" style="display:none;">
             <div class="col-md-12">
                 <div class="form-group">
-                    <h5 class="text-danger" style="display: block;text-align: center;">
+                    <h5 class="text-warning" style="display: block;text-align: center;">
                         <div class="spinner-border" role="status">
                             <span class="sr-only"></span>
                         </div>
-                        Loading...
+                        Sedang Memproses...
                     </h5>
                 </div>
             </div>
         </div>
+
+        @if($cekType == 0)
         <form id="form-add" method="POST" action="/m/add/transaction">
             {{ csrf_field() }}
             <div class="row">
@@ -24,12 +27,22 @@
                         <input type="hidden" name="id_trans" value="{{$data->id_trans}}">
                         <input type="hidden" name="bank_perusahaan_id" value="{{$bankPerusahaan->id}}">
                         <input type="hidden" name="is_tron" value="{{$cekType}}">
-                        <p class="lead text-muted" style="display: block;text-align: center;">Sudahkah anda Transfer?
+                        <p class="lead text-muted" style="display: block;text-align: center;">Sudahkah anda transfer?
                         </p>
                     </div>
                 </div>
             </div>
-            @if($cekType == 0)
+            <div class="row">
+
+                <div class="col-12">
+                    <div class="form-group">
+                        <label>Total Transfer</label>
+                        <input type="text" class="form-control" disabled=""
+                            value="Rp. {{number_format($total, 0, ',', '.')}}">
+                    </div>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-md-6 col-xs-12">
                     <div class="form-group">
@@ -52,44 +65,46 @@
                     </div>
                 </div>
             </div>
-            @endif
-            @if($cekType == 1)
+
+        </form>
+        @endif
+        @if($cekType == 1)
+        <form id="form-add" method="POST" action="/m/add/transaction-tron">
+            {{ csrf_field() }}
             <div class="row">
-                <div class="col-md-12 col-xs-12">
+                <div class="col-md-12">
                     <div class="form-group">
-                        <label>Nama</label>
-                        <input type="text" class="form-control" disabled="" value="{{$bankPerusahaan->tron_name}}">
+                        <input type="hidden" name="id_trans" value="{{$data->id_trans}}">
+                        <input type="hidden" name="sender" value="{{$data->sender}}">
                     </div>
                 </div>
             </div>
             <div class="row">
+
                 <div class="col-md-12 col-xs-12">
                     <div class="form-group">
-                        <label>Alamat Tron</label>
-                        <input type="text" class="form-control" disabled="" value="{{$bankPerusahaan->tron}}">
-                    </div>
-                </div>
-            </div>
-            @endif
-            <div class="row">
-                <div class="col-md-4 col-xs-12">
-                    <div class="form-group">
-                        <label>Jumlah Pin</label>
-                        <input type="text" class="form-control" disabled="" value="{{$getTrans->total_pin}}">
-                    </div>
-                </div>
-                <?php
-                    $total = $getTrans->price + $getTrans->unique_digit;
-                ?>
-                <div class="col-md-8 col-xs-12">
-                    <div class="form-group">
-                        <label>Total</label>
+                        <label>Nominal Transfer</label>
                         <input type="text" class="form-control" disabled=""
                             value="Rp. {{number_format($total, 0, ',', '.')}}">
                     </div>
                 </div>
             </div>
+
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="form-group">
+                        <label>Transaction Hash #</label>
+                        <textarea onchange="cleanHash()" class="form-control" style="font-size: 12px;" id="hash"
+                            rows="3" name="hash"
+                            placeholder="Tempelkan (Paste) Hash transaksi transfer eIDR sesuai nominal deposit di sini"></textarea>
+                    </div>
+                </div>
+            </div>
+
+
         </form>
+        @endif
+
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary waves-effect" id="tutupModal" data-dismiss="modal">Tutup</button>
