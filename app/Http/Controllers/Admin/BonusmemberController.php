@@ -664,7 +664,7 @@ class BonusmemberController extends Controller
             return redirect()->route('mainDashboard');
         }
         $modelBonus = new Bonus;
-        $rand = rand(69, 149);
+        $rand = rand(49, 99);
         $dataInsert = array(
             'user_id' => $dataUser->id,
             'nominal' => $request->req_topup,
