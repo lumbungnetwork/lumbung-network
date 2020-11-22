@@ -44,6 +44,28 @@ class Member extends Model
         return $sql;
     }
 
+    public function getCekMemberExist($user_code)
+    {
+        $sql = DB::table('users')
+            ->where('user_code', '=', $user_code)
+            ->where('is_active', '=', 1)
+            ->where('user_type', '=', 10)
+            ->first();
+        return $sql;
+    }
+
+    public function getCekMemberNotStockistOrVendor($id)
+    {
+        $sql = DB::table('users')
+            ->where('id', '=', $id)
+            ->where('is_stockist', '=', 0)
+            ->where('is_vendor', '=', 0)
+            ->where('is_active', '=', 1)
+            ->where('user_type', '=', 10)
+            ->first();
+        return $sql;
+    }
+
     public function getAllMemberByAdmin()
     {
         $sql = DB::table('users')

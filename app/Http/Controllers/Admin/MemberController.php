@@ -2637,6 +2637,7 @@ class MemberController extends Controller
                 ->with('message', 'Anda sudah menjadi member salah satu stockist atau vendor')
                 ->with('messageclass', 'danger');
         }
+        $timestamp = strtotime('now');
         $modelMember = new Member;
         $cekRequestStockist = $modelMember->getCekRequestVendor($dataUser->id);
         if ($cekRequestStockist != null) {
@@ -2646,6 +2647,7 @@ class MemberController extends Controller
         }
         return view('member.profile.add-vendor')
             ->with('headerTitle', 'Aplikasi Pengajuan Vendor')
+            ->with('timestamp', $timestamp)
             ->with('dataUser', $dataUser);
     }
 
@@ -2670,7 +2672,7 @@ class MemberController extends Controller
         );
         $modelMember->getInsertVendor($dataInsert);
         return redirect()->route('m_SearchVendor')
-            ->with('message', 'Aplikasi Pengajuan Vendor berhasil dibuat')
+            ->with('message', 'Permohonan Vendor berhasil diajukan, hubungi Delegasi anda untuk konfirmasi final.')
             ->with('messageclass', 'success');
     }
 

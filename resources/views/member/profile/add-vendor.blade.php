@@ -41,14 +41,20 @@
                     </div>
                     <div class="row">
                         <div class="col-12">
-                            <label for="input_email">Berikut adalah 4 username Hak Usaha yang saya sponsori itu:</label>
+                            <label for="input_email">Berikut adalah username dari 5 akun tersebut:</label>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-12">
                             <fieldset class="form-group">
-                                <input type="text" class="form-control" id="hu2" name="hu2" placeholder="username02"
-                                    autocomplete="off" required="">
+                                <input type="text" class="form-control" id="hu1" name="hu1"
+                                    placeholder="username01 (Stockist)" autocomplete="off" required>
+                            </fieldset>
+                        </div>
+                        <div class="col-12">
+                            <fieldset class="form-group">
+                                <input type="text" class="form-control" id="hu2" name="hu2"
+                                    value={{$dataUser->user_code}} autocomplete="off" readonly>
                             </fieldset>
                         </div>
                         <div class="col-12">
@@ -95,8 +101,40 @@
                     </div>
                     <div class="row">
                         <div class="col-12">
-                            <button type="submit" class="btn btn-block btn-success" id="submitBtn" data-toggle="modal"
-                                data-target="#confirmSubmit" onClick="inputSubmit()">Apply</button>
+                            <div class="checkbox checkbox-success">
+                                <input id="checkbox5" type="checkbox">
+                                <label for="checkbox5">
+                                    Saya bersedia untuk menjaminkan 100 LMB sebagai kontribusi saya kepada komunitas
+                                    Lumbung Network selama saya aktif sebagai seorang Vendor.
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="rounded-lg shadow bg-white p-3">
+                                <h6 class="text-muted mt-2">Silakan transfer 100 LMB ke alamat TRON di bawah ini:</h6>
+                                <input size="45" type="text" id="eidr-addr"
+                                    style="border: 0; font-size:12px; font-weight:200;"
+                                    value="TPu2RaFyEkujmC6K1MtP3LwcunNEmRhxgf" readonly>
+                                <button type="button" class="btn btn-sm btn-outline-primary"
+                                    onclick="copy('eidr-addr')">Copy</button>
+                                <br>
+                                <h6 class="text-muted mt-4">Lalu Copy dan Paste (tempel) Hash dari transaksi tersebut ke
+                                    kolom di bawah ini:</h6>
+                                <div class="form-group">
+                                    <textarea onchange="cleanHash()" class="form-control" style="font-size: 11px;"
+                                        id="hash" rows="2" name="tron_transfer" placeholder="Transaction Hash #"
+                                        \></textarea>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-block btn-success mt-3" id="submitBtn"
+                                data-toggle="modal" data-target="#confirmSubmit" onClick="inputSubmit()">Apply</button>
                         </div>
                     </div>
                     <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
@@ -145,13 +183,20 @@
            if($("#checkbox4").prop('checked') == true){
                 var syarat4 = 1;
             }
+            var syarat5 = 0;
+           if($("#checkbox5").prop('checked') == true){
+                var syarat5 = 1;
+            }
+            var hash = $("#tron_transfer").val();
+
+            var hu1 = $("#hu1").val();
             var hu2 = $("#hu2").val();
             var hu3 = $("#hu3").val();
             var hu4 = $("#hu4").val();
             var hu5 = $("#hu5").val();
             $.ajax({
                 type: "GET",
-                url: "{{ URL::to('/') }}/m/cek/req-vendor?syarat1="+syarat1+"&syarat3="+syarat3+"&syarat4="+syarat4+"&hu2="+hu2+"&hu3="+hu3+"&hu4="+hu4+"&hu5="+hu5,
+                url: "{{ URL::to('/') }}/m/cek/req-vendor?syarat1="+syarat1+"&syarat3="+syarat3+"&syarat4="+syarat4+"&syarat5="+syarat5+"&hu1="+hu1+"&hu2="+hu2+"&hu3="+hu3+"&hu4="+hu4+"&hu5="+hu5+"&hash="+hash,
                 success: function(url){
                     $("#confirmDetail" ).empty();
                     $("#confirmDetail").html(url);
@@ -170,6 +215,21 @@
                 event.preventDefault();
             }
         });
+
+        function copy(id) {
+            var copyText = document.getElementById(id);
+            copyText.select();
+            copyText.setSelectionRange(0, 99999)
+            document.execCommand("copy");
+            alert("Berhasil menyalin: " + copyText.value);
+        }
+
+        function cleanHash() {
+            if ($("#hash").val().includes("tronscan")) {
+                let hashOnly = $("#hash").val().split("/")[5];
+                $("#hash").val(hashOnly);
+            }
+        };
 
 </script>
 @stop

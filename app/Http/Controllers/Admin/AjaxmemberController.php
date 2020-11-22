@@ -1155,42 +1155,56 @@ class AjaxmemberController extends Controller
         $modelMember = new Member;
         $modelValidasi = new Validation;
 
+        $cekHU1 = null;
+        if ($request->hu1 != null) {
+            $getHU1 = $modelMember->getCekMemberExist($request->hu1);
+            if ($getHU1 != null) {
+                $cekHU1 = $getHU1->id;
+            }
+        }
         $cekHU2 = null;
         if ($request->hu2 != null) {
-            $getHU2 = $modelMember->getCekHakUsaha($dataUser, $request->hu2);
+            $getHU2 = $modelMember->getCekMemberExist($request->hu2);
             if ($getHU2 != null) {
                 $cekHU2 = $getHU2->id;
             }
         }
         $cekHU3 = null;
         if ($request->hu3 != null) {
-            $getHU3 = $modelMember->getCekHakUsaha($dataUser, $request->hu3);
+            $getHU3 = $modelMember->getCekMemberExist($request->hu3);
             if ($getHU3 != null) {
                 $cekHU3 = $getHU3->id;
             }
         }
         $cekHU4 = null;
         if ($request->hu4 != null) {
-            $getHU4 = $modelMember->getCekHakUsaha($dataUser, $request->hu4);
+            $getHU4 = $modelMember->getCekMemberExist($request->hu4);
             if ($getHU4 != null) {
                 $cekHU4 = $getHU4->id;
             }
         }
         $cekHU5 = null;
         if ($request->hu5 != null) {
-            $getHU5 = $modelMember->getCekHakUsaha($dataUser, $request->hu5);
+            $getHU5 = $modelMember->getCekMemberExist($request->hu5);
             if ($getHU5 != null) {
                 $cekHU5 = $getHU5->id;
             }
+        }
+        $hash = 0;
+        if ($request->hash != null) {
+            $hash = $request->hash;
         }
         $dataAll = (object) array(
             'syarat1' => $request->syarat1,
             'syarat3' => $request->syarat3,
             'syarat4' => $request->syarat4,
+            'syarat5' => $request->syarat5,
+            'hu1' => $cekHU1,
             'hu2' => $cekHU2,
             'hu3' => $cekHU3,
             'hu4' => $cekHU4,
             'hu5' => $cekHU5,
+            'hash' => $hash,
             'total_sp' => $dataUser->total_sponsor,
             'alamat' => $dataUser
         );
