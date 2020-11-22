@@ -293,6 +293,10 @@ class Validation extends Model
             $canInsert = (object) array('can' => false, 'pesan' => 'Username pada Hak Usaha 5 Anda tidak ada');
             return $canInsert;
         }
+        if (strlen($data->hash) != 64) {
+            $canInsert = (object) array('can' => false, 'pesan' => 'Ada yang salah dengan HASH transaksi anda');
+            return $canInsert;
+        }
         if (
             $data->hu2 == $data->hu3 || $data->hu2 == $data->hu4 || $data->hu2 == $data->hu5
             || $data->hu3 == $data->hu4 || $data->hu3 == $data->hu5

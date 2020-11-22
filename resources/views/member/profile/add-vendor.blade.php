@@ -187,7 +187,7 @@
            if($("#checkbox5").prop('checked') == true){
                 var syarat5 = 1;
             }
-            var hash = $("#tron_transfer").val();
+            var hash = $("#hash").val();
 
             var hu1 = $("#hu1").val();
             var hu2 = $("#hu2").val();
