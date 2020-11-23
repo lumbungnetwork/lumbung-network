@@ -1936,6 +1936,11 @@ class MemberController extends Controller
         $getData = null;
         if ($dataUser->kode_daerah != null) {
             $provinsi = $modelMember->getProvinsiIdByName($dataUser->provinsi);
+            if (!is_object($provinsi)) {
+                return redirect()->route('m_editAddress')
+                    ->with('message', 'Lumbung baru saja melakukan Update Database Daerah NKRI, silakan verifikasi kembali alamat anda sebelum Input Stock.')
+                    ->with('messageclass', 'info');
+            }
             $kabupaten = $modelMember->getKabupatenIdByName($dataUser->kota);
             $getData = $modelSales->getAllPurchaseByRegion($provinsi->id_prov, $kabupaten->id_kab, 1); //type 1 = Stockist, 2 = Vendor
         }
