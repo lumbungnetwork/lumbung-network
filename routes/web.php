@@ -25,9 +25,6 @@ Route::post('/forgot/passwd', 'FrontEnd\FrontEndController@postForgotPassword');
 Route::get('/auth/passwd/{code}/{email}', 'FrontEnd\FrontEndController@getAuthPassword')->name('passwdauth');
 Route::post('/auth/passwd', 'FrontEnd\FrontEndController@postAuthPassword');
 
-//Andya Berna approve System Deposit to Digiflazz
-Route::get('/approve/deposit/{code}', 'FrontEnd\FrontEndController@getAndyaBernaApproveDeposit')->name('passwdauth');
-
 Auth::routes();
 Route::prefix('/')->group(function () {
 
@@ -57,6 +54,7 @@ Route::prefix('/')->group(function () {
     Route::get('/adm/add/bonus-reward', 'Admin\MasterAdminController@getNewBonusReward')->name('adm_newReward')->middleware('auth');
     Route::post('/adm/add/bonus-reward', 'Admin\MasterAdminController@postNewBonusReward')->middleware('auth');
     Route::get('/adm/bonus-reward', 'Admin\MasterAdminController@getBonusReward')->name('adm_Rewards')->middleware('auth');
+    Route::get('/adm/testing', 'Admin\MasterAdminController@getTesting')->name('adm_Testing')->middleware('auth');
     Route::post('/adm/bonus-reward', 'Admin\MasterAdminController@postBonusReward')->middleware('auth');
 
     //Pin & Transaction
@@ -240,6 +238,9 @@ Route::prefix('/')->group(function () {
     Route::get('/ajax/adm/reject/isi-deposit/{id}/{user_id}/{is_tron}', 'Admin\AjaxController@getRejectIsiDepositTransactionById')->middleware('auth');
     Route::get('/ajax/adm/cek/tarik-deposit/{id}/{user_id}/{is_tron}', 'Admin\AjaxController@getCekTarikDepositTransactionById')->middleware('auth');
     Route::get('/ajax/adm/cek/ppob-transaction/{id}/{type}', 'Admin\AjaxController@getCekPPOBTransactionById')->middleware('auth');
+    Route::get('/ajax/adm/cek/test-hash', 'Admin\AjaxController@getCekTestHash')->middleware('auth');
+    Route::get('/ajax/adm/cek/test-send', 'Admin\AjaxController@getCekTestSend')->middleware('auth');
+    Route::get('/ajax/adm/cek/test-check-mutation', 'Admin\AjaxController@getCekTestCheckMutation')->middleware('auth');
 
     //        Route::get('/adm/daerah', 'Admin\MasterAdminController@getAllDaerah')->middleware('auth');
     ////////////////////////////////////////////////////////////////////////
