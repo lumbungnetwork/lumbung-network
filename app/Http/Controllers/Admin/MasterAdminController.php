@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use App\Model\Admin;
 use App\Model\Pinsetting;
@@ -18,7 +17,6 @@ use App\Model\Pengiriman;
 use App\Model\Bonussetting;
 use App\Model\Transferwd;
 use App\Model\Bonus;
-use File;
 use App\Model\Sales;
 use Illuminate\Support\Facades\Mail;
 
@@ -270,7 +268,6 @@ class MasterAdminController extends Controller
         $modelPin = new Pin;
         $modelMasterPin = new Masterpin;
         $modelMember = new Member;
-        $modePackage = new Package;
         $modelPin->getInsertMemberPin($memberPin);
         if ($getData->type == 1) {
             $memberStatus = 1;
@@ -283,16 +280,6 @@ class MasterAdminController extends Controller
             );
             $modelMember->getUpdateUsers('id', $user_id, $dataMemberUpdate);
             $reason = 'Member buy pin';
-        }
-        if ($getData->type == 10) {
-            $modelRO = new RepeatOrder;
-            $getROPackage = $modePackage->getMyPackagePin($getData->total_pin);
-            $dataRO = array(
-                'user_id' => $user_id,
-                'package_id' => $getROPackage->id
-            );
-            $modelRO->getInsertRO($dataRO);
-            $reason = 'Member Repeat Order';
         }
 
         $dataUpdate = array(
@@ -1202,6 +1189,18 @@ class MasterAdminController extends Controller
         return redirect()->route('adm_Rewards')
             ->with('message', 'Edit Setting bonus reward berhasil')
             ->with('messageclass', 'success');
+    }
+
+    public function getTesting()
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(1, 2);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        return view('admin.setting.testing')
+            ->with('headerTitle', 'Testing')
+            ->with('dataUser', $dataUser);
     }
 
     public function getAllClaimReward()

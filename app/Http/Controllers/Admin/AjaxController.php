@@ -16,6 +16,9 @@ use App\Model\Member;
 use App\Model\Bonussetting;
 use App\Model\Sales;
 use App\Model\Pin;
+use Illuminate\Support\Facades\Config;
+use IEXBase\TronAPI\Tron;
+use GuzzleHttp\Client;
 
 class AjaxController extends Controller
 {
@@ -657,5 +660,109 @@ class AjaxController extends Controller
             ->with('headerTitle', 'Detail Transaksi')
             ->with('type', $type)
             ->with('getData', $getData);
+    }
+
+    //TRON-API testing
+
+
+    public function getCekTestHash(Request $request)
+    {
+        $fullNode = new \IEXBase\TronAPI\Provider\HttpProvider('https://api.trongrid.io');
+        $solidityNode = new \IEXBase\TronAPI\Provider\HttpProvider('https://api.trongrid.io');
+        $eventServer = new \IEXBase\TronAPI\Provider\HttpProvider('https://api.trongrid.io');
+
+        try {
+            $tron = new Tron($fullNode, $solidityNode, $eventServer);
+        } catch (\IEXBase\TronAPI\Exception\TronException $e) {
+            exit($e->getMessage());
+        }
+        // $hash = $tron->toHex($request->hash);
+        $detail = $tron->getTransaction($request->hash);
+        $timestamp = $detail['raw_data']['timestamp'];
+        $message = $tron->fromHex($detail['raw_data']['data']);
+        $sender = $tron->fromHex($detail['raw_data']['contract'][0]['parameter']['value']['owner_address']);
+        $receiver = $tron->fromHex($detail['raw_data']['contract'][0]['parameter']['value']['to_address']);
+        $asset = $tron->fromHex($detail['raw_data']['contract'][0]['parameter']['value']['asset_name']);
+        $amount = $detail['raw_data']['contract'][0]['parameter']['value']['amount'];
+
+        return view('admin.ajax.cek-test-hash')
+            ->with('headerTitle', 'Detail Transaksi')
+            ->with('timestamp', $timestamp)
+            ->with('sender', $sender)
+            ->with('receiver', $receiver)
+            ->with('asset', $asset)
+            ->with('message', $message)
+            ->with('amount', $amount);
+    }
+
+    public function getCekTestSend(Request $request)
+    {
+        $fullNode = new \IEXBase\TronAPI\Provider\HttpProvider('https://api.trongrid.io');
+        $solidityNode = new \IEXBase\TronAPI\Provider\HttpProvider('https://api.trongrid.io');
+        $eventServer = new \IEXBase\TronAPI\Provider\HttpProvider('https://api.trongrid.io');
+        $fuse = Config::get('services.telegram.test');
+
+
+        try {
+            $tron = new Tron($fullNode, $solidityNode, $eventServer, $signServer = null, $explorer = null, $fuse);
+        } catch (\IEXBase\TronAPI\Exception\TronException $e) {
+            exit($e->getMessage());
+        }
+        $to = $request->toAddress;
+        $amount = $request->amount;
+        $from = 'TWJtGQHBS8PfZTXvWAYhQEMrx36eX2F9Pc';
+        $tokenID = '1002652';
+        try {
+            $transaction = $tron->getTransactionBuilder()->sendToken($to, $amount, $tokenID, $from);
+            $signedTransaction = $tron->signTransaction($transaction);
+            $response = $tron->sendRawTransaction($signedTransaction);
+        } catch (\IEXBase\TronAPI\Exception\TronException $e) {
+            die($e->getMessage());
+        }
+        dd($response['txid']);
+
+        // $hash = $tron->toHex($request->hash);
+        $detail = $tron->getTransaction($request->hash);
+        $timestamp = $detail['raw_data']['timestamp'];
+        $sender = $tron->fromHex($detail['raw_data']['contract'][0]['parameter']['value']['owner_address']);
+        $receiver = $tron->fromHex($detail['raw_data']['contract'][0]['parameter']['value']['to_address']);
+        $asset = $tron->fromHex($detail['raw_data']['contract'][0]['parameter']['value']['asset_name']);
+        $amount = $detail['raw_data']['contract'][0]['parameter']['value']['amount'];
+
+        return view('admin.ajax.cek-test-hash')
+            ->with('headerTitle', 'Detail Transaksi')
+            ->with('timestamp', $timestamp)
+            ->with('sender', $sender)
+            ->with('receiver', $receiver)
+            ->with('asset', $asset)
+            ->with('amount', $amount);
+    }
+
+    public function getCekTestCheckMutation(Request $request)
+    {
+        $mootaToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiJucWllNHN3OGxsdyIsImp0aSI6ImY0NGE5YjZmNjI1NTllYTVlNjYzODcxMTA0OWM2M2YwYTcxYTU0ZTQ5YTA0YjU1ODQ2NTcxZDc0ZTAyZmM5MTc4ZTZlZDQ3YTQ5NGZkMDY1IiwiaWF0IjoxNjA2MTU1Mjk4LCJuYmYiOjE2MDYxNTUyOTgsImV4cCI6MTYzNzY5MTI5OCwic3ViIjoiMTU2NTIiLCJzY29wZXMiOlsiYXBpIl19.DHQ77NIKrStWYPue21LfAlhWzJUjCHtmHhyKa-yqBPGpgtcywywxcQBqk4odBDXHhPkkj1sE0h_nRxoeRY0cg692XuDBrE5Z0mupTaM8-tlgr8lzBhFrjrleCTwqPxPwkQhoGmM3iNAs8JbwpGZ5LgCJNtfDFW_vHYBA9r-2M9Dug30Ckz1TJgyGxNKrEFVV9ZOzuAie6FjHxp_LSV0bCQvacocNEoYWSqMCxomjvtkGZ9iIPC93WZVsLu7v4Up1Xdz5ZIYk7ZNltN_NCBwgUB6KstTRqcloWBk-ISJW-favXIrlKa-aDiZrngzRgKsCv69bf7PhxmaEMKm1edova5tey1qyIQ9mpYP1TIOU3AeSJj6wPFH20rF6KIBpx-vQg3GnnRj0vmY17bnpzv4bIKImyAUg5S94nuNVqx664mfcggEa1oVwdW9kjhHsp2tAET5g2sASrHbx2yASuPJYYEbTSL1OnyhT0IAIIE1o8jIDsvH69jN7GuDppKwbY4iTQBE4Ctm-y0ds3FGdRevv1yXoRUdJayj2mhrWTb--H01qvDyN542rO1Gk6LA-vTro2PKQvJ3zU2_H_Dc_Rle_01cr8FaS76mz_BmwyQm7-WC9eRnYJKTLRXJ1u2QYUSlRk_zQS-VqYif8j6mhD2fyVjWZo65tBYh8AvRfu_ktD5E';
+
+        $headers = [
+            'Authorization' => 'Bearer ' . $mootaToken,
+            'Accept'        => 'application/json',
+        ];
+        $client = new Client;
+        $date = $request->date;
+        $expectedTransfer = $request->nominal;
+
+        $mutationCheck = $client->request('GET', 'https://app.moota.co/api/v2/mutation', [
+            'headers' => $headers,
+            'query' => [
+                'type' => 'CR',
+                'bank' => 'dE6jRawozNQ',
+                'amount' => $expectedTransfer,
+                'date' => $date,
+            ]
+        ]);
+        dd(json_decode($mutationCheck->getBody()->getContents(), true));
+        $mutationCheckArray = json_decode($mutationCheck, true);
+        dd($mutationCheckArray);
+
+        return view('admin.ajax.cek-test-hash');
     }
 }

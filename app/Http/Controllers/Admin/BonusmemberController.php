@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Jobs\TopUpeIDRjob;
 use Illuminate\Support\Facades\Auth;
 use App\Model\Member;
 use App\Model\Pinsetting;
@@ -16,6 +17,7 @@ use App\Model\Transferwd;
 use App\Model\Bonus;
 use App\Model\Sales;
 use App\Model\Bank;
+
 
 class BonusmemberController extends Controller
 {
@@ -716,6 +718,11 @@ class BonusmemberController extends Controller
             ->with('dataUser', $dataUser);
     }
 
+    public function postTopUpeIDRCheckByJob($topup_id, $user_id)
+    {
+        TopUpeIDRjob::dispatch($topup_id, $user_id);
+    }
+
     public function postMemberTopupPembayaran(Request $request)
     {
         $dataUser = Auth::user();
@@ -739,9 +746,10 @@ class BonusmemberController extends Controller
             'updated_at' => date('Y-m-d H:i:s'),
         );
         $modelBonus->getUpdateTopUp('id', $id_topup, $dataUpdate);
-        return redirect()->route('m_historyTopupSaldo')
-            ->with('message', 'Konfirmasi transfer berhasil')
-            ->with('messageclass', 'success');
+        $this->dispatch(new TopUpeIDRjob($id_topup, $dataUser->id));
+        return redirect()->back()
+            ->with('message', 'Sistem akan mencoba verifikasi mutasi transfer anda secara otomatis dalam 15 menit ke depan. Apa bila saldo eIDR masih belum masuk, silakan hubungi Admin untuk konfirmasi manual')
+            ->with('messageclass', 'info');
     }
 
     public function postRejectTopup(Request $request)

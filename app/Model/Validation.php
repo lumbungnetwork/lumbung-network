@@ -315,8 +315,8 @@ class Validation extends Model
             $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum mengisi data alamat tron');
             return $canInsert;
         }
-        if ($data->req_topup < 20000) {
-            $canInsert = (object) array('can' => false, 'pesan' => 'Batas minimum Top Up Saldo ke eIDR adalah Rp. 20.000');
+        if ($data->req_topup < 5000) {
+            $canInsert = (object) array('can' => false, 'pesan' => 'Batas minimum Top Up Saldo ke eIDR adalah Rp. 5.000');
             return $canInsert;
         }
         return $canInsert;
