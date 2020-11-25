@@ -766,17 +766,21 @@ class BonusmemberController extends Controller
         }
         $modelBonus = new Bonus;
         $id_topup = $request->id_topup;
+        $reason = null;
+        if ($request->reason != null) {
+            $reason = $request->reason;
+        }
         $dataUpdate = array(
             'status' => 3,
             'deleted_at' => date('Y-m-d H:i:s'),
-            'reason' => null,
+            'reason' => $reason,
             'submit_by' => $dataUser->id,
             'submit_at' => date('Y-m-d H:i:s'),
         );
         $modelBonus->getUpdateTopUp('id', $id_topup, $dataUpdate);
         return redirect()->route('m_historyTopupSaldo')
             ->with('message', 'Transaksi Top Up dibatalkan')
-            ->with('messageclass', 'success');
+            ->with('messageclass', 'info');
     }
 
     public function getHistoryWithdrawaleIDR()

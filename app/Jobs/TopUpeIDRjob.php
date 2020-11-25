@@ -130,17 +130,19 @@ class TopUpeIDRjob implements ShouldQueue
                             'submit_at' => date('Y-m-d H:i:s'),
                         );
                         $modelBonus->getUpdateTopUp('id', $getData->id, $dataUpdate);
-                        $client->request('GET', 'https://api.telegram.org/bot' . $tgAk . '/sendMessage', [
-                            'query' => [
-                                'chat_id' => '365874331',
-                                'text' => 'Top-up eIDR Berhasil, username ' . $getData->user_code . ' nominal:' . $mutationAmount,
-                                'parse_mode' => 'markdown'
-                            ]
-                        ]);
+
                         $paidNote = ['note' => 'PAID'];
                         $client->request('POST', 'https://app.moota.co/api/v2/mutation/' . $mutationID . '/note', [
                             'headers' => $headers,
                             'json' => $paidNote
+                        ]);
+                        $eIDRbalance = $tron->getTokenBalance($tokenID, $from, $fromTron = false) / 100;
+                        $client->request('GET', 'https://api.telegram.org/bot' . $tgAk . '/sendMessage', [
+                            'query' => [
+                                'chat_id' => '365874331',
+                                'text' => 'Top-up eIDR Berhasil, username ' . $getData->user_code . ' nominal:' . number_format($mutationAmount) . '. Sisa saldo eIDRhot: ' . number_format($eIDRbalance),
+                                'parse_mode' => 'markdown'
+                            ]
                         ]);
                         Log::info('CheckTopUpeIDR stopped: eIDR Top-up Success');
                     } else {

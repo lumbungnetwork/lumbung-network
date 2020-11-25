@@ -189,7 +189,7 @@ return [
                 'maxProcesses' => 10,
                 'balanceMaxShift' => 1,
                 'balanceCooldown' => 3,
-                'tries' => 15,
+                'tries' => 20,
             ],
         ],
     ],

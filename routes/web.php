@@ -241,6 +241,7 @@ Route::prefix('/')->group(function () {
     Route::get('/ajax/adm/cek/test-hash', 'Admin\AjaxController@getCekTestHash')->middleware('auth');
     Route::get('/ajax/adm/cek/test-send', 'Admin\AjaxController@getCekTestSend')->middleware('auth');
     Route::get('/ajax/adm/cek/test-check-mutation', 'Admin\AjaxController@getCekTestCheckMutation')->middleware('auth');
+    Route::get('/ajax/adm/cek/test-check-balance', 'Admin\AjaxController@getCekTestCheckBalance')->middleware('auth');
 
     //        Route::get('/adm/daerah', 'Admin\MasterAdminController@getAllDaerah')->middleware('auth');
     ////////////////////////////////////////////////////////////////////////
