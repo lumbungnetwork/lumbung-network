@@ -18,13 +18,29 @@ use App\Model\Sales;
 use App\Model\Pin;
 use Illuminate\Support\Facades\Config;
 use IEXBase\TronAPI\Tron;
+use IEXBase\TronAPI\Provider\HttpProvider;
+use IEXBase\TronAPI\Exception\TronException;
 use GuzzleHttp\Client;
 
 class AjaxController extends Controller
 {
+    private $tron;
 
     public function __construct()
     {
+        $fullNode = new HttpProvider('https://api.trongrid.io');
+        $solidityNode = new HttpProvider('https://api.trongrid.io');
+        $eventServer = new HttpProvider('https://api.trongrid.io');
+        $fuse = Config::get('services.telegram.test');
+
+
+        try {
+            $tron = new Tron($fullNode, $solidityNode, $eventServer, $signServer = null, $explorer = null, $fuse);
+        } catch (TronException $e) {
+            exit($e->getMessage());
+        }
+
+        $this->tron = $tron;
     }
 
     public function getAdminById($type, $id)
@@ -667,22 +683,12 @@ class AjaxController extends Controller
 
     public function getCekTestHash(Request $request)
     {
-        $fullNode = new \IEXBase\TronAPI\Provider\HttpProvider('https://api.trongrid.io');
-        $solidityNode = new \IEXBase\TronAPI\Provider\HttpProvider('https://api.trongrid.io');
-        $eventServer = new \IEXBase\TronAPI\Provider\HttpProvider('https://api.trongrid.io');
 
-        try {
-            $tron = new Tron($fullNode, $solidityNode, $eventServer);
-        } catch (\IEXBase\TronAPI\Exception\TronException $e) {
-            exit($e->getMessage());
-        }
-        // $hash = $tron->toHex($request->hash);
-        $detail = $tron->getTransaction($request->hash);
+        $detail = $this->tron->getTransaction($request->hash);
         $timestamp = $detail['raw_data']['timestamp'];
-        $message = $tron->fromHex($detail['raw_data']['data']);
-        $sender = $tron->fromHex($detail['raw_data']['contract'][0]['parameter']['value']['owner_address']);
-        $receiver = $tron->fromHex($detail['raw_data']['contract'][0]['parameter']['value']['to_address']);
-        $asset = $tron->fromHex($detail['raw_data']['contract'][0]['parameter']['value']['asset_name']);
+        $sender = $this->tron->fromHex($detail['raw_data']['contract'][0]['parameter']['value']['owner_address']);
+        $receiver = $this->tron->fromHex($detail['raw_data']['contract'][0]['parameter']['value']['to_address']);
+        $asset = $this->tron->fromHex($detail['raw_data']['contract'][0]['parameter']['value']['asset_name']);
         $amount = $detail['raw_data']['contract'][0]['parameter']['value']['amount'];
 
         return view('admin.ajax.cek-test-hash')
@@ -691,42 +697,30 @@ class AjaxController extends Controller
             ->with('sender', $sender)
             ->with('receiver', $receiver)
             ->with('asset', $asset)
-            ->with('message', $message)
             ->with('amount', $amount);
     }
 
     public function getCekTestSend(Request $request)
     {
-        $fullNode = new \IEXBase\TronAPI\Provider\HttpProvider('https://api.trongrid.io');
-        $solidityNode = new \IEXBase\TronAPI\Provider\HttpProvider('https://api.trongrid.io');
-        $eventServer = new \IEXBase\TronAPI\Provider\HttpProvider('https://api.trongrid.io');
-        $fuse = Config::get('services.telegram.test');
-
-
-        try {
-            $tron = new Tron($fullNode, $solidityNode, $eventServer, $signServer = null, $explorer = null, $fuse);
-        } catch (\IEXBase\TronAPI\Exception\TronException $e) {
-            exit($e->getMessage());
-        }
         $to = $request->toAddress;
         $amount = $request->amount;
         $from = 'TWJtGQHBS8PfZTXvWAYhQEMrx36eX2F9Pc';
         $tokenID = '1002652';
         try {
-            $transaction = $tron->getTransactionBuilder()->sendToken($to, $amount, $tokenID, $from);
-            $signedTransaction = $tron->signTransaction($transaction);
-            $response = $tron->sendRawTransaction($signedTransaction);
+            $transaction = $this->tron->getTransactionBuilder()->sendToken($to, $amount, $tokenID, $from);
+            $signedTransaction = $this->tron->signTransaction($transaction);
+            $response = $this->tron->sendRawTransaction($signedTransaction);
         } catch (\IEXBase\TronAPI\Exception\TronException $e) {
             die($e->getMessage());
         }
         dd($response['txid']);
 
-        // $hash = $tron->toHex($request->hash);
-        $detail = $tron->getTransaction($request->hash);
+        // $hash = $this->tron->toHex($request->hash);
+        $detail = $this->tron->getTransaction($request->hash);
         $timestamp = $detail['raw_data']['timestamp'];
-        $sender = $tron->fromHex($detail['raw_data']['contract'][0]['parameter']['value']['owner_address']);
-        $receiver = $tron->fromHex($detail['raw_data']['contract'][0]['parameter']['value']['to_address']);
-        $asset = $tron->fromHex($detail['raw_data']['contract'][0]['parameter']['value']['asset_name']);
+        $sender = $this->tron->fromHex($detail['raw_data']['contract'][0]['parameter']['value']['owner_address']);
+        $receiver = $this->tron->fromHex($detail['raw_data']['contract'][0]['parameter']['value']['to_address']);
+        $asset = $this->tron->fromHex($detail['raw_data']['contract'][0]['parameter']['value']['asset_name']);
         $amount = $detail['raw_data']['contract'][0]['parameter']['value']['amount'];
 
         return view('admin.ajax.cek-test-hash')
@@ -762,6 +756,17 @@ class AjaxController extends Controller
         dd(json_decode($mutationCheck->getBody()->getContents(), true));
         $mutationCheckArray = json_decode($mutationCheck, true);
         dd($mutationCheckArray);
+
+        return view('admin.ajax.cek-test-hash');
+    }
+    public function getCekTestCheckBalance(Request $request)
+    {
+
+        $address = $request->checkAddress;
+        $tokenID = $request->tokenId;
+
+        $tokenBalance = $this->tron->getTokenBalance($tokenID, $address, $fromTron = false);
+        dd($tokenBalance);
 
         return view('admin.ajax.cek-test-hash');
     }

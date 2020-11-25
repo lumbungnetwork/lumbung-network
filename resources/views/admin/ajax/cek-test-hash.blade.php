@@ -4,5 +4,4 @@
     <p>Receiver: {{$receiver}}</p><br>
     <p>Asset Name: {{$asset}}</p><br>
     <p>Amount: {{$amount}}</p><br>
-    <p>Message: {{$message}}</p>
 </div>

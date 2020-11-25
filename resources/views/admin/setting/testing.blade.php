@@ -38,7 +38,7 @@
                         </div>
                         @endif
                         <div class="row">
-                            <div class="col-6">
+                            <div class="col-12">
                                 <div class="container">
                                     <div class="input-group mb-3">
                                         <input id="input" type="text" class="form-control">
@@ -50,7 +50,7 @@
                                 </div>
                                 <div class="container" id="confirmDetail"></div>
                             </div>
-                            <div class="col-6">
+                            <div class="col-12">
                                 <div class="container">
                                     <div class=" mb-3">
                                         <label for="to-address">To</label>
@@ -65,7 +65,7 @@
                                 </div>
                                 <div class="container" id="confirmDetail2"></div>
                             </div>
-                            <div class="col-6">
+                            <div class="col-12">
                                 <div class="container">
                                     <div class=" mb-3">
                                         <label for="nominal">Nominal + Unique Digits</label>
@@ -79,6 +79,21 @@
                                     </div>
                                 </div>
                                 <div class="container" id="confirmDetail3"></div>
+                            </div>
+                            <div class="col-12">
+                                <div class="container">
+                                    <div class=" mb-3">
+                                        <label for="check-address">Address</label>
+                                        <input id="check-address" name="check-address" type="text" class="form-control">
+                                        <label for="token-id">Token Id</label>
+                                        <input id="token-id" name="token-id" type="text" class="form-control">
+                                        <div class="">
+                                            <button class="btn btn-outline-secondary" onclick="checkBalance()"
+                                                type="button">Check Balance</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="container" id="confirmDetail4"></div>
                             </div>
                         </div>
 
@@ -131,6 +146,19 @@
             success: function(url){
                 $("#confirmDetail3" ).empty();
                 $("#confirmDetail3").html(url);
+            }
+        });
+    }
+
+    function checkBalance () {
+        var checkAddress = $('#check-address').val();
+        var tokenId = $('#token-id').val();
+        $.ajax({
+            type: "GET",
+            url: "{{ URL::to('/') }}/ajax/adm/cek/test-check-balance?checkAddress="+checkAddress+"&tokenId="+tokenId,
+            success: function(url){
+                $("#confirmDetail4" ).empty();
+                $("#confirmDetail4").html(url);
             }
         });
     }
