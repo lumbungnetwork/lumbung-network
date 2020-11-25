@@ -387,6 +387,12 @@
                                 <span class="sidebar-normal"> Testing </span>
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ URL::to('/') }}/horizon/dashboard">
+                                <span class="sidebar-mini-icon">+</span>
+                                <span class="sidebar-normal"> Horizon Dashboard </span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </li>
