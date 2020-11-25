@@ -386,11 +386,11 @@ class Transferwd extends Model
         $sql = DB::table('transfer_wd')
             ->join('users', 'transfer_wd.user_id', '=', 'users.id')
             ->selectRaw('transfer_wd.id, users.tron, '
-                . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee, users.full_name,'
-                . 'transfer_wd.reason, transfer_wd.is_tron, transfer_wd.status')
+                . 'transfer_wd.wd_total')
             ->where('transfer_wd.id', '=', $id)
             ->where('transfer_wd.status', '=', 0)
             ->where('transfer_wd.type', '=', 5)
+            ->where('transfer_wd.reason', '=', null)
             ->where('transfer_wd.is_tron', '=', 1)
             ->first();
         return $sql;
@@ -407,6 +407,21 @@ class Transferwd extends Model
             ->where('transfer_wd.id', '=', $id)
             ->where('transfer_wd.type', '=', 3)
             ->orderBy('transfer_wd.id', 'DESC')
+            ->first();
+        return $sql;
+    }
+
+    public function getIDWDRoyaltiByeIDR($id)
+    {
+        $sql = DB::table('transfer_wd')
+            ->join('users', 'transfer_wd.user_id', '=', 'users.id')
+            ->selectRaw('transfer_wd.id, users.tron, users.user_code,'
+                . 'transfer_wd.wd_total')
+            ->where('transfer_wd.id', '=', $id)
+            ->where('transfer_wd.type', '=', 3)
+            ->where('transfer_wd.status', '=', 0)
+            ->where('transfer_wd.is_tron', '=', 1)
+            ->where('transfer_wd.reason', '=', null)
             ->first();
         return $sql;
     }

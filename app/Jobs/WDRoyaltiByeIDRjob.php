@@ -2,23 +2,22 @@
 
 namespace App\Jobs;
 
-use App\Model\Transferwd;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-
+use App\Model\Transferwd;
 use Illuminate\Support\Facades\Config;
 use IEXBase\TronAPI\Tron;
 use IEXBase\TronAPI\Provider\HttpProvider;
 use IEXBase\TronAPI\Exception\TronException;
 
-class KonversieIDRjob implements ShouldQueue
+class WDRoyaltiByeIDRjob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    private $id; //id of conversion request
+    private $id; //id of WD request
 
     public function __construct($id)
     {
@@ -48,9 +47,9 @@ class KonversieIDRjob implements ShouldQueue
 
         //get WD data
         $modelWD = new Transferwd;
-        $getData = $modelWD->getIDKonversiWDeIDR($this->id);
+        $getData = $modelWD->getIDWDRoyaltiByeIDR($this->id);
         if ($getData == null) {
-            dd('KonversieIDRjob stopped, no data');
+            dd('WDRoyaltiByeIDRjob stopped, no data');
         }
 
         $to = $getData->tron;

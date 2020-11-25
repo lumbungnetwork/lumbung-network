@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Jobs\WDRoyaltiByeIDRjob;
 use App\Jobs\TopUpeIDRjob;
 use App\Jobs\KonversieIDRjob;
 use Illuminate\Support\Facades\Auth;
@@ -318,7 +319,8 @@ class BonusmemberController extends Controller
             'wd_date' => date('Y-m-d'),
             'admin_fee' => $request->admin_fee
         );
-        $modelWD->getInsertWD($dataInsert);
+        $result = $modelWD->getInsertWD($dataInsert);
+        WDRoyaltiByeIDRjob::dispatch($result->lastID)->onQueue('tron');
         return redirect()->route('mainWallet')
             ->with('message', 'Request Withdraw Royalti via eIDR Berhasil')
             ->with('messageclass', 'success');
