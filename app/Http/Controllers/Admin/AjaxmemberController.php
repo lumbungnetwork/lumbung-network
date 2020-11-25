@@ -986,6 +986,16 @@ class AjaxmemberController extends Controller
             ->with('data', $dataAll);
     }
 
+    public function getCekTopUpStatus(Request $request)
+    {
+
+        $modelBonus = new Bonus;
+
+        $dataTopup = $modelBonus->getTopUpSaldoID($request->id_topup);
+
+        return $dataTopup->status;
+    }
+
     public function getCekTopupTransaction(Request $request)
     {
         $dataUser = Auth::user();

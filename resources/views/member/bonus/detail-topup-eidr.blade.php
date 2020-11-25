@@ -32,6 +32,18 @@
 
                 </div>
 
+                @if ($getData->status == 1)
+                <div class="card shadow rounded bg-light p-3 mb-3">
+                    <div id="verification-process" class="row p-3">
+                        <img src="/image/magnifying-glass-verifying.gif" style="margin: auto; max-width: 80%;" alt="">
+                        <br>
+                        <small>System akan memverifikasi pembayaran anda dalam kurun waktu 15 menit ke depan secara
+                            otomatis</small>
+                    </div>
+
+                </div>
+                @endif
+
                 <?php
                     $status = 'Tuntas';
                     $label = 'success';
@@ -40,7 +52,7 @@
                         $label = 'danger';
                     }
                     if($getData->status == 1){
-                        $status = 'Menunggu Konfirmasi';
+                        $status = 'Sedang Diproses';
                         $label = 'warning';
                     }
                     if($getData->status == 3){
@@ -52,9 +64,11 @@
                     <div class="row">
                         <div class="col-xl-12 col-xs-12">
 
-                            <p><strong>Tanggal Order: </strong>{{date('d F Y', strtotime($getData->created_at))}}</p>
-                            <p class="m-t-10"><strong>Order Status: </strong> <span
-                                    class="label label-{{$label}}">{{$status}}</span></p>
+                            <small><strong>Tanggal Order:
+                                </strong>{{date('d F Y', strtotime($getData->created_at))}}</small>
+                            <br>
+                            <small class="m-t-10"><strong>Order Status: </strong> <span
+                                    class="f-14 label label-{{$label}}">{{$status}}</span></small>
                         </div>
                         <div class="table-responsive">
                             <table class="table m-t-30">
@@ -82,7 +96,7 @@
                 </div>
 
                 <div class="card shadow rounded bg-white p-3 mb-3">
-                    <h5>Pilih Metode Pembayaran</h5>
+                    <h5>Metode Pembayaran</h5>
                     <address>
                         @if($getData->bank_perusahaan_id != null)
                         <br>
@@ -135,9 +149,8 @@
 
                 </div>
 
-
-
                 <div class="rounded-lg bg-white p-3 mb-3">
+                    @if ($getData->status == 0)
                     <div class="row">
                         <div class="col-sm-6 col-xs-6">
                             <p class="text-xs-right"><b>Sub-total:</b> Rp.
@@ -167,6 +180,8 @@
                                 <div class="clearfix"></div>
                             </div>
                             @endif
+                            @endif
+
                             @if($getData->status == 1 || $getData->status == 2 || $getData->status == 3)
                             <div class="hidden-print">
                                 <div class="pull-xs-right">
@@ -271,6 +286,30 @@
                 document.execCommand("copy");
                 alert("Berhasil menyalin: " + copyText.value);
             }
+    </script>
+    @endif
+
+    @if ($getData->status == 1)
+    <script>
+        $(function (){
+            var id_topup = {{$getData->id}};
+            setInterval(cekStatus, 10000)
+
+            function cekStatus () {
+                $.ajax({
+                    type: "GET",
+                    url: "{{ URL::to('/') }}/m/cek/topup-transaction-status?id_topup="+id_topup,
+                    success: function(result){
+
+                        console.log('result: ' + result);
+                        if (result == 2) {
+                            window.location.reload(true);
+                        }
+                    }
+                })
+            }
+
+        })
     </script>
     @endif
     @stop

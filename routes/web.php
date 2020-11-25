@@ -491,6 +491,7 @@ Route::prefix('/')->group(function () {
     Route::get('/m/explore/member', 'Admin\AjaxmemberController@getExplorerMemberByUserCode')->middleware('auth');
     Route::get('/m/cek/confirm-topup', 'Admin\AjaxmemberController@getCekConfirmTopUp')->middleware('auth');
     Route::get('/m/cek/topup-transaction', 'Admin\AjaxmemberController@getCekTopupTransaction')->middleware('auth');
+    Route::get('/m/cek/topup-transaction-status', 'Admin\AjaxmemberController@getCekTopUpStatus')->middleware('auth');
     Route::get('/m/cek/reject-topup', 'Admin\AjaxmemberController@getCekRejectTopup')->middleware('auth');
     Route::get('/m/cek/req-vendor', 'Admin\AjaxmemberController@getCekRequestMemberVendor')->middleware('auth');
     Route::get('/m/cek/usercode-vendor', 'Admin\AjaxmemberController@getSearchUserCodeVendor')->middleware('auth');

@@ -220,8 +220,7 @@
     <div class="modal-dialog" role="document" id="confirmDetail">
     </div>
 </div>
-<div class="modal fade" id="confirmSubmitTopUp" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
-    aria-hidden="true" data-backdrop="false">
+<div class="modal fade" id="confirmSubmitTopUp" tabindex="-1" role="dialog" data-backdrop="true">
     <div class="modal-dialog" role="document" id="confirmDetailTopUp">
     </div>
 </div>
