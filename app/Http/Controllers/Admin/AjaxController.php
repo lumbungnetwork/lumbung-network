@@ -16,6 +16,7 @@ use App\Model\Member;
 use App\Model\Bonussetting;
 use App\Model\Sales;
 use App\Model\Pin;
+use App\TronModel;
 use Illuminate\Support\Facades\Config;
 use IEXBase\TronAPI\Tron;
 use IEXBase\TronAPI\Provider\HttpProvider;
@@ -683,21 +684,16 @@ class AjaxController extends Controller
 
     public function getCekTestHash(Request $request)
     {
-
-        $detail = $this->tron->getTransaction($request->hash);
-        $timestamp = $detail['raw_data']['timestamp'];
-        $sender = $this->tron->fromHex($detail['raw_data']['contract'][0]['parameter']['value']['owner_address']);
-        $receiver = $this->tron->fromHex($detail['raw_data']['contract'][0]['parameter']['value']['to_address']);
-        $asset = $this->tron->fromHex($detail['raw_data']['contract'][0]['parameter']['value']['asset_name']);
-        $amount = $detail['raw_data']['contract'][0]['parameter']['value']['amount'];
+        $tron = new TronModel;
+        $detail = $tron->checkTransaction($request->hash);
 
         return view('admin.ajax.cek-test-hash')
             ->with('headerTitle', 'Detail Transaksi')
-            ->with('timestamp', $timestamp)
-            ->with('sender', $sender)
-            ->with('receiver', $receiver)
-            ->with('asset', $asset)
-            ->with('amount', $amount);
+            ->with('timestamp', $detail['timestamp'])
+            ->with('sender', $detail['sender'])
+            ->with('receiver', $detail['receiver'])
+            ->with('asset', $detail['asset'])
+            ->with('amount', $detail['amount']);
     }
 
     public function getCekTestSend(Request $request)
@@ -713,7 +709,7 @@ class AjaxController extends Controller
         } catch (\IEXBase\TronAPI\Exception\TronException $e) {
             die($e->getMessage());
         }
-        dd($response['txid']);
+        dd($response);
 
         // $hash = $this->tron->toHex($request->hash);
         $detail = $this->tron->getTransaction($request->hash);

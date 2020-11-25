@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Jobs\TopUpeIDRjob;
+use App\Jobs\KonversieIDRjob;
 use Illuminate\Support\Facades\Auth;
 use App\Model\Member;
 use App\Model\Pinsetting;
@@ -388,9 +389,10 @@ class BonusmemberController extends Controller
             'admin_fee' => $request->admin_fee,
             'is_tron' => 1
         );
-        $modelWD->getInsertWD($dataInsert);
-        return redirect()->route('mainWallet')
-            ->with('message', 'request Konversi eIDR berhasil')
+        $result = $modelWD->getInsertWD($dataInsert);
+        KonversieIDRjob::dispatch($result->lastID)->onQueue('tron');
+        return redirect()->back()
+            ->with('message', 'Request Konversi eIDR berhasil')
             ->with('messageclass', 'success');
     }
 

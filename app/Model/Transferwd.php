@@ -4,6 +4,7 @@ namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 use Validator;
 
 class Transferwd extends Model
@@ -14,7 +15,7 @@ class Transferwd extends Model
         try {
             $lastInsertedID = DB::table('transfer_wd')->insertGetId($data);
             $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
         }
@@ -26,7 +27,7 @@ class Transferwd extends Model
         try {
             DB::table('transfer_wd')->where($fieldName, '=', $name)->update($data);
             $result = (object) array('status' => true, 'message' => null);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message);
         }
@@ -372,9 +373,24 @@ class Transferwd extends Model
             ->join('users', 'transfer_wd.user_id', '=', 'users.id')
             ->selectRaw('transfer_wd.id, users.user_code, users.hp, users.tron, '
                 . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee, users.full_name,'
-                . 'transfer_wd.reason, transfer_wd.status')
+                . 'transfer_wd.reason, transfer_wd.is_tron, transfer_wd.status')
             ->where('transfer_wd.id', '=', $id)
             ->orderBy('transfer_wd.id', 'DESC')
+            ->where('transfer_wd.is_tron', '=', 1)
+            ->first();
+        return $sql;
+    }
+
+    public function getIDKonversiWDeIDR($id)
+    {
+        $sql = DB::table('transfer_wd')
+            ->join('users', 'transfer_wd.user_id', '=', 'users.id')
+            ->selectRaw('transfer_wd.id, users.tron, '
+                . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee, users.full_name,'
+                . 'transfer_wd.reason, transfer_wd.is_tron, transfer_wd.status')
+            ->where('transfer_wd.id', '=', $id)
+            ->where('transfer_wd.status', '=', 0)
+            ->where('transfer_wd.type', '=', 5)
             ->where('transfer_wd.is_tron', '=', 1)
             ->first();
         return $sql;

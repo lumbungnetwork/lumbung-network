@@ -73,6 +73,18 @@
                     </div>
                 </div>
 
+                @if ( Session::has('message') )
+                <div class="rounded-lg bg-white p-3 mb-3">
+                    <div class="container">
+                        <div class="alert alert-{{ Session::get('messageclass') }}">
+                            <button class="close" type="button" data-dismiss="alert"><span
+                                    aria-hidden="true">&times;</span></button>
+                            {{  Session::get('message')    }}
+                        </div>
+                    </div>
+                </div>
+                @endif
+
                 <div class="rounded-lg bg-white p-3 mb-3">
                     <h5 class="mb-3">eIDR</h5>
                     <div class="form-group mb-0">
