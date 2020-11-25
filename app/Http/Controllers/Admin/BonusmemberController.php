@@ -746,7 +746,8 @@ class BonusmemberController extends Controller
             'updated_at' => date('Y-m-d H:i:s'),
         );
         $modelBonus->getUpdateTopUp('id', $id_topup, $dataUpdate);
-        $this->dispatch(new TopUpeIDRjob($id_topup, $dataUser->id));
+        // $this->dispatch(new TopUpeIDRjob($id_topup, $dataUser->id));
+        TopUpeIDRjob::dispatch($id_topup, $dataUser->id);
         return redirect()->back()
             ->with('message', 'Sistem akan mencoba verifikasi mutasi transfer anda secara otomatis dalam 15 menit ke depan. Apa bila saldo eIDR masih belum masuk, silakan hubungi Admin untuk konfirmasi manual')
             ->with('messageclass', 'info');

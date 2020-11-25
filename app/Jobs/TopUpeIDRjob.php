@@ -41,8 +41,7 @@ class TopUpeIDRjob implements ShouldQueue
      */
     public function handle()
     {
-        ini_set("memory_limit", -1);
-        ini_set('max_execution_time', 1500);
+
         $modelBonus = new Bonus;
         $tgAk = Config::get('services.telegram.eidr');
 
@@ -77,46 +76,29 @@ class TopUpeIDRjob implements ShouldQueue
             $bankID = 'E32zpnxxWA1'; //BRI 033601001791568
         }
 
-        //start the loop
+        //call bank refresh mutation
+        $client = new Client;
+        $client->request('POST', 'https://app.moota.co/api/v2/bank/' . $bankID . '/refresh', [
+            'headers' => $headers
+        ]);
 
-        do {
-            $i = 0;
-            //call bank refresh mutation
-            $client = new Client;
-            $client->request('POST', 'https://app.moota.co/api/v2/bank/' . $bankID . '/refresh', [
-                'headers' => $headers
-            ]);
+        sleep(45); //let the lazy robot work
 
-            sleep(30); //let the lazy robot work
+        //find matching unique digits
+        $date = date('Y-m-d');
 
-            //find matching unique digits
-            $date = date('Y-m-d');
+        $expectedTransfer = $getData->nominal + $getData->unique_digit;
 
-            $expectedTransfer = $getData->nominal + $getData->unique_digit;
-
-            $mutationCheck = $client->request('GET', 'https://app.moota.co/api/v2/mutation', [
-                'headers' => $headers,
-                'query' => [
-                    'type' => 'CR',
-                    'bank' => $bankID,
-                    'amount' => $expectedTransfer,
-                    'date' => $date,
-                ]
-            ]);
-            $i++;
-            if ($i > 4) {
-                $client->request('GET', 'https://api.telegram.org/bot' . $tgAk . '/sendMessage', [
-                    'query' => [
-                        'chat_id' => '365874331',
-                        'text' => 'GAGAL mengambil mutasi untuk Topup eIDR, username ' . $getData->user_code . ' nominal:' . $expectedTransfer,
-                        'parse_mode' => 'markdown'
-                    ]
-                ]);
-                Log::info('CheckTopUpeIDR stopped: eIDR Transfer Failed');
-                return;
-            }
-            $mutationCheckArray = json_decode($mutationCheck->getBody()->getContents(), true);
-        } while ($mutationCheckArray['total'] == 0);
+        $mutationCheck = $client->request('GET', 'https://app.moota.co/api/v2/mutation', [
+            'headers' => $headers,
+            'query' => [
+                'type' => 'CR',
+                'bank' => $bankID,
+                'amount' => $expectedTransfer,
+                'date' => $date,
+            ]
+        ]);
+        $mutationCheckArray = json_decode($mutationCheck->getBody()->getContents(), true);
 
         $mutationCreatedAt = $mutationCheckArray['data'][0]['created_at'];
         $mutationNote = $mutationCheckArray['data'][0]['note'];
