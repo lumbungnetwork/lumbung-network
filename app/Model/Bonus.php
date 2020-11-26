@@ -4,7 +4,7 @@ namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use Validator;
+use Throwable;
 
 class Bonus extends Model
 {
@@ -14,7 +14,7 @@ class Bonus extends Model
         try {
             $lastInsertedID = DB::table('bonus_member')->insertGetId($data);
             $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
         }
@@ -198,7 +198,7 @@ class Bonus extends Model
         try {
             $lastInsertedID = DB::table('claim_reward')->insertGetId($data);
             $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
         }
@@ -210,7 +210,7 @@ class Bonus extends Model
         try {
             DB::table('claim_reward')->where($fieldName, '=', $name)->update($data);
             $result = (object) array('status' => true, 'message' => null);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message);
         }
@@ -304,7 +304,7 @@ class Bonus extends Model
         try {
             $lastInsertedID = DB::table('belanja_reward')->insertGetId($data);
             $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
         }
@@ -316,7 +316,7 @@ class Bonus extends Model
         try {
             DB::table('belanja_reward')->where($fieldName, '=', $name)->update($data);
             $result = (object) array('status' => true, 'message' => null);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message);
         }
@@ -792,7 +792,7 @@ class Bonus extends Model
         try {
             $lastInsertedID = DB::table('top_up')->insertGetId($data);
             $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
         }
@@ -804,7 +804,7 @@ class Bonus extends Model
         try {
             DB::table('top_up')->where($fieldName, '=', $name)->update($data);
             $result = (object) array('status' => true, 'message' => null);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message);
         }
@@ -898,6 +898,16 @@ class Bonus extends Model
             ->where('top_up.id', '=', $id)
             ->where('top_up.status', '=', 1)
             ->where('top_up.user_id', '=', $user_id)
+            ->first();
+        return $sql;
+    }
+
+    public function getUserIdfromTopUpId($topup_id)
+    {
+        $sql = DB::table('top_up')
+            ->selectRaw('top_up.user_id')
+            ->where('top_up.id', '=', $topup_id)
+            ->where('top_up.status', '=', 1)
             ->first();
         return $sql;
     }

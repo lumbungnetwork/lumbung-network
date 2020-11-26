@@ -2,28 +2,27 @@
 
 namespace App\Jobs;
 
-use App\Model\Transferwd;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use App\Model\Bonus;
 
-use Illuminate\Support\Facades\Config;
 use IEXBase\TronAPI\Tron;
 use IEXBase\TronAPI\Provider\HttpProvider;
 use IEXBase\TronAPI\Exception\TronException;
+use Illuminate\Support\Facades\Config;
 
-class KonversieIDRjob implements ShouldQueue
+class ManualTopUpeIDRjob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    private $id; //id of conversion request
+    private $topup_id;
 
-    public function __construct($id)
+    public function __construct($topup_id)
     {
-
-        $this->id = $id;
+        $this->topup_id = $topup_id;
     }
 
     /**
@@ -33,12 +32,19 @@ class KonversieIDRjob implements ShouldQueue
      */
     public function handle()
     {
-        //prepare Tron
+        //prepare data
+        $modelBonus = new Bonus;
+        $dataUser = $modelBonus->getUserIdfromTopUpId($this->topup_id);
+        $getData = $modelBonus->getJobTopUpSaldoIDUserId($this->topup_id, $dataUser->user_id);
+        if ($getData == null) {
+            dd('ManualTopUpeIDRjob stopped, no data');
+        }
+
+        //prepare TRON
         $fullNode = new HttpProvider('https://api.trongrid.io');
         $solidityNode = new HttpProvider('https://api.trongrid.io');
         $eventServer = new HttpProvider('https://api.trongrid.io');
         $fuse = Config::get('services.telegram.test');
-
 
         try {
             $tron = new Tron($fullNode, $solidityNode, $eventServer, $signServer = null, $explorer = null, $fuse);
@@ -46,20 +52,10 @@ class KonversieIDRjob implements ShouldQueue
             exit($e->getMessage());
         }
 
-        //get WD data
-        $modelWD = new Transferwd;
-        $getData = $modelWD->getIDKonversiWDeIDR($this->id);
-        if ($getData == null) {
-            dd('KonversieIDRjob stopped, no data');
-        }
-
         $to = $getData->tron;
-        $amount = $getData->wd_total * 100;
-
+        $amount = $getData->nominal * 100;
         $from = 'TWJtGQHBS8PfZTXvWAYhQEMrx36eX2F9Pc';
         $tokenID = '1002652';
-
-        //send eIDR
         try {
             $transaction = $tron->getTransactionBuilder()->sendToken($to, $amount, $tokenID, $from);
             $signedTransaction = $tron->signTransaction($transaction);
@@ -68,17 +64,15 @@ class KonversieIDRjob implements ShouldQueue
             die($e->getMessage());
         }
 
-        //log to app history
         if ($response['result'] == true) {
             $dataUpdate = array(
-                'status' => 1,
-                'transfer_at' => date('Y-m-d H:i:s'),
-                'submit_by' => 1,
+                'status' => 2,
                 'reason' => $response['txid'],
+                'tuntas_at' => date('Y-m-d H:i:s'),
+                'submit_by' => $getData->user_id,
                 'submit_at' => date('Y-m-d H:i:s'),
             );
-            $modelWD->getUpdateWD('id', $this->id, $dataUpdate);
-
+            $modelBonus->getUpdateTopUp('id', $getData->id, $dataUpdate);
             return;
         }
     }

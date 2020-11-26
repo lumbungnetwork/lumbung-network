@@ -99,70 +99,75 @@ class TopUpeIDRjob implements ShouldQueue
             ]
         ]);
         $mutationCheckArray = json_decode($mutationCheck->getBody()->getContents(), true);
+        if ($mutationCheckArray['total'] == 0) {
+            dd('TopUpeIDRjob stopped: mutation not found! topup_id:' . $this->topup_id . ' user_id: ' . $this->user_id);
+        }
+        foreach ($mutationCheckArray as $mutationData) {
+            $mutationCreatedAt = $mutationData['created_at'];
+            $mutationNote = $mutationData['note'];
+            $mutationID = $mutationData['mutation_id'];
+            $mutationAmount = $mutationData['amount'];
 
-        $mutationCreatedAt = $mutationCheckArray['data'][0]['created_at'];
-        $mutationNote = $mutationCheckArray['data'][0]['note'];
-        $mutationID = $mutationCheckArray['data'][0]['mutation_id'];
-        $mutationAmount = $mutationCheckArray['data'][0]['amount'];
+            //start checking
+            if (strtotime($mutationCreatedAt) > strtotime($getData->created_at)) {
+                if ($mutationNote != 'PAID') {
+                    if ($mutationAmount == $expectedTransfer) {
 
-        //start checking
-        if (strtotime($mutationCreatedAt) > strtotime($getData->created_at)) {
-            if ($mutationNote != 'PAID') {
-                if ($mutationAmount == $expectedTransfer) {
+                        $to = $getData->tron;
+                        $amount = $getData->nominal * 100;
+                        $from = 'TWJtGQHBS8PfZTXvWAYhQEMrx36eX2F9Pc';
+                        $tokenID = '1002652';
+                        try {
+                            $transaction = $tron->getTransactionBuilder()->sendToken($to, $amount, $tokenID, $from);
+                            $signedTransaction = $tron->signTransaction($transaction);
+                            $response = $tron->sendRawTransaction($signedTransaction);
+                        } catch (TronException $e) {
+                            die($e->getMessage());
+                        }
+                        if ($response['result'] == true) {
+                            $dataUpdate = array(
+                                'status' => 2,
+                                'reason' => $response['txid'],
+                                'tuntas_at' => date('Y-m-d H:i:s'),
+                                'submit_by' => $getData->user_id,
+                                'submit_at' => date('Y-m-d H:i:s'),
+                            );
+                            $modelBonus->getUpdateTopUp('id', $getData->id, $dataUpdate);
 
-                    $to = $getData->tron;
-                    $amount = $getData->nominal * 100;
-                    $from = 'TWJtGQHBS8PfZTXvWAYhQEMrx36eX2F9Pc';
-                    $tokenID = '1002652';
-                    try {
-                        $transaction = $tron->getTransactionBuilder()->sendToken($to, $amount, $tokenID, $from);
-                        $signedTransaction = $tron->signTransaction($transaction);
-                        $response = $tron->sendRawTransaction($signedTransaction);
-                    } catch (TronException $e) {
-                        die($e->getMessage());
-                    }
-                    if ($response['result'] == true) {
-                        $dataUpdate = array(
-                            'status' => 2,
-                            'reason' => $response['txid'],
-                            'tuntas_at' => date('Y-m-d H:i:s'),
-                            'submit_by' => $getData->user_id,
-                            'submit_at' => date('Y-m-d H:i:s'),
-                        );
-                        $modelBonus->getUpdateTopUp('id', $getData->id, $dataUpdate);
-
-                        $paidNote = ['note' => 'PAID'];
-                        $client->request('POST', 'https://app.moota.co/api/v2/mutation/' . $mutationID . '/note', [
-                            'headers' => $headers,
-                            'json' => $paidNote
-                        ]);
-                        $eIDRbalance = $tron->getTokenBalance($tokenID, $from, $fromTron = false) / 100;
-                        $client->request('GET', 'https://api.telegram.org/bot' . $tgAk . '/sendMessage', [
-                            'query' => [
-                                'chat_id' => '365874331',
-                                'text' => 'Top-up eIDR Berhasil, username ' . $getData->user_code . ' nominal:' . number_format($mutationAmount) . '. Sisa saldo eIDRhot: ' . number_format($eIDRbalance),
-                                'parse_mode' => 'markdown'
-                            ]
-                        ]);
-                        Log::info('CheckTopUpeIDR stopped: eIDR Top-up Success');
+                            $paidNote = ['note' => 'PAID'];
+                            $client->request('POST', 'https://app.moota.co/api/v2/mutation/' . $mutationID . '/note', [
+                                'headers' => $headers,
+                                'json' => $paidNote
+                            ]);
+                            $eIDRbalance = $tron->getTokenBalance($tokenID, $from, $fromTron = false) / 100;
+                            $client->request('GET', 'https://api.telegram.org/bot' . $tgAk . '/sendMessage', [
+                                'query' => [
+                                    'chat_id' => '365874331',
+                                    'text' => 'Top-up eIDR Berhasil, username ' . $getData->user_code . ' nominal:' . number_format($mutationAmount) . '. Sisa saldo eIDRhot: ' . number_format($eIDRbalance),
+                                    'parse_mode' => 'markdown'
+                                ]
+                            ]);
+                            Log::info('CheckTopUpeIDR stopped: eIDR Top-up Success');
+                            return;
+                        } else {
+                            $client->request('GET', 'https://api.telegram.org/bot' . $tgAk . '/sendMessage', [
+                                'query' => [
+                                    'chat_id' => '365874331',
+                                    'text' => 'Transfer eIDR untuk Top-up eIDR GAGAL, username ' . $getData->user_code . ' nominal:' . $mutationAmount,
+                                    'parse_mode' => 'markdown'
+                                ]
+                            ]);
+                            Log::info('CheckTopUpeIDR stopped: eIDR Transfer Failed');
+                        }
                     } else {
-                        $client->request('GET', 'https://api.telegram.org/bot' . $tgAk . '/sendMessage', [
-                            'query' => [
-                                'chat_id' => '365874331',
-                                'text' => 'Transfer eIDR untuk Top-up eIDR GAGAL, username ' . $getData->user_code . ' nominal:' . $mutationAmount,
-                                'parse_mode' => 'markdown'
-                            ]
-                        ]);
-                        Log::info('CheckTopUpeIDR stopped: eIDR Transfer Failed');
+                        Log::info('Top-up eIDR from user ' . $getData->user_code . ' ' . $expectedTransfer . ' FAILED. Error: mutation amount does not match!');
                     }
                 } else {
-                    Log::info('Top-up eIDR from user ' . $getData->user_code . ' ' . $expectedTransfer . ' FAILED. Error: mutation amount does not match!');
+                    Log::info('Top-up eIDR from user ' . $getData->user_code . ' ' . $expectedTransfer . ' FAILED. Error: mutation noted as PAID!');
                 }
             } else {
-                Log::info('Top-up eIDR from user ' . $getData->user_code . ' ' . $expectedTransfer . ' FAILED. Error: mutation noted as PAID!');
+                Log::info('Top-up eIDR from user ' . $getData->user_code . ' ' . $expectedTransfer . ' FAILED. Error: mutation date expired!');
             }
-        } else {
-            Log::info('Top-up eIDR from user ' . $getData->user_code . ' ' . $expectedTransfer . ' FAILED. Error: mutation date expired!');
         }
     }
 }

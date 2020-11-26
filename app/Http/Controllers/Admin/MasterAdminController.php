@@ -18,6 +18,7 @@ use App\Model\Bonussetting;
 use App\Model\Transferwd;
 use App\Model\Bonus;
 use App\Model\Sales;
+use App\Jobs\ManualTopUpeIDRjob;
 use Illuminate\Support\Facades\Mail;
 
 class MasterAdminController extends Controller
@@ -2280,7 +2281,6 @@ class MasterAdminController extends Controller
         if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $modelBonus = new Bonus;
         if ($request->id == null) {
             return redirect()->route('adm_listTopup')
                 ->with('message', 'tidak ada data yang dipilih')
@@ -2288,13 +2288,7 @@ class MasterAdminController extends Controller
         }
         $getRowID = $request->id;
         foreach ($getRowID as $getID) {
-            $dataUpdate = array(
-                'status' => 2,
-                'tuntas_at' => date('Y-m-d H:i:s'),
-                'submit_by' => $dataUser->id,
-                'submit_at' => date('Y-m-d H:i:s'),
-            );
-            $modelBonus->getUpdateTopUp('id', $getID, $dataUpdate);
+            ManualTopUpeIDRjob::dispatchNow($getID);
         }
         $modelAdmin = new Admin;
         $logHistory = array(

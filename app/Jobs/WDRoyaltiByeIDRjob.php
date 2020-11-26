@@ -77,6 +77,8 @@ class WDRoyaltiByeIDRjob implements ShouldQueue
                 'submit_at' => date('Y-m-d H:i:s'),
             );
             $modelWD->getUpdateWD('id', $this->id, $dataUpdate);
+
+            return;
         }
     }
 }
