@@ -72,11 +72,7 @@
                                             onClick="inputSubmit()">claimed</button>
                                     </p>
                                 </div>
-                                <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog"
-                                    aria-labelledby="modalLabel" aria-hidden="true" data-backdrop="false">
-                                    <div class="modal-dialog" role="document" id="confirmDetail">
-                                    </div>
-                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -138,6 +134,10 @@
         @include('layout.member.nav')
     </div>
     <div class="overlay"></div>
+</div>
+<div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" data-backdrop="true">
+    <div class="modal-dialog" role="document" id="confirmDetail">
+    </div>
 </div>
 
 @stop

@@ -78,6 +78,17 @@ class SendLMBRewardPeringkatJob implements ShouldQueue
             $rewardType = 'Gold III';
             $reward = 2000;
         }
+        if ($getData->reward_id > 4) {
+            $client->request('GET', 'https://api.telegram.org/bot' . $tgAk . '/sendMessage', [
+                'query' => [
+                    'chat_id' => '365874331',
+                    'text' => $getData->user_code . ' claim reward peringkat no. ' . $getData->reward_id,
+                    'parse_mode' => 'markdown',
+                    'disable_web_page_preview' => 'true'
+                ]
+            ]);
+            return;
+        }
 
         $to = $getData->tron;
         $amount = $reward * 1000000;
