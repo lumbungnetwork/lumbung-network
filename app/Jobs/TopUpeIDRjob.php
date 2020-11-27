@@ -62,6 +62,9 @@ class TopUpeIDRjob implements ShouldQueue
             exit($e->getMessage());
         }
 
+        //prepare Client
+        $client = new Client;
+
         //prepare moota
         $mootaToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiJucWllNHN3OGxsdyIsImp0aSI6ImY0NGE5YjZmNjI1NTllYTVlNjYzODcxMTA0OWM2M2YwYTcxYTU0ZTQ5YTA0YjU1ODQ2NTcxZDc0ZTAyZmM5MTc4ZTZlZDQ3YTQ5NGZkMDY1IiwiaWF0IjoxNjA2MTU1Mjk4LCJuYmYiOjE2MDYxNTUyOTgsImV4cCI6MTYzNzY5MTI5OCwic3ViIjoiMTU2NTIiLCJzY29wZXMiOlsiYXBpIl19.DHQ77NIKrStWYPue21LfAlhWzJUjCHtmHhyKa-yqBPGpgtcywywxcQBqk4odBDXHhPkkj1sE0h_nRxoeRY0cg692XuDBrE5Z0mupTaM8-tlgr8lzBhFrjrleCTwqPxPwkQhoGmM3iNAs8JbwpGZ5LgCJNtfDFW_vHYBA9r-2M9Dug30Ckz1TJgyGxNKrEFVV9ZOzuAie6FjHxp_LSV0bCQvacocNEoYWSqMCxomjvtkGZ9iIPC93WZVsLu7v4Up1Xdz5ZIYk7ZNltN_NCBwgUB6KstTRqcloWBk-ISJW-favXIrlKa-aDiZrngzRgKsCv69bf7PhxmaEMKm1edova5tey1qyIQ9mpYP1TIOU3AeSJj6wPFH20rF6KIBpx-vQg3GnnRj0vmY17bnpzv4bIKImyAUg5S94nuNVqx664mfcggEa1oVwdW9kjhHsp2tAET5g2sASrHbx2yASuPJYYEbTSL1OnyhT0IAIIE1o8jIDsvH69jN7GuDppKwbY4iTQBE4Ctm-y0ds3FGdRevv1yXoRUdJayj2mhrWTb--H01qvDyN542rO1Gk6LA-vTro2PKQvJ3zU2_H_Dc_Rle_01cr8FaS76mz_BmwyQm7-WC9eRnYJKTLRXJ1u2QYUSlRk_zQS-VqYif8j6mhD2fyVjWZo65tBYh8AvRfu_ktD5E';
 
@@ -75,9 +78,20 @@ class TopUpeIDRjob implements ShouldQueue
         if ($getData->bank_perusahaan_id == 26) {
             $bankID = 'E32zpnxxWA1'; //BRI 033601001791568
         }
+        //disable Mandiri for a while
+        if ($getData->bank_perusahaan_id == 1) {
+            $client->request('GET', 'https://api.telegram.org/bot' . $tgAk . '/sendMessage', [
+                'query' => [
+                    'chat_id' => '365874331',
+                    'text' => 'Top-up eIDR need Manual Action ' . $getData->user_code . ' nominal:' . number_format($getData->nominal + $getData->unique_digit),
+                    'parse_mode' => 'markdown'
+                ]
+            ]);
+            return;
+        }
 
         //call bank refresh mutation
-        $client = new Client;
+
         $client->request('POST', 'https://app.moota.co/api/v2/bank/' . $bankID . '/refresh', [
             'headers' => $headers
         ]);
