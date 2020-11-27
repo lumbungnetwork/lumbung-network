@@ -444,6 +444,18 @@ class Bonus extends Model
         return $sql;
     }
 
+    public function getJobDetailBelanjaReward($id)
+    {
+        $sql = DB::table('belanja_reward')
+            ->join('users', 'belanja_reward.user_id', '=', 'users.id')
+            ->selectRaw('belanja_reward.id, belanja_reward.reward, belanja_reward.type, '
+                . 'DATE_FORMAT(belanja_reward.belanja_date, "%M - %Y") as monthly, users.tron, users.user_code')
+            ->where('belanja_reward.id', '=', $id)
+            ->where('belanja_reward.status', '=', 0)
+            ->first();
+        return $sql;
+    }
+
     public function getAdminDetailVBelanjaReward($id)
     {
         $sql = DB::table('belanja_reward')

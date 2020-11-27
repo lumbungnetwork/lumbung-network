@@ -1280,7 +1280,7 @@ class Sales extends Model
             . "and aa.ppob_date < '$start_day' and aa.type > 2 "
             . "and aa.deleted_at is null) as sales "
             . "GROUP BY year, month, monthly "
-            . "ORDER BY year ASC, month ASC ";
+            . "ORDER BY year DESC, month DESC ";
         $result = DB::select($sql);
         if (count($result) <= 0) {
             return null;
@@ -1399,14 +1399,14 @@ class Sales extends Model
             . "union "
             . "select '2500' as sale_price, aa.ppob_date as sale_date "
             . "from ppob as aa "
-            . "where aa.vendor_id = $id "
+            . "where aa.user_id = $id "
             . "and aa.status = 2 "
             . "and month(aa.ppob_date) = '$month' "
             . "and year(aa.ppob_date) = '$year' "
             . "and aa.type > 2 "
             . "and aa.deleted_at is null) as sales "
             . "GROUP BY year, month, monthly "
-            . "ORDER BY year ASC, month ASC ";
+            . "ORDER BY year DESC, month DESC ";
         $result = DB::select($sql);
         if (count($result) <= 0) {
             return null;

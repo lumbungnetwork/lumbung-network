@@ -8,18 +8,18 @@
             {{ csrf_field() }}
             <?php
                     $rewardFactor = 2;
-                                                        if($dataUser->pin_activate == 2) {$rewardFactor = 1;}
-                                                        if($dataUser->pin_activate == 3) {$rewardFactor = 0.5;}
-                                                        if($dataUser->pin_activate >= 4) {$rewardFactor = 0.1;}
-                                                        $kelipatan = floor(($data->month_sale_price/10000)/10) * $rewardFactor;
-                                                        $reward = '--';
-                                                        if($kelipatan > 0){
-                                                            $reward = $kelipatan;
-                                                            if($kelipatan > 100){
-                                                                $kelipatan = 100;
-                                                                $reward = $kelipatan;
-                                                            }
-                                                        }
+                    if($dataUser->pin_activate == 2) {$rewardFactor = 1;}
+                    if($dataUser->pin_activate == 3) {$rewardFactor = 0.5;}
+                    if($dataUser->pin_activate >= 4) {$rewardFactor = 0.1;}
+                    $kelipatan = floor(($data->month_sale_price/10000)/10) * $rewardFactor;
+                    $reward = '--';
+                    if($kelipatan > 0){
+                        $reward = $kelipatan;
+                        if($kelipatan > 100){
+                            $kelipatan = 100;
+                            $reward = $kelipatan;
+                        }
+                    }
                 ?>
             <div class="row">
                 <div class="col-md-12 col-xs-12">

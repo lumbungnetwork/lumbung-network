@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\WDRoyaltiByeIDRjob;
 use App\Jobs\TopUpeIDRjob;
 use App\Jobs\KonversieIDRjob;
+use App\Jobs\SendLMBRewardJualBeliJob;
 use Illuminate\Support\Facades\Auth;
 use App\Model\Member;
 use App\Model\Pinsetting;
@@ -578,7 +579,8 @@ class BonusmemberController extends Controller
             'belanja_date' => $request->year . '-' . $request->month . '-01',
             'total_belanja' => $getData->month_sale_price
         );
-        $modelBonus->getInsertBelanjaReward($dataInsert);
+        $getRewardId = $modelBonus->getInsertBelanjaReward($dataInsert);
+        SendLMBRewardJualBeliJob::dispatch($getRewardId->lastID)->onQueue('tron');
         return redirect()->route('m_BelanjaReward')
             ->with('message', 'Claim Reward Belanja berhasil')
             ->with('messageclass', 'success');
@@ -656,7 +658,8 @@ class BonusmemberController extends Controller
             'total_belanja' => $getData->month_sale_price,
             'type' => 2
         );
-        $modelBonus->getInsertBelanjaReward($dataInsert);
+        $getRewardId = $modelBonus->getInsertBelanjaReward($dataInsert);
+        SendLMBRewardJualBeliJob::dispatch($getRewardId->lastID)->onQueue('tron');
         return redirect()->route('m_PenjualanReward')
             ->with('message', 'Claim Reward Penjualan berhasil')
             ->with('messageclass', 'success');
@@ -720,11 +723,6 @@ class BonusmemberController extends Controller
             ->with('getData', $getData)
             ->with('bankPerusahaan', $getPerusahaanBank)
             ->with('dataUser', $dataUser);
-    }
-
-    public function postTopUpeIDRCheckByJob($topup_id, $user_id)
-    {
-        TopUpeIDRjob::dispatch($topup_id, $user_id);
     }
 
     public function postMemberTopupPembayaran(Request $request)
@@ -889,7 +887,8 @@ class BonusmemberController extends Controller
             'total_belanja' => $getData[0]->month_sale_price,
             'type' => 3
         );
-        $modelBonus->getInsertBelanjaReward($dataInsert);
+        $getRewardId = $modelBonus->getInsertBelanjaReward($dataInsert);
+        SendLMBRewardJualBeliJob::dispatch($getRewardId->lastID)->onQueue('tron');
         return redirect()->route('m_VBelanjaReward')
             ->with('message', 'Claim Reward Belanja berhasil')
             ->with('messageclass', 'success');
@@ -982,7 +981,8 @@ class BonusmemberController extends Controller
             'total_belanja' => $getData[0]->month_sale_price,
             'type' => 4
         );
-        $modelBonus->getInsertBelanjaReward($dataInsert);
+        $getRewardId = $modelBonus->getInsertBelanjaReward($dataInsert);
+        SendLMBRewardJualBeliJob::dispatch($getRewardId->lastID)->onQueue('tron');
         return redirect()->route('m_VPenjualanReward')
             ->with('message', 'Claim Reward Penjualan berhasil')
             ->with('messageclass', 'success');
