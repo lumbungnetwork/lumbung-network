@@ -37,9 +37,11 @@ return [
 
     'telegram' => [
         'eidr' => '1300893823:' . env('BEIDR'),
-        'build' => env('AEIDR'),
+        'build' => env('AEIDR') . env('DEIDR'),
         'test' => env('CEIDR') . env('AEIDR'),
-        'local' => env('DEIDR') . env('AEIDR'),
+        'lmb' => '1402924705:' . env('BLMB'),
+        'rebuild' => env('DLMB') . env('CLMB'),
+        'retest' => env('DLMB') . env('ALMB'),
 
     ],
 

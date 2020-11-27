@@ -955,6 +955,7 @@ class AjaxmemberController extends Controller
         $getData = $modelSales->getStockistPenjualanMonthYear($dataUser->id, $request->m, $request->y);
         return view('member.ajax.confirm_reward_penjualan')
             ->with('data', $getData)
+            ->with('dataUser', $dataUser)
             ->with('check', $canInsert);
     }
 

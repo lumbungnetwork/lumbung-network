@@ -61,12 +61,11 @@
                                     @if($getData != null)
                                     @foreach($getData as $row)
                                     <?php
-                                                $maxReward = 10000;
-                                                $minimumReward = 0;
-                                                if($dataUser->pin_activate == 2) {$maxReward = 20000; $minimumReward = 5;}
-                                                if($dataUser->pin_activate == 3) {$maxReward = 40000; $minimumReward = 2.5;}
-                                                if($dataUser->pin_activate >= 4) {$maxReward = 100000; $minimumReward = 1;}
-                                                        $kelipatan = floor(($row->month_sale_price/$maxReward)/10) * 10;
+                                                $rewardFactor = 10;
+                                                if($dataUser->pin_activate == 2) {$rewardFactor = 5;}
+                                                if($dataUser->pin_activate == 3) {$rewardFactor = 2.5;}
+                                                if($dataUser->pin_activate >= 4) {$rewardFactor = 1;}
+                                                        $kelipatan = floor(($row->month_sale_price/10000)/10) * $rewardFactor;
                                                         $reward = '--';
                                                         if($kelipatan > 0){
                                                             $reward = $kelipatan.' LMB';
@@ -75,7 +74,7 @@
                                                                 $reward = $kelipatan.' LMB';
                                                             }
                                                         }
-                                                        if($kelipatan == 0 && $row->month_sale_price > 100000) {$reward = $minimumReward;}
+
                                                     ?>
                                     <tr>
                                         @if(date('Y-m', strtotime($row->year.'-'.$row->month)) >= date('Y-m',

@@ -7,12 +7,11 @@
         <form id="form-add" method="POST" action="/m/request/belanja-reward">
             {{ csrf_field() }}
             <?php
-                $maxReward = 10000;
-                $minimumReward = 0;
-                if($dataUser->pin_activate == 2) {$maxReward = 20000; $minimumReward = 5;}
-                if($dataUser->pin_activate == 3) {$maxReward = 40000; $minimumReward = 2.5;}
-                if($dataUser->pin_activate >= 4) {$maxReward = 100000; $minimumReward = 1;}
-                    $kelipatan = floor(($data->month_sale_price/$maxReward)/10) * 10;
+                $rewardFactor = 10;
+                if($dataUser->pin_activate == 2) {$rewardFactor = 5;}
+                if($dataUser->pin_activate == 3) {$rewardFactor = 2.5;}
+                if($dataUser->pin_activate >= 4) {$rewardFactor = 1;}
+                    $kelipatan = floor(($data->month_sale_price/10000)/10) * $rewardFactor;
                     $reward = '--';
                     if($kelipatan > 0){
                         $reward = $kelipatan;
@@ -21,7 +20,7 @@
                             $reward = $kelipatan;
                         }
                     }
-                if($kelipatan == 0 && $data->month_sale_price > 100000) {$reward = $minimumReward;}
+
                 ?>
             <div class="row">
                 <div class="col-md-12 col-xs-12">
