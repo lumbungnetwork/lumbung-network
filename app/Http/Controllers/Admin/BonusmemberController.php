@@ -20,6 +20,7 @@ use App\Model\Transferwd;
 use App\Model\Bonus;
 use App\Model\Sales;
 use App\Model\Bank;
+use App\Jobs\SendLMBRewardPeringkatJob;
 
 
 class BonusmemberController extends Controller
@@ -471,7 +472,8 @@ class BonusmemberController extends Controller
             'reward_id' => $request->cekID,
             'claim_date' => date('Y-m-d')
         );
-        $modelBonus->getInsertClaimReward($dataInsert);
+        $getRewardId = $modelBonus->getInsertClaimReward($dataInsert);
+        SendLMBRewardPeringkatJob::dispatch($getRewardId->lastID)->onQueue('tron');
         return redirect()->route('m_requestClaimReward')
             ->with('message', 'Claim Reward berhasil')
             ->with('messageclass', 'success');

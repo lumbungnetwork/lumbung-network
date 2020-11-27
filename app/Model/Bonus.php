@@ -749,6 +749,18 @@ class Bonus extends Model
         return $sql;
     }
 
+    public function getClaimRewardLMBbyId($reward_id)
+    {
+        $sql = DB::table('claim_reward')
+            ->join('users', 'claim_reward.user_id', '=', 'users.id')
+            ->selectRaw('claim_reward.id, users.user_code, users.tron, claim_reward.reward_id')
+            ->where('claim_reward.status', '=', 0)
+            ->where('claim_reward.id', '=', $reward_id)
+            ->whereNull('claim_reward.reason')
+            ->first();
+        return $sql;
+    }
+
     public function getAllClaimLMBByIDUserCode($data)
     {
         $sql = DB::table('belanja_reward')
