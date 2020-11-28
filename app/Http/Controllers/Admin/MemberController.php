@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -28,7 +27,6 @@ use GuzzleHttp\Client;
 
 class MemberController extends Controller
 {
-
     public function __construct()
     {
     }
@@ -554,27 +552,28 @@ class MemberController extends Controller
                 ->with('messageclass', 'danger');
         }
 
-        $client = new Client();
         sleep(3);
-        $response = $client->request('GET', 'https://apilist.tronscan.org/api/transaction-info', [
-            'query' => ['hash' => $hash]
-        ]);
 
-        if ($response->getStatusCode() != 200) {
-            return redirect()->route('m_listTransactions')
-                ->with('message', 'Ada Gangguan Koneksi API, Lapor ke Admin!')
+        $tron = $this->getTron();
+        $response = $tron->getTransaction($hash);
+
+        if (empty($response)) {
+            return redirect()->back()
+                ->with('message', 'Hash Transaksi Bermasalah!')
                 ->with('messageclass', 'danger');
-        }
+        };
 
-        $jsonres = json_decode($response->getBody(), true);
+        $hashTime = $response['raw_data']['timestamp'];
+        $hashSender = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['owner_address']);
+        $hashReceiver = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['to_address']);
+        $hashAsset = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['asset_name']);
+        $hashAmount = $response['raw_data']['contract'][0]['parameter']['value']['amount'];
 
-        $hashTime = $jsonres['timestamp'] / 1000;
-        $txdata = $jsonres['contractData'];
         if ($hashTime > $timestamp) {
-            if ($txdata['amount'] / 100 == $amount) {
-                if ($txdata['asset_name'] == '1002652') {
-                    if ($txdata['to_address'] == 'TDtvo2jCoRftmRgzjkwMxekh8jqWLdDHNB') {
-                        if ($txdata['owner_address'] == $sender) {
+            if ($hashAmount / 100 == $amount) {
+                if ($hashAsset == '1002652') {
+                    if ($hashReceiver == 'TDtvo2jCoRftmRgzjkwMxekh8jqWLdDHNB') {
+                        if ($hashSender == $sender) {
 
                             $getPinSetting = $modelSettingPin->getActivePinSetting();
                             $memberPin = array(
@@ -2133,32 +2132,28 @@ class MemberController extends Controller
                 ->with('messageclass', 'danger');
         }
 
-        $client = new Client();
         sleep(3);
-        $response = $client->request('GET', 'https://apilist.tronscan.org/api/transaction-info', [
-            'query' => ['hash' => $hash]
-        ]);
 
-        if ($response->getStatusCode() != 200) {
-            return redirect()->route('m_StockistDetailPruchase', [$request->id_master])
-                ->with('message', 'Ada Gangguan Koneksi API, Lapor ke Admin!')
-                ->with('messageclass', 'danger');
-        }
+        $tron = $this->getTron();
+        $response = $tron->getTransaction($hash);
 
-        if (empty(json_decode($response->getBody(), true))) {
-            return redirect()->route('m_StockistDetailPruchase', [$request->id_master])
+        if (empty($response)) {
+            return redirect()->back()
                 ->with('message', 'Hash Transaksi Bermasalah!')
                 ->with('messageclass', 'danger');
         };
 
-        $jsonres = json_decode($response->getBody());
-        $hashTime = $jsonres->timestamp / 1000;
-        $txdata = $jsonres->contractData;
+        $hashTime = $response['raw_data']['timestamp'];
+        $hashSender = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['owner_address']);
+        $hashReceiver = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['to_address']);
+        $hashAsset = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['asset_name']);
+        $hashAmount = $response['raw_data']['contract'][0]['parameter']['value']['amount'];
+
         if ($hashTime > $timestamp) {
-            if ($txdata->amount == $amount * 100) {
-                if ($txdata->asset_name == '1002652') {
-                    if ($txdata->to_address == 'TZHYx9bVa4vQz8VpVvZtjwMb4AHqkUChiQ') {
-                        if ($txdata->owner_address == $sender) {
+            if ($hashAmount == $amount * 100) {
+                if ($hashAsset == '1002652') {
+                    if ($hashReceiver == 'TZHYx9bVa4vQz8VpVvZtjwMb4AHqkUChiQ') {
+                        if ($hashSender == $sender) {
                             $buy_metode = 4;
                             $tron = $request->tron;
                             $dataUpdate = array(
@@ -2997,32 +2992,28 @@ class MemberController extends Controller
         $amount = $request->royalti;
         $timestamp = $modelSales->getVendorItemPurchaseMasterTimestamp($request->id_master);
 
-        $client = new Client();
         sleep(3);
-        $response = $client->request('GET', 'https://apilist.tronscan.org/api/transaction-info', [
-            'query' => ['hash' => $hash]
-        ]);
 
-        if ($response->getStatusCode() != 200) {
-            return redirect()->route('m_VendorListPruchase', [$request->id_master])
-                ->with('message', 'Ada Gangguan Koneksi API, Lapor ke Admin!')
-                ->with('messageclass', 'danger');
-        }
+        $tron = $this->getTron();
+        $response = $tron->getTransaction($hash);
 
-        if (empty(json_decode($response->getBody(), true))) {
-            return redirect()->route('m_VendorListPruchase', [$request->id_master])
+        if (empty($response)) {
+            return redirect()->back()
                 ->with('message', 'Hash Transaksi Bermasalah!')
                 ->with('messageclass', 'danger');
         };
 
-        $jsonres = json_decode($response->getBody());
-        $hashTime = $jsonres->timestamp / 1000;
-        $txdata = $jsonres->contractData;
+        $hashTime = $response['raw_data']['timestamp'];
+        $hashSender = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['owner_address']);
+        $hashReceiver = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['to_address']);
+        $hashAsset = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['asset_name']);
+        $hashAmount = $response['raw_data']['contract'][0]['parameter']['value']['amount'];
+
         if ($hashTime > $timestamp) {
-            if ($txdata->amount == $amount * 100) {
-                if ($txdata->asset_name == '1002652') {
-                    if ($txdata->to_address == 'TZHYx9bVa4vQz8VpVvZtjwMb4AHqkUChiQ') {
-                        if ($txdata->owner_address == $sender) {
+            if ($hashAmount == $amount * 100) {
+                if ($hashAsset == '1002652') {
+                    if ($hashReceiver == 'TZHYx9bVa4vQz8VpVvZtjwMb4AHqkUChiQ') {
+                        if ($hashSender == $sender) {
                             $buy_metode = 4;
                             $tron = $request->tron;
                             $dataUpdate = array(
@@ -3648,32 +3639,33 @@ class MemberController extends Controller
                 ->with('messageclass', 'danger');
         }
 
-        $client = new Client();
+        // $client = new Client();
+        // sleep(3);
+        // $response = $client->request('GET', 'https://apilist.tronscan.org/api/transaction-info', [
+        //     'query' => ['hash' => $hash]
+        // ]);
+
         sleep(3);
-        $response = $client->request('GET', 'https://apilist.tronscan.org/api/transaction-info', [
-            'query' => ['hash' => $hash]
-        ]);
+        $tron = $this->getTron();
+        $response = $tron->getTransaction($hash);
 
-        if ($response->getStatusCode() != 200) {
-            return redirect()->route('m_addDepositTransaction', [$id_trans])
-                ->with('message', 'Ada Gangguan Koneksi API, Lapor ke Admin!')
-                ->with('messageclass', 'danger');
-        }
-
-        if (empty(json_decode($response->getBody(), true))) {
+        if (empty($response)) {
             return redirect()->route('m_addDepositTransaction', [$id_trans])
                 ->with('message', 'Hash Transaksi Bermasalah!')
                 ->with('messageclass', 'danger');
         };
 
-        $jsonres = json_decode($response->getBody());
-        $hashTime = $jsonres->timestamp / 1000;
-        $txdata = $jsonres->contractData;
+        $hashTime = $response['raw_data']['timestamp'];
+        $hashSender = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['owner_address']);
+        $hashReceiver = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['to_address']);
+        $hashAsset = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['asset_name']);
+        $hashAmount = $response['raw_data']['contract'][0]['parameter']['value']['amount'];
+
         if ($hashTime > $timestamp) {
-            if ($txdata->amount / 100 == $amount) {
-                if ($txdata->asset_name == '1002652') {
-                    if ($txdata->to_address == 'TC1o89VSHMSPno2FE6SgoCsuy8i4mVSWge') {
-                        if ($txdata->owner_address == $sender) {
+            if ($hashAmount / 100 == $amount) {
+                if ($hashAsset == '1002652') {
+                    if ($hashReceiver == 'TC1o89VSHMSPno2FE6SgoCsuy8i4mVSWge') {
+                        if ($hashSender == $sender) {
                             $dataUpdate = array(
                                 'status' => 2,
                                 'bank_perusahaan_id' => 9,
