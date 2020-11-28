@@ -1019,11 +1019,11 @@ class Sales extends Model
         $sql = DB::table('master_sales')
             ->join('users', 'master_sales.user_id', '=', 'users.id')
             ->selectRaw('master_sales.sale_date, users.user_code, master_sales.total_price as sale_price, '
-                . 'master_sales.id, master_sales.status, master_sales.buy_metode,'
+                . 'master_sales.id, master_sales.status, master_sales.buy_metode, '
                 . 'master_sales.royalti_metode')
             ->where('master_sales.stockist_id', '=', $id)
             ->whereNull('master_sales.deleted_at')
-            ->orderBy('master_sales.sale_date', 'DESC')
+            ->orderBy('master_sales.created_at', 'DESC')
             ->get();
         $return = null;
         if (count($sql) > 0) {
