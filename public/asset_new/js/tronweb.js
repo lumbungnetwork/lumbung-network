@@ -1,51 +1,61 @@
 let txType = $('#txType').val();
 let userId = $('#username').val();
-var toAddress, userAddress;
+var toAddress, userAddress, tronWeb;
 let sendAmount = 0;
 
-
-
-$(document).ready(function(){
-    setTimeout(function() {
-        showTronBalance()
-    }, 1000)
+$(document).ready(function () {
+    setTimeout(function () {
+        main()
+    }, 200)
+    console.log('ready');
 });
 
-function shortId(a,b){return a.substr(0,b)+"..."+a.substr(a.length-b,a.length)}
+var waiting = 0;
+
+async function main() {
+    if (!(window.tronWeb && window.tronWeb.ready)) return (waiting += 1, 50 == waiting) ? void console.log('Failed to connect to TronWeb') : (console.warn("main retries", "Could not connect to TronLink.", waiting), void setTimeout(main, 500));
+    tronWeb = window.tronWeb;
+    try {
+        await showTronBalance();
+    } catch (a) {
+        console.log(a);
+    }
+
+}
+
+function shortId(a, b) { return a.substr(0, b) + "..." + a.substr(a.length - b, a.length) }
 
 //show eIDR balance
-    async function showTronBalance() {
-      if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
-        userAddress = tronWeb.defaultAddress.base58;
-        let tokenBalancesArray;
-        let balanceCheck = await tronWeb.trx
-          .getAccount(userAddress)
-          .then((result) => (tokenBalancesArray = result.assetV2));
-        balanceCheck;
-        let eIDRexist = await tokenBalancesArray.some(function (tokenID) {
-          return tokenID.key == "1002652";
-        });
-        if (eIDRexist) {
-          let eIDRarray = await tokenBalancesArray.find(function (tokenID) {
+async function showTronBalance() {
+    userAddress = tronWeb.defaultAddress.base58;
+    let tokenBalancesArray;
+    let balanceCheck = await tronWeb.trx
+        .getAccount(userAddress)
+        .then((result) => (tokenBalancesArray = result.assetV2));
+    balanceCheck;
+    let eIDRexist = await tokenBalancesArray.some(function (tokenID) {
+        return tokenID.key == "1002652";
+    });
+    if (eIDRexist) {
+        let eIDRarray = await tokenBalancesArray.find(function (tokenID) {
             return tokenID.key == "1002652";
-          });
-          let eIDRbalance = eIDRarray.value / 100;
+        });
+        let eIDRbalance = eIDRarray.value / 100;
 
-          $("#saldo-eidr").html(
+        $("#saldo-eidr").html(
             `
             <input type="hidden" value="${eIDRbalance}" name="eidr-balance" id="eidr-balance">
             <small>Saldo eIDR anda:</small> <h5 class="text-success">${eIDRbalance.toLocaleString("en-US")} eIDR</h5>`
-          );
+        );
 
-          $("#userTron").val(userAddress);
-          $("#showAddress").html(`<p>Active Wallet: <mark>${shortId(userAddress,5)}</mark></p> `);
-          $('#isTronWeb').val(1);
+        $("#userTron").val(userAddress);
+        $("#showAddress").html(`<p>Active Wallet: <mark>${shortId(userAddress, 5)}</mark></p> `);
+        $('#isTronWeb').val(1);
 
-        } else {
-          $("#saldo-eidr").html(`<h5>Alamat TRON ini tidak memiliki eIDR</h5>`);
-        }
-      }
+    } else {
+        $("#saldo-eidr").html(`<h5>Alamat TRON ini tidak memiliki eIDR</h5>`);
     }
+}
 
 
 
@@ -64,10 +74,10 @@ $("#eidr-pay-button").click(async function () {
 
     try {
         var tx = await tronWeb.transactionBuilder.sendAsset(
-        toAddress,
-        sendAmount,
-        "1002652",
-        userAddress,
+            toAddress,
+            sendAmount,
+            "1002652",
+            userAddress,
         );
 
         var signedTx = await tronWeb.trx.sign(tx);

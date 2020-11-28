@@ -22,7 +22,7 @@
         <div class="mt-min-10">
             <div class="container">
                 <div class="card shadow rounded bg-white p-3 mb-3">
-                    <h4 class="mb-3">Request Input Stock</h4>
+                    <h4 class="mb-3">Isi Deposit Vendor</h4>
                     <span id="showAddress"></span>
 
                     @if ( Session::has('message') )
@@ -57,25 +57,21 @@
                 <div class="card rounded shadow bg-white p-3 mb-3">
                     <div class="row">
                         <div class="col-xl-12 col-xs-12">
-                            <h5 class="mb-3">Invoice # <br>
-                                <small>{{$getData->transaction_code}}</small>
-                            </h5>
-                            <p><strong>Tanggal Order: </strong>{{date('d F Y', strtotime($getData->created_at))}}</p>
-                            <p class="m-t-10"><strong>Order Status: </strong> <span
-                                    class="label label-{{$label}}">{{$status}}</span></p>
+                            <small class="mb-3"><strong>Invoice</strong>
+                                <small>{{$getData->transaction_code}}</small><br>
+                            </small>
+                            <small><strong>Tanggal Order:
+                                </strong>{{date('d F Y', strtotime($getData->created_at))}}</small><br>
+                            <small class="m-t-10"><strong>Order Status: </strong> <span
+                                    class="label f-12 label-{{$label}}">{{$status}}</span></small>
                         </div>
-                        <div class="table-responsive">
+                        <div class="table-responsive mt-3 px-4">
                             <table class="table m-t-30">
-                                <thead class="bg-faded">
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Total Deposit (Rp.)</th>
-                                    </tr>
-                                </thead>
+
                                 <tbody>
                                     <tr>
-                                        <td>1</td>
-                                        <td>{{number_format($getData->price, 0, ',', ',')}}</td>
+                                        <td>Isi Deposit</td>
+                                        <td>Rp{{number_format($getData->price, 0, ',', ',')}}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -190,13 +186,13 @@
 
                 <div class="rounded-lg bg-white p-3 mb-3">
                     <div class="row">
-                        <div class="col-sm-6 col-xs-6">
-                            <p class="text-xs-right"><b>Sub-total:</b> Rp.
-                                {{number_format($getData->price, 0, ',', ',')}}</p>
-                            <p class="text-xs-right"><b>Kode Unik:</b>
-                                {{number_format($getData->unique_digit, 0, ',', ',')}}</p>
+                        <div class="col-12">
+                            <small class="text-xs-right"><b>Sub-total:</b>
+                                Rp{{number_format($getData->price, 0, ',', ',')}}</small><br>
+                            <small class="text-xs-right"><b>Kode Unik:</b>
+                                {{number_format($getData->unique_digit, 0, ',', ',')}}</small>
                             <hr>
-                            <h3 class="text-xs-right">Rp. {{number_format($total, 0, ',', ',')}}</h3>
+                            <h5 class="text-xs-right">Rp{{number_format($total, 0, ',', ',')}}</h5>
                             <br>
                             <span class="text-xs-right" id="saldo-eidr"></span>
                             <hr>
@@ -232,21 +228,20 @@
                             @endif
                         </div>
                     </div>
-                    <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
-                        aria-hidden="true" data-backdrop="false">
-                        <div class="modal-dialog" role="document" id="confirmDetail">
-                        </div>
-                    </div>
-                    <div class="modal fade" id="rejectSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
-                        aria-hidden="true" data-backdrop="false">
-                        <div class="modal-dialog" role="document" id="rejectDetail">
-                        </div>
-                    </div>
+
                 </div>
             </div>
             @include('layout.member.nav')
         </div>
         <div class="overlay"></div>
+    </div>
+    <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" data-backdrop="true">
+        <div class="modal-dialog" role="document" id="confirmDetail">
+        </div>
+    </div>
+    <div class="modal fade" id="rejectSubmit" tabindex="-1" role="dialog" data-backdrop="true">
+        <div class="modal-dialog" role="document" id="rejectDetail">
+        </div>
     </div>
 
     @stop
