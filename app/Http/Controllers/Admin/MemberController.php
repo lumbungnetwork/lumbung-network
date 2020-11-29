@@ -5207,7 +5207,7 @@ class MemberController extends Controller
                 'sign' => $sign,
             );
         }
-        if ($getDataMaster->type >= 21 && $getDataMaster->type < 27) {
+        if ($getDataMaster->type >= 21 && $getDataMaster->type < 30) {
             $array = array(
                 'username' => $username,
                 'buyer_sku_code' => $getDataMaster->buyer_code,
