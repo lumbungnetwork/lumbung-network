@@ -24,7 +24,8 @@
                 Pesanan ini: </h4>
             <div class="form-group">
                 <label class="mt-3">Kode Pin 2FA</label>
-                <input type="password" id="2fa" autocomplete="off" name="password" class="form-control">
+                <input type="password" inputmode="numeric" pattern="[0-9]*" id="2fa" autocomplete="off" name="password"
+                    class="form-control">
                 <div class="row">
                     <div class="col-12 my-3">
                         <div class="pretty p-icon p-toggle p-plain">

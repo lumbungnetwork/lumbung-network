@@ -96,8 +96,9 @@
 
                         <div class="form-row mt-2">
                             <div class="form-group col-7">
-                                <input type="text" class="form-control form-control-sm allownumericwithoutdecimal"
-                                    id="input_jml" name="jml_wd" aria-describedby="textHelp" autocomplete="off"
+                                <input type="text" inputmode="numeric" pattern="[0-9]*"
+                                    class="form-control form-control-sm allownumericwithoutdecimal" id="input_jml"
+                                    name="jml_wd" aria-describedby="textHelp" autocomplete="off"
                                     placeholder="Jumlah Konversi">
                             </div>
                             <div class="form-group col-5">
@@ -140,9 +141,10 @@
                             ini?</a>
                         <div class="form-row mt-2">
                             <div class="form-group col-7">
-                                <input type="text" class="form-control form-control-sm allownumericwithoutdecimal"
-                                    id="input_jml_topup" aria-describedby="textHelp" name="input_topup"
-                                    autocomplete="off" placeholder="Jumlah Top-up">
+                                <input type="text" inputmode="numeric" pattern="[0-9]*"
+                                    class="form-control form-control-sm allownumericwithoutdecimal" id="input_jml_topup"
+                                    aria-describedby="textHelp" name="input_topup" autocomplete="off"
+                                    placeholder="Jumlah Top-up">
                             </div>
                             <div class="form-group col-5">
                                 <button type="submit" class="btn btn-sm btn-success btn-block mb-2" id="submitBtn"

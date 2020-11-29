@@ -39,8 +39,9 @@
                         <div class="col-4">
                             <fieldset class="form-group">
                                 <label for="total_pin">Pin</label>
-                                <input type="text" class="form-control allownumericwithoutdecimal" id="total_pin"
-                                    name="total_pin" autocomplete="off">
+                                <input type="text" inputmode="numeric" pattern="[0-9]*"
+                                    class="form-control allownumericwithoutdecimal" id="total_pin" name="total_pin"
+                                    autocomplete="off">
                             </fieldset>
                         </div>
                         <div class="col-8">
