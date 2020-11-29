@@ -9,7 +9,7 @@
             <nav class="navbar navbar-expand-lg navbar-light bg-transparent w-100">
                 <div class="container px-0">
                     <h6>
-                        Halo, {{$dataUser->full_name}}
+                        Halo, {{substr($dataUser->full_name, 0, 19)}}
                     </h6>
                     <a href="{{ URL::to('/') }}/user_logout" class="btn btn-transparent">
                         <i class="fas fa-power-off text-danger icon-bottom mt-min-10"></i>
@@ -151,7 +151,10 @@
                         <img src="{{$dataMy->image}}" class="w-100" alt="{{$dataMy->name}}">
                         @endif
                         <small>{{$dataMy->name}}</small>
-                        <p>{{$dataUser->user_code}}</p>
+                        <div>
+                            <dd id="username">{{$dataUser->user_code}}</dd>
+                        </div>
+
                         @if($dataUser->is_stockist == 1)
                         <a href="" class="btn btn-warning btn-sm btn-block rounded-pill"> Stokis </a>
                         @endif
@@ -160,19 +163,19 @@
                         @endif
                     </div>
                     <?php
-                                                $text = '*Anda belum memenuhi Belanja Wajib';
+                                                $text = '*Belum memenuhi Belanja Wajib';
                                                 $color = 'danger';
                                                 if($sum > 100000){
-                                                    $text = '*Anda telah memenuhi Belanja Wajib';
+                                                    $text = '*Telah memenuhi Belanja Wajib';
                                                     $color = 'success';
                                                 }
                                             ?>
                     <div class="col-8 text-center">
                         <span class="f-12">Akumulasi belanja di Stokis</span>
-                        <h6>Rp{{number_format($sum, 0, ',', '.')}}</h6>
+                        <h6 class="mb-0">Rp{{number_format($sum, 0, ',', '.')}}</h6>
                         <span style="font-size: 10px; font-weight: 400;" class="text-{{$color}}">{{$text}}</span>
                         <hr />
-                        <span stle="font-size: 11px;">Akumulasi belanja di Vendor</span>
+                        <span style="font-size: 11px;">Akumulasi belanja di Vendor</span>
                         <h6>Rp{{number_format($vsum, 0, ',', '.')}}</h6>
                     </div>
                 </div>
@@ -358,6 +361,7 @@
 </script>
 <script src="{{ asset('asset_new/js/sidebar.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"></script>
+<script src="{{ asset('asset_new/js/fitty.min.js') }}"></script>
 
 <script>
     $('.slider-promo').slick({
@@ -386,6 +390,10 @@
                 }
                 }
             ]
+        });
+        fitty('#username', {
+            minSize: 9,
+            maxSize: 14
         });
 </script>
 @stop
