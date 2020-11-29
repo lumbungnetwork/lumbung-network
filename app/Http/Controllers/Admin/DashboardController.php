@@ -192,10 +192,8 @@ class DashboardController extends Controller
             return redirect()->route('m_newPackage');
         }
         $modelPin = new Pin;
-        $modelPengiriman = new Pengiriman;
         $modelMember = new Member;
         $getTotalPin = $modelPin->getTotalPinMember($dataUser);
-        $getTotalPinTerkirim = $modelPengiriman->getCekPinTuntasTerkirim($dataUser);
         $kanan = 0;
         if ($dataUser->kanan_id != null) {
             $downlineKanan = $dataUser->upline_detail . ',[' . $dataUser->id . ']' . ',[' . $dataUser->kanan_id . ']';
@@ -218,7 +216,6 @@ class DashboardController extends Controller
         );
         return view('member.home.networking')
             ->with('dataPin', $getTotalPin)
-            ->with('dataTerkirim', $getTotalPinTerkirim)
             ->with('dataAll', $dataNetworking)
             ->with('dataUser', $dataUser);
     }

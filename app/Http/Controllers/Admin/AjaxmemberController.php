@@ -295,7 +295,10 @@ class AjaxmemberController extends Controller
         }
         $sisaPin = $cekPin->sum_pin_masuk - $cekPin->sum_pin_keluar;
         if ($sisaPin < $request->total_pin) {
-            $canInsert = (object) array('can' => false, 'pesan' => 'Pin anda idak tersedia untuk transfer pin');
+            $canInsert = (object) array('can' => false, 'pesan' => 'Pin anda tidak cukup');
+        }
+        if (($sisaPin - $request->total_pin) < 0) {
+            $canInsert = (object) array('can' => false, 'pesan' => 'Pin anda tidak cukup');
         }
         $cekMember = $modelMember->getUsers('id', $request->to_id);
         $data = (object) array(

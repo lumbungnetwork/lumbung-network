@@ -49,7 +49,9 @@ class Pin extends Model
         $sql = DB::table('member_pin')
             ->selectRaw('
 		sum(case when is_used = 0 then total_pin else 0 end) as sum_pin_masuk,
-		sum(case when is_used = 1 then total_pin else 0 end) as sum_pin_keluar
+		sum(case when is_used = 1 then total_pin else 0 end) as sum_pin_keluar,
+		sum(case when pin_status = 1 then total_pin else 0 end) as sum_pin_terpakai,
+		sum(case when pin_status = 2 then total_pin else 0 end) as sum_pin_transfer
                     ')
             ->where('user_id', '=', $data->id)
             ->first();
