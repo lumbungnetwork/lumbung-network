@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Config;
 use IEXBase\TronAPI\Tron;
 use IEXBase\TronAPI\Provider\HttpProvider;
 use IEXBase\TronAPI\Exception\TronException;
+use GuzzleHttp\Client;
 
 class WDRoyaltiByeIDRjob implements ShouldQueue
 {
@@ -37,6 +38,8 @@ class WDRoyaltiByeIDRjob implements ShouldQueue
         $solidityNode = new HttpProvider('https://api.trongrid.io');
         $eventServer = new HttpProvider('https://api.trongrid.io');
         $fuse = Config::get('services.telegram.test');
+        $tgAk = Config::get('services.telegram.eidr');
+        $client = new Client;
 
 
         try {
@@ -77,6 +80,18 @@ class WDRoyaltiByeIDRjob implements ShouldQueue
                 'submit_at' => date('Y-m-d H:i:s'),
             );
             $modelWD->getUpdateWD('id', $this->id, $dataUpdate);
+
+            $eIDRbalance = $tron->getTokenBalance($tokenID, $from, $fromTron = false) / 100;
+
+            if ($eIDRbalance < 1500000) {
+                $client->request('GET', 'https://api.telegram.org/bot' . $tgAk . '/sendMessage', [
+                    'query' => [
+                        'chat_id' => '365874331',
+                        'text' => 'EIDR balance left: ' . $eIDRbalance,
+                        'parse_mode' => 'markdown'
+                    ]
+                ]);
+            }
 
             return;
         }
