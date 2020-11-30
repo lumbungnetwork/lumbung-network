@@ -13,7 +13,6 @@ use IEXBase\TronAPI\Tron;
 use IEXBase\TronAPI\Provider\HttpProvider;
 use IEXBase\TronAPI\Exception\TronException;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Log;
 
 class TopUpeIDRjob implements ShouldQueue
 {
@@ -47,7 +46,6 @@ class TopUpeIDRjob implements ShouldQueue
 
         $getData = $modelBonus->getJobTopUpSaldoIDUserId($this->topup_id, $this->user_id);
         if ($getData == null) {
-            Log::info('CheckTopUpeIDR stopped: no data');
             dd('stopped, no data');
         }
         //prepare TRON
@@ -161,7 +159,6 @@ class TopUpeIDRjob implements ShouldQueue
                                     'parse_mode' => 'markdown'
                                 ]
                             ]);
-                            Log::info('CheckTopUpeIDR stopped: eIDR Top-up Success');
                             return;
                         } else {
                             $client->request('GET', 'https://api.telegram.org/bot' . $tgAk . '/sendMessage', [
@@ -171,16 +168,9 @@ class TopUpeIDRjob implements ShouldQueue
                                     'parse_mode' => 'markdown'
                                 ]
                             ]);
-                            Log::info('CheckTopUpeIDR stopped: eIDR Transfer Failed');
                         }
-                    } else {
-                        Log::info('Top-up eIDR from user ' . $getData->user_code . ' ' . $expectedTransfer . ' FAILED. Error: mutation amount does not match!');
                     }
-                } else {
-                    Log::info('Top-up eIDR from user ' . $getData->user_code . ' ' . $expectedTransfer . ' FAILED. Error: mutation noted as PAID!');
                 }
-            } else {
-                Log::info('Top-up eIDR from user ' . $getData->user_code . ' ' . $expectedTransfer . ' FAILED. Error: mutation date expired!');
             }
         }
     }
