@@ -103,7 +103,7 @@ class TopUpeIDRjob implements ShouldQueue
 
         $mutationCheck = $client->request('GET', 'https://app.moota.co/api/v2/mutation', [
             'headers' => $headers,
-            'query' => [
+            'json' => [
                 'type' => 'CR',
                 'bank' => $bankID,
                 'amount' => $expectedTransfer,
@@ -114,7 +114,7 @@ class TopUpeIDRjob implements ShouldQueue
         if ($mutationCheckArray['total'] == 0) {
             dd('TopUpeIDRjob stopped: mutation not found! topup_id:' . $this->topup_id . ' user_id: ' . $this->user_id);
         }
-        foreach ($mutationCheckArray as $mutationData) {
+        foreach ($mutationCheckArray['data'] as $mutationData) {
             $mutationCreatedAt = $mutationData['created_at'];
             $mutationNote = $mutationData['note'];
             $mutationID = $mutationData['mutation_id'];
