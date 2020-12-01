@@ -10,11 +10,8 @@ use App\Jobs\KonversieIDRjob;
 use App\Jobs\SendLMBRewardJualBeliJob;
 use Illuminate\Support\Facades\Auth;
 use App\Model\Member;
-use App\Model\Pinsetting;
-use App\Model\Package;
-use App\Model\Memberpackage;
-use App\Model\Transaction;
-use App\Model\Pin;
+use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Config;
 use App\Model\Bonussetting;
 use App\Model\Transferwd;
 use App\Model\Bonus;
@@ -750,8 +747,16 @@ class BonusmemberController extends Controller
             'updated_at' => date('Y-m-d H:i:s'),
         );
         $modelBonus->getUpdateTopUp('id', $id_topup, $dataUpdate);
-        // $this->dispatch(new TopUpeIDRjob($id_topup, $dataUser->id));
-        TopUpeIDRjob::dispatch($id_topup, $dataUser->id);
+        $tgAk = Config::get('services.telegram.eidr');
+        $client = new Client;
+        $client->request('GET', 'https://api.telegram.org/bot' . $tgAk . '/sendMessage', [
+            'query' => [
+                'chat_id' => '365874331',
+                'text' => 'Top-up eIDR need Manual Action ' . $dataUser->user_code,
+                'parse_mode' => 'markdown'
+            ]
+        ]);
+        // TopUpeIDRjob::dispatch($id_topup, $dataUser->id);
         return redirect()->back();
     }
 
