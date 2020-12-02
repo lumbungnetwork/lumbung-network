@@ -36,4 +36,24 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function orderBuyStockist()
+    {
+        return $this->hasMany('App\Order', 'user_id', 'id');
+    }
+
+    public function orderSellStockist()
+    {
+        return $this->hasMany('App\Order', 'stockist_id', 'id');
+    }
+
+    public function sellerProfile()
+    {
+        return $this->hasOne('App\SellerProfile', 'seller_id');
+    }
+
+    public function products()
+    {
+        return $this->hasMany('App\Product', 'seller_id');
+    }
 }
