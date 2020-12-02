@@ -4,7 +4,7 @@ namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use Validator;
+use Throwable;
 
 class Sales extends Model
 {
@@ -14,7 +14,7 @@ class Sales extends Model
         try {
             $lastInsertedID = DB::table('purchase')->insertGetId($data);
             $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
         }
@@ -26,7 +26,7 @@ class Sales extends Model
         try {
             DB::table('purchase')->where($fieldName, '=', $name)->update($data);
             $result = (object) array('status' => true, 'message' => null);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message);
         }
@@ -125,7 +125,7 @@ class Sales extends Model
         try {
             $lastInsertedID = DB::table('stock')->insertGetId($data);
             $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
         }
@@ -137,7 +137,7 @@ class Sales extends Model
         try {
             DB::table('stock')->where($fieldName, '=', $name)->update($data);
             $result = (object) array('status' => true, 'message' => null);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message);
         }
@@ -154,7 +154,7 @@ class Sales extends Model
                 ->where('user_id', '=', $user_id)
                 ->delete();
             $result = (object) array('status' => true, 'message' => null);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message);
         }
@@ -209,7 +209,7 @@ class Sales extends Model
         try {
             $lastInsertedID = DB::table('vstock')->insertGetId($data);
             $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
         }
@@ -221,7 +221,7 @@ class Sales extends Model
         try {
             DB::table('vstock')->where($fieldName, '=', $name)->update($data);
             $result = (object) array('status' => true, 'message' => null);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message);
         }
@@ -238,7 +238,7 @@ class Sales extends Model
                 ->where('user_id', '=', $user_id)
                 ->delete();
             $result = (object) array('status' => true, 'message' => null);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message);
         }
@@ -271,7 +271,7 @@ class Sales extends Model
         try {
             $lastInsertedID = DB::table('sales')->insertGetId($data);
             $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
         }
@@ -283,7 +283,7 @@ class Sales extends Model
         try {
             $lastInsertedID = DB::table('vsales')->insertGetId($data);
             $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
         }
@@ -339,7 +339,7 @@ class Sales extends Model
         try {
             $lastInsertedID = DB::table('master_sales')->insertGetId($data);
             $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
         }
@@ -351,7 +351,7 @@ class Sales extends Model
         try {
             DB::table('master_sales')->where($fieldName, '=', $name)->update($data);
             $result = (object) array('status' => true, 'message' => null);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message);
         }
@@ -363,7 +363,7 @@ class Sales extends Model
         try {
             $lastInsertedID = DB::table('vmaster_sales')->insertGetId($data);
             $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
         }
@@ -375,7 +375,7 @@ class Sales extends Model
         try {
             DB::table('vmaster_sales')->where($fieldName, '=', $name)->update($data);
             $result = (object) array('status' => true, 'message' => null);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message);
         }
@@ -576,7 +576,7 @@ class Sales extends Model
         try {
             $lastInsertedID = DB::table('item_purchase')->insertGetId($data);
             $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
         }
@@ -588,7 +588,7 @@ class Sales extends Model
         try {
             DB::table('item_purchase')->where($fieldName, '=', $name)->update($data);
             $result = (object) array('status' => true, 'message' => null);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message);
         }
@@ -600,7 +600,7 @@ class Sales extends Model
         try {
             $lastInsertedID = DB::table('item_purchase_master')->insertGetId($data);
             $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
         }
@@ -612,7 +612,7 @@ class Sales extends Model
         try {
             DB::table('item_purchase_master')->where($fieldName, '=', $name)->update($data);
             $result = (object) array('status' => true, 'message' => null);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message);
         }
@@ -624,7 +624,7 @@ class Sales extends Model
         try {
             $query = DB::table('item_purchase_master')->where('id', '=', $id)->first();
             $result = strtotime($query->created_at);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message);
         }
@@ -636,7 +636,7 @@ class Sales extends Model
         try {
             $lastInsertedID = DB::table('vitem_purchase')->insertGetId($data);
             $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
         }
@@ -648,7 +648,7 @@ class Sales extends Model
         try {
             DB::table('vitem_purchase')->where($fieldName, '=', $name)->update($data);
             $result = (object) array('status' => true, 'message' => null);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message);
         }
@@ -660,7 +660,7 @@ class Sales extends Model
         try {
             $lastInsertedID = DB::table('vitem_purchase_master')->insertGetId($data);
             $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
         }
@@ -672,7 +672,7 @@ class Sales extends Model
         try {
             DB::table('vitem_purchase_master')->where($fieldName, '=', $name)->update($data);
             $result = (object) array('status' => true, 'message' => null);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message);
         }
@@ -684,7 +684,7 @@ class Sales extends Model
         try {
             $query = DB::table('vitem_purchase_master')->where('id', '=', $id)->first();
             $result = strtotime($query->created_at);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message);
         }
@@ -1019,8 +1019,7 @@ class Sales extends Model
         $sql = DB::table('master_sales')
             ->join('users', 'master_sales.user_id', '=', 'users.id')
             ->selectRaw('master_sales.sale_date, users.user_code, master_sales.total_price as sale_price, '
-                . 'master_sales.id, master_sales.status, master_sales.buy_metode, '
-                . 'master_sales.royalti_metode')
+                . 'master_sales.id, master_sales.status, master_sales.buy_metode')
             ->where('master_sales.stockist_id', '=', $id)
             ->whereNull('master_sales.deleted_at')
             ->orderBy('master_sales.created_at', 'DESC')
@@ -1037,8 +1036,7 @@ class Sales extends Model
         $sql = DB::table('vmaster_sales')
             ->join('users', 'vmaster_sales.user_id', '=', 'users.id')
             ->selectRaw('vmaster_sales.sale_date, users.user_code, vmaster_sales.total_price as sale_price, '
-                . 'vmaster_sales.id, vmaster_sales.status, vmaster_sales.buy_metode,'
-                . 'vmaster_sales.royalti_metode')
+                . 'vmaster_sales.id, vmaster_sales.status, vmaster_sales.buy_metode')
             ->where('vmaster_sales.vendor_id', '=', $id)
             ->whereNull('vmaster_sales.deleted_at')
             ->orderBy('vmaster_sales.sale_date', 'DESC')
@@ -1055,10 +1053,8 @@ class Sales extends Model
         $sql = DB::table('master_sales')
             ->join('users', 'master_sales.user_id', '=', 'users.id')
             ->selectRaw('master_sales.sale_date, users.user_code, master_sales.total_price as sale_price, '
-                . 'master_sales.id, master_sales.status, master_sales.buy_metode, '
-                . 'master_sales.royalti_metode, master_sales.royalti_tron, master_sales.royalti_tron_transfer,'
-                . 'master_sales.tron, master_sales.tron_transfer, master_sales.bank_name, master_sales.account_name, master_sales.account_no, '
-                . 'master_sales.royalti_bank_name, master_sales.royalti_account_no, master_sales.royalti_account_name')
+                . 'master_sales.id, master_sales.status, master_sales.buy_metode,'
+                . 'master_sales.tron, master_sales.tron_transfer, master_sales.bank_name, master_sales.account_name, master_sales.account_no')
             ->where('master_sales.id', '=', $id)
             ->where('master_sales.stockist_id', '=', $stockist_id)
             //                    ->where('master_sales.status', '=', 1)
@@ -1072,10 +1068,8 @@ class Sales extends Model
         $sql = DB::table('vmaster_sales')
             ->join('users', 'vmaster_sales.user_id', '=', 'users.id')
             ->selectRaw('vmaster_sales.sale_date, users.user_code, vmaster_sales.total_price as sale_price, '
-                . 'vmaster_sales.id, vmaster_sales.status, vmaster_sales.buy_metode, '
-                . 'vmaster_sales.royalti_metode, vmaster_sales.royalti_tron, vmaster_sales.royalti_tron_transfer,'
-                . 'vmaster_sales.tron, vmaster_sales.tron_transfer, vmaster_sales.bank_name, vmaster_sales.account_name, vmaster_sales.account_no, '
-                . 'vmaster_sales.royalti_bank_name, vmaster_sales.royalti_account_no, vmaster_sales.royalti_account_name')
+                . 'vmaster_sales.id, vmaster_sales.status, vmaster_sales.buy_metode,'
+                . 'vmaster_sales.tron, vmaster_sales.tron_transfer, vmaster_sales.bank_name, vmaster_sales.account_name, vmaster_sales.account_no')
             ->where('vmaster_sales.id', '=', $id)
             ->where('vmaster_sales.vendor_id', '=', $vendor_id)
             //                    ->where('master_sales.status', '=', 1)
@@ -1089,8 +1083,7 @@ class Sales extends Model
         $sql = DB::table('master_sales')
             ->join('users', 'master_sales.stockist_id', '=', 'users.id')
             ->selectRaw('master_sales.sale_date, users.user_code, master_sales.total_price as sale_price, '
-                . 'master_sales.id, master_sales.status, master_sales.buy_metode,'
-                . 'master_sales.royalti_metode')
+                . 'master_sales.id, master_sales.status, master_sales.buy_metode')
             ->where('master_sales.status', '=', 2)
             ->whereNull('master_sales.deleted_at')
             ->get();
@@ -1106,9 +1099,7 @@ class Sales extends Model
         $sql = DB::table('master_sales')
             ->join('users', 'master_sales.stockist_id', '=', 'users.id')
             ->selectRaw('users.user_code, master_sales.total_price as sale_price, master_sales.sale_date, '
-                . 'master_sales.id, master_sales.status, master_sales.buy_metode,'
-                . 'master_sales.royalti_metode, master_sales.royalti_tron, master_sales.royalti_tron_transfer,'
-                . 'master_sales.royalti_bank_name, master_sales.royalti_account_no, master_sales.royalti_account_name')
+                . 'master_sales.id, master_sales.status, master_sales.buy_metode')
             ->where('master_sales.status', '=', 4)
             ->whereNull('master_sales.deleted_at')
             ->get();
@@ -1124,8 +1115,7 @@ class Sales extends Model
         $sql = DB::table('master_sales')
             ->join('users', 'master_sales.stockist_id', '=', 'users.id')
             ->selectRaw('master_sales.sale_date, users.user_code, master_sales.total_price as sale_price, '
-                . 'master_sales.id, master_sales.status, master_sales.buy_metode,'
-                . 'master_sales.royalti_metode')
+                . 'master_sales.id, master_sales.status, master_sales.buy_metode')
             ->where('master_sales.id', '=', $id)
             ->where('master_sales.status', '=', 2)
             ->whereNull('master_sales.deleted_at')
@@ -1138,9 +1128,7 @@ class Sales extends Model
         $sql = DB::table('master_sales')
             ->join('users', 'master_sales.stockist_id', '=', 'users.id')
             ->selectRaw('users.user_code, master_sales.total_price as sale_price, master_sales.sale_date, '
-                . 'master_sales.id, master_sales.status, master_sales.buy_metode,'
-                . 'master_sales.royalti_metode, master_sales.royalti_tron, master_sales.royalti_tron_transfer,'
-                . 'master_sales.royalti_bank_name, master_sales.royalti_account_no, master_sales.royalti_account_name')
+                . 'master_sales.id, master_sales.status, master_sales.buy_metode')
             ->where('master_sales.status', '=', 4)
             ->where('master_sales.id', '=', $id)
             ->whereNull('master_sales.deleted_at')
@@ -1169,8 +1157,7 @@ class Sales extends Model
         $sql = DB::table('master_sales')
             ->join('users', 'master_sales.user_id', '=', 'users.id')
             ->selectRaw('master_sales.sale_date, users.user_code, master_sales.total_price as sale_price, '
-                . 'master_sales.id, master_sales.status, master_sales.buy_metode,'
-                . 'master_sales.royalti_metode')
+                . 'master_sales.id, master_sales.status, master_sales.buy_metode')
             ->where('master_sales.stockist_id', '=', $id)
             ->where('master_sales.status', '=', 1)
             ->whereNull('master_sales.deleted_at')
@@ -1187,8 +1174,7 @@ class Sales extends Model
         $sql = DB::table('vmaster_sales')
             ->join('users', 'vmaster_sales.user_id', '=', 'users.id')
             ->selectRaw('vmaster_sales.sale_date, users.user_code, vmaster_sales.total_price as sale_price, '
-                . 'vmaster_sales.id, vmaster_sales.status, vmaster_sales.buy_metode,'
-                . 'vmaster_sales.royalti_metode')
+                . 'vmaster_sales.id, vmaster_sales.status, vmaster_sales.buy_metode')
             ->where('vmaster_sales.vendor_id', '=', $id)
             ->where('vmaster_sales.status', '=', 1)
             ->whereNull('vmaster_sales.deleted_at')

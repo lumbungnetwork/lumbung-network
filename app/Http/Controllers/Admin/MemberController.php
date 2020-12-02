@@ -22,7 +22,10 @@ use App\Model\Pengiriman;
 use App\Model\Membership;
 use App\Model\Sales;
 use App\Model\Transferwd;
+use App\Product;
+use App\Category;
 use GuzzleHttp\Client;
+use RealRashid\SweetAlert\Facades\Alert;
 
 
 class MemberController extends Controller
@@ -2331,6 +2334,134 @@ class MemberController extends Controller
         return view('member.sales.stockist_my_stock_sisa')
             ->with('getData', $getData)
             ->with('dataUser', $dataUser);
+    }
+
+    //Stockist Inventory
+    public function getStockistInventory()
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_profile == 0) {
+            return redirect()->route('m_newProfile')
+                ->with('message', 'Data profil anda belum lengkap')
+                ->with('messageclass', 'danger');
+        }
+        if ($dataUser->is_stockist == 0) {
+            return redirect()->route('m_SearchStockist');
+        }
+
+        $getProducts = Product::select('id', 'seller_id', 'name', 'size', 'price', 'desc', 'qty', 'category_id', 'image', 'is_active')
+            ->where('seller_id', $dataUser->id)
+            ->where('type', 1)
+            ->with('category:id,name')
+            ->get();
+
+        $getCategories = Category::select('id', 'name')->where('id', '<', 21)->get();
+
+        return view('member.sales.stockist_inventory')
+            ->with('products', $getProducts)
+            ->with('categories', $getCategories)
+            ->with('dataUser', $dataUser);
+    }
+
+    public function postCreateProduct(Request $request)
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_stockist == 0 && $dataUser->is_vendor == 0) {
+            return redirect()->route('m_SearchStockist');
+        }
+
+        $type = 1;
+        if ($dataUser->is_vendor == 1) {
+            $type = 2;
+        }
+
+        Product::create([
+            'type' => $type,
+            'seller_id' => $dataUser->id,
+            'name' => $request->name,
+            'size' => $request->size,
+            'price' => $request->price,
+            'desc' => $request->desc,
+            'category_id' => $request->category_id,
+            'image' => $request->image
+        ]);
+
+        Alert::success('Selesai', 'Produk berhasil dibuat.');
+        return redirect()->back();
+    }
+
+    public function postEditProduct(Request $request)
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_stockist == 0 && $dataUser->is_vendor == 0) {
+            return redirect()->route('m_SearchStockist');
+        }
+
+        $type = 1;
+        if ($dataUser->is_vendor == 1) {
+            $type = 2;
+        }
+
+        Product::where('id', $request->product_id)
+            ->where('type', $type)
+            ->where('seller_id', $request->seller_id)
+            ->update([
+                'name' => $request->name,
+                'size' => $request->size,
+                'price' => $request->price,
+                'desc' => $request->desc,
+                'qty' => $request->qty,
+                'is_active' => $request->is_active,
+                'category_id' => $request->category_id,
+                'image' => $request->image
+            ]);
+
+        Alert::success('Diubah', 'Produk berhasil diubah.');
+        return redirect()->back();
+    }
+
+    public function postDeleteProduct(Request $request)
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_stockist == 0 && $dataUser->is_vendor == 0) {
+            return redirect()->route('m_SearchStockist');
+        }
+
+        $product = Product::find($request->product_id);
+        if ($product->seller_id == $dataUser->id) {
+            $product->delete();
+        }
+
+        Alert::success('Terhapus', 'Produk berhasil dihapus.');
+        return redirect()->back();
     }
 
     public function postAddConfirmPembelian(Request $request)

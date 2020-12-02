@@ -19,6 +19,8 @@ use App\Model\Bonus;
 use App\Model\Transaction;
 use App\Model\Sales;
 use App\Model\Bonussetting;
+use App\Product;
+use App\Category;
 
 class AjaxmemberController extends Controller
 {
@@ -973,6 +975,49 @@ class AjaxmemberController extends Controller
         return view('member.ajax.get_name_autocomplete')
             ->with('getData', $getDownlineUsername)
             ->with('dataUser', $dataUser);
+    }
+
+    public function getSearchProductImage(Request $request)
+    {
+        $modelProduct = new Product;
+        $getProductImage = null;
+        if ($request->name != null) {
+            $getProductImage = $modelProduct->getProductImage($request->name);
+        }
+        return view('member.ajax.get_image_autocomplete')
+            ->with('productImages', $getProductImage);
+    }
+    public function getSearchProductImageEdit(Request $request)
+    {
+        $modelProduct = new Product;
+        $getProductImage = null;
+        if ($request->name != null) {
+            $getProductImage = $modelProduct->getProductImage($request->name);
+        }
+        return view('member.ajax.get_image_autocomplete_edit')
+            ->with('productImages', $getProductImage);
+    }
+
+    public function getEditProduct($product_id)
+    {
+        $dataUser = Auth::user();
+        $type = 1;
+        if ($dataUser->is_vendor == 1) {
+            $type = 2;
+        }
+        $getEditProduct = null;
+        if ($product_id != null) {
+            $getEditProduct = Product::select('id', 'seller_id', 'name', 'size', 'price', 'desc', 'qty', 'category_id', 'image', 'is_active')
+                ->where('seller_id', $dataUser->id)
+                ->where('type', $type)
+                ->where('id', $product_id)
+                ->with('category:id,name')
+                ->first();
+        }
+        $getCategories = Category::select('id', 'name')->where('id', '<', 21)->get();
+        return view('member.ajax.get_edit_product')
+            ->with('categories', $getCategories)
+            ->with('product', $getEditProduct);
     }
 
     public function getCekConfirmTopUp(Request $request)
