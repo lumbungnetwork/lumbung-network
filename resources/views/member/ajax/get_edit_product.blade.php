@@ -53,8 +53,7 @@
             </fieldset>
             <div class="row py-2">
                 <div class="col-6" id="product-image-edit">
-                    <img src="{{ asset('/asset_new/img/products') }}/{{$product->image}}" style="max-width: 100px;"
-                        alt="">
+                    <img src="{{ asset('/storage/products') }}/{{$product->image}}" style="max-width: 100px;" alt="">
                 </div>
                 <div class="col-6">
                     <a class="text-info" href="#">Request Gambar</a>

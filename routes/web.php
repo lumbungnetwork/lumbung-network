@@ -375,9 +375,16 @@ Route::prefix('/')->group(function () {
 
     //New Stockist Menu
     Route::get('/m/stockist/inventory', 'Admin\MemberController@getStockistInventory')->name('m_StockistInventory')->middleware('auth');
+    Route::get('/m/vendor/inventory', 'Admin\MemberController@getVendorInventory')->name('m_VendorInventory')->middleware('auth');
+    Route::get('/m/image/upload', 'Admin\MemberController@getImageUpload')->name('m_ImageUpload')->middleware('auth');
+    Route::post('/m/image/upload', 'Admin\MemberController@postImageUpload')->middleware('auth');
+    Route::get('/m/view/uploads', 'Admin\MemberController@viewUploads')->middleware('auth');
     Route::post('/m/add/product', 'Admin\MemberController@postCreateProduct')->middleware('auth');
     Route::post('/m/edit/product', 'Admin\MemberController@postEditProduct')->middleware('auth');
     Route::post('/m/delete/product', 'Admin\MemberController@postDeleteProduct')->middleware('auth');
+
+    //New Member Shopping
+
 
 
     Route::get('/m/req/vendor', 'Admin\MemberController@getRequestMemberVendor')->name('m_reqMemberVendor')->middleware('auth');
