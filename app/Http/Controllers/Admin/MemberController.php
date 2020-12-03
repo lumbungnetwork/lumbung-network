@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Storage;
 use App\Model\Member;
 use App\Model\Pinsetting;
 use App\Model\Masterpin;
@@ -24,6 +25,9 @@ use App\Model\Sales;
 use App\Model\Transferwd;
 use App\Product;
 use App\Category;
+use App\File;
+use App\ProductImages;
+use Intervention\Image\ImageManager;
 use GuzzleHttp\Client;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -2362,9 +2366,42 @@ class MemberController extends Controller
             ->with('category:id,name')
             ->get();
 
-        $getCategories = Category::select('id', 'name')->where('id', '<', 21)->get();
+        $getCategories = Category::select('id', 'name')->where('id', '<', 11)->get();
 
-        return view('member.sales.stockist_inventory')
+        return view('member.sales.inventory')
+            ->with('products', $getProducts)
+            ->with('categories', $getCategories)
+            ->with('dataUser', $dataUser);
+    }
+
+    //Vendor Inventory
+    public function getVendorInventory()
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_profile == 0) {
+            Alert::warning('Belum ada data', 'Silakan lengkapi terlebih dahulu Profile anda');
+            return redirect()->route('m_newProfile');
+        }
+        if ($dataUser->is_vendor == 0) {
+            return redirect()->route('m_SearchVendor');
+        }
+
+        $getProducts = Product::select('id', 'seller_id', 'name', 'size', 'price', 'desc', 'qty', 'category_id', 'image', 'is_active')
+            ->where('seller_id', $dataUser->id)
+            ->where('type', 2)
+            ->with('category:id,name')
+            ->get();
+
+        $getCategories = Category::select('id', 'name')->where('id', '>', 10)->get();
+
+        return view('member.sales.inventory')
             ->with('products', $getProducts)
             ->with('categories', $getCategories)
             ->with('dataUser', $dataUser);
@@ -2462,6 +2499,77 @@ class MemberController extends Controller
 
         Alert::success('Terhapus', 'Produk berhasil dihapus.');
         return redirect()->back();
+    }
+
+    //File and Image Upload
+    public function getImageUpload()
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_stockist == 0 && $dataUser->is_vendor == 0) {
+            return redirect()->route('mainDashboard');
+        }
+
+        return view('member.image_upload');
+    }
+
+    public function postImageUpload(Request $request)
+    {
+
+        if ($request->hasFile('image')) {
+            $dataUser = Auth::user();
+            $onlyUser  = array(10);
+            if (!in_array($dataUser->user_type, $onlyUser)) {
+                return redirect()->route('mainDashboard');
+            }
+            if ($dataUser->package_id == null) {
+                return redirect()->route('m_newPackage');
+            }
+            if ($dataUser->is_stockist == 0 && $dataUser->is_vendor == 0) {
+                return redirect()->route('mainDashboard');
+            }
+            //  Let's do everything here
+            if ($request->file('image')->isValid()) {
+                //
+                $validated = $request->validate([
+                    'name' => 'required|string|alpha_dash|max:60',
+                    'image' => 'required|mimes:jpeg|max:1014',
+                ]);
+
+                $name = strtolower($validated['name']);
+                $extension = 'jpg';
+
+                $nameCheck = ProductImages::where('name', $name . '.jpg')->first();
+                if ($nameCheck != null) {
+                    Alert::error('Oops!', 'Produk dengan nama yang sama sudah ada');
+                    return redirect()->back();
+                }
+                // $request->image->storeAs('/public', $validated['name'] . "." . $extension);
+                $imageClass = new ImageManager;
+                $image = $imageClass->make($request->image)->fit(200)->save(storage_path('app/public/products/' . $name . "." . $extension), 75);
+                ProductImages::create([
+                    'name' => $name . "." . $extension
+                ]);
+                Alert::image('Berhasil!', 'nama: ' . $name . "." . $extension, asset('/storage/products/') . "/" . $name . "." . $extension, '150', '150')->persistent(true);
+                if ($dataUser->is_vendor == 1) {
+                    return redirect()->route('m_VendorInventory');
+                }
+                return redirect()->route('m_StockistInventory');
+            }
+        }
+        abort(500, 'Could not upload image :(');
+    }
+
+    public function viewUploads()
+    {
+        $images = File::all();
+        return view('member.view_uploads')->with('images', $images);
     }
 
     public function postAddConfirmPembelian(Request $request)

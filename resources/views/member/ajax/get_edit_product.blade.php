@@ -10,22 +10,22 @@
             {{ csrf_field() }}
             <div class="form-group">
                 <label for="name">Nama Produk</label>
-                <input type="text" name="name" class="form-control" id="name" value="{{$product->name}}"
+                <input type="text" name="name" class="form-control" id="name-edit" value="{{$product->name}}"
                     autocomplete="off">
             </div>
             <div class="form-group">
                 <label for="size">Ukuran</label>
-                <input type="text" name="size" class="form-control" id="size" value="{{$product->size}}"
+                <input type="text" name="size" class="form-control" id="size-edit" value="{{$product->size}}"
                     autocomplete="off">
             </div>
             <div class="form-group">
                 <label for="price">Harga (Rp)</label>
-                <input inputmode="numeric" name="price" pattern="[0-9]*" type="text" class="form-control" id="price"
-                    value="{{$product->price}}" autocomplete="off">
+                <input inputmode="numeric" name="price" pattern="[0-9]*" type="text" class="form-control"
+                    id="price-edit" value="{{$product->price}}" autocomplete="off">
             </div>
             <div class="form-group">
                 <label for="category_id">Kategori</label>
-                <select class="form-control" name="category_id" id="category_id">
+                <select class="form-control" name="category_id" id="category_id-edit">
                     @foreach ($categories as $category)
                     @if ($category->id == $product->category_id)
                     <option value="{{$category->id}}" selected>{{$category->name}}</option>
@@ -38,7 +38,7 @@
             </div>
             <div class="form-group">
                 <label for="desc">Deskripsi Produk (Opsional)</label>
-                <textarea rows="2" class="form-control" name="desc" id="desc"
+                <textarea rows="2" class="form-control" name="desc" id="desc-edit"
                     autocomplete="off">{{$product->desc}}</textarea>
             </div>
             <fieldset class="form-group">
@@ -56,7 +56,7 @@
                     <img src="{{ asset('/storage/products') }}/{{$product->image}}" style="max-width: 100px;" alt="">
                 </div>
                 <div class="col-6">
-                    <a class="text-info" href="#">Request Gambar</a>
+                    <a class="text-info" href="{{ URL::to('/') }}/m/image/upload">Upload Gambar</a>
                 </div>
                 <div class="col-6">
                     <label for="qty">Stock</label>

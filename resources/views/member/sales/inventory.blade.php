@@ -166,7 +166,7 @@
                                     alt="">
                             </div>
                             <div class="col-6">
-                                <a class="text-info" href="#">Request Gambar</a>
+                                <a class="text-info" href="{{ URL::to('/') }}/m/image/upload">Upload Gambar</a>
                             </div>
                         </div>
 
@@ -195,15 +195,11 @@
 <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/4.9.95/css/materialdesignicons.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css">
-<link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+
 @stop
 
 @section('javascript')
-<script
-    src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js">
-</script>
-<script src="{{ asset('asset_new/js/sidebar.js') }}"></script>
+
 <script type="text/javascript">
     $(document).ready(function() {
 
@@ -219,6 +215,19 @@
         });
     } );
 
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'bottom',
+        showConfirmButton: false,
+        width: 200,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    })
+
 
 
     function selectName(val) {
@@ -230,8 +239,26 @@
 
     }
 
+    function errorToast (message) {
+        Toast.fire({
+            icon: 'error',
+            title: message
+        })
+    }
+
     function createProduct() {
-        $("#form-add").submit();
+        if($.trim($('#name').val()) == ''){
+            errorToast('Nama produk harus diisi');
+        }else if($.trim($('#size').val()) == ''){
+            errorToast('Ukuran produk harus diisi');
+        }else if($.trim($('#price').val()) == ''){
+            errorToast('Harga produk harus diisi');
+        }else if($.trim($('#product-image').val()) == ''){
+            errorToast('Gambar produk harus diisi');
+        } else {
+            $("#form-add").submit();
+        }
+
     }
 
     function editProduct (id) {
@@ -253,7 +280,18 @@
     }
 
     function confirmEditProduct() {
-        $("#form-edit").submit();
+        if($.trim($('#name-edit').val()) == ''){
+            errorToast('Nama produk harus diisi');
+        }else if($.trim($('#size-edit').val()) == ''){
+            errorToast('Ukuran produk harus diisi');
+        }else if($.trim($('#price-edit').val()) == ''){
+            errorToast('Harga produk harus diisi');
+        }else if($.trim($('#product-image-edit').val()) == ''){
+            errorToast('Gambar produk harus diisi');
+        } else {
+            $("#form-edit").submit();
+        }
+
     }
 
     function deleteProduct() {
@@ -307,6 +345,9 @@
         $("#product-image-edit").html(newImage);
 
     }
+
+
+
 
 
 
