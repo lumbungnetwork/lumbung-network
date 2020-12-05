@@ -374,8 +374,12 @@ Route::prefix('/')->group(function () {
     Route::get('/m/purchase/my-stock', 'Admin\MemberController@getStockistMyStockPurchaseSisa')->name('m_StockistMyPruchaseSisa')->middleware('auth');
 
     //New Stockist Menu
+    Route::get('/m/seller/inventory', 'Admin\MemberController@getSellerInventory')->name('m_SellerInventory')->middleware('auth');
     Route::get('/m/stockist/inventory', 'Admin\MemberController@getStockistInventory')->name('m_StockistInventory')->middleware('auth');
     Route::get('/m/vendor/inventory', 'Admin\MemberController@getVendorInventory')->name('m_VendorInventory')->middleware('auth');
+    Route::get('/m/seller/profile', 'Admin\MemberController@getSellerProfile')->name('m_SellerProfile')->middleware('auth');
+    Route::post('/m/seller/add-profile', 'Admin\MemberController@postSellerAddProfile')->middleware('auth');
+    Route::post('/m/seller/edit-profile', 'Admin\MemberController@postSellerEditProfile')->middleware('auth');
     Route::get('/m/image/upload', 'Admin\MemberController@getImageUpload')->name('m_ImageUpload')->middleware('auth');
     Route::post('/m/image/upload', 'Admin\MemberController@postImageUpload')->middleware('auth');
     Route::get('/m/view/uploads', 'Admin\MemberController@viewUploads')->middleware('auth');
@@ -384,8 +388,17 @@ Route::prefix('/')->group(function () {
     Route::post('/m/delete/product', 'Admin\MemberController@postDeleteProduct')->middleware('auth');
 
     //New Member Shopping
+    Route::get('/m/shopping/{seller_id}', 'Admin\MemberController@getShopping')->name('m_Shopping')->middleware('auth');
+    Route::post('/m/add-to-cart', 'Admin\MemberController@postAddToCart')->name('m_AddToCart')->middleware('auth');
 
 
+
+    //New Member Shopping AJAX
+    Route::get('/m/ajax/get-product-by-category', 'Admin\AjaxmemberController@getProductByCategory')->middleware('auth');
+    Route::get('/m/ajax/get-product-by-id', 'Admin\AjaxmemberController@getProductById')->middleware('auth');
+    Route::get('m/ajax/get-cart-contents', 'Admin\AjaxmemberController@getCartContents')->middleware('auth');
+    Route::get('m/ajax/delete-cart-item', 'Admin\AjaxmemberController@getDeleteCartItem')->middleware('auth');
+    Route::get('/m/ajax/get-cart-total', 'Admin\AjaxmemberController@getCartTotal')->middleware('auth');
 
     Route::get('/m/req/vendor', 'Admin\MemberController@getRequestMemberVendor')->name('m_reqMemberVendor')->middleware('auth');
     Route::post('/m/req/vendor', 'Admin\MemberController@postRequestMemberVendor')->middleware('auth');
@@ -465,6 +478,7 @@ Route::prefix('/')->group(function () {
     Route::get('/m/cek-status/transaction/{id}', 'Admin\MemberController@getCekStatusTransaksiApi')->middleware('auth');
 
     //Ajax
+
     Route::get('/m/cek/add-sponsor', 'Admin\AjaxmemberController@postCekAddSponsor')->middleware('auth');
     Route::get('/m/cek/add-package/{id_paket}/{setuju}', 'Admin\AjaxmemberController@getCekAddPackage')->middleware('auth');
     Route::get('/m/cek/add-pin', 'Admin\AjaxmemberController@postCekAddPin')->middleware('auth');

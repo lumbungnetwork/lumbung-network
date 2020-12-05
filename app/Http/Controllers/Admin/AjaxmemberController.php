@@ -11,7 +11,6 @@ use App\Model\Package;
 use App\Model\Member;
 use App\Model\Validation;
 use App\Model\Bank;
-use App\Model\Pengiriman;
 use App\Model\Pin;
 use App\Model\Memberpackage;
 use App\Model\Transferwd;
@@ -21,12 +20,66 @@ use App\Model\Sales;
 use App\Model\Bonussetting;
 use App\Product;
 use App\Category;
+use App\Services\AbstractService;
+use App\ValueObjects\Cart\ItemObject;
 
 class AjaxmemberController extends Controller
 {
-
     public function __construct()
     {
+    }
+
+    //new AJAX
+    //Shopping
+    public function getProductByCategory(Request $request)
+    {
+        $getSellerProducts = Product::where('seller_id', $request->seller_id)
+            ->where('category_id', $request->category_id)
+            ->where('is_active', 1)
+            ->get();
+
+        if ($request->category_id == 0) {
+            $getSellerProducts = Product::where('seller_id', $request->seller_id)
+                ->where('is_active', 1)
+                ->get();
+        }
+
+        return view('member.ajax.product-by-category')
+            ->with('products', $getSellerProducts);
+    }
+
+    public function getProductById(Request $request)
+    {
+        $getProduct = Product::find($request->product_id);
+
+        return view('member.ajax.product-by-id')
+            ->with('product', $getProduct);
+    }
+
+    public function getCartContents(Request $request)
+    {
+        \Cart::session($request->user_id);
+        $items = \Cart::getContent();
+
+        return view('member.ajax.get-cart-contents')
+            ->with('products', $items);
+    }
+
+    public function getDeleteCartItem(Request $request)
+    {
+        \Cart::session($request->user_id)->remove($request->product_id);
+        $items = \Cart::getContent();
+
+        return view('member.ajax.get-cart-contents')
+            ->with('products', $items);
+    }
+
+    public function getCartTotal(Request $request)
+    {
+        $getTotal = \Cart::session($request->user_id)->getSubTotal();
+        $total = number_format($getTotal);
+
+        return $total;
     }
 
     public function postCekAddSponsor(Request $request)

@@ -253,7 +253,7 @@
             errorToast('Ukuran produk harus diisi');
         }else if($.trim($('#price').val()) == ''){
             errorToast('Harga produk harus diisi');
-        }else if($.trim($('#product-image').val()) == ''){
+        }else if($.trim($('#get_name').val()) == ''){
             errorToast('Gambar produk harus diisi');
         } else {
             $("#form-add").submit();

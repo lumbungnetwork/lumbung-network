@@ -19,7 +19,7 @@ class CreateSellerProfilesTable extends Migration
             $table->string('shop_name', 25);
             $table->string('motto', 65);
             $table->string('no_hp', 16);
-            $table->string('tg_user', 40);
+            $table->string('tg_user', 40)->nullable();
             $table->string('image', 60);
             $table->timestamps();
         });
