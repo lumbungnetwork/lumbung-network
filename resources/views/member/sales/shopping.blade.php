@@ -57,9 +57,11 @@
                 <div class="rounded-lg bg-white p-3 mb-3">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                            <label class="input-group-text" for="category-select">Kategori</label>
+                            <label style="font-size: 12px" class="input-group-text"
+                                for="category-select">Kategori</label>
                         </div>
-                        <select class="custom-select" id="category-select" onchange="filterProduct()">
+                        <select style="font-size: 13px" class="custom-select" id="category-select"
+                            onchange="filterProduct()">
                             <option value="0" selected>Tampilkan Semua</option>
                             @foreach ($categories as $category)
                             <option value="{{$category->id}}">{{$category->name}}</option>
