@@ -92,6 +92,13 @@
                                     @endforeach
                                 </tbody>
                             </table>
+                            @if($dataUser->is_stockist == 1)
+                            <a class="text-info float-right mr-2" href="{{ URL::to('/') }}/m/purchase/my-stock">Old
+                                Stock</a>
+                            @else
+                            <a class="text-info float-right mr-2" href="{{ URL::to('/') }}/m/purchase/my-vstock">Old
+                                Stock</a>
+                            @endif
                             @else
                             <div class="container">
                                 <h6 class="text-center">Anda belum memiliki produk.</h6>
@@ -286,7 +293,7 @@
             errorToast('Ukuran produk harus diisi');
         }else if($.trim($('#price-edit').val()) == ''){
             errorToast('Harga produk harus diisi');
-        }else if($.trim($('#product-image-edit').val()) == ''){
+        }else if($.trim($('#get_name_edit').val()) == ''){
             errorToast('Gambar produk harus diisi');
         } else {
             $("#form-edit").submit();

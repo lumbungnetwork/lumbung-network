@@ -28,10 +28,10 @@
                         enctype="multipart/form-data">
                         {{ csrf_field() }}
                         <div class="form-group mt-3">
-                            <input class="form-control" type="text" placeholder="Masukkan nama file" name="name"
-                                id="name" autocomplete="off">
+                            <input class="form-control" type="text" placeholder="Buat nama file" name="name" id="name"
+                                autocomplete="off">
                             @error('name')
-                            <div class="alert alert-danger">{{ $message }}</div>
+                            <div class="text-danger mb-3">{{ $message }}</div>
                             @enderror
                             <small>Buat nama yang jelas sesuai produk. <br> <span class="text-danger">Cth:
                                     beras-cap-abc-10-kg</span><br>Format: Nama + Ukuran<br>dipisahkan oleh tanda
@@ -42,12 +42,18 @@
 
                             <input id="image" type="file" name="image">
                             @error('image')
-                            <div class="alert alert-danger">{{ $message }}</div>
+                            <div class="text-danger mb-3">{{ $message }}</div>
                             @enderror
                         </div>
-                        <small>Perhatikan: <br>Gambar harus format <mark> JPEG (.jpg)</mark>, dengan <mark>ratio
+                        <br>
+                        <small><strong>Perhatikan:</strong> <br>Gambar harus format <mark> JPEG (.jpg)</mark>, dengan
+                            <mark>ratio
                                 1:1</mark> (persegi).
-                            Disarankan dengan <mark>dimensi 200x200 pixel</mark>.</small>
+                            Disarankan dengan <mark>dimensi 200x200 pixel</mark>.
+                            <br><br>
+                            Setelah gambar berhasil di Upload, anda bisa memilih gambar tersebut di menu Tambah atau
+                            Edit Produk dengan menggunakan "Nama File" yang anda buat di atas sebagai kata kuncinya.
+                        </small>
 
                     </form>
                     <div class="form-group mt-3">
@@ -73,7 +79,7 @@
 <script type="text/javascript">
     const Toast = Swal.mixin({
         toast: true,
-        position: 'bottom',
+        position: 'top',
         showConfirmButton: false,
         width: 200,
         timer: 3000,

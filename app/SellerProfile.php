@@ -10,6 +10,6 @@ class SellerProfile extends Model
 
     public function seller()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\User', 'seller_id', 'id');
     }
 }

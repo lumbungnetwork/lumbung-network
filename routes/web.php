@@ -375,8 +375,6 @@ Route::prefix('/')->group(function () {
 
     //New Stockist Menu
     Route::get('/m/seller/inventory', 'Admin\MemberController@getSellerInventory')->name('m_SellerInventory')->middleware('auth');
-    Route::get('/m/stockist/inventory', 'Admin\MemberController@getStockistInventory')->name('m_StockistInventory')->middleware('auth');
-    Route::get('/m/vendor/inventory', 'Admin\MemberController@getVendorInventory')->name('m_VendorInventory')->middleware('auth');
     Route::get('/m/seller/profile', 'Admin\MemberController@getSellerProfile')->name('m_SellerProfile')->middleware('auth');
     Route::post('/m/seller/add-profile', 'Admin\MemberController@postSellerAddProfile')->middleware('auth');
     Route::post('/m/seller/edit-profile', 'Admin\MemberController@postSellerEditProfile')->middleware('auth');
@@ -386,19 +384,28 @@ Route::prefix('/')->group(function () {
     Route::post('/m/add/product', 'Admin\MemberController@postCreateProduct')->middleware('auth');
     Route::post('/m/edit/product', 'Admin\MemberController@postEditProduct')->middleware('auth');
     Route::post('/m/delete/product', 'Admin\MemberController@postDeleteProduct')->middleware('auth');
+    Route::post('/m/payment-confirmation', 'Admin\MemberController@postPaymentConfirmation')->middleware('auth');
+    Route::post('/m/reject-shopping', 'Admin\MemberController@postRejectShopping')->middleware('auth');
 
     //New Member Shopping
     Route::get('/m/shopping/{seller_id}', 'Admin\MemberController@getShopping')->name('m_Shopping')->middleware('auth');
-    Route::post('/m/add-to-cart', 'Admin\MemberController@postAddToCart')->name('m_AddToCart')->middleware('auth');
+
+    Route::post('/m/settlement', 'Admin\MemberController@postSettlement')->name('m_Settlement')->middleware('auth');
+    Route::get('/m/shopping/payment/{masterSalesID}/{sellerType}', 'Admin\MemberController@getShoppingPayment')->name('m_ShoppingPayment')->middleware('auth');
 
 
 
     //New Member Shopping AJAX
     Route::get('/m/ajax/get-product-by-category', 'Admin\AjaxmemberController@getProductByCategory')->middleware('auth');
     Route::get('/m/ajax/get-product-by-id', 'Admin\AjaxmemberController@getProductById')->middleware('auth');
+    Route::post('/m/ajax/add-to-cart', 'Admin\AjaxmemberController@postAddToCart')->middleware('auth');
     Route::get('m/ajax/get-cart-contents', 'Admin\AjaxmemberController@getCartContents')->middleware('auth');
     Route::get('m/ajax/delete-cart-item', 'Admin\AjaxmemberController@getDeleteCartItem')->middleware('auth');
     Route::get('/m/ajax/get-cart-total', 'Admin\AjaxmemberController@getCartTotal')->middleware('auth');
+    Route::get('/m/ajax/cart-checkout', 'Admin\AjaxmemberController@getCartCheckout')->middleware('auth');
+    Route::post('/m/ajax/shopping-payment', 'Admin\AjaxmemberController@postShoppingPayment')->middleware('auth');
+    Route::post('/m/ajax/cancel-shopping-payment-buyer', 'Admin\AjaxmemberController@postCancelShoppingPaymentBuyer')->middleware('auth');
+    Route::post('/m/ajax/cancel-shopping-payment-seller', 'Admin\AjaxmemberController@postCancelShoppingPaymentSeller')->middleware('auth');
 
     Route::get('/m/req/vendor', 'Admin\MemberController@getRequestMemberVendor')->name('m_reqMemberVendor')->middleware('auth');
     Route::post('/m/req/vendor', 'Admin\MemberController@postRequestMemberVendor')->middleware('auth');

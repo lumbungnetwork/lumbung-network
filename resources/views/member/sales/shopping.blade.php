@@ -20,7 +20,7 @@
                 <div class="rounded-lg bg-white p-1 mb-3">
                     <div class="col-10 float-right">
                         <div style="margin-top: -32px;" class="card p-3">
-                            <h6 class="mb-0">{{$sellerProfile->shop_name}}</h6>
+                            <h6 class="mb-0 text-right">{{$sellerProfile->shop_name}}</h6>
                         </div>
                     </div>
                     <div class="clearfix"></div>
@@ -97,11 +97,14 @@
             </div>
 
         </div>
+        <button id="cart" onclick="checkCart()" data-toggle="modal" data-target="#cartModal"><i
+                class="mdi mdi-cart"></i>
+            Total: Rp<b id="cartTotal">0</b></button>
     </div>
+
     @include('layout.member.nav')
 </div>
-<button id="cart" onclick="checkCart()" data-toggle="modal" data-target="#cartModal"><i class="mdi mdi-cart"></i>
-    Total: Rp<b id="cartTotal">0</b></button>
+
 <div class="overlay"></div>
 </div>
 <div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true"
@@ -144,7 +147,7 @@
 
     #cart {
         display: block;
-        position: fixed;
+        position: sticky;
         bottom: 55px;
         left: 10px;
         z-index: 99;
@@ -165,6 +168,7 @@
 
 <script src="{{ asset('asset_new/js/sidebar.js') }}"></script>
 <script type="text/javascript">
+    let _token = '{{ csrf_token() }}';
     $(document).ready(function() {
         getTotal();
     })
@@ -239,7 +243,37 @@
     }
 
     function addToCart() {
-        $('#form-order').submit();
+        var product_id = $('#product_id').val();
+        var quantity = $('#quantity').val();
+        $.ajax({
+            type: "POST",
+            url: "{{ URL::to('/') }}/m/ajax/add-to-cart",
+            data: {
+            product_id:product_id,
+            quantity:quantity,
+            _token:_token
+            },
+            success: function(response){
+                if(response.success) {
+                    $('#orderModal').modal('hide');
+                    getTotal();
+                    Swal.fire(
+                    'Berhasil',
+                    response.message,
+                    'success'
+                    );
+                } else {
+                    $('#orderModal').modal('hide');
+                    getTotal();
+                    Swal.fire(
+                    'Oops!',
+                    response.message,
+                    'error'
+                    );
+                }
+
+            }
+        })
 
     }
 
@@ -264,6 +298,18 @@
                 $("#cartDetail" ).empty();
                 $("#cartDetail").html(url);
                 getTotal();
+
+            }
+        })
+    }
+
+    function checkout() {
+        $.ajax({
+            type: "GET",
+            url: "{{ URL::to('/') }}/m/ajax/cart-checkout?seller_id=" + {{$seller_id}},
+            success: function(url){
+                $("#cartDetail" ).empty();
+                $("#cartDetail").html(url);
 
             }
         })

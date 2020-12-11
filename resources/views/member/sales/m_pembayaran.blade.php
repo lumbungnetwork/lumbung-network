@@ -32,7 +32,7 @@
                 </div>
                 <div class="rounded-lg bg-white p-3 mb-3">
                     <div class="row">
-                        <div class="col-xl-12 col-xs-12">
+                        <div class="col-12">
                         </div>
                         <div class="table-responsive">
                             <table class="table">

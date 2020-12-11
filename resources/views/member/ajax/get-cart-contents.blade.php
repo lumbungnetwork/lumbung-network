@@ -30,7 +30,7 @@
     <div class="modal-footer">
 
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-        <button type="button" class="btn btn-primary" onclick="checkout()">Bayar</button>
+        <button type="button" class="btn btn-primary" onclick="checkout()">Checkout</button>
     </div>
 
 

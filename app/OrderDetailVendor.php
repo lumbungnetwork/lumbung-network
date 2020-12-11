@@ -4,9 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class OrderDetail extends Model
+class OrderDetailVendor extends Model
 {
-    protected $table = 'sales';
+    protected $table = 'vsales';
 
     protected $guarded = [];
 
@@ -17,6 +17,6 @@ class OrderDetail extends Model
 
     public function order()
     {
-        return $this->belongsTo('App\Order', 'master_sales_id', 'id');
+        return $this->belongsTo('App\Order', 'vmaster_sales_id', 'id');
     }
 }

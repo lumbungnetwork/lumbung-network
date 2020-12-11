@@ -57,13 +57,13 @@
                 <div class="rounded-lg bg-white p-3 mb-3">
                     <div class="row">
                         <div class="col-sm-12 col-xs-12">
-                            <p>
-                                Ingin menjadi Stokis di Area Anda?
+                            <small>
+                                Ingin menjadi Stokis di Area Anda? <br>
                                 Dapatkan <b>2 LMB</b> setiap kelipatan
                                 Rp100.000,00 pembelanjaan Member
                                 di Stokis Anda!
-                            </p>
-                            <a href="{{ URL::to('/') }}/m/req/stockist" class="btn btn-success">Apply</a>
+                            </small><br>
+                            <a href="{{ URL::to('/') }}/m/req/stockist" class="btn btn-success float-right">Apply</a>
                         </div>
                     </div>
                 </div>
@@ -83,73 +83,70 @@
                         }
                         $totalData = $totKota + $totKec + $totKel;
                     ?>
-                @if($totalData > 0)
 
-                @if($getDataKelurahan != null)
-                @foreach($getDataKelurahan as $row)
+
                 <div class="rounded-lg bg-white p-3 mb-3">
-                    <div class="row">
-                        <div class="col-sm-12 col-xs-12">
-                            <p>{{$row->full_name}}</p>
-                            <p>{{$row->alamat}} {{$row->kelurahan}} {{$row->kecamatan}}</p>
-                            <p>{{$row->hp}}</p>
-                            <p><a class="btn btn-success btn-lg waves-effect waves-light"
-                                    href="{{ URL::to('/') }}/m/shoping/{{$row->id}}"> <span>Shop</span> </a></p>
+                    @if($totalData == 0)
+                    <h6 class="text-center">Belum ada Stockist di daerah anda.</h6>
+                    @endif
+                    @if($totalData > 0)
+                    <h6>Stockist Terdekat</h6>
+
+                    @if($getDataKelurahan != null)
+                    @foreach($getDataKelurahan as $row)
+                    <div class="col-6 p-2 mb-3 text-center">
+                        <div class="rounded-lg bg-white shadow p-2 px-0">
+                            <a href="{{ URL::to('/') }}/m/shopping/{{$row->id}}">
+                                <img src="{{ asset('/storage/sellers') }}/{{$row->sellerProfile->image}}"
+                                    style="width: auto; max-width: 100%;">
+                            </a>
+                            <h6 style="font-size: 14px; font-weight:200; margin-top: 10px;">
+                                {{$row->sellerProfile->shop_name}} </h6>
+                            <dd style="font-size: 12px;">
+                                {{$row->alamat}}, {{$row->kelurahan}}, {{$row->kecamatan}}</dd>
                         </div>
                     </div>
-                </div>
-                @endforeach
-                @endif
+                    @endforeach
+                    @endif
 
-                @if($getDataKecamatan != null)
-                @foreach($getDataKecamatan as $row)
-                <div class="rounded-lg bg-white p-3 mb-3">
-                    <div class="row">
-                        <div class="col-sm-12 col-xs-12">
-                            <p>{{$row->full_name}}</p>
-                            <p>{{$row->alamat}} {{$row->kelurahan}} {{$row->kecamatan}}</p>
-                            <p>{{$row->hp}}</p>
-                            <p><a class="btn btn-success btn-lg waves-effect waves-light"
-                                    href="{{ URL::to('/') }}/m/shoping/{{$row->id}}"> <span>Shop</span> </a></p>
+                    @if($getDataKecamatan != null)
+                    @foreach($getDataKecamatan as $row)
+                    <div class="col-6 p-2 mb-3 text-center">
+                        <div class="rounded-lg bg-white shadow p-2 px-0">
+                            <a href="{{ URL::to('/') }}/m/shopping/{{$row->id}}">
+                                <img src="{{ asset('/storage/sellers') }}/{{$row->sellerProfile->image}}"
+                                    style="width: auto; max-width: 100%;">
+                            </a>
+                            <h6 style="font-size: 14px; font-weight:200; margin-top: 10px;">
+                                {{$row->sellerProfile->shop_name}} </h6>
+                            <dd style="font-size: 12px;">
+                                {{$row->alamat}}, {{$row->kelurahan}}, {{$row->kecamatan}}</dd>
                         </div>
                     </div>
-                </div>
-                @endforeach
-                @endif
+                    @endforeach
+                    @endif
 
-                @if($getDataKota != null)
-                @foreach($getDataKota as $row)
-                <div class="rounded-lg bg-white p-3 mb-3">
-                    <div class="row">
-                        <div class="col-sm-12 col-xs-12">
-                            <p>{{$row->full_name}}</p>
-                            <p>{{$row->alamat}} {{$row->kelurahan}} {{$row->kecamatan}}</p>
-                            <p>{{$row->hp}}</p>
-                            <p><a class="btn btn-success btn-lg waves-effect waves-light"
-                                    href="{{ URL::to('/') }}/m/shoping/{{$row->id}}"> <span>Shop</span> </a></p>
+                    @if($getDataKota != null)
+                    @foreach($getDataKota as $row)
+                    <div class="col-6 p-2 mb-3 text-center">
+                        <div class="rounded-lg bg-white shadow p-2 px-0">
+                            <a href="{{ URL::to('/') }}/m/shopping/{{$row->id}}">
+                                <img src="{{ asset('/storage/sellers') }}/{{$row->sellerProfile->image}}"
+                                    style="width: auto; max-width: 100%;">
+                            </a>
+                            <h6 style="font-size: 14px; font-weight:200; margin-top: 10px;">
+                                {{$row->sellerProfile->shop_name}} </h6>
+                            <dd style="font-size: 12px;">
+                                {{$row->alamat}}, {{$row->kelurahan}}, {{$row->kecamatan}}</dd>
                         </div>
                     </div>
+                    @endforeach
+                    @endif
+                    @endif
                 </div>
-                @endforeach
-                @endif
-                @endif
 
-                @if($getData != null)
-                <div class="rounded-lg bg-white p-3 mb-3">
-                    <div class="row">
-                        @foreach($getData as $row)
-                        <div class="col-sm-12 col-xs-12">
-                            <p>{{$row->full_name}}</p>
-                            <p>{{$row->alamat}} {{$row->kelurahan}} {{$row->kecamatan}} {{$row->kota}}</p>
-                            <p>{{$row->hp}}</p>
-                            <p><a class="btn btn-success btn-lg waves-effect waves-light"
-                                    href="{{ URL::to('/') }}/m/shoping/{{$row->id}}"> <span>Shop</span> </a></p>
-                        </div>
-                        <hr>
-                        @endforeach
-                    </div>
-                </div>
-                @endif
+
+
 
             </div>
         </div>

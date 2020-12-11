@@ -26,12 +26,12 @@
                 <label for="quantity">Jumlah Order</label>
                 <div class="quantity-block">
                     <input class="minus" type="button" value="-">
-                    <input type="number" inputmode="numeric" pattern="[0-9]*" value="1" name="quantity" class="quantity"
-                        size="4" min="1" max="{{$product->qty}}" />
+                    <input type="number" inputmode="numeric" pattern="[0-9]*" value="1" id="quantity" name="quantity"
+                        class="quantity" size="4" min="1" max="{{$product->qty}}" />
                     <input class="plus" type="button" value="+">
                 </div>
 
-                <input type="hidden" name="product_id" value="{{$product->id}}">
+                <input type="hidden" id="product_id" name="product_id" value="{{$product->id}}">
 
             </form>
         </div>

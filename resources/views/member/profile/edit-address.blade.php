@@ -29,7 +29,7 @@
                     @endif
 
                     <div class="row">
-                        <div class="col-xl-5 col-xs-12">
+                        <div class="col-12">
                             <fieldset class="form-group">
                                 <label for="provinsi">Provinsi</label>
                                 <select class="form-control" name="provinsi" id="provinsi"
@@ -43,7 +43,7 @@
                                 </select>
                             </fieldset>
                         </div>
-                        <div class="col-xl-7 col-xs-12">
+                        <div class="col-12">
                             <fieldset class="form-group">
                                 <label for="kota">Kota/Kabupaten</label>
                                 <select class="form-control" name="kota" id="kota"
@@ -51,7 +51,7 @@
                                 </select>
                             </fieldset>
                         </div>
-                        <div class="col-xl-6 col-xs-12">
+                        <div class="col-12">
                             <fieldset class="form-group">
                                 <label for="kecamatan">Kecamatan</label>
                                 <select class="form-control" name="kecamatan" id="kecamatan"
@@ -59,23 +59,23 @@
                                 </select>
                             </fieldset>
                         </div>
-                        <div class="col-xl-6 col-xs-12">
+                        <div class="col-12">
                             <fieldset class="form-group">
                                 <label for="kelurahan">Kelurahan</label>
                                 <select class="form-control" name="kelurahan" id="kelurahan">
                                 </select>
                             </fieldset>
                         </div>
-                        <div class="col-xl-12 col-xs-12">
+                        <div class="col-12">
                             <fieldset class="form-group">
                                 <label for="alamat">Alamat Lengkap</label>
                                 <textarea class="form-control" id="alamat" rows="2" name="alamat"
                                     autocomplete="off"></textarea>
                             </fieldset>
                         </div>
-                        <div class="col-xl-6">
-                            <button type="submit" class="btn btn-primary" id="submitBtn" data-toggle="modal"
-                                data-target="#confirmSubmit" onClick="inputSubmit()">Submit</button>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-success btn-lg" id="submitBtn" data-toggle="modal"
+                                data-target="#confirmSubmit" onClick="inputSubmit()">Perbarui Data</button>
                         </div>
                     </div>
                     <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
