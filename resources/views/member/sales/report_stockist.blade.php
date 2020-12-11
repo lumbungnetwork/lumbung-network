@@ -34,18 +34,10 @@
                     <br>
                     <div class="row">
                         <div class="table-responsive">
-                            @if ( Session::has('message') )
-                            <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible" role="alert">
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">×</span>
-                                </button>
-                                {{  Session::get('message')    }}
-                            </div>
-                            @endif
+
                             <table id="datatable" class="table table-striped table-bordered" style="font-size: 14px;">
                                 <thead>
                                     <tr>
-                                        <th>No.</th>
                                         <th>Tgl</th>
                                         <th>Pembeli</th>
                                         <th>Nominal(Rp)</th>
@@ -53,16 +45,11 @@
                                 </thead>
                                 <tbody>
                                     @if($getData != null)
-                                    <?php $no = 0; ?>
                                     @foreach($getData as $row)
                                     <?php
-                                                    $no++;
-                                                    $status = 'proses pembeli';
-                                                    $label = 'info';
-                                                    if($row->status == 1){
-                                                        $status = 'proses stockist';
-                                                        $label = 'warning';
-                                                    }
+
+                                                    $status = 'proses stockist';
+                                                    $label = 'warning';
                                                     if($row->status == 2){
                                                         $status = 'tuntas';
                                                         $label = 'success';
@@ -73,7 +60,7 @@
                                                     }
                                                     $buy = 'proses pemilihan';
                                                     if($row->buy_metode == 1){
-                                                        $buy = 'COD';
+                                                        $buy = 'Tunai';
                                                     }
                                                     if($row->buy_metode == 2){
                                                         $buy = 'Transfer Bank';
@@ -83,8 +70,7 @@
                                                     }
                                                 ?>
                                     <tr>
-                                        <td>{{$no}}</td>
-                                        <td>{{date('d-m-Y', strtotime($row->sale_date))}}</td>
+                                        <td>{{$row->created_at}}</td>
                                         <td>{{$row->user_code}}<br><a class="label label-primary f-12"
                                                 href="{{ URL::to('/') }}/m/detail/stockist-report/{{$row->id}}">detail</a>
                                         </td>
@@ -135,6 +121,7 @@
     $(document).ready(function() {
         $('#datatable').DataTable({
             lengthChange: false,
+            order: [[ 0, "desc" ]]
         });
 
     } );

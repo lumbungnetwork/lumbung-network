@@ -11,7 +11,6 @@ use App\Model\Package;
 use App\Model\Member;
 use App\Model\Validation;
 use App\Model\Bank;
-use App\Model\Pengiriman;
 use App\Model\Pin;
 use App\Model\Memberpackage;
 use App\Model\Transferwd;
@@ -19,12 +18,294 @@ use App\Model\Bonus;
 use App\Model\Transaction;
 use App\Model\Sales;
 use App\Model\Bonussetting;
+use App\Product;
+use App\Category;
+use App\User;
+use App\Services\AbstractService;
+use App\ValueObjects\Cart\ItemObject;
+use App\Jobs\ForwardShoppingPaymentJob;
 
 class AjaxmemberController extends Controller
 {
-
     public function __construct()
     {
+    }
+
+    //new AJAX
+    //Shopping
+    public function getProductByCategory(Request $request)
+    {
+        $getSellerProducts = Product::where('seller_id', $request->seller_id)
+            ->where('category_id', $request->category_id)
+            ->where('is_active', 1)
+            ->get();
+
+        if ($request->category_id == 0) {
+            $getSellerProducts = Product::where('seller_id', $request->seller_id)
+                ->where('is_active', 1)
+                ->get();
+        }
+
+        return view('member.ajax.product-by-category')
+            ->with('products', $getSellerProducts);
+    }
+
+    public function getProductById(Request $request)
+    {
+        $getProduct = Product::find($request->product_id);
+
+        return view('member.ajax.product-by-id')
+            ->with('product', $getProduct);
+    }
+
+    public function postAddToCart(Request $request)
+    {
+        $dataUser = Auth::user();
+        $Product = Product::find($request->product_id);
+
+        $remaining = $Product->qty - $request->quantity;
+        if ($remaining < 0) {
+            return response()->json(['success' => false, 'message' => 'Stock Produk tidak cukup!']);
+        }
+
+        \Cart::session($dataUser->id)->add(array(
+            'id' => $Product->id,
+            'name' => $Product->name,
+            'price' => $Product->price,
+            'quantity' => $request->quantity,
+            'attributes' => array(),
+            'associatedModel' => $Product
+        ));
+
+        return response()->json(['success' => true, 'message' => 'Produk berhasil ditambahkan ke keranjang!']);
+    }
+
+    public function getCartContents(Request $request)
+    {
+        \Cart::session($request->user_id);
+        $items = \Cart::getContent();
+
+        return view('member.ajax.get-cart-contents')
+            ->with('products', $items);
+    }
+
+    public function getDeleteCartItem(Request $request)
+    {
+        \Cart::session($request->user_id)->remove($request->product_id);
+        $items = \Cart::getContent();
+
+        return view('member.ajax.get-cart-contents')
+            ->with('products', $items);
+    }
+
+    public function getCartTotal(Request $request)
+    {
+        $getTotal = \Cart::session($request->user_id)->getSubTotal();
+        $total = number_format($getTotal);
+
+        return $total;
+    }
+
+    public function getCartCheckout(Request $request)
+    {
+        $user = Auth::user();
+        $seller = User::find($request->seller_id);
+        $sellerType = 1; // 1 = Stockist, 2 = Vendor
+        if ($seller->is_vendor == 1) {
+            $sellerType = 2;
+        }
+        $getTotal = \Cart::session($user->id)->getSubTotal();
+        $cartItems = \Cart::session($user->id)->getContent();
+        $itemsArray = $cartItems->toArray();
+
+        //check available stock
+
+        foreach ($itemsArray as $item) {
+            $stock = Product::find($item['id'])->qty;
+            $remaining = $stock - $item['quantity'];
+            if ($remaining < 0) {
+                $status = false;
+                return view('member.ajax.checkout')
+                    ->with('status', $status)
+                    ->with('name', $item['name'])
+                    ->with('stock', $item['associatedModel']['qty']);
+            }
+        }
+
+        $modelSales = new Sales;
+        $invoice = $modelSales->getCodeMasterSales($user->id);
+        $sale_date = date('Y-m-d');
+
+        if ($sellerType == 1) {
+
+            $dataInsertMasterSales = array(
+                'user_id' => $user->id,
+                'stockist_id' => $seller->id,
+                'invoice' => $invoice,
+                'total_price' => $getTotal,
+                'sale_date' => $sale_date,
+            );
+            $insertMasterSales = $modelSales->getInsertMasterSales($dataInsertMasterSales);
+
+            foreach ($itemsArray as $item) {
+                $dataInsert = array(
+                    'user_id' => $user->id,
+                    'stockist_id' => $seller->id,
+                    'purchase_id' => $item['id'],
+                    'invoice' => $invoice,
+                    'amount' => $item['quantity'],
+                    'sale_price' => $item['quantity'] * $item['price'],
+                    'sale_date' => $sale_date,
+                    'master_sales_id' => $insertMasterSales->lastID
+                );
+                $insertSales = $modelSales->getInsertSales($dataInsert);
+            }
+        } else if ($sellerType == 2) {
+
+            $dataInsertMasterSales = array(
+                'user_id' => $user->id,
+                'vendor_id' => $seller->id,
+                'invoice' => $invoice,
+                'total_price' => $getTotal,
+                'sale_date' => $sale_date,
+            );
+            $insertMasterSales = $modelSales->getInsertVMasterSales($dataInsertMasterSales);
+
+            foreach ($itemsArray as $item) {
+                $dataInsert = array(
+                    'user_id' => $user->id,
+                    'vendor_id' => $seller->id,
+                    'purchase_id' => $item['id'],
+                    'invoice' => $invoice,
+                    'amount' => $item['quantity'],
+                    'sale_price' => $item['quantity'] * $item['price'],
+                    'sale_date' => $sale_date,
+                    'vmaster_sales_id' => $insertMasterSales->lastID
+                );
+                $insertSales = $modelSales->getInsertVSales($dataInsert);
+            }
+        }
+        $status = true;
+        return view('member.ajax.checkout')
+            ->with('status', $status)
+            ->with('sellerType', $sellerType)
+            ->with('masterSalesID', $insertMasterSales->lastID);
+    }
+
+    public function postCancelShoppingPaymentBuyer(Request $request)
+    {
+        $modelSales = new Sales;
+
+        $dataUpdate = array(
+            'status' => 10,
+            'reason' => 'Dibatalkan oleh pembeli'
+        );
+        if ($request->sellerType == 1) {
+            $modelSales->getUpdateMasterSales('id', $request->masterSalesID, $dataUpdate);
+        } else {
+            $modelSales->getUpdateVMasterSales('id', $request->masterSalesID, $dataUpdate);
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+    public function postShoppingPayment(Request $request)
+    {
+        $modelSales = new Sales;
+        $items = null;
+        if ($request->buy_method == 1) {
+            $dataUpdate = array(
+                'status' => 1,
+                'buy_metode' => $request->buy_method
+            );
+            if ($request->sellerType == 1) {
+                $modelSales->getUpdateMasterSales('id', $request->masterSalesID, $dataUpdate);
+                $items = $modelSales->getMemberPembayaranSalesNew($request->masterSalesID);
+            } else {
+                $modelSales->getUpdateVMasterSales('id', $request->masterSalesID, $dataUpdate);
+                $items = $modelSales->getMemberPembayaranVSalesNew($request->masterSalesID);
+            }
+
+            foreach ($items as $item) {
+                $product = Product::find($item->purchase_id);
+                $remaining = $product->qty - $item->amount;
+                $product->update(['qty' => $remaining]);
+            }
+
+            return response()->json(['success' => true]);
+        } else if ($request->buy_method == 3) {
+            $hash = $request->tron_transfer;
+            $receiver = 'TZHYx9bVa4vQz8VpVvZtjwMb4AHqkUChiQ';
+            if ($request->sellerType == 1) {
+                $amount = $modelSales->getMasterTotalPriceStockist($request->masterSalesID);
+                $timestamp = $modelSales->getStockistMasterSalesTimestamp($request->masterSalesID);
+            } else {
+                $amount = $modelSales->getMasterTotalPriceVendor($request->masterSalesID);
+                $timestamp = $modelSales->getVendorMasterSalesTimestamp($request->masterSalesID);
+            }
+
+            $tron = $this->getTron();
+            $i = 1;
+            do {
+                try {
+                    sleep(1);
+                    $response = $tron->getTransaction($hash);
+                } catch (TronException $exception) {
+                    $i++;;
+                    continue;
+                }
+                break;
+            } while ($i < 13);
+
+
+            if (empty($response)) {
+                Alert::error('Gagal', 'Hash Transaksi Bermasalah! Laporkan pada Admin');
+                return redirect()->back();
+            };
+
+            $hashTime = $response['raw_data']['timestamp'];
+            $hashSender = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['owner_address']);
+            $hashReceiver = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['to_address']);
+            $hashAsset = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['asset_name']);
+            $hashAmount = $response['raw_data']['contract'][0]['parameter']['value']['amount'];
+
+            if ($hashTime > $timestamp) {
+                if ($hashAmount == $amount * 100) {
+                    if ($hashAsset == '1002652') {
+                        if ($hashReceiver == $receiver) {
+                            $dataUpdate = array(
+                                'status' => 2,
+                                'buy_metode' => 3,
+                                'tron_transfer' => $hash
+                            );
+                            if ($request->sellerType == 1) {
+                                $modelSales->getUpdateMasterSales('id', $request->masterSalesID, $dataUpdate);
+                                $items = $modelSales->getMemberPembayaranSalesNew($request->masterSalesID);
+                            } else {
+                                $modelSales->getUpdateVMasterSales('id', $request->masterSalesID, $dataUpdate);
+                                $items = $modelSales->getMemberPembayaranVSalesNew($request->masterSalesID);
+                            }
+
+                            foreach ($items as $item) {
+                                $product = Product::find($item->purchase_id);
+                                $remaining = $product->qty - $item->amount;
+                                $product->update(['qty' => $remaining]);
+                            }
+                            ForwardShoppingPaymentJob::dispatch($request->masterSalesID, $request->sellerType)->onQueue('tron');
+                            return response()->json(['success' => true]);
+                        } else {
+                            return response()->json(['success' => false, 'message' => 'Alamat Tujuan Transfer Salah!']);
+                        }
+                    } else {
+                        return response()->json(['success' => false, 'message' => 'Bukan token eIDR yang benar!']);
+                    }
+                } else {
+                    return response()->json(['success' => false, 'message' => 'Nominal Transfer Salah!']);
+                }
+            } else {
+                return response()->json(['success' => false, 'message' => 'Hash sudah terpakai!']);
+            }
+        }
     }
 
     public function postCekAddSponsor(Request $request)
@@ -973,6 +1254,49 @@ class AjaxmemberController extends Controller
         return view('member.ajax.get_name_autocomplete')
             ->with('getData', $getDownlineUsername)
             ->with('dataUser', $dataUser);
+    }
+
+    public function getSearchProductImage(Request $request)
+    {
+        $modelProduct = new Product;
+        $getProductImage = null;
+        if ($request->name != null) {
+            $getProductImage = $modelProduct->getProductImage($request->name);
+        }
+        return view('member.ajax.get_image_autocomplete')
+            ->with('productImages', $getProductImage);
+    }
+    public function getSearchProductImageEdit(Request $request)
+    {
+        $modelProduct = new Product;
+        $getProductImage = null;
+        if ($request->name != null) {
+            $getProductImage = $modelProduct->getProductImage($request->name);
+        }
+        return view('member.ajax.get_image_autocomplete_edit')
+            ->with('productImages', $getProductImage);
+    }
+
+    public function getEditProduct($product_id)
+    {
+        $dataUser = Auth::user();
+        $type = 1;
+        if ($dataUser->is_vendor == 1) {
+            $type = 2;
+        }
+        $getEditProduct = null;
+        if ($product_id != null) {
+            $getEditProduct = Product::select('id', 'seller_id', 'name', 'size', 'price', 'desc', 'qty', 'category_id', 'image', 'is_active')
+                ->where('seller_id', $dataUser->id)
+                ->where('type', $type)
+                ->where('id', $product_id)
+                ->with('category:id,name')
+                ->first();
+        }
+        $getCategories = Category::select('id', 'name')->where('id', '<', 21)->get();
+        return view('member.ajax.get_edit_product')
+            ->with('categories', $getCategories)
+            ->with('product', $getEditProduct);
     }
 
     public function getCekConfirmTopUp(Request $request)

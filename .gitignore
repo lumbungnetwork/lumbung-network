@@ -16,3 +16,7 @@ public/.DS_Store
 public/asset_new/.DS_Store
 public/asset_new/img/.DS_Store
 .DS_Store
+app/Console/Commands/MandiriTesting.php
+app/Console/Commands/Testing.php
+app/Http/Controllers/MandiriMutasiController.php
+resources/API_Portal.pem

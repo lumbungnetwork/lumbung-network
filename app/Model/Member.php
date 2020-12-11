@@ -5,6 +5,7 @@ namespace App\Model;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
+use App\User;
 use Validator;
 
 class Member extends Model
@@ -1165,12 +1166,13 @@ class Member extends Model
 
     public function getSearchUserByKelurahan($data, $kecamatan)
     {
-        $sql = DB::table('users')
-            ->where('kelurahan', '=', $data)
+        $sql = User::where('kelurahan', '=', $data)
             ->where('kecamatan', '=', $kecamatan)
             ->where('user_type', '=', 10)
             ->where('is_active', '=', 1)
             ->where('is_stockist', '=', 1)
+            ->whereHas('sellerProfile')
+            ->with('sellerProfile')
             ->orderBy('user_code', 'ASC')
             ->get();
         $return = null;
@@ -1182,12 +1184,13 @@ class Member extends Model
 
     public function getSearchUserByKecamatan($kecamatan, $kelurahan)
     {
-        $sql = DB::table('users')
-            ->where('kecamatan', '=', $kecamatan)
+        $sql = User::where('kecamatan', '=', $kecamatan)
             ->where('kelurahan', '!=', $kelurahan)
             ->where('user_type', '=', 10)
             ->where('is_active', '=', 1)
             ->where('is_stockist', '=', 1)
+            ->whereHas('sellerProfile')
+            ->with('sellerProfile')
             ->orderBy('user_code', 'ASC')
             ->get();
         $return = null;
@@ -1199,13 +1202,14 @@ class Member extends Model
 
     public function getSearchUserByKota($data, $kecamatan, $kelurahan)
     {
-        $sql = DB::table('users')
-            ->where('kota', '=', $data)
+        $sql = User::where('kota', '=', $data)
             ->where('kecamatan', '!=', $kecamatan)
             ->where('kelurahan', '!=', $kelurahan)
             ->where('user_type', '=', 10)
             ->where('is_active', '=', 1)
             ->where('is_stockist', '=', 1)
+            ->whereHas('sellerProfile')
+            ->with('sellerProfile')
             ->orderBy('user_code', 'ASC')
             ->get();
         $return = null;
@@ -1217,12 +1221,13 @@ class Member extends Model
 
     public function getSearchVendorUserByKelurahan($data, $kecamatan)
     {
-        $sql = DB::table('users')
-            ->where('kelurahan', '=', $data)
+        $sql = User::where('kelurahan', '=', $data)
             ->where('kecamatan', '=', $kecamatan)
             ->where('user_type', '=', 10)
             ->where('is_active', '=', 1)
             ->where('is_vendor', '=', 1)
+            ->whereHas('sellerProfile')
+            ->with('sellerProfile')
             ->orderBy('user_code', 'ASC')
             ->get();
         $return = null;
@@ -1234,12 +1239,13 @@ class Member extends Model
 
     public function getSearchVendorUserByKecamatan($kecamatan, $kelurahan)
     {
-        $sql = DB::table('users')
-            ->where('kecamatan', '=', $kecamatan)
+        $sql = User::where('kecamatan', '=', $kecamatan)
             ->where('kelurahan', '!=', $kelurahan)
             ->where('user_type', '=', 10)
             ->where('is_active', '=', 1)
             ->where('is_vendor', '=', 1)
+            ->whereHas('sellerProfile')
+            ->with('sellerProfile')
             ->orderBy('user_code', 'ASC')
             ->get();
         $return = null;
@@ -1251,13 +1257,14 @@ class Member extends Model
 
     public function getSearchUserVendorByKota($data, $kecamatan, $kelurahan)
     {
-        $sql = DB::table('users')
-            ->where('kota', '=', $data)
+        $sql = User::where('kota', '=', $data)
             ->where('kecamatan', '!=', $kecamatan)
             ->where('kelurahan', '!=', $kelurahan)
             ->where('user_type', '=', 10)
             ->where('is_active', '=', 1)
             ->where('is_vendor', '=', 1)
+            ->whereHas('sellerProfile')
+            ->with('sellerProfile')
             ->orderBy('user_code', 'ASC')
             ->get();
         $return = null;

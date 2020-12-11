@@ -310,4 +310,8 @@ a.article:hover {
         font-size: 5px;
         font-weight: 300;
     }
+
+    .swal2-popup {
+        font-size: 0.7rem !important;
+    }
 }

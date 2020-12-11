@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Storage;
 use App\Model\Member;
 use App\Model\Pinsetting;
 use App\Model\Masterpin;
@@ -22,11 +23,21 @@ use App\Model\Pengiriman;
 use App\Model\Membership;
 use App\Model\Sales;
 use App\Model\Transferwd;
+use App\Product;
+use App\Category;
+use App\User;
+use App\ProductImages;
+use App\SellerProfile;
+use App\Services\AbstractService;
+use App\ValueObjects\Cart\ItemObject;
+use Intervention\Image\ImageManager;
 use GuzzleHttp\Client;
+use RealRashid\SweetAlert\Facades\Alert;
 
 
 class MemberController extends Controller
 {
+
     public function __construct()
     {
     }
@@ -1494,11 +1505,15 @@ class MemberController extends Controller
         $getDataKecamatan = null;
         $getDataKota = null;
         $getData = null;
+
         if ($dataUser->kode_daerah == null) {
-            return redirect()->route('m_myProfile')
-                ->with('message', 'Lengkapi terlebih dahulu data profil anda')
-                ->with('messageclass', 'danger');
+            Alert::warning('Oops', 'Anda perlu memperbarui data alamat anda sebelum berbelanja');
+            return redirect()->route('m_myProfile');
         } else {
+            if (strpos($dataUser->kode_daerah, ".") !== false) {
+                Alert::warning('Oops', 'Anda perlu memperbarui data alamat anda sebelum berbelanja');
+                return redirect()->route('m_editAddress');
+            }
             $kelurahan = $dataUser->kelurahan;
             $kecamatan = $dataUser->kecamatan;
             $kota = $dataUser->kota;
@@ -1743,9 +1758,9 @@ class MemberController extends Controller
         if ($getDataSales == null) {
             return redirect()->route('mainDashboard');
         }
-        $getDataItem = $modelSales->getMemberPembayaranSales($id);
-        return view('member.sales.m_stockist_transfer')
-            ->with('headerTitle', 'Stockist Transfer')
+        $getDataItem = $modelSales->getMemberPembayaranSalesNew($id);
+        return view('member.sales.stockist_confirm_payment')
+            ->with('headerTitle', 'Konfirmasi Pembayaran Tunai')
             ->with('getDataSales', $getDataSales)
             ->with('getDataItem', $getDataItem)
             ->with('dataUser', $dataUser);
@@ -1828,6 +1843,79 @@ class MemberController extends Controller
             ->with('sum', $sum)
             ->with('getDate', $getMonth)
             ->with('dataUser', $dataUser);
+    }
+
+    //new shopping methods
+    public function postSettlement(Request $request)
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+
+        \Cart::session($dataUser->id)->clear();
+
+        return redirect()->route('m_ShoppingPayment', [$request->masterSalesID, $request->sellerType]);
+    }
+
+    public function getShoppingPayment($masterSalesID, $sellerType)
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        $modelSales = new Sales;
+        $modelMember = new Member;
+
+        if ($sellerType == 1) {
+            $getDataMaster = $modelSales->getMemberPembayaranMasterSales($masterSalesID);
+
+            $getDataSales = $modelSales->getMemberPembayaranSalesNew($getDataMaster->id);
+            $getStockist = $dataUser;
+            if ($dataUser->id != $getDataMaster->stockist_id) {
+                $getStockist = $modelMember->getUsers('id', $getDataMaster->stockist_id);
+                if ($getStockist->is_stockist == null) {
+                    return redirect()->route('mainDashboard');
+                }
+            }
+            $sellerProfile = SellerProfile::where('seller_id', $getStockist->id)->first();
+
+            return view('member.sales.shopping_payment')
+                ->with('headerTitle', 'Pembayaran')
+                ->with('getDataSales', $getDataSales)
+                ->with('getDataMaster', $getDataMaster)
+                ->with('getSeller', $getStockist)
+                ->with('shopName', $sellerProfile->shop_name)
+                ->with('dataUser', $dataUser);
+        } else if ($sellerType == 2) {
+            $getDataMaster = $modelSales->getMemberPembayaranVMasterSales($masterSalesID);
+
+            $getDataSales = $modelSales->getMemberPembayaranVSalesNew($getDataMaster->id);
+            $getVendor = $dataUser;
+            if ($dataUser->id != $getDataMaster->vendor_id) {
+                $getVendor = $modelMember->getUsers('id', $getDataMaster->vendor_id);
+                if ($getVendor->is_vendor == null) {
+                    return redirect()->route('mainDashboard');
+                }
+            }
+            $sellerProfile = SellerProfile::where('seller_id', $getVendor->id)->first();
+
+            return view('member.sales.shopping_payment')
+                ->with('headerTitle', 'Pembayaran')
+                ->with('getDataSales', $getDataSales)
+                ->with('getDataMaster', $getDataMaster)
+                ->with('getSeller', $getVendor)
+                ->with('shopName', $sellerProfile->shop_name)
+                ->with('dataUser', $dataUser);
+        }
     }
 
     public function getMemberPembayaran($id)
@@ -2332,6 +2420,546 @@ class MemberController extends Controller
             ->with('getData', $getData)
             ->with('dataUser', $dataUser);
     }
+
+    //seller Inventory
+    public function getSellerInventory()
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_profile == 0) {
+            Alert::error('Oops!', 'Data diri anda belum lengkap');
+            return redirect()->route('m_newProfile');
+        }
+        if ($dataUser->is_stockist == 0 && $dataUser->is_vendor == 0) {
+            return redirect()->route('m_SearchStockist');
+        }
+
+        //check if SellerProfile exist
+        $checkSellerProfile = SellerProfile::where('seller_id', $dataUser->id)->first();
+        if ($checkSellerProfile == null) {
+            Alert::warning('Oops!', 'Silakan buat Profil Toko terlebih dulu');
+            return redirect()->route('m_SellerProfile');
+        }
+
+        $type = 1;
+        $getCategories = Category::select('id', 'name')->where('id', '<', 11)->get();
+
+        if ($dataUser->is_vendor == 1) {
+            $type = 2;
+            $getCategories = Category::select('id', 'name')->where('id', '>', 10)->get();
+        }
+
+        $getProducts = Product::select('id', 'seller_id', 'name', 'size', 'price', 'desc', 'qty', 'category_id', 'image', 'is_active')
+            ->where('seller_id', $dataUser->id)
+            ->where('type', $type)
+            ->with('category:id,name')
+            ->get();
+
+        return view('member.sales.inventory')
+            ->with('products', $getProducts)
+            ->with('categories', $getCategories)
+            ->with('dataUser', $dataUser);
+    }
+
+    //Seller's Profile
+    public function getSellerProfile()
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_profile == 0) {
+            Alert::warning('Belum ada data', 'Silakan lengkapi terlebih dahulu Profile anda');
+            return redirect()->route('m_newProfile');
+        }
+        if ($dataUser->is_vendor == 0 && $dataUser->is_stockist == 0) {
+            return redirect()->route('mainDashboard');
+        }
+
+        $getProfile = SellerProfile::where('seller_id', $dataUser->id)->first();
+
+        return view('member.sales.seller_profile')
+            ->with('profile', $getProfile)
+            ->with('dataUser', $dataUser);
+    }
+
+    public function postSellerAddProfile(Request $request)
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_stockist == 0 && $dataUser->is_vendor == 0) {
+            return redirect()->route('mainDashboard');
+        }
+
+        $imageName = 'default.jpg';
+
+        if ($request->hasFile('image')) {
+            if ($request->file('image')->isValid()) {
+                $request->validate([
+                    'image' => 'required|mimes:jpeg,png|max:1014',
+                ]);
+
+                $name = $dataUser->user_code;
+                $extension = 'jpg';
+                $imageClass = new ImageManager;
+                $imageClass->make($request->image)->fit(200)->save(storage_path('app/public/sellers/' . $name . "." . $extension), 80, 'jpg');
+                $imageName = $name . "." . $extension;
+            } else {
+                Alert::error('Gagal', 'Gagal upload gambar');
+                return redirect()->back();
+            }
+        }
+
+        $validated = $request->validate([
+            'shop_name' => 'required|string|max:25',
+            'motto' => 'required|string|max:65',
+            'tg_user' => 'nullable|string|max:60',
+            'no_hp' => 'required|numeric|digits_between:9,16'
+        ]);
+
+        SellerProfile::create([
+            'seller_id' => $dataUser->id,
+            'shop_name' => $validated['shop_name'],
+            'motto' => $validated['motto'],
+            'no_hp' => $validated['no_hp'],
+            'tg_user' => $validated['tg_user'],
+            'image' => $imageName
+        ]);
+
+        Alert::success('Berhasil!', 'Data Profile telah dibuat');
+        return redirect()->back();
+    }
+
+    public function postSellerEditProfile(Request $request)
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_stockist == 0 && $dataUser->is_vendor == 0) {
+            return redirect()->route('mainDashboard');
+        }
+
+        if ($request->hasFile('image')) {
+            if ($request->file('image')->isValid()) {
+                $request->validate([
+                    'image' => 'required|mimes:jpeg,png|max:1014',
+                ]);
+
+                $name = $dataUser->user_code;
+                $extension = 'jpg';
+                $imageClass = new ImageManager;
+                $imageClass->make($request->image)->fit(200)->save(storage_path('app/public/sellers/' . $name . "." . $extension), 80, 'jpg');
+                $imageName = $name . "." . $extension;
+                SellerProfile::where('seller_id', $dataUser->id)->update([
+                    'image' => $imageName
+                ]);
+            } else {
+                Alert::error('Gagal', 'Gagal upload gambar');
+                return redirect()->back();
+            }
+        }
+
+        $validated = $request->validate([
+            'shop_name' => 'required|string|max:25',
+            'motto' => 'required|string|max:65',
+            'tg_user' => 'nullable|string|max:60',
+            'no_hp' => 'required|numeric|digits_between:9,16'
+        ]);
+
+        SellerProfile::where('seller_id', $dataUser->id)->update([
+            'shop_name' => $validated['shop_name'],
+            'motto' => $validated['motto'],
+            'no_hp' => $validated['no_hp'],
+            'tg_user' => $validated['tg_user']
+        ]);
+
+        Alert::success('Berhasil!', 'Data Profile telah diubah');
+        return redirect()->back();
+    }
+
+    public function postCreateProduct(Request $request)
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_stockist == 0 && $dataUser->is_vendor == 0) {
+            return redirect()->route('m_SearchStockist');
+        }
+
+        $type = 1;
+        if ($dataUser->is_vendor == 1) {
+            $type = 2;
+        }
+
+        Product::create([
+            'type' => $type,
+            'seller_id' => $dataUser->id,
+            'name' => $request->name,
+            'size' => $request->size,
+            'price' => $request->price,
+            'desc' => $request->desc,
+            'category_id' => $request->category_id,
+            'image' => $request->image
+        ]);
+
+        Alert::success('Selesai', 'Produk berhasil dibuat.');
+        return redirect()->back();
+    }
+
+    public function postEditProduct(Request $request)
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_stockist == 0 && $dataUser->is_vendor == 0) {
+            return redirect()->route('m_SearchStockist');
+        }
+
+        $type = 1;
+        if ($dataUser->is_vendor == 1) {
+            $type = 2;
+        }
+
+        Product::where('id', $request->product_id)
+            ->where('type', $type)
+            ->where('seller_id', $request->seller_id)
+            ->update([
+                'name' => $request->name,
+                'size' => $request->size,
+                'price' => $request->price,
+                'desc' => $request->desc,
+                'qty' => $request->qty,
+                'is_active' => $request->is_active,
+                'category_id' => $request->category_id,
+                'image' => $request->image
+            ]);
+
+        Alert::success('Diubah', 'Produk berhasil diubah.');
+        return redirect()->back();
+    }
+
+    public function postDeleteProduct(Request $request)
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_stockist == 0 && $dataUser->is_vendor == 0) {
+            return redirect()->route('m_SearchStockist');
+        }
+
+        $product = Product::find($request->product_id);
+        if ($product->seller_id == $dataUser->id) {
+            $product->delete();
+        }
+
+        Alert::success('Terhapus', 'Produk berhasil dihapus.');
+        return redirect()->back();
+    }
+
+    public function postPaymentConfirmation(Request $request)
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_stockist == 0 && $dataUser->is_vendor == 0) {
+            return redirect()->route('m_SearchStockist');
+        }
+
+        $modelSales = new Sales;
+        $hash = $request->hash;
+        $sender = $request->userTron;
+
+        if ($request->sellerType == 1) {
+            $amount = $modelSales->getRoyaltiStockist($request->masterSalesID);
+            $timestamp = $modelSales->getStockistMasterSalesTimestamp($request->masterSalesID);
+        } elseif ($request->sellerType == 2) {
+            $amount = $modelSales->getRoyaltiVendor($request->masterSalesID);
+            $timestamp = $modelSales->getVendorMasterSalesTimestamp($request->masterSalesID);
+        }
+
+        $tron = $this->getTron();
+        $i = 1;
+        do {
+            try {
+                sleep(1);
+                $response = $tron->getTransaction($hash);
+            } catch (TronException $exception) {
+                $i++;;
+                continue;
+            }
+            break;
+        } while ($i < 13);
+
+
+        if (empty($response)) {
+            Alert::error('Gagal', 'Hash Transaksi Bermasalah! Laporkan pada Admin');
+            return redirect()->back();
+        };
+
+        $hashTime = $response['raw_data']['timestamp'];
+        $hashSender = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['owner_address']);
+        $hashReceiver = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['to_address']);
+        $hashAsset = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['asset_name']);
+        $hashAmount = $response['raw_data']['contract'][0]['parameter']['value']['amount'];
+
+        if ($hashTime > $timestamp) {
+            if ($hashAmount == $amount * 100) {
+                if ($hashAsset == '1002652') {
+                    if ($hashReceiver == 'TZHYx9bVa4vQz8VpVvZtjwMb4AHqkUChiQ') {
+                        if ($hashSender == $sender) {
+
+                            $dataUpdate = array(
+                                'status' => 2,
+                                'tron_transfer' => $hash
+                            );
+                            if ($request->sellerType == 1) {
+                                $modelSales->getUpdateMasterSales('id', $request->masterSalesID, $dataUpdate);
+                                Alert::success('Berhasil', 'Belanja member telah dikonfirmasi');
+                                return redirect()->route('m_MemberStockistReport');
+                            } elseif ($request->sellerType == 2) {
+                                $modelSales->getUpdateVMasterSales('id', $request->masterSalesID, $dataUpdate);
+                                Alert::success('Berhasil', 'Belanja member telah dikonfirmasi');
+                                return redirect()->route('m_MemberVendorReport');
+                            }
+                        } else {
+                            Alert::error('Gagal', 'Bukan pengirim yang sebenarnya');
+                            return redirect()->back();
+                        }
+                    } else {
+                        Alert::error('Gagal', 'Alamat Tujuan Transfer Salah!');
+                        return redirect()->back();
+                    }
+                } else {
+                    Alert::error('Gagal', 'Bukan Token eIDR yang benar!');
+                    return redirect()->back();
+                }
+            } else {
+                Alert::error('Gagal', 'Nominal Transfer Salah!');
+                return redirect()->back();
+            }
+        } else {
+            Alert::error('Gagal', 'Hash sudah terpakai!');
+            return redirect()->back();
+        }
+    }
+
+    public function postRejectShopping(Request $request)
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_stockist == 0 && $dataUser->is_vendor == 0) {
+            return redirect()->route('m_SearchStockist');
+        }
+
+        $modelSales = new Sales;
+        $dataUpdate = array(
+            'status' => 10,
+            'reason' => 'Dibatalkan oleh penjual'
+        );
+        $sellerType = 1;
+        if ($dataUser->is_vendor == 1) {
+            $sellerType = 2;
+        }
+        if ($sellerType == 1) {
+            $modelSales->getUpdateMasterSales('id', $request->masterSalesID, $dataUpdate);
+            $items = $modelSales->getMemberPembayaranSalesNew($request->masterSalesID);
+        } else {
+            $modelSales->getUpdateVMasterSales('id', $request->masterSalesID, $dataUpdate);
+            $items = $modelSales->getMemberPembayaranVSalesNew($request->masterSalesID);
+        }
+
+        foreach ($items as $item) {
+            $product = Product::find($item->purchase_id);
+            $remaining = $product->qty + $item->amount;
+            $product->update(['qty' => $remaining]);
+        }
+
+        Alert::success('Dibatalkan', 'Transaksi telah dibatalkan!');
+        return redirect()->back();
+    }
+
+    //File and Image Upload
+    public function getImageUpload()
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_stockist == 0 && $dataUser->is_vendor == 0) {
+            return redirect()->route('mainDashboard');
+        }
+
+        return view('member.image_upload');
+    }
+
+    public function postImageUpload(Request $request)
+    {
+
+        if ($request->hasFile('image')) {
+            $dataUser = Auth::user();
+            $onlyUser  = array(10);
+            if (!in_array($dataUser->user_type, $onlyUser)) {
+                return redirect()->route('mainDashboard');
+            }
+            if ($dataUser->package_id == null) {
+                return redirect()->route('m_newPackage');
+            }
+            if ($dataUser->is_stockist == 0 && $dataUser->is_vendor == 0) {
+                return redirect()->route('mainDashboard');
+            }
+            //  Let's do everything here
+            if ($request->file('image')->isValid()) {
+                //
+                $validated = $request->validate([
+                    'name' => 'required|string|alpha_dash|max:60',
+                    'image' => 'required|mimes:jpeg|max:1024',
+                ], [
+                    'name.max' => 'Maksimum 60 karakter!',
+                    'name.alpha_dash' => 'Hanya karakter huruf dan angka, tanpa Spasi, gunakan garis hubung',
+                    'image.mimes' => 'Format file yang diterima hanya .jpeg atau .jpg saja',
+                    'image.max' => 'Batas maksimum ukuran file adalah 1MB'
+                ]);
+
+                $name = strtolower($validated['name']);
+                $extension = 'jpg';
+
+                $nameCheck = ProductImages::where('name', $name . '.jpg')->first();
+                if ($nameCheck != null) {
+                    Alert::error('Oops!', 'Produk dengan nama yang sama sudah ada');
+                    return redirect()->back();
+                }
+                // $request->image->storeAs('/public', $validated['name'] . "." . $extension);
+                $imageClass = new ImageManager;
+                $image = $imageClass->make($request->image)->fit(200)->save(storage_path('app/public/products/' . $name . "." . $extension), 75);
+                ProductImages::create([
+                    'name' => $name . "." . $extension
+                ]);
+                Alert::image('Berhasil!', 'nama: ' . $name . "." . $extension, asset('/storage/products/') . "/" . $name . "." . $extension, '150', '150')->persistent(true);
+
+                return redirect()->route('m_SellerInventory');
+            }
+            Alert::error('Gagal!', 'Gambar gagal di-upload');
+            return redirect()->back();
+        }
+        Alert::error('Oops!', 'Gambar belum dipilih');
+        return redirect()->back();
+    }
+
+    //Member Shopping
+
+    public function getShopping($seller_id)
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_profile == 0) {
+            Alert::error('Oops!', 'Silakan isi data profile anda terlebih dulu');
+            return redirect()->route('m_newProfile');
+        }
+        $getSellerData = User::select('alamat', 'is_stockist', 'is_vendor')->where('id', $seller_id)->first();
+        $getSellerProfile = SellerProfile::where('seller_id', $seller_id)->first();
+        $getSellerProducts = Product::where('seller_id', $seller_id)->where('is_active', 1)->get();
+        $getCategories = Category::select('id', 'name')->where('id', '<', 11)->get();
+
+        if ($getSellerData->is_vendor == 1) {
+            $getCategories = Category::select('id', 'name')->where('id', '>', 10)->get();
+        }
+
+        return view('member.sales.shopping')
+            ->with('sellerProfile', $getSellerProfile)
+            ->with('sellerAddress', $getSellerData->alamat)
+            ->with('seller_id', $seller_id)
+            ->with('categories', $getCategories)
+            ->with('products', $getSellerProducts)
+            ->with('user', $dataUser);
+    }
+
+    public function postAddToCart(Request $request)
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_profile == 0) {
+            Alert::error('Oops!', 'Silakan isi data profile anda terlebih dulu');
+            return redirect()->route('m_newProfile');
+        }
+
+        $Product = Product::find($request->product_id);
+
+        \Cart::session($dataUser->id)->add(array(
+            'id' => $Product->id,
+            'name' => $Product->name,
+            'price' => $Product->price,
+            'quantity' => $request->quantity,
+            'attributes' => array(),
+            'associatedModel' => $Product
+        ));
+
+        Alert::success('OK!', 'Produk ditambahkan ke keranjang');
+        return redirect()->back();
+    }
+
 
     public function postAddConfirmPembelian(Request $request)
     {
@@ -3365,8 +3993,8 @@ class MemberController extends Controller
         if ($getDataSales == null) {
             return redirect()->route('mainDashboard');
         }
-        $getDataItem = $modelSales->getMemberPembayaranVSales($id);
-        return view('member.sales.m_vendor_transfer')
+        $getDataItem = $modelSales->getMemberPembayaranVSalesNew($id);
+        return view('member.sales.vendor_confirm_payment')
             ->with('headerTitle', 'Vendor Transfer')
             ->with('getDataSales', $getDataSales)
             ->with('getDataItem', $getDataItem)
