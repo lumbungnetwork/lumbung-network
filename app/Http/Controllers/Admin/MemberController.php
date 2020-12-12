@@ -2512,7 +2512,7 @@ class MemberController extends Controller
         if ($request->hasFile('image')) {
             if ($request->file('image')->isValid()) {
                 $request->validate([
-                    'image' => 'required|mimes:jpeg,png|max:1014',
+                    'image' => 'required|mimes:jpeg,png|max:3000',
                 ]);
 
                 $name = $dataUser->user_code;
@@ -2563,7 +2563,7 @@ class MemberController extends Controller
         if ($request->hasFile('image')) {
             if ($request->file('image')->isValid()) {
                 $request->validate([
-                    'image' => 'required|mimes:jpeg,png|max:1014',
+                    'image' => 'required|mimes:jpeg,png|max:3000',
                 ]);
 
                 $name = $dataUser->user_code;
@@ -2863,7 +2863,7 @@ class MemberController extends Controller
                 //
                 $validated = $request->validate([
                     'name' => 'required|string|alpha_dash|max:60',
-                    'image' => 'required|mimes:jpeg|max:1024',
+                    'image' => 'required|mimes:jpeg|max:3000',
                 ], [
                     'name.max' => 'Maksimum 60 karakter!',
                     'name.alpha_dash' => 'Hanya karakter huruf dan angka, tanpa Spasi, gunakan garis hubung',
