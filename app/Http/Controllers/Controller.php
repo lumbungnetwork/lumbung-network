@@ -29,4 +29,19 @@ class Controller extends BaseController
 
         return $tron;
     }
+
+    public function getTronLocalWallet($pk)
+    {
+        $fullNode = new HttpProvider('https://api.trongrid.io');
+        $solidityNode = new HttpProvider('https://api.trongrid.io');
+        $eventServer = new HttpProvider('https://api.trongrid.io');
+
+        try {
+            $tron = new Tron($fullNode, $solidityNode, $eventServer, $signServer = null, $explorer = null, $pk);
+        } catch (TronException $e) {
+            exit($e->getMessage());
+        }
+
+        return $tron;
+    }
 }

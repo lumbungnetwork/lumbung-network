@@ -46,4 +46,9 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Product', 'seller_id');
     }
+
+    public function localWallet()
+    {
+        return $this->hasOne('App\LocalWallet');
+    }
 }

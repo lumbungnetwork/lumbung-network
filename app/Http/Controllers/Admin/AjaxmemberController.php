@@ -24,6 +24,12 @@ use App\User;
 use App\Services\AbstractService;
 use App\ValueObjects\Cart\ItemObject;
 use App\Jobs\ForwardShoppingPaymentJob;
+use Illuminate\Support\Facades\Crypt;
+use App\LocalWallet;
+use Illuminate\Support\Facades\Config;
+use IEXBase\TronAPI\Tron;
+use IEXBase\TronAPI\Provider\HttpProvider;
+use IEXBase\TronAPI\Exception\TronException;
 
 class AjaxmemberController extends Controller
 {
@@ -191,6 +197,90 @@ class AjaxmemberController extends Controller
             ->with('sellerType', $sellerType)
             ->with('masterSalesID', $insertMasterSales->lastID);
     }
+
+    public function postCreateLocalWallet(Request $request)
+    {
+        // //prepare Tron
+        // $fullNode = new HttpProvider('https://api.trongrid.io');
+        // $solidityNode = new HttpProvider('https://api.trongrid.io');
+        // $eventServer = new HttpProvider('https://api.trongrid.io');
+        // $fuse = Config::get('services.telegram.test');
+
+        // try {
+        //     $tron = new Tron($fullNode, $solidityNode, $eventServer, $signServer = null, $explorer = null, $fuse);
+        // } catch (TronException $e) {
+        //     exit($e->getMessage());
+        // }
+        $tron = $this->getTron();
+
+        $local_wallet = $tron->generateAddress();
+        // $insertLocalWallet = new LocalWallet;
+        // $insertLocalWallet->user_id = $request->user_id;
+        LocalWallet::create([
+            'user_id' => $request->user_id,
+            'address' => $local_wallet->getAddress(true),
+            'private_key' => Crypt::encryptString($local_wallet->getPrivateKey())
+        ]);
+
+        return response()->json(['success' => true]);
+    }
+
+    public function postWithdrawLocalWallet(Request $request)
+    {
+        $mainWallet = User::find($request->user_id)->tron;
+        $localWallet = LocalWallet::where('user_id', $request->user_id)->first();
+        $tron = $this->getTronLocalWallet(Crypt::decryptString($localWallet->private_key));
+        $trxBalance = $tron->getBalance($localWallet->address, true);
+        $eIDRbalance = $tron->getTokenBalance(1002652, $localWallet->address, false) / 100;
+
+        $to = $mainWallet;
+
+        if ($request->asset == 1) {
+            if ($request->amount > $eIDRbalance) {
+                return response()->json(['success' => false, 'message' => 'Saldo aset tidak cukup!']);
+            } else {
+
+                $amount = $request->amount * 100;
+                $tokenID = '1002652';
+                $from = $localWallet->address;
+                try {
+                    $transaction = $tron->getTransactionBuilder()->sendToken($to, $amount, $tokenID, $from);
+                    $signedTransaction = $tron->signTransaction($transaction);
+                    $response = $tron->sendRawTransaction($signedTransaction);
+                } catch (TronException $e) {
+                    die($e->getMessage());
+                }
+
+                if ($response['result'] == true) {
+                    return response()->json(['success' => true]);
+                } else {
+                    return response()->json(['success' => false, 'message' => 'Ada yang salah!']);
+                }
+            }
+        } elseif ($request->asset == 2) {
+            $amount = (float) $request->amount;
+            if ($amount > $trxBalance) {
+                return response()->json(['success' => false, 'message' => 'Saldo aset tidak cukup!']);
+            } else {
+                $from = $localWallet->address;
+                try {
+                    $transaction = $tron->getTransactionBuilder()->sendTrx($to, $amount, $from);
+                    $signedTransaction = $tron->signTransaction($transaction);
+                    $response = $tron->sendRawTransaction($signedTransaction);
+                } catch (TronException $e) {
+                    die($e->getMessage());
+                }
+
+                if ($response['result'] == true) {
+                    return response()->json(['success' => true]);
+                } else {
+                    return response()->json(['success' => false, 'message' => 'Ada yang salah!']);
+                }
+            }
+        }
+    }
+
+
 
     public function postCancelShoppingPaymentBuyer(Request $request)
     {

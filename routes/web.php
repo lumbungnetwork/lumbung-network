@@ -405,7 +405,8 @@ Route::prefix('/')->group(function () {
     Route::get('/m/ajax/cart-checkout', 'Admin\AjaxmemberController@getCartCheckout')->middleware('auth');
     Route::post('/m/ajax/shopping-payment', 'Admin\AjaxmemberController@postShoppingPayment')->middleware('auth');
     Route::post('/m/ajax/cancel-shopping-payment-buyer', 'Admin\AjaxmemberController@postCancelShoppingPaymentBuyer')->middleware('auth');
-    Route::post('/m/ajax/cancel-shopping-payment-seller', 'Admin\AjaxmemberController@postCancelShoppingPaymentSeller')->middleware('auth');
+    Route::post('/m/ajax/create-local-wallet', 'Admin\AjaxmemberController@postCreateLocalWallet')->middleware('auth');
+    Route::post('/m/ajax/withdraw-local-wallet', 'Admin\AjaxmemberController@postWithdrawLocalWallet')->middleware('auth');
 
     Route::get('/m/req/vendor', 'Admin\MemberController@getRequestMemberVendor')->name('m_reqMemberVendor')->middleware('auth');
     Route::post('/m/req/vendor', 'Admin\MemberController@postRequestMemberVendor')->middleware('auth');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\LocalWallet;
 use Illuminate\Support\Facades\Auth;
 use App\Model\Pin;
 use App\Model\Member;
@@ -243,6 +244,11 @@ class DashboardController extends Controller
                 ->with('message', 'Keanggotaan anda telah EXPIRED, silakan beli pin untuk Resubscribe')
                 ->with('messageclass', 'danger');
         }
+        $localWallet = LocalWallet::where('user_id', $dataUser->id)->first();
+        $tron = $this->getTron();
+        $tron->setAddress($localWallet->address);
+        $trxBalance = $tron->getBalance(null, true);
+        $eIDRbalance = $tron->getTokenBalance(1002652, $localWallet->address, false) / 100;
         $modelBonus = new Bonus;
         $modelWD = new Transferwd;
         $totalBonus = $modelBonus->getTotalBonus($dataUser);
@@ -251,6 +257,9 @@ class DashboardController extends Controller
         $totalBonusRoyalti = $modelBonus->getTotalBonusRoyalti($dataUser);
         $totalWDRoyalti = $modelWD->getTotalDiTransferRoyalti($dataUser);
         $dataAll = (object) array(
+            'local_wallet' => $localWallet,
+            'trx_balance' => $trxBalance,
+            'eidr_balance' => $eIDRbalance,
             'total_bonus' => floor($totalBonus->total_bonus),
             'total_wd' => $totalWD->total_wd,
             'total_tunda' => $totalWD->total_tunda,

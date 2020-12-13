@@ -23,53 +23,95 @@
         <div class="mt-min-10">
             <div class="container">
                 <div class="rounded-lg bg-white p-3 mb-3">
+                    <h6 style="display: inline; margin-right: 10px;">Dompet Lokal</h6>
+                    <a tabindex="0" class="btn btn-sm btn-outline-warning" role="button" data-toggle="popover"
+                        data-trigger="focus" title="Dompet Lokal" data-content="Dompet Lokal adalah alamat TRON yang dibuat khusus untuk memudahkan transaksi
+                                internal di akun anda. Saldo hanya bisa
+                                ditarik ke akun TRON utama anda">Apa
+                        ini?</a>
                     <div class="row">
-                        <div class="col-6 mb-3">
-                            <div class="rounded-lg shadow p-2">
-                                <p>
-                                    Saldo Bonus:
-                                </p>
-                                <h6 class="text-warning">Rp {{number_format($saldo, 0, ',', '.')}}</h6>
+                        @if($dataUser->tron == null)
+                        <p class="text-center">Anda harus memiliki alamat TRON utama sebelum mulai menggunakan Dompet
+                            Lokal</p>
+                        @endif
+
+                        @if($dataAll->local_wallet == null)
+
+                        <div class="col-12">
+                            <button class="btn btn-success btn-lg btn-block mt-4" onclick="createLocalWallet()"> <span
+                                    style="font-size: 15px;">Buat
+                                    Dompet Lokal</span> </button>
+                        </div>
+                        @else
+                        <div class="col-12">
+                            <div class="rounded-lg shadow p-2 mt-2">
+                                <label class="text-muted">
+                                    Alamat Dompet Lokal:
+                                </label>
+                                <?php $localAddr = $dataAll->local_wallet->address;
+                                    $shortAddr = substr($localAddr, 0, 7) . '...' . substr($localAddr, -7);
+                                ?>
+                                <h6>
+                                    {{$shortAddr}}
+                                </h6>
                             </div>
                         </div>
-                        <div class="col-3 mb-3">
-                            <a href="{{ URL::to('/') }}/m/req/wd" class="text-decoration-none">
-                                <div class="rounded icon-ppob text-center">
-                                    <div class="box-icon bg-green text-center">
-                                        <i class="mdi mdi-cash-refund icon-menu"></i>
-                                    </div>
-                                    <dd>Withdraw</dd>
+                        <div class="col-6 pl-3 pr-0">
+                            <div class="rounded-lg shadow p-2 mt-3">
+                                <label class="text-muted mt-2">
+                                    Saldo:
+                                </label>
+                                <p class="mb-0">TRX: <span class="text-warning">{{$dataAll->trx_balance}}</span></p>
+                                <p>eIDR: <span class="text-warning">{{number_format($dataAll->eidr_balance)}}</span></p>
+
+                            </div>
+                        </div>
+                        <div class="col-6 mb-3 mt-3">
+                            <div class="row">
+                                <div class="col-6 mb-0">
+                                    <a onclick="showQR()" class="text-decoration-none">
+                                        <div class="rounded icon-ppob text-center">
+                                            <div class="box-icon bg-green text-center">
+                                                <i class="mdi mdi-qrcode-scan icon-menu"></i>
+                                            </div>
+                                            <dd>QRcode</dd>
+                                        </div>
+                                    </a>
                                 </div>
-                            </a>
-                        </div>
-                        <div class="col-3 mb-3">
-                            <a href="{{ URL::to('/') }}/m/history/wd" class="text-decoration-none">
-                                <div class="rounded icon-ppob text-center">
-                                    <div class="box-icon bg-green text-center">
-                                        <i class="mdi mdi-history icon-menu"></i>
-                                    </div>
-                                    <dd>Riwayat WD</dd>
+                                <div class="col-6 mb-0">
+                                    <a onclick="copy('{{$localAddr}}')" class="text-decoration-none">
+                                        <div class="rounded icon-ppob text-center">
+                                            <div class="box-icon bg-green text-center">
+                                                <i class="mdi mdi-content-copy icon-menu"></i>
+                                            </div>
+                                            <dd>Copy</dd>
+                                        </div>
+                                    </a>
                                 </div>
-                            </a>
-                        </div>
-                        <div class="col-6 mb-3">
-                            <div class="rounded-lg shadow p-2">
-                                <p>
-                                    Proses Transfer:
-                                </p>
-                                <h6 class="text-warning">Rp
-                                    {{number_format($dataAll->total_tunda + $dataAll->fee_tunda, 0, ',', '.')}}</h6>
+                                <div class="col-6 mb-0">
+                                    <a onclick="withdrawLocalWallet()" class="text-decoration-none">
+                                        <div class="rounded icon-ppob text-center">
+                                            <div class="box-icon bg-green text-center">
+                                                <i class="mdi mdi-cash-refund icon-menu"></i>
+                                            </div>
+                                            <dd>Withdraw</dd>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-6 mb-0">
+                                    <a href="#" class="text-decoration-none">
+                                        <div class="rounded icon-ppob text-center">
+                                            <div class="box-icon bg-green text-center">
+                                                <i class="mdi mdi-history icon-menu"></i>
+                                            </div>
+                                            <dd>Riwayat</dd>
+                                        </div>
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-6 mb-3">
-                            <div class="rounded-lg shadow p-2">
-                                <p>
-                                    Total Ditransfer:
-                                </p>
-                                <h6 class="text-warning">Rp
-                                    {{number_format($dataAll->total_wd + $dataAll->fee_tuntas, 0, ',', '.')}}</h6>
-                            </div>
-                        </div>
+                        @endif
+
                     </div>
                 </div>
 
@@ -169,28 +211,76 @@
                                 <h6 class="text-warning">Rp {{number_format($saldo, 0, ',', '.')}}</h6>
                             </div>
                         </div>
-                        <div class="col-3 mb-3">
-                            <a href="{{ URL::to('/') }}/m/sponsor/bonus" class="text-decoration-none">
-                                <div class="rounded icon-ppob text-center">
-                                    <div class="box-icon bg-green text-center">
-                                        <i class="mdi mdi-console-network-outline icon-menu"></i>
-                                    </div>
-                                    <dd>Sponsor</dd>
+                        <div class="col-6 mb-3">
+                            <div class="row">
+                                <div class="col-6 mb-0">
+                                    <a href="{{ URL::to('/') }}/m/sponsor/bonus" class="text-decoration-none">
+                                        <div class="rounded icon-ppob text-center">
+                                            <div class="box-icon bg-green text-center">
+                                                <i class="mdi mdi-console-network-outline icon-menu"></i>
+                                            </div>
+                                            <dd>Sponsor</dd>
+                                        </div>
+                                    </a>
                                 </div>
-                            </a>
+                                <div class="col-6 mb-0">
+                                    <a href="{{ URL::to('/') }}/m/binary/bonus" class="text-decoration-none">
+                                        <div class="rounded icon-ppob text-center">
+                                            <div class="box-icon bg-green text-center">
+                                                <i class="mdi mdi-axis-arrow icon-menu"></i>
+                                            </div>
+                                            <dd>Pairing</dd>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-6 mb-0">
+                                    <a href="{{ URL::to('/') }}/m/req/wd" class="text-decoration-none">
+                                        <div class="rounded icon-ppob text-center">
+                                            <div class="box-icon bg-green text-center">
+                                                <i class="mdi mdi-cash-refund icon-menu"></i>
+                                            </div>
+                                            <dd>Withdraw</dd>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-6 mb-0">
+                                    <a href="{{ URL::to('/') }}/m/history/wd" class="text-decoration-none">
+                                        <div class="rounded icon-ppob text-center">
+                                            <div class="box-icon bg-green text-center">
+                                                <i class="mdi mdi-history icon-menu"></i>
+                                            </div>
+                                            <dd>Riwayat</dd>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-3 mb-3">
-                            <a href="{{ URL::to('/') }}/m/binary/bonus" class="text-decoration-none">
-                                <div class="rounded icon-ppob text-center">
-                                    <div class="box-icon bg-green text-center">
-                                        <i class="mdi mdi-axis-arrow icon-menu"></i>
-                                    </div>
-                                    <dd>Pairing</dd>
-                                </div>
-                            </a>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <div class="rounded-lg shadow p-2">
+                                <p>
+                                    Proses Konversi:
+                                </p>
+                                <h6 class="text-warning">Rp
+                                    {{number_format($dataAll->total_tunda_eidr + $dataAll->fee_tunda_eidr, 0, ',', '.')}}
+                                </h6>
+                            </div>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <div class="rounded-lg shadow p-2">
+                                <p>
+                                    Total Dikonversi:
+                                </p>
+                                <h6 class="text-warning">Rp
+                                    {{number_format($dataAll->total_wd_eidr + $dataAll->fee_tuntas_eidr, 0, ',', '.')}}
+                                </h6>
+                            </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row mt-5">
                         <div class="col-6 mb-3">
                             <div class="rounded-lg shadow p-2">
                                 <p>
@@ -258,6 +348,7 @@
 </script>
 <script src="{{ asset('asset_new/js/sidebar.js') }}"></script>
 <script>
+    let _token = '{{ csrf_token() }}';
     $(function () {
             $('[data-toggle="popover"]').popover()
         })
@@ -295,12 +386,156 @@
             $('#submit').remove();
         }
 
+        function createLocalWallet() {
+            Swal.fire('Sedang Memproses');
+            Swal.showLoading();
+            $.ajax({
+                type: "POST",
+                url: "{{ URL::to('/') }}/m/ajax/create-local-wallet",
+                data: {
+                user_id:{{$dataUser->id}},
+                _token:_token
+            },
+                success: function(response){
+                    if(response.success) {
+                        Swal.fire(
+                        'Berhasil',
+                        'Dompet Lokal anda telah berhasil dibuat.',
+                        'success'
+                        )
+                        setTimeout(function() {
+                        window.location.reload(true);
+                        }, 3000)
+                    } else {
+                        Swal.fire(
+                        'Oops',
+                        response.message,
+                        'error'
+                        )
+                        setTimeout(function() {
+                        window.location.reload(true);
+                        }, 3000)
+                    }
+
+                }
+            })
+        }
+
+        function showQR() {
+            Swal.fire({
+                html: `<div>{!! QrCode::size(200)->generate($localAddr); !!}</div>
+
+                        <p class="mt-3">{{$localAddr}}</p>
+                `,
+                confirmButtonText: 'Tutup'
+            })
+        }
+
+        async function withdrawLocalWallet() {
+            const { value: formValues } = await Swal.fire({
+                title: 'Multiple inputs',
+                html:`
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="inputGroupSelect01">Pilih aset</label>
+                    </div>
+                    <select class="custom-select" id="asset-name">
+                        <option value="1" selected>eIDR</option>
+                        <option value="2">TRX</option>
+                    </select>
+                </div>
+                <input id="amount" inputmode="numeric" pattern="[0-9]*" class="swal2-input" placeholder="Jumlah penarikan">
+                `,
+                focusConfirm: false,
+                showCancelButton: true,
+                cancelButtonText: 'Batal',
+                confirmButtonText: 'Withdraw',
+                preConfirm: () => {
+                    return [
+                        document.getElementById('asset-name').value,
+                        document.getElementById('amount').value
+                    ]
+                }
+            })
+
+            if (formValues) {
+                Swal.fire('Sedang Memproses');
+                Swal.showLoading();
+                $.ajax({
+                    type: "POST",
+                    url: "{{ URL::to('/') }}/m/ajax/withdraw-local-wallet",
+                    data: {
+                    user_id:{{$dataUser->id}},
+                    asset:formValues[0],
+                    amount:formValues[1],
+                    _token:_token
+                },
+                    success: function(response){
+                        let assetName = 'eIDR';
+                        if(formValues[0] == 2) {
+                            assetName = 'TRX';
+                        }
+                        if(response.success) {
+                            Swal.fire(
+                            'Berhasil',
+                            formValues[1] + ' ' + assetName + ' ' + 'telah berhasil ditarik ke dompet TRON utama',
+                            'success'
+                            )
+                            setTimeout(function() {
+                            window.location.reload(true);
+                            }, 3000)
+                        } else {
+                            Swal.fire(
+                            'Oops',
+                            response.message,
+                            'error'
+                            )
+                            setTimeout(function() {
+                            window.location.reload(true);
+                            }, 3000)
+                        }
+
+                    }
+                })
+            }
+        }
+
         $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {
            $(this).val($(this).val().replace(/[^\d].+/, ""));
             if ((event.which < 48 || event.which > 57)) {
                 event.preventDefault();
             }
         });
+
+        function copy(string) {
+            var textArea = document.createElement("textarea");
+            textArea.value = string;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand("Copy");
+            textArea.remove();
+            successToast("Berhasil di-Copy");
+        }
+
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            width: 200,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
+
+        function successToast (message) {
+            Toast.fire({
+                icon: 'success',
+                title: message
+            })
+        }
 
 </script>
 @stop
