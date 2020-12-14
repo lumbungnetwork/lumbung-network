@@ -84,7 +84,9 @@
                         {{-- PDAM & PLN Pasca --}}
                         @if ($getDataMaster->type == 8)
                         <br>
+                        @if($return_buy['data']['desc']['alamat'] != null)
                         Alamat: {{$return_buy['data']['desc']['alamat']}}
+                        @endif
                         @endif
                         @if ($getDataMaster->type == 8 || $getDataMaster->type == 5)
                         <br>
