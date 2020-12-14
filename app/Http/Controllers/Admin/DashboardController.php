@@ -244,11 +244,17 @@ class DashboardController extends Controller
                 ->with('message', 'Keanggotaan anda telah EXPIRED, silakan beli pin untuk Resubscribe')
                 ->with('messageclass', 'danger');
         }
+
         $localWallet = LocalWallet::where('user_id', $dataUser->id)->first();
-        $tron = $this->getTron();
-        $tron->setAddress($localWallet->address);
-        $trxBalance = $tron->getBalance(null, true);
-        $eIDRbalance = $tron->getTokenBalance(1002652, $localWallet->address, false) / 100;
+        $trxBalance = null;
+        $eIDRbalance = null;
+        if ($localWallet != null) {
+            $tron = $this->getTron();
+            $tron->setAddress($localWallet->address);
+            $trxBalance = $tron->getBalance(null, true);
+            $eIDRbalance = $tron->getTokenBalance(1002652, $localWallet->address, false) / 100;
+        }
+
         $modelBonus = new Bonus;
         $modelWD = new Transferwd;
         $totalBonus = $modelBonus->getTotalBonus($dataUser);

@@ -386,6 +386,7 @@
             $('#submit').remove();
         }
 
+@if($dataAll->local_wallet == null)
         function createLocalWallet() {
             Swal.fire('Sedang Memproses');
             Swal.showLoading();
@@ -420,6 +421,8 @@
                 }
             })
         }
+
+@else
 
         function showQR() {
             Swal.fire({
@@ -499,6 +502,8 @@
                 })
             }
         }
+
+    @endif
 
         $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {
            $(this).val($(this).val().replace(/[^\d].+/, ""));
