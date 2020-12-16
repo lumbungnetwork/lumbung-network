@@ -47,13 +47,27 @@
                             <div class="rounded-lg shadow p-2 mt-2">
                                 <label class="text-muted">
                                     Alamat Dompet Lokal:
-                                </label>
+                                </label><br>
                                 <?php $localAddr = $dataAll->local_wallet->address;
-                                    $shortAddr = substr($localAddr, 0, 7) . '...' . substr($localAddr, -7);
+                                    $shortAddr = substr($localAddr, 0, 5) . '...' . substr($localAddr, -5);
                                 ?>
-                                <h6>
+                                <h6 style="display: inline; margin-right: 10px;">
                                     {{$shortAddr}}
+                                    <div style="font-size: 13px;" class="pretty p-switch p-fill float-right">
+                                        @if($dataAll->eIDRbalance != null)
+                                        <input type="checkbox" id="is_active_switch" checked>
+                                        <div class="state p-success p-on">
+                                            <label id="is_active_status">Aktif</label>
+                                        </div>
+                                        @else
+                                        <input type="checkbox" id="is_active_switch">
+                                        <div class="state p-success p-off">
+                                            <label id="is_active_status">Non-Aktif</label>
+                                        </div>
+                                        @endif
+                                    </div>
                                 </h6>
+
                             </div>
                         </div>
                         <div class="col-6 pl-3 pr-0">
@@ -62,7 +76,7 @@
                                     Saldo:
                                 </label>
                                 <p class="mb-0">TRX: <span class="text-warning">{{$dataAll->trx_balance}}</span></p>
-                                <p>eIDR: <span class="text-warning">{{number_format($dataAll->eidr_balance)}}</span></p>
+                                <p>eIDR: <span class="text-warning">{{number_format($dataAll->eIDRbalance)}}</span></p>
 
                             </div>
                         </div>
@@ -340,6 +354,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/fonts/slick.woff">
 <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css">
 @stop
 
 @section('javascript')
@@ -349,6 +364,46 @@
 <script src="{{ asset('asset_new/js/sidebar.js') }}"></script>
 <script>
     let _token = '{{ csrf_token() }}';
+
+        $('#is_active_switch').click(function(){
+            if($(this).is(':checked')){
+                $('#is_active_status').text('Aktif');
+                toggleLocalWallet(1);
+            }else{
+                $('#is_active_status').text('Non-Aktif');
+                toggleLocalWallet(0);
+            }
+        });
+
+        function toggleLocalWallet(value) {
+            $.ajax({
+                type: "POST",
+                url: "{{ URL::to('/') }}/m/ajax/toggle-local-wallet",
+                data: {
+                    is_active:value,
+                    _token:_token
+                },
+                success: function(response){
+                    if(response.success) {
+                        Swal.fire(
+                        'Berhasil',
+                        response.message,
+                        'success'
+                        )
+                        setTimeout(function() {
+                        window.location.reload(true);
+                        }, 2000)
+                    } else {
+                        Swal.fire(
+                        'Gagal',
+                        response.message,
+                        'error'
+                        )
+                    }
+
+                }
+            })
+        }
     $(function () {
             $('[data-toggle="popover"]').popover()
         })

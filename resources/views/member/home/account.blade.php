@@ -177,7 +177,7 @@
                             </a>
                         </div>
                         <div class="col-3 mb-3">
-                            <a href="{{ URL::to('/') }}/m/stockist-report" class="text-decoration-none">
+                            <a href="{{ URL::to('/') }}/m/vendor-report" class="text-decoration-none">
                                 <div class="rounded icon-ppob text-center">
                                     <div class="box-icon bg-green text-center">
                                         <i class="mdi mdi-chart-bar icon-menu"></i>

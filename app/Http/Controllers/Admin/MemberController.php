@@ -28,6 +28,7 @@ use App\Category;
 use App\User;
 use App\ProductImages;
 use App\SellerProfile;
+use App\LocalWallet;
 use App\Services\AbstractService;
 use App\ValueObjects\Cart\ItemObject;
 use Intervention\Image\ImageManager;
@@ -1758,11 +1759,23 @@ class MemberController extends Controller
         if ($getDataSales == null) {
             return redirect()->route('mainDashboard');
         }
+        $localWallet = LocalWallet::where('user_id', $dataUser->id)->first();
+        $localAddress = null;
+        $eIDRbalance = null;
+        if ($localWallet != null) {
+            if ($localWallet->is_active == 1) {
+                $tron = $this->getTronLocalWallet($localWallet->private_key);
+                $localAddress = $localWallet->address;
+                $eIDRbalance = $tron->getTokenBalance(1002652, $localWallet->address, false) / 100;
+            }
+        }
         $getDataItem = $modelSales->getMemberPembayaranSalesNew($id);
         return view('member.sales.stockist_confirm_payment')
             ->with('headerTitle', 'Konfirmasi Pembayaran Tunai')
             ->with('getDataSales', $getDataSales)
             ->with('getDataItem', $getDataItem)
+            ->with('localAddress', $localAddress)
+            ->with('eIDRbalance', $eIDRbalance)
             ->with('dataUser', $dataUser);
     }
 
@@ -3993,11 +4006,23 @@ class MemberController extends Controller
         if ($getDataSales == null) {
             return redirect()->route('mainDashboard');
         }
+        $localWallet = LocalWallet::where('user_id', $dataUser->id)->first();
+        $localAddress = null;
+        $eIDRbalance = null;
+        if ($localWallet != null) {
+            if ($localWallet->is_active == 1) {
+                $tron = $this->getTronLocalWallet($localWallet->private_key);
+                $localAddress = $localWallet->address;
+                $eIDRbalance = $tron->getTokenBalance(1002652, $localWallet->address, false) / 100;
+            }
+        }
         $getDataItem = $modelSales->getMemberPembayaranVSalesNew($id);
         return view('member.sales.vendor_confirm_payment')
             ->with('headerTitle', 'Vendor Transfer')
             ->with('getDataSales', $getDataSales)
             ->with('getDataItem', $getDataItem)
+            ->with('localAddress', $localAddress)
+            ->with('eIDRbalance', $eIDRbalance)
             ->with('dataUser', $dataUser);
     }
 

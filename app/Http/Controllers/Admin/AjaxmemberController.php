@@ -200,22 +200,9 @@ class AjaxmemberController extends Controller
 
     public function postCreateLocalWallet(Request $request)
     {
-        // //prepare Tron
-        // $fullNode = new HttpProvider('https://api.trongrid.io');
-        // $solidityNode = new HttpProvider('https://api.trongrid.io');
-        // $eventServer = new HttpProvider('https://api.trongrid.io');
-        // $fuse = Config::get('services.telegram.test');
-
-        // try {
-        //     $tron = new Tron($fullNode, $solidityNode, $eventServer, $signServer = null, $explorer = null, $fuse);
-        // } catch (TronException $e) {
-        //     exit($e->getMessage());
-        // }
         $tron = $this->getTron();
 
         $local_wallet = $tron->generateAddress();
-        // $insertLocalWallet = new LocalWallet;
-        // $insertLocalWallet->user_id = $request->user_id;
         LocalWallet::create([
             'user_id' => $request->user_id,
             'address' => $local_wallet->getAddress(true),
@@ -277,6 +264,103 @@ class AjaxmemberController extends Controller
                     return response()->json(['success' => false, 'message' => 'Ada yang salah!']);
                 }
             }
+        }
+    }
+
+    public function postPayByLocalWallet(Request $request)
+    {
+        $dataUser = Auth::user();
+        $localWallet = LocalWallet::where('user_id', $dataUser->id)->first();
+        $tron = $this->getTronLocalWallet(Crypt::decryptString($localWallet->private_key));
+        $eIDRbalance = $tron->getTokenBalance(1002652, $localWallet->address, false) / 100;
+
+        $modelSales = new Sales;
+        $royalti = $modelSales->getRoyaltiStockist($request->masterSalesID);
+
+        $to = 'TZHYx9bVa4vQz8VpVvZtjwMb4AHqkUChiQ';
+
+        if ($royalti > $eIDRbalance) {
+            return response()->json(['success' => false, 'message' => 'Saldo eIDR tidak cukup!']);
+        } else {
+
+            $amount = $royalti * 100;
+            $tokenID = '1002652';
+            $from = $localWallet->address;
+            try {
+                $transaction = $tron->getTransactionBuilder()->sendToken($to, $amount, $tokenID, $from);
+                $signedTransaction = $tron->signTransaction($transaction);
+                $response = $tron->sendRawTransaction($signedTransaction);
+            } catch (TronException $e) {
+                die($e->getMessage());
+            }
+
+            if ($response['result'] == true) {
+                $dataUpdate = array(
+                    'status' => 2,
+                    'tron_transfer' => $response['txid']
+                );
+                $modelSales->getUpdateMasterSales('id', $request->masterSalesID, $dataUpdate);
+                return response()->json(['success' => true]);
+            } else {
+                return response()->json(['success' => false, 'message' => 'Ada yang salah!']);
+            }
+        }
+    }
+
+    public function postPayByLocalWalletVendor(Request $request)
+    {
+        $dataUser = Auth::user();
+        $localWallet = LocalWallet::where('user_id', $dataUser->id)->first();
+        $tron = $this->getTronLocalWallet(Crypt::decryptString($localWallet->private_key));
+        $eIDRbalance = $tron->getTokenBalance(1002652, $localWallet->address, false) / 100;
+
+        $modelSales = new Sales;
+        $royalti = $modelSales->getRoyaltiVendor($request->masterSalesID);
+
+        $to = 'TZHYx9bVa4vQz8VpVvZtjwMb4AHqkUChiQ';
+
+        if ($royalti > $eIDRbalance) {
+            return response()->json(['success' => false, 'message' => 'Saldo eIDR tidak cukup!']);
+        } else {
+
+            $amount = $royalti * 100;
+            $tokenID = '1002652';
+            $from = $localWallet->address;
+            try {
+                $transaction = $tron->getTransactionBuilder()->sendToken($to, $amount, $tokenID, $from);
+                $signedTransaction = $tron->signTransaction($transaction);
+                $response = $tron->sendRawTransaction($signedTransaction);
+            } catch (TronException $e) {
+                die($e->getMessage());
+            }
+
+            if ($response['result'] == true) {
+                $dataUpdate = array(
+                    'status' => 2,
+                    'tron_transfer' => $response['txid']
+                );
+                $modelSales->getUpdateVMasterSales('id', $request->masterSalesID, $dataUpdate);
+                return response()->json(['success' => true]);
+            } else {
+                return response()->json(['success' => false, 'message' => 'Ada yang salah!']);
+            }
+        }
+    }
+
+    public function postToggleLocalWallet(Request $request)
+    {
+        $dataUser = Auth::user();
+        $localWallet = LocalWallet::where('user_id', $dataUser->id)->first();
+        if ($request->is_active == 1) {
+            $localWallet->is_active = 1;
+            $localWallet->save();
+            return response()->json(['success' => true, 'message' => 'Dompet Lokal berhasil diaktifkan']);
+        } elseif ($request->is_active == 0) {
+            $localWallet->is_active = 0;
+            $localWallet->save();
+            return response()->json(['success' => true, 'message' => 'Dompet Lokal berhasil dinon-aktifkan']);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Ada yang salah!']);
         }
     }
 

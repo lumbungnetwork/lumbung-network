@@ -132,18 +132,43 @@
                     </div>
                     @endif
 
-                    @if($getDataMaster->status > 0)
-                    <p class="card-text">Metode Pembayaran</p>
+                    @if($getDataMaster->status == 1)
+                    <p class="card-text">Status</p>
                     <div class="row">
                         <div class="col-md-12">
                             @if($getDataMaster->buy_metode == 1)
                             <dd>Pembayaran Tunai</dd>
+                            <dd><em>Menunggu Konfirmasi dari Stokis <br>(setelah pembayaran dilunasi)</em></dd>
+                            @endif
+                        </div>
+                    </div>
+
+                    @endif
+
+                    @if($getDataMaster->status == 2)
+                    <p class="card-text">Status</p>
+                    <div class="row">
+                        <div class="col-md-12">
+                            @if($getDataMaster->buy_metode == 1)
+                            <dd>Pembayaran Tunai</dd>
+                            <dd class="text-success">Transaksi Tuntas</dd>
                             @endif
 
                             @if($getDataMaster->buy_metode == 3)
                             <dd>Pembayaran via eIDR</dd>
                             <div id="finalHash"></div>
                             @endif
+                        </div>
+                    </div>
+
+                    @endif
+
+                    @if($getDataMaster->status == 10)
+                    <p class="card-text">Status</p>
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <dd class="text-danger">Transaksi Batal</dd>
                         </div>
                     </div>
 

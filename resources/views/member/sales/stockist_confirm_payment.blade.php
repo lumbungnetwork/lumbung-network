@@ -22,6 +22,24 @@
                 <div class="rounded-lg bg-white p-3 mb-3">
                     <h6 class="mb-3">{{$headerTitle}}</h6>
                     <span id="showAddress"></span>
+                    <div style="margin-top: -10px; margin-bottom: 10px;">
+                        <dd style="display: inline; margin-right: 15px">Dompet Lokal</dd>
+                        <div style="font-size: 13px;" class="pretty p-switch p-fill">
+                            @if($eIDRbalance != null)
+                            <input type="checkbox" id="is_active_switch" checked>
+                            <div class="state p-success p-on">
+                                <label id="is_active_status">Aktif</label>
+                            </div>
+                            @else
+                            <input type="checkbox" id="is_active_switch">
+                            <div class="state p-success p-off">
+                                <label id="is_active_status">Non-Aktif</label>
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+
+
                     <div class="row">
                         <div class="col-12">
                             Pembeli: <strong>{{$getDataSales->user_code}}</strong>
@@ -118,8 +136,7 @@
                             </form>
                             <form id="form-reject" method="POST" action="/m/reject-shopping">
                                 {{ csrf_field() }}
-                                <input type="hidden" value="{{$getDataSales->id}}" name="masterSalesID"
-                                    id="masterSalesID">
+                                <input type="hidden" value="{{$getDataSales->id}}" name="masterSalesID">
                                 <input type="hidden" value="1" name="sellerType">
                             </form>
                             <button class="btn btn-danger" onclick="reject()">Batal</button>
@@ -150,6 +167,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/fonts/slick.woff">
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css">
 
     @stop
 
@@ -158,8 +176,51 @@
         src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js">
     </script>
     <script src="{{ asset('asset_new/js/sidebar.js') }}"></script>
+
     @if($getDataSales->status == 1)
     <script>
+        let _token = '{{ csrf_token() }}';
+
+        $('#is_active_switch').click(function(){
+            if($(this).is(':checked')){
+                $('#is_active_status').text('Aktif');
+                toggleLocalWallet(1);
+            }else{
+                $('#is_active_status').text('Non-Aktif');
+                toggleLocalWallet(0);
+            }
+        });
+
+        function toggleLocalWallet(value) {
+            $.ajax({
+                type: "POST",
+                url: "{{ URL::to('/') }}/m/ajax/toggle-local-wallet",
+                data: {
+                    is_active:value,
+                    _token:_token
+                },
+                success: function(response){
+                    if(response.success) {
+                        Swal.fire(
+                        'Berhasil',
+                        response.message,
+                        'success'
+                        )
+                        setTimeout(function() {
+                        window.location.reload(true);
+                        }, 2000)
+                    } else {
+                        Swal.fire(
+                        'Gagal',
+                        response.message,
+                        'error'
+                        )
+                    }
+
+                }
+            })
+        }
+
         function reject() {
                 Swal.fire({
                     title: 'Anda yakin?',
@@ -176,6 +237,10 @@
                     }
                 })
             }
+
+        function shortId(a, b) { return a.substr(0, b) + "..." + a.substr(a.length - b, a.length) }
+
+        @if($eIDRbalance == null)
 
             //TronWeb Validation by Swal
             function eAlert(message) {
@@ -205,12 +270,6 @@
                 console.log('ready');
             });
 
-            setTimeout(function(){
-                if($('#isTronWeb').val() > 0 && $('#eidr-balance').val() >= {{$royalti}}){
-                    $('#confirmButton').attr("disabled", false);
-                }
-            }, 2000);
-
             var waiting = 0;
 
             async function main() {
@@ -224,7 +283,7 @@
 
             }
 
-            function shortId(a, b) { return a.substr(0, b) + "..." + a.substr(a.length - b, a.length) }
+
 
             //show eIDR balance
             async function showTronBalance() {
@@ -300,6 +359,85 @@
                     }
                 }
             });
+
+            @else
+
+            $(document).ready(function () {
+                setTimeout(function () {
+                    showeIDRbalanceLocalWallet()
+                }, 200)
+            });
+
+            //show eIDR balance from localWallet
+            function showeIDRbalanceLocalWallet() {
+                let localAddress = '{{$localAddress}}';
+                let eIDRbalance = {{$eIDRbalance}};
+                if (eIDRbalance >= {{$royalti}}) {
+                    $('#confirmButton').attr("disabled", false);
+                }
+
+                $("#eIDRbalance").html(
+                    `Rp${eIDRbalance.toLocaleString("en-US")}
+                    `
+                );
+
+                $("#userTron").val(localAddress);
+                $("#showAddress").html(`<p>Active Wallet: <mark>${shortId(localAddress, 5)}</mark></p> `);
+
+            }
+
+            //pay using localWallet
+            $("#confirmButton").click(async function () {
+                Swal.fire({
+                    title: 'Konfirmasi Belanja',
+                    text: "Anda ingin mengkonfirmasi pesanan ini?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, konfirmasi!',
+                    cancelButtonText: 'Jangan!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        payByLocalWallet();
+                    }
+                })
+
+
+            });
+
+            function payByLocalWallet() {
+                var masterSalesID = {{$getDataSales->id}};
+                $.ajax({
+                        type: "POST",
+                        url: "{{ URL::to('/') }}/m/ajax/pay-by-local-wallet",
+                        data: {
+                            masterSalesID:masterSalesID,
+                            _token:_token
+                        },
+                        success: function(response){
+                            if(response.success) {
+                                Swal.fire(
+                                'Berhasil',
+                                'Belanja member telah dikonfirmasi.',
+                                'success'
+                                )
+                                setTimeout(function() {
+                                    window.location.reload(true);
+                                }, 3000)
+                            } else {
+                                Swal.fire(
+                                'Gagal',
+                                response.message,
+                                'error'
+                                )
+                            }
+
+                        }
+                    })
+            }
+
+            @endif
     </script>
 
     @endif

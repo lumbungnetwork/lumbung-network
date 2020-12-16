@@ -407,6 +407,9 @@ Route::prefix('/')->group(function () {
     Route::post('/m/ajax/cancel-shopping-payment-buyer', 'Admin\AjaxmemberController@postCancelShoppingPaymentBuyer')->middleware('auth');
     Route::post('/m/ajax/create-local-wallet', 'Admin\AjaxmemberController@postCreateLocalWallet')->middleware('auth');
     Route::post('/m/ajax/withdraw-local-wallet', 'Admin\AjaxmemberController@postWithdrawLocalWallet')->middleware('auth');
+    Route::post('/m/ajax/pay-by-local-wallet', 'Admin\AjaxmemberController@postPayByLocalWallet')->middleware('auth');
+    Route::post('/m/ajax/pay-by-local-wallet-vendor', 'Admin\AjaxmemberController@postPayByLocalWalletVendor')->middleware('auth');
+    Route::post('/m/ajax/toggle-local-wallet', 'Admin\AjaxmemberController@postToggleLocalWallet')->middleware('auth');
 
     Route::get('/m/req/vendor', 'Admin\MemberController@getRequestMemberVendor')->name('m_reqMemberVendor')->middleware('auth');
     Route::post('/m/req/vendor', 'Admin\MemberController@postRequestMemberVendor')->middleware('auth');

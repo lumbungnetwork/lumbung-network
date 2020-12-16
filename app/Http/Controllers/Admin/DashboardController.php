@@ -249,10 +249,12 @@ class DashboardController extends Controller
         $trxBalance = null;
         $eIDRbalance = null;
         if ($localWallet != null) {
-            $tron = $this->getTron();
-            $tron->setAddress($localWallet->address);
-            $trxBalance = $tron->getBalance(null, true);
-            $eIDRbalance = $tron->getTokenBalance(1002652, $localWallet->address, false) / 100;
+            if ($localWallet->is_active == 1) {
+                $tron = $this->getTron();
+                $tron->setAddress($localWallet->address);
+                $trxBalance = $tron->getBalance(null, true);
+                $eIDRbalance = $tron->getTokenBalance(1002652, $localWallet->address, false) / 100;
+            }
         }
 
         $modelBonus = new Bonus;
@@ -265,7 +267,7 @@ class DashboardController extends Controller
         $dataAll = (object) array(
             'local_wallet' => $localWallet,
             'trx_balance' => $trxBalance,
-            'eidr_balance' => $eIDRbalance,
+            'eIDRbalance' => $eIDRbalance,
             'total_bonus' => floor($totalBonus->total_bonus),
             'total_wd' => $totalWD->total_wd,
             'total_tunda' => $totalWD->total_tunda,
