@@ -115,10 +115,15 @@
                         <br>
                         a/n: {{$separate[1]}}
                         <br>
+                        @if(isset($separate[2], $separate[3], $separate[3]))
                         Tipe/Daya: {{$separate[2]}} / {{$separate[3]}}
                         <br>
                         Jumlah KWh: {{$separate[4]}}
                         <br>
+                        @else
+                        Jumlah KWh: {{$separate[2]}}
+                        <br>
+                        @endif
                         <br>
                         Kode Token:
                         <br>
