@@ -121,13 +121,13 @@ class SendLMBRewardPeringkatJob implements ShouldQueue
             $shortenHash = substr($txHash, 0, 5) . '...' . substr($txHash, -5);
 
             $tgMessage = '
-            ### Selamat!
+            Selamat!
 *' . $getData->user_code . '* baru saja Claim ' . $reward . ' LMB dari pencapaian ' . $rewardType . '
     *Hash: *[' . $shortenHash . '](https://tronscan.org/#/transaction/' . $txHash . ')
             ';
             $client->request('GET', 'https://api.telegram.org/bot' . $tgAk . '/sendMessage', [
                 'query' => [
-                    'chat_id' => '-1001249097447',
+                    'chat_id' => '@lumbungchannel',
                     'text' => $tgMessage,
                     'parse_mode' => 'markdown',
                     'disable_web_page_preview' => 'true'

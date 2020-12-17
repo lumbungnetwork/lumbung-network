@@ -113,7 +113,7 @@ class SendLMBRewardJualBeliJob implements ShouldQueue
             ';
             $client->request('GET', 'https://api.telegram.org/bot' . $tgAk . '/sendMessage', [
                 'query' => [
-                    'chat_id' => '-1001249097447',
+                    'chat_id' => '@lumbungchannel',
                     'text' => $tgMessage,
                     'parse_mode' => 'markdown',
                     'disable_web_page_preview' => 'true'
