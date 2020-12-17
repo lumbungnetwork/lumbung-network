@@ -45,6 +45,15 @@ class Member extends Model
         return $sql;
     }
 
+    public function getAllPinActivation()
+    {
+        $sql = DB::table('member_pin')
+            ->selectRaw('id')
+            ->where('pin_status', '=', 1)
+            ->count();
+        return $sql;
+    }
+
     public function getCekMemberExist($user_code)
     {
         $sql = DB::table('users')
@@ -1282,6 +1291,17 @@ class Member extends Model
             ->where('user_type', '=', 10)
             ->whereDate('active_at', '>=', $date->start_day)
             ->whereDate('active_at', '<=', $date->end_day)
+            ->count();
+        return $sql;
+    }
+
+    public function getAllActivationLastMonth($date)
+    {
+        $sql = DB::table('member_pin')
+            ->selectRaw('id')
+            ->where('pin_status', '=', 1)
+            ->whereDate('used_at', '>=', $date->start_day)
+            ->whereDate('used_at', '<=', $date->end_day)
             ->count();
         return $sql;
     }

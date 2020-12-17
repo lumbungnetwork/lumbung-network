@@ -3066,7 +3066,7 @@ class MemberController extends Controller
         $modelBonus = new Bonus;
 
         //all time
-        $total_aktifasi = $modelMember->getAllMember();
+        $total_aktivasi = $modelMember->getAllPinActivation();
         $totalWD = $modelWD->getTotalDiTransferAll();
         $getSales = $modelSales->getSalesAllHistory();
         $getVSales = $modelSales->getVSalesAllHistory();
@@ -3079,7 +3079,7 @@ class MemberController extends Controller
         }
         $lmb_claim = $sum + $getAllShopLMB->total_claim_shop;
         $dataAll = (object) array(
-            'total_aktifasi' => $total_aktifasi,
+            'total_aktivasi' => $total_aktivasi,
             'total_wd' => $totalWD->total_wd,
             'fee_tuntas' => $totalWD->fee_tuntas,
             'total_sales' => $getSales->total_sales,
@@ -3093,11 +3093,20 @@ class MemberController extends Controller
             'start_day' => date("Y-m-d", strtotime("first day of previous month")),
             'end_day' => date("Y-m-d", strtotime("last day of previous month"))
         );
-        $total_aktifasi_date = $modelMember->getAllMemberLastMonth($last_month);
+        $total_aktivasi_date = $modelMember->getAllActivationLastMonth($last_month);
         $totalWD_date = $modelWD->getTotalDiTransferAllLastMonth($last_month);
         $getSales_date = $modelSales->getSalesAllHistoryLastMonth($last_month);
         $getVSales_date = $modelSales->getVSalesAllHistoryLastMonth($last_month);
         $getPPOB_date = $modelSales->getPPOBAllHistoryLastMonth($last_month);
+        $getPulsaPaketData = $modelSales->getProfitShareFromPulsaPaketDataLastMonth($last_month);
+        $getPLNPrepaid = $modelSales->getProfitShareFromPLNPrepaidLastMonth($last_month);
+        $getTelkomHPPostpaid = $modelSales->getProfitShareFromTelkomHPPostPaidLastMonth($last_month);
+        $getPLNPostpaid = $modelSales->getProfitShareFromPLNPostpaidLastMonth($last_month);
+        $getBPJSPDAM = $modelSales->getProfitShareFromBPJSLastMonth($last_month);
+        $getPGN = $modelSales->getProfitShareFromPGNLastMonth($last_month);
+        $getMultifinance = $modelSales->getProfitShareFromMultifinanceLastMonth($last_month);
+        $getEmoney = $modelSales->getProfitShareFromEmoneyLastMonth($last_month);
+        $profitSharingPool = ($getVSales_date->total_sales * 2 / 100) + $getPulsaPaketData + $getPLNPrepaid + $getTelkomHPPostpaid + $getPLNPostpaid + $getBPJSPDAM + $getPGN + $getMultifinance + $getEmoney;
         $getAllShopLMB_date = $modelBonus->getAllClaimLMBLastMonth($last_month);
         $getAllClaimLMB_date = $modelBonus->getAllClaimRewardLMBLastMonth($last_month);
         $sum_date = 0;
@@ -3106,12 +3115,13 @@ class MemberController extends Controller
         }
         $lmb_claim_date = $sum_date + $getAllShopLMB_date->total_claim_shop;
         $dataAll_lastmonth = (object) array(
-            'total_aktifasi' => $total_aktifasi_date,
+            'total_aktivasi' => $total_aktivasi_date,
             'total_wd' => $totalWD_date->total_wd,
             'fee_tuntas' => $totalWD_date->fee_tuntas,
             'total_sales' => $getSales_date->total_sales,
             'total_vsales' => $getVSales_date->total_sales,
             'total_ppob' => $getPPOB_date->total_sales,
+            'profitSharingPool' => $profitSharingPool,
             'lmb_claim' => $lmb_claim_date
         );
         return view('member.explorer.statistic')
@@ -5374,7 +5384,7 @@ class MemberController extends Controller
                 'product_name' => $request->no_hp,
                 'ppob_price' => $request->price,
                 'ppob_date' => date('Y-m-d'),
-                'harga_modal' => ($request->harga_modal  - 1500),
+                'harga_modal' => ($request->harga_modal  - 1000),
                 'message' => $request->message
             );
             $newPPOB = $modelPin->getInsertPPOB($dataInsert);

@@ -1839,6 +1839,128 @@ class Sales extends Model
         return $sql;
     }
 
+    //get specific PPOB count for profit sharing
+
+    //1 & 2 Pulsa Paket Data
+    public function getProfitShareFromPulsaPaketDataLastMonth($date)
+    {
+        $sql = DB::table('ppob')
+            ->selectRaw('sum(ppob.ppob_price) as total_sales')
+            ->where('ppob.status', '=', 2)
+            ->whereIn('ppob.type', [1, 2])
+            ->whereDate('ppob.ppob_date', '>=', $date->start_day)
+            ->whereDate('ppob.ppob_date', '<=', $date->end_day)
+            ->whereNull('ppob.deleted_at')
+            ->first();
+
+        return $sql->total_sales * 2 / 100;
+    }
+
+    // 3 PLN Prepaid
+    public function getProfitShareFromPLNPrepaidLastMonth($date)
+    {
+        $sql = DB::table('ppob')
+            ->selectRaw('id')
+            ->where('ppob.status', '=', 2)
+            ->where('ppob.type', '=', 3)
+            ->whereDate('ppob.ppob_date', '>=', $date->start_day)
+            ->whereDate('ppob.ppob_date', '<=', $date->end_day)
+            ->whereNull('ppob.deleted_at')
+            ->count();
+
+        return $sql * 955; // 40% from Transaction Fee
+    }
+
+    // 4 Telkom & 6 HP Postpaid
+    public function getProfitShareFromTelkomHPPostPaidLastMonth($date)
+    {
+        $sql = DB::table('ppob')
+            ->selectRaw('id')
+            ->where('ppob.status', '=', 2)
+            ->whereIn('ppob.type', [4, 6])
+            ->whereDate('ppob.ppob_date', '>=', $date->start_day)
+            ->whereDate('ppob.ppob_date', '<=', $date->end_day)
+            ->whereNull('ppob.deleted_at')
+            ->count();
+
+        return $sql * 800; // 40% from Transaction Fee
+    }
+
+    // 5 PLN Postpaid
+    public function getProfitShareFromPLNPostpaidLastMonth($date)
+    {
+        $sql = DB::table('ppob')
+            ->selectRaw('id')
+            ->where('ppob.status', '=', 2)
+            ->where('ppob.type', '=', 5)
+            ->whereDate('ppob.ppob_date', '>=', $date->start_day)
+            ->whereDate('ppob.ppob_date', '<=', $date->end_day)
+            ->whereNull('ppob.deleted_at')
+            ->count();
+
+        return $sql * 1000; // 40% from Transaction Fee
+    }
+
+    // 7 BPJS & 8 PDAM
+    public function getProfitShareFromBPJSLastMonth($date)
+    {
+        $sql = DB::table('ppob')
+            ->selectRaw('id')
+            ->where('ppob.status', '=', 2)
+            ->whereIn('ppob.type', [7, 8])
+            ->whereDate('ppob.ppob_date', '>=', $date->start_day)
+            ->whereDate('ppob.ppob_date', '<=', $date->end_day)
+            ->whereNull('ppob.deleted_at')
+            ->count();
+
+        return $sql * 450; // 40% from Transaction Fee
+    }
+
+    // 9 PGN
+    public function getProfitShareFromPGNLastMonth($date)
+    {
+        $sql = DB::table('ppob')
+            ->selectRaw('id')
+            ->where('ppob.status', '=', 2)
+            ->where('ppob.type', '=', 9)
+            ->whereDate('ppob.ppob_date', '>=', $date->start_day)
+            ->whereDate('ppob.ppob_date', '<=', $date->end_day)
+            ->whereNull('ppob.deleted_at')
+            ->count();
+
+        return $sql * 600; // 40% from Transaction Fee
+    }
+
+    // 10 Multifinance
+    public function getProfitShareFromMultifinanceLastMonth($date)
+    {
+        $sql = DB::table('ppob')
+            ->selectRaw('id')
+            ->where('ppob.status', '=', 2)
+            ->where('ppob.type', '=', 10)
+            ->whereDate('ppob.ppob_date', '>=', $date->start_day)
+            ->whereDate('ppob.ppob_date', '<=', $date->end_day)
+            ->whereNull('ppob.deleted_at')
+            ->count();
+
+        return $sql * 2000; // 40% from Transaction Fee
+    }
+
+    // 21 - 28 Emoney
+    public function getProfitShareFromEmoneyLastMonth($date)
+    {
+        $sql = DB::table('ppob')
+            ->selectRaw('id')
+            ->where('ppob.status', '=', 2)
+            ->whereBetween('ppob.type', [21, 28])
+            ->whereDate('ppob.ppob_date', '>=', $date->start_day)
+            ->whereDate('ppob.ppob_date', '<=', $date->end_day)
+            ->whereNull('ppob.deleted_at')
+            ->count();
+
+        return $sql * 400; // 40% from Transaction Fee
+    }
+
     public function getLastItemPurchase($purchase_id, $user_id)
     {
         $sql = DB::table('item_purchase')
