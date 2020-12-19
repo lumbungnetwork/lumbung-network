@@ -30,28 +30,24 @@
                         {{  Session::get('message')    }}
                     </div>
                     @endif
-                    <form method="POST" action="/m/s/stockist">
-                        {{ csrf_field() }}
-                        <div class="row">
-                            <div class="col-xl-12 col-xs-12">
-                                <fieldset class="form-group">
-                                    <label for="user_name">Masukkan Username Stokis Tujuan Belanja Anda:</label>
-                                    <small><em>Ketikkan 3-4 huruf awal, lalu pilih dari opsi yang tampil</em></small>
-                                    <input type="text" class="form-control" id="get_id" name="user_name"
-                                        autocomplete="off">
-                                    <input type="hidden" name="get_id" id="id_get_id">
-                                    <ul class="typeahead dropdown-menu"
-                                        style="max-height: 120px; overflow: auto;border: 1px solid #ddd;width: 96%;margin-left: 11px;"
-                                        id="get_id-box"></ul>
-                                </fieldset>
-                            </div>
+                    <div class="row">
+                        <div class="col-xl-12 col-xs-12">
+                            <fieldset class="form-group">
+                                <label for="user_name">Masukkan Nama Toko Tujuan Belanja Anda:</label>
+                                <small><em>Ketikkan 3-4 huruf awal, lalu pilih dari opsi yang tampil</em></small>
+                                <input type="text" class="form-control" id="get_id" autocomplete="off">
+                                <input type="hidden" id="id_get_id">
+                                <ul class="typeahead dropdown-menu"
+                                    style="max-height: 120px; overflow: auto;border: 1px solid #ddd;width: 96%;margin-left: 11px;"
+                                    id="get_id-box"></ul>
+                            </fieldset>
                         </div>
-                        <div class="row">
-                            <div class="col-xl-6">
-                                <button type="submit" class="btn btn-success">Submit</button>
-                            </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-6">
+                            <a href="#" class="btn btn-success float-right" id="check-shop-btn">Cek Toko</a>
                         </div>
-                    </form>
+                    </div>
                 </div>
                 @if($dataUser->is_stockist == 0 && $dataUser->is_vendor == 0)
                 <div class="rounded-lg bg-white p-3 mb-3">
@@ -92,56 +88,59 @@
                     @if($totalData > 0)
                     <h6>Stockist Terdekat</h6>
 
-                    @if($getDataKelurahan != null)
-                    @foreach($getDataKelurahan as $row)
-                    <div class="col-6 p-2 mb-3 text-center">
-                        <div class="rounded-lg bg-white shadow p-2 px-0">
-                            <a href="{{ URL::to('/') }}/m/shopping/{{$row->id}}">
-                                <img src="{{ asset('/storage/sellers') }}/{{$row->sellerProfile->image}}"
-                                    style="width: auto; max-width: 100%;">
-                            </a>
-                            <h6 style="font-size: 14px; font-weight:200; margin-top: 10px;">
-                                {{$row->sellerProfile->shop_name}} </h6>
-                            <dd style="font-size: 12px;">
-                                {{$row->alamat}}, {{$row->kelurahan}}, {{$row->kecamatan}}</dd>
+                    <div class="row">
+                        @if($getDataKelurahan != null)
+                        @foreach($getDataKelurahan as $row)
+                        <div class="col-6 p-2 mb-3 text-center">
+                            <div class="rounded-lg bg-white shadow p-2 px-0">
+                                <a href="{{ URL::to('/') }}/m/shopping/{{$row->id}}">
+                                    <img src="{{ asset('/storage/sellers') }}/{{$row->sellerProfile->image}}"
+                                        style="width: auto; max-width: 100%;">
+                                </a>
+                                <h6 style="font-size: 14px; font-weight:200; margin-top: 10px;">
+                                    {{$row->sellerProfile->shop_name}} </h6>
+                                <dd style="font-size: 12px;">
+                                    {{$row->alamat}}, {{$row->kelurahan}}, {{$row->kecamatan}}</dd>
+                            </div>
                         </div>
-                    </div>
-                    @endforeach
-                    @endif
+                        @endforeach
+                        @endif
 
-                    @if($getDataKecamatan != null)
-                    @foreach($getDataKecamatan as $row)
-                    <div class="col-6 p-2 mb-3 text-center">
-                        <div class="rounded-lg bg-white shadow p-2 px-0">
-                            <a href="{{ URL::to('/') }}/m/shopping/{{$row->id}}">
-                                <img src="{{ asset('/storage/sellers') }}/{{$row->sellerProfile->image}}"
-                                    style="width: auto; max-width: 100%;">
-                            </a>
-                            <h6 style="font-size: 14px; font-weight:200; margin-top: 10px;">
-                                {{$row->sellerProfile->shop_name}} </h6>
-                            <dd style="font-size: 12px;">
-                                {{$row->alamat}}, {{$row->kelurahan}}, {{$row->kecamatan}}</dd>
+                        @if($getDataKecamatan != null)
+                        @foreach($getDataKecamatan as $row)
+                        <div class="col-6 p-2 mb-3 text-center">
+                            <div class="rounded-lg bg-white shadow p-2 px-0">
+                                <a href="{{ URL::to('/') }}/m/shopping/{{$row->id}}">
+                                    <img src="{{ asset('/storage/sellers') }}/{{$row->sellerProfile->image}}"
+                                        style="width: auto; max-width: 100%;">
+                                </a>
+                                <h6 style="font-size: 14px; font-weight:200; margin-top: 10px;">
+                                    {{$row->sellerProfile->shop_name}} </h6>
+                                <dd style="font-size: 12px;">
+                                    {{$row->alamat}}, {{$row->kelurahan}}, {{$row->kecamatan}}</dd>
+                            </div>
                         </div>
-                    </div>
-                    @endforeach
-                    @endif
+                        @endforeach
+                        @endif
 
-                    @if($getDataKota != null)
-                    @foreach($getDataKota as $row)
-                    <div class="col-6 p-2 mb-3 text-center">
-                        <div class="rounded-lg bg-white shadow p-2 px-0">
-                            <a href="{{ URL::to('/') }}/m/shopping/{{$row->id}}">
-                                <img src="{{ asset('/storage/sellers') }}/{{$row->sellerProfile->image}}"
-                                    style="width: auto; max-width: 100%;">
-                            </a>
-                            <h6 style="font-size: 14px; font-weight:200; margin-top: 10px;">
-                                {{$row->sellerProfile->shop_name}} </h6>
-                            <dd style="font-size: 12px;">
-                                {{$row->alamat}}, {{$row->kelurahan}}, {{$row->kecamatan}}</dd>
+                        @if($getDataKota != null)
+                        @foreach($getDataKota as $row)
+                        <div class="col-6 p-2 mb-3 text-center">
+                            <div class="rounded-lg bg-white shadow p-2 px-0">
+                                <a href="{{ URL::to('/') }}/m/shopping/{{$row->id}}">
+                                    <img src="{{ asset('/storage/sellers') }}/{{$row->sellerProfile->image}}"
+                                        style="width: auto; max-width: 100%;">
+                                </a>
+                                <h6 style="font-size: 14px; font-weight:200; margin-top: 10px;">
+                                    {{$row->sellerProfile->shop_name}} </h6>
+                                <dd style="font-size: 12px;">
+                                    {{$row->alamat}}, {{$row->kelurahan}}, {{$row->kecamatan}}</dd>
+                            </div>
                         </div>
+                        @endforeach
+                        @endif
                     </div>
-                    @endforeach
-                    @endif
+
                     @endif
                 </div>
 
@@ -178,7 +177,7 @@
         $("#get_id").keyup(function(){
             $.ajax({
                 type: "GET",
-                url: "{{ URL::to('/') }}/m/cek/usercode-stockist" + "?name=" + $(this).val() ,
+                url: "{{ URL::to('/') }}/m/ajax/get-shop-name" + "?name=" + $(this).val() ,
                 success: function(data){
                     $("#get_id-box").show();
                     $("#get_id-box").html(data);
@@ -187,9 +186,9 @@
         });
     });
     function selectUsername(val) {
-        var valNew = val.split("____");
+        var valNew = val.split("___");
         $("#get_id").val(valNew[1]);
-        $("#id_get_id").val(valNew[0]);
+        $("#check-shop-btn").attr("href", "{{ URL::to('/') }}/m/shopping/" + valNew[0]);
         $("#get_id-box").hide();
     }
 </script>

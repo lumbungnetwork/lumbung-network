@@ -21,6 +21,7 @@ use App\Model\Bonussetting;
 use App\Product;
 use App\Category;
 use App\User;
+use App\SellerProfile;
 use App\Services\AbstractService;
 use App\ValueObjects\Cart\ItemObject;
 use App\Jobs\ForwardShoppingPaymentJob;
@@ -362,6 +363,20 @@ class AjaxmemberController extends Controller
         } else {
             return response()->json(['success' => false, 'message' => 'Ada yang salah!']);
         }
+    }
+
+    public function getShopName(Request $request)
+    {
+
+        $shopNames = null;
+        if ($request->name != null) {
+            $shopNames = SellerProfile::where('shop_name', 'LIKE', '%' . $request->name . '%')
+                ->select('id', 'shop_name', 'seller_id')
+                ->orderBy('shop_name', 'ASC')
+                ->get();
+        }
+        return view('member.ajax.get_shop_name_autocomplete')
+            ->with('getData', $shopNames);
     }
 
 
