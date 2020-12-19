@@ -92,19 +92,20 @@
                                     @endforeach
                                 </tbody>
                             </table>
-                            @if($dataUser->is_stockist == 1)
-                            <a class="text-info float-right mr-2" href="{{ URL::to('/') }}/m/purchase/my-stock">Old
-                                Stock</a>
-                            @else
-                            <a class="text-info float-right mr-2" href="{{ URL::to('/') }}/m/purchase/my-vstock">Old
-                                Stock</a>
-                            @endif
                             @else
                             <div class="container">
                                 <h6 class="text-center">Anda belum memiliki produk.</h6>
                                 <p class="text-center">Silakan buat produk dengan klik
                                     tombol + Product di atas.</p>
                             </div>
+                            @endif
+
+                            @if($dataUser->is_stockist == 1)
+                            <a class="text-info float-right mr-2" href="{{ URL::to('/') }}/m/purchase/my-stock">Old
+                                Stock</a>
+                            @else
+                            <a class="text-info float-right mr-2" href="{{ URL::to('/') }}/m/purchase/my-vstock">Old
+                                Stock</a>
                             @endif
 
                         </div>

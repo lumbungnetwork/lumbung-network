@@ -1009,6 +1009,31 @@ class Sales extends Model
         return $return;
     }
 
+    public function postDeleteOldStock($type, $id)
+    {
+        if ($type == 1) {
+            try {
+                DB::table('item_purchase')
+                    ->where('stockist_id', '=', $id)
+                    ->delete();
+                return true;
+            } catch (Throwable $ex) {
+                return false;
+            }
+        } elseif ($type == 2) {
+            try {
+                DB::table('vitem_purchase')
+                    ->where('vendor_id', '=', $id)
+                    ->delete();
+                return true;
+            } catch (Throwable $ex) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
     public function getSumStock($stockist_id, $purchase_id)
     {
         //        $sql = DB::table('stock')

@@ -393,6 +393,8 @@ Route::prefix('/')->group(function () {
     Route::post('/m/settlement', 'Admin\MemberController@postSettlement')->name('m_Settlement')->middleware('auth');
     Route::get('/m/shopping/payment/{masterSalesID}/{sellerType}', 'Admin\MemberController@getShoppingPayment')->name('m_ShoppingPayment')->middleware('auth');
 
+    //legacy
+    Route::post('/m/claim-old-royalti', 'Admin\MemberController@postClaimOldRoyalti')->middleware('auth');
 
 
     //New Member Shopping AJAX

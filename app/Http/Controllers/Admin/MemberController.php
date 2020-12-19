@@ -1858,6 +1858,60 @@ class MemberController extends Controller
             ->with('dataUser', $dataUser);
     }
 
+    //legacy (claim old royalti)
+    public function postClaimOldRoyalti(Request $request)
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->is_stockist == 0 && $dataUser->is_vendor == 0) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+
+        $type = 1;
+        if ($dataUser->is_vendor == 1) {
+            $type = 2;
+        }
+
+        $modelSales = new Sales;
+        $clearStock = $modelSales->postDeleteOldStock($type, $dataUser->id);
+
+        if ($clearStock) {
+            $fuse = Config::get('services.telegram.test');
+            $tron = $this->getTron();
+            $tron->setPrivateKey($fuse);
+            $amount = $request->amount * 100;
+            $to = $dataUser->tron;
+            $from = 'TWJtGQHBS8PfZTXvWAYhQEMrx36eX2F9Pc';
+            $tokenID = '1002652';
+
+            //send eIDR
+            try {
+                $transaction = $tron->getTransactionBuilder()->sendToken($to, $amount, $tokenID, $from);
+                $signedTransaction = $tron->signTransaction($transaction);
+                $response = $tron->sendRawTransaction($signedTransaction);
+            } catch (TronException $e) {
+                die($e->getMessage());
+            }
+
+            if ($response['result'] == true) {
+                Alert::success('Berhasil!', 'Sisa Royalti telah dikembalikan ke alamat TRON utama');
+                return redirect()->route('m_SellerInventory');
+            } else {
+                Alert::error('Gagal!', 'Ada yang salah!');
+                return redirect()->route('m_SellerInventory');
+            }
+        } else {
+            Alert::error('Gagal!', 'Ada yang salah!');
+            return redirect()->route('m_SellerInventory');
+        }
+    }
+
     //new shopping methods
     public function postSettlement(Request $request)
     {
