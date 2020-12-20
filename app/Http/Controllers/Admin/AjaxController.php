@@ -58,10 +58,7 @@ class AjaxController extends Controller
             $getType = 2;
         }
         $modelAdmin = new Admin;
-        $getData = null;
-        if ($id > 2) {
-            $getData = $modelAdmin->getAdminById($id);
-        }
+        $getData = $modelAdmin->getAdminById($id);
         return view('admin.ajax.admin')
             ->with('headerTitle', $header . ' Admin')
             ->with('getData', $getData)

@@ -31,7 +31,7 @@ class MasterAdminController extends Controller
     public function getAddAdmin()
     {
         $dataUser = Auth::user();
-        $onlyUser  = array(1, 2);
+        $onlyUser  = array(1);
         if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
@@ -114,7 +114,7 @@ class MasterAdminController extends Controller
                 ->with('messageclass', 'danger');
         }
         $dataUpdate = array(
-            'user_code' => $request->email,
+            'user_code' => $request->user_code,
             'password' => bcrypt($request->password),
             'name' => $request->name,
             'email' => $request->email,

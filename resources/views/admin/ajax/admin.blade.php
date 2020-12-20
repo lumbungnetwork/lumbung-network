@@ -11,81 +11,89 @@
             }
         ?>
         {{ csrf_field() }}
-            @if($type == 1)
-                <div class="row">
-                    <div class="col-md-6 pr-1">
-                        <div class="form-group">
-                            <label>Username</label>
-                            <input type="text" class="form-control" name="email"  value="{{$getData->email}}">
-                        </div>
-                    </div>
-                    <div class="col-md-6 pl-1">
-                        <div class="form-group">
-                            <label>Type</label>
-                            <input type="text" disabled="" class="form-control" value="{{$user_type}}">
-                        </div>
-                    </div>
+        @if($type == 1)
+        <div class="row">
+            <div class="col-md-6 pr-1">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" class="form-control" name="user_code" value="{{$getData->user_code}}">
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label>Name</label>
-                            <input type="text" class="form-control" name="name" value="{{$getData->name}}">
-                        </div>
-                    </div>
+            </div>
+            <div class="col-md-6 pl-1">
+                <div class="form-group">
+                    <label>Type</label>
+                    <input type="text" disabled="" class="form-control" value="{{$user_type}}">
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Password</label>
-                            <input type="password" class="form-control" name="password">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Re-Password</label>
-                            <input type="password" class="form-control" name="repassword">
-                        </div>
-                    </div>
-                    <input type="hidden" name="cekId" value="{{$getData->id}}" >
-                    <input type="hidden" name="type" value="{{$type}}" >
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="text" class="form-control" name="email" value="{{$getData->email}}">
                 </div>
-            @endif
-            @if($type == 2)
-                <div class="row">
-                    <div class="col-md-6 pr-1">
-                        <div class="form-group">
-                            <label>email</label>
-                            <input type="text" disabled="" class="form-control"  value="{{$getData->email}}">
-                        </div>
-                    </div>
-                    <div class="col-md-6 pl-1">
-                        <div class="form-group">
-                            <label>Type</label>
-                            <input type="text" disabled="" class="form-control" value="{{$user_type}}">
-                        </div>
-                    </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" class="form-control" name="name" value="{{$getData->name}}">
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label>Name</label>
-                            <input type="text" class="form-control" disabled="" value="{{$getData->name}}">
-                        </div>
-                    </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" class="form-control" name="password">
                 </div>
-                <div class="row">
-                    <input type="hidden" name="cekId" value="{{$getData->id}}" >
-                    <input type="hidden" name="type" value="{{$type}}" >
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Re-Password</label>
+                    <input type="password" class="form-control" name="repassword">
                 </div>
-            @endif
-        @else 
-            No Data
+            </div>
+            <input type="hidden" name="cekId" value="{{$getData->id}}">
+            <input type="hidden" name="type" value="{{$type}}">
+        </div>
+        @endif
+        @if($type == 2)
+        <div class="row">
+            <div class="col-md-6 pr-1">
+                <div class="form-group">
+                    <label>email</label>
+                    <input type="text" disabled="" class="form-control" value="{{$getData->email}}">
+                </div>
+            </div>
+            <div class="col-md-6 pl-1">
+                <div class="form-group">
+                    <label>Type</label>
+                    <input type="text" disabled="" class="form-control" value="{{$user_type}}">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" class="form-control" disabled="" value="{{$getData->name}}">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <input type="hidden" name="cekId" value="{{$getData->id}}">
+            <input type="hidden" name="type" value="{{$type}}">
+        </div>
+        @endif
+        @else
+        No Data
         @endif
     </div>
-    
+
     <div class="modal-footer" style="margin-right: 10px;">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
         <button type="submit" class="btn btn-primary">Confirm</button>
     </div>
-</form>   
+</form>
