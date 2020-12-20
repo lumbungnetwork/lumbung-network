@@ -4501,15 +4501,19 @@ class MemberController extends Controller
         if ($dataUser->is_vendor == 0) {
             return redirect()->route('m_SearchVendor');
         }
-        $modelBank = new Bank;
-        $getAllMyBank = $modelBank->getBankMember($dataUser);
+        $modelPin = new Pin;
+        $modelTrans = new Transaction;
+        $getTransTarik = $modelTrans->getMyTotalTarikDeposit($dataUser);
+        $getTotalDeposit = $modelPin->getTotalDepositMember($dataUser);
+        $getTotalPPOBOut = $modelPin->getPPOBFly($dataUser->id);
         return view('member.digital.tarik-deposit')
-            ->with('headerTitle', 'Tarik Deposit')
-            ->with('getAllMyBank', $getAllMyBank)
+            ->with('dataDeposit', $getTotalDeposit)
+            ->with('dataTarik', $getTransTarik)
+            ->with('onTheFly', $getTotalPPOBOut)
             ->with('dataUser', $dataUser);
     }
 
-    public function postTarikDeposit(Request $request)
+    public function postVendorWithdrawDeposit(Request $request)
     {
         $dataUser = Auth::user();
         $onlyUser  = array(10);
@@ -4523,25 +4527,93 @@ class MemberController extends Controller
             return redirect()->route('mainDashboard');
         }
         if ($dataUser->is_vendor == 0) {
-            return redirect()->route('m_SearchVendor');
+            return redirect()->route('mainDashboard');
         }
-        //cek depositnya ada berapa jika kurang maka tidak bisa
-        $modelSettingTrans = new Transaction;
-        $code = $modelSettingTrans->getCodeDepositTransaction();
-        $dataInsert = array(
-            'type' => 2,
-            'user_id' => $dataUser->id,
-            'transaction_code' => 'TTR' . date('Ymd') . $dataUser->id . $code,
-            'price' => $request->total_deposit,
-            'unique_digit' => 0,
-            'user_bank' => $request->user_bank,
-            'is_tron' => $request->is_tron,
-            'status' => 1
-        );
-        $modelSettingTrans->getInsertDepositTransaction($dataInsert);
-        return redirect()->route('m_listDepositTransactions')
-            ->with('message', 'Pengajuan Tark Deposit berhasil, tunggu konfirmasi admin')
-            ->with('messageclass', 'success');
+
+        //double-checking actual available deposit
+        $modelPin = new Pin;
+        $modelTrans = new Transaction;
+        $getTransTarik = $modelTrans->getMyTotalTarikDeposit($dataUser);
+        $getTotalDeposit = $modelPin->getTotalDepositMember($dataUser);
+        $getTotalPPOBOut = $modelPin->getPPOBFly($dataUser->id);
+
+        $sum_deposit_masuk = 0;
+        $sum_deposit_keluar = 0;
+        $sum_deposit_tarik = 0;
+        $sum_on_the_fly = 0;
+        if ($getTotalDeposit->sum_deposit_masuk != null) {
+            $sum_deposit_masuk = $getTotalDeposit->sum_deposit_masuk;
+        }
+        if ($getTotalDeposit->sum_deposit_keluar != null) {
+            $sum_deposit_keluar = $getTotalDeposit->sum_deposit_keluar;
+        }
+        if ($getTransTarik->deposit_keluar != null) {
+            $sum_deposit_tarik = $getTransTarik->deposit_keluar;
+        }
+        if ($getTotalPPOBOut->deposit_out != null) {
+            $sum_on_the_fly = $getTotalPPOBOut->deposit_out;
+        }
+        $totalDeposit = $sum_deposit_masuk - $sum_deposit_keluar - $sum_deposit_tarik -
+            $sum_on_the_fly;
+
+        $amount = $request->amount;
+        $to = $dataUser->tron;
+
+        if ($amount > $totalDeposit) {
+            Alert::error('Gagal!', 'Saldo Deposit tidak cukup!');
+            return redirect()->back();
+        }
+        if ($amount > 0 && $amount <= $totalDeposit) {
+            $fuse = Config::get('services.telegram.test');
+            $tron = $this->getTron();
+            $tron->setPrivateKey($fuse);
+
+            $from = 'TWJtGQHBS8PfZTXvWAYhQEMrx36eX2F9Pc';
+            $tokenID = '1002652';
+
+            //send eIDR
+            try {
+                $transaction = $tron->getTransactionBuilder()->sendToken($to, $amount * 100, $tokenID, $from);
+                $signedTransaction = $tron->signTransaction($transaction);
+                $response = $tron->sendRawTransaction($signedTransaction);
+            } catch (TronException $e) {
+                die($e->getMessage());
+            }
+
+            if ($response['result'] == true) {
+                //logging the transaction
+                $code = $modelTrans->getCodeDepositTransaction();
+                $transaction_code = 'TTR' . date('Ymd') . $dataUser->id . $code;
+                $dataInsert = array(
+                    'type' => 2,
+                    'user_id' => $dataUser->id,
+                    'transaction_code' => $transaction_code,
+                    'price' => $amount,
+                    'unique_digit' => 0,
+                    'user_bank' => null,
+                    'is_tron' => 1,
+                    'status' => 2,
+                    'tuntas_at' => date('Y-m-d H:i:s'),
+                    'tron_transfer' => $response['txid']
+                );
+                $modelTrans->getInsertDepositTransaction($dataInsert);
+
+                //deducting vendor's deposit
+                $vendorDeposit = array(
+                    'user_id' => $dataUser->id,
+                    'total_deposito' => $amount,
+                    'transaction_code' => $transaction_code,
+                    'deposito_status' => 1
+                );
+                $modelPin->getInsertMemberDeposit($vendorDeposit);
+
+                Alert::success('Berhasil!', number_format($amount) . ' eIDR telah berhasil ditarik!');
+                return redirect()->route('mainMyAccount');
+            } else {
+                Alert::error('Gagal!', 'Ada masalah pada proses transfer, silakan diulangi kembali');
+                return redirect()->back();
+            }
+        }
     }
 
     public function getListOperator($type)

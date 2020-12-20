@@ -453,7 +453,7 @@ Route::prefix('/')->group(function () {
     //        Route::get('/m/pin/deposit-stock', 'Admin\MemberController@getMyDepositStock')->name('m_myDepositStock')->middleware('auth');
     Route::get('/m/deposit/history', 'Admin\MemberController@getMyDepositHistory')->name('m_myDepositHistory')->middleware('auth');
     Route::get('/m/tarik/deposit', 'Admin\MemberController@getTarikDeposit')->name('m_tarikDeposit')->middleware('auth');
-    Route::post('/m/tarik/deposit', 'Admin\MemberController@postTarikDeposit')->middleware('auth');
+    Route::post('/m/vendor-withdraw-deposit', 'Admin\MemberController@postVendorWithdrawDeposit')->middleware('auth');
 
     //PPOB
     Route::get('/m/list/emoney', 'Admin\MemberController@getListEmoney')->name('m_listEmoney')->middleware('auth');
