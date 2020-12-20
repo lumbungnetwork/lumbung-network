@@ -246,10 +246,12 @@
                                     $sum_deposit_keluar = $dataTarik->deposit_keluar;
                                 }
                                 $totalDeposit = $sum_deposit_masuk - $sum_deposit_keluar - $sum_deposit_keluar1;
+                                $locked = $onTheFly->deposit_out;
                             ?>
                         <div class="col-6 mb-3">
-                            <p class="f-14">Saldo Deposit Vendor</p>
-                            <h5 class="text-warning"> Rp {{number_format($totalDeposit, 0, ',', '.')}}</h5>
+                            <p class="mb-0">Saldo Deposit</p>
+                            <h5 class="text-warning mt-0"> Rp{{number_format($totalDeposit, 0, ',', '.')}}</h5>
+                            <small class="text-danger">Locked: <strong>Rp{{number_format($locked)}}</strong></small>
                         </div>
                         <div class="col-3 mb-3">
                             <a href="{{ URL::to('/') }}/m/edit/2fa" class="text-decoration-none">

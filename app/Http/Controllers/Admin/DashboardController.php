@@ -319,6 +319,7 @@ class DashboardController extends Controller
         return view('member.home.account')
             ->with('dataDeposit', $getTotalDeposit)
             ->with('dataTarik', $getTransTarik)
+            ->with('onTheFly', $getTotalPPOBOut)
             ->with('dataUser', $dataUser);
     }
 
