@@ -143,8 +143,9 @@
                         </div>
                         <div class="form-group">
                             <label for="price">Harga (Rp)</label>
-                            <input inputmode="numeric" name="price" pattern="[0-9]*" type="text" class="form-control"
-                                id="price" autocomplete="off">
+                            <input inputmode="numeric" name="price" pattern="[0-9]*" type="text"
+                                class="form-control allownumericwithoutdecimal invalidpaste" id="price"
+                                autocomplete="off">
                         </div>
                         <div class="form-group">
                             <label for="category_id">Kategori</label>
@@ -354,7 +355,19 @@
 
     }
 
+        $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {
+           $(this).val($(this).val().replace(/[^\d].+/, ""));
+            if ((event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+        });
 
+
+        $('.invalidpaste').on('paste', function (event) {
+            if (event.originalEvent.clipboardData.getData('Text').match(/[^\d]/)) {
+                event.preventDefault();
+            }
+        });
 
 
 

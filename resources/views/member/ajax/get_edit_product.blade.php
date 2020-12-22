@@ -20,8 +20,9 @@
             </div>
             <div class="form-group">
                 <label for="price">Harga (Rp)</label>
-                <input inputmode="numeric" name="price" pattern="[0-9]*" type="text" class="form-control"
-                    id="price-edit" value="{{$product->price}}" autocomplete="off">
+                <input inputmode="numeric" name="price" pattern="[0-9]*" type="text"
+                    class="form-control allownumericwithoutdecimal invalidpaste" id="price-edit"
+                    value="{{$product->price}}" autocomplete="off">
             </div>
             <div class="form-group">
                 <label for="category_id">Kategori</label>
