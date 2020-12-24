@@ -305,8 +305,9 @@
 <script src="{{ asset('asset_new/js/sidebar.js') }}"></script>
 @if($getDataMaster->status == 0)
 <script>
-    var masterSalesID = {{$getDataMaster->id}};
+    var masterSalesID = '{{$getDataMaster->id}}';
     let _token = '{{ csrf_token() }}';
+
             $('#tunaibutton').click(function() {
                 $('#radio1').prop('checked', true)
                 $('#tronwebPay').hide()
@@ -410,7 +411,7 @@
                     Swal.showLoading();
                     $.ajax({
                         type: "POST",
-                        url: "{{ URL::to('/') }}/m/ajax/cancel-shopping-payment-buyer",
+                        url: "{{ URL::to('/') }}/m/ajax/cancel-ppob-payment",
                         data: {
                         masterSalesID:masterSalesID,
                         _token:_token
@@ -419,11 +420,20 @@
                             if(response.success) {
                                 Swal.fire(
                                 'Dibatalkan',
-                                'Keranjang belanja telah dibatalkan',
+                                'Pesanan anda telah dibatalkan',
                                 'info'
                                 )
                                 setTimeout(function() {
                                     window.location.reload(true);
+                                }, 3000)
+                            } else {
+                                Swal.fire(
+                                'Gagal',
+                                response.message,
+                                'error'
+                                )
+                                setTimeout(function() {
+                                window.location.reload(true);
                                 }, 3000)
                             }
                         }
@@ -442,7 +452,7 @@
             type: "POST",
             url: "{{ URL::to('/') }}/m/ajax/confirm-ppob-payment",
             data: {
-            buy_method:buy_method,
+            buy_method: 3,
             masterSalesID:masterSalesID,
             tron_transfer:hash,
             _token:_token

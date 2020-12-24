@@ -574,4 +574,5 @@ Route::prefix('/')->group(function () {
     Route::get('/m/check-order-postpaid', 'Admin\AjaxmemberController@getCheckOrderPostpaid')->middleware('auth');
     Route::get('/m/check-ppob-status', 'Admin\AjaxmemberController@getCheckPPOBStatus')->middleware('auth');
     Route::post('/m/ajax/confirm-ppob-payment', 'Admin\AjaxmemberController@postConfirmPPOBPayment')->middleware('auth');
+    Route::post('/m/ajax/cancel-ppob-payment', 'Admin\AjaxmemberController@postCancelPPOBPayment')->middleware('auth');
 });
