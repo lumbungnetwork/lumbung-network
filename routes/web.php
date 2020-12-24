@@ -569,6 +569,7 @@ Route::prefix('/')->group(function () {
 
     //new PPOB AJAX
     Route::get('/m/confirm-vendor-quickbuy', 'Admin\AjaxmemberController@getVendorQuickBuy')->middleware('auth');
+    Route::get('/m/confirm-vendor-quickbuy-postpaid', 'Admin\AjaxmemberController@getVendorQuickbuyPostpaid')->middleware('auth');
     Route::get('/m/check-order', 'Admin\AjaxmemberController@getCheckOrder')->middleware('auth');
     Route::get('/m/check-order-postpaid', 'Admin\AjaxmemberController@getCheckOrderPostpaid')->middleware('auth');
     Route::get('/m/check-ppob-status', 'Admin\AjaxmemberController@getCheckPPOBStatus')->middleware('auth');
