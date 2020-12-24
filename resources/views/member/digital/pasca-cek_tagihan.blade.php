@@ -117,19 +117,16 @@
                             </fieldset>
                         </div>
                         <br>
-                        <div class="row">
-                            <div class="col-xl-12">
-                                <button type="submit" class="btn btn-lg btn-block btn-success" id="submitBtn"
-                                    onClick="checkOrder()">Lanjut ke Pembayaran</button>
-                            </div>
+                        <div class="col-12">
+                            <button type="button" class="btn btn-lg btn-block btn-success" id="submitBtn"
+                                onClick="checkOrder()">Lanjut ke
+                                Pembayaran</button>
                         </div>
                         @else
-                        <div class="row">
-                            <div class="col-xl-12">
-                                <button class="btn btn-lg btn-block btn-success" id="vendorPayBtn"
-                                    onClick="checkVendorPay()">Bayar
-                                    Sekarang</button>
-                            </div>
+                        <div class="col-12">
+                            <button type="button" class="btn btn-lg btn-block btn-success" id="vendorPayBtn"
+                                onClick="checkVendorPay()">Bayar
+                                Sekarang</button>
                         </div>
                         @endif
 
@@ -182,12 +179,12 @@
 @if($getData['rc'] == '00')
 
 <script>
-    var no_hp = {{$getData['customer_no']}};
+    var no_hp = '{{$getData['customer_no']}}';
     var vendor_id = $("#id_get_id").val();
-    var buyer_sku_code = {{$getData['buyer_sku_code']}};
-    var ref_id = {{$getData['ref_id']}};
-    var price = {{$selling_price}};
-    var product_name = {{$nama}};
+    var buyer_sku_code = '{{$getData['buyer_sku_code']}}';
+    var ref_id = '{{$getData['ref_id']}}';
+    var price = '{{$selling_price}}';
+    var product_name = '{{$nama}}';
 
         $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {
            $(this).val($(this).val().replace(/[^\d].+/, ""));
@@ -206,7 +203,7 @@
 
         function checkOrder() {
             if(vendor_id == '') {
-                errorToast('Anda belum vendor tujuan belanja');
+                errorToast('Anda belum mengisi vendor tujuan belanja');
                 return false;
             }
 

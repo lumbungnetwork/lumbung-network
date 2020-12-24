@@ -621,7 +621,7 @@
 </script>
 @endif
 
-@if ($getData->status == 1 && $getData->buy_metode == 3)
+@if ($getDataMaster->status == 1 && $getDataMaster->buy_metode == 3)
 <script>
     $(function (){
             var masterSalesID = {{$getDataMaster->id}};
