@@ -4764,8 +4764,6 @@ class MemberController extends Controller
             'desc' => $getData['data']['desc'],
             'real_price' => $real_price,
             'price' => $price,
-            'brand' => $getData['data']['brand'],
-            'product_name' => $getData['data']['product_name'],
             'ref_id' => $ref_id
         );
 
