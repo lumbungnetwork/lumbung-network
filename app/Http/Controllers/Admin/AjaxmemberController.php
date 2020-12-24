@@ -2337,9 +2337,10 @@ class AjaxmemberController extends Controller
 
     public function getVendorQuickbuyPostpaid(Request $request)
     {
+        $dataUser = Auth::user();
         $type = $request->type;
         $no_hp = $request->no_hp;
-        $vendor_id = $request->vendor_id;
+        $vendor_id = $dataUser->id;
         $buyer_sku_code = $request->buyer_sku_code;
         $ref_id = $request->ref_id;
         $product_name = $request->product_name;

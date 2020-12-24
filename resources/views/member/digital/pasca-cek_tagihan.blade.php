@@ -223,7 +223,7 @@
         function checkVendorPay() {
             $.ajax({
                 type: "GET",
-                url: "{{ URL::to('/') }}/m/confirm-vendor-quickbuy-postpaid?no_hp="+no_hp+"&product_name="+product_name+"&vendor_id="+vendor_id+"&price="+price+"&buyer_sku_code="+buyer_sku_code+"&ref_id="+ref_id+"&type={{$type}}",
+                url: "{{ URL::to('/') }}/m/confirm-vendor-quickbuy-postpaid?no_hp="+no_hp+"&product_name="+product_name+"&price="+price+"&buyer_sku_code="+buyer_sku_code+"&ref_id="+ref_id+"&type={{$type}}",
                 success: function(url){
                     Swal.fire({
                         html: url,
