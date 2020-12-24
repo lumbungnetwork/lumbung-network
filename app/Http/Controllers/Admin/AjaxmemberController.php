@@ -2481,7 +2481,7 @@ class AjaxmemberController extends Controller
             $modelPin->getUpdatePPOB('id', $masterSalesID, $dataUpdate);
 
             return response()->json(['success' => true]);
-        } else if ($request->buy_method == 3) {
+        } elseif ($request->buy_method == 3) {
             $hash = $request->tron_transfer;
             $check = $modelPin->checkUsedHashExist($hash, 'ppob', 'tron_transfer');
             if ($check) {
@@ -2541,6 +2541,25 @@ class AjaxmemberController extends Controller
             } else {
                 return response()->json(['success' => false, 'message' => 'Hash sudah terpakai!']);
             }
+        }
+    }
+
+    public function postCancelPPOBPayment(Request $request)
+    {
+        $dataUser = Auth::user();
+        $modelPin = new Pin;
+        $masterSalesID = $request->masterSalesID;
+        $getDataMaster = $modelPin->getMemberPembayaranPPOB($masterSalesID, $dataUser);
+        if ($getDataMaster == null) {
+            return response()->json(['success' => false, 'message' => 'Data pesanan tidak ditemukan!']);
+        } else {
+            $dataUpdate = array(
+                'status' => 3,
+                'reason' => 'Dibatalkan oleh pembeli',
+                'deleted_at' => date('Y-m-d H:i:s')
+            );
+            $modelPin->getUpdatePPOB('id', $masterSalesID, $dataUpdate);
+            return response()->json(['success' => true]);
         }
     }
 
