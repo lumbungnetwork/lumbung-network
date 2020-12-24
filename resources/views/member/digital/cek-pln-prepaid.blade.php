@@ -39,9 +39,10 @@
                             <div class="col-xl-12">
                                 <fieldset class="form-group">
                                     <label for="customer_no">Masukan No Pelanggan PLN Prabayar</label>
-                                    <input type="text" inputmode="numeric" pattern="[0-9]*" class="form-control" @if (
-                                        Session::has('message') ) value="{{$customer_no}}" @endif name="customer_no"
-                                        id="customer_no" autocomplete="off">
+                                    <input type="text" inputmode="numeric" pattern="[0-9]*"
+                                        class="form-control allownumericwithoutdecimal" @if ( Session::has('message') )
+                                        value="{{$customer_no}}" @endif name="customer_no" id="customer_no"
+                                        autocomplete="off">
                                 </fieldset>
                             </div>
                         </div>
@@ -66,9 +67,6 @@
 <link rel="stylesheet" href="{{ asset('asset_new/css/siderbar.css') }}">
 <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/4.9.95/css/materialdesignicons.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/fonts/slick.woff">
 <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
 @stop
@@ -78,4 +76,12 @@
     src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js">
 </script>
 <script src="{{ asset('asset_new/js/sidebar.js') }}"></script>
+<script>
+    $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {
+        $(this).val($(this).val().replace(/[^\d].+/, ""));
+        if ((event.which < 48 || event.which> 57)) {
+            event.preventDefault();
+            }
+    });
+</script>
 @stop

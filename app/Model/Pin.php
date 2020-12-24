@@ -184,6 +184,18 @@ class Pin extends Model
         return $sql;
     }
 
+    public function getVendorDepositBalance($vendor_id)
+    {
+        $sql = DB::table('member_deposito')
+            ->selectRaw('
+		sum(case when deposito_status = 0 then total_deposito else 0 end) as credits,
+		sum(case when deposito_status in (1, 2) then total_deposito else 0 end) as debits
+                    ')
+            ->where('user_id', '=', $vendor_id)
+            ->first();
+        return $sql;
+    }
+
     public function getTotalDepositAll()
     {
         $sql = DB::table('member_deposito')
@@ -386,6 +398,24 @@ class Pin extends Model
             ->where('ppob.user_id', '=', $data->id)
             ->whereNull('ppob.deleted_at')
             ->first();
+        return $sql;
+    }
+
+    public function getJobExecutePPOB($masterSalesID)
+    {
+        $sql = DB::table('ppob')
+            ->where('ppob.id', '=', $masterSalesID)
+            ->where('ppob.status', '=', 1)
+            ->whereNull('ppob.deleted_at')
+            ->first();
+        return $sql;
+    }
+
+    public function checkUsedHashExist($hash, $table, $column)
+    {
+        $sql = DB::table($table)
+            ->where($column, $hash)
+            ->exists();
         return $sql;
     }
 

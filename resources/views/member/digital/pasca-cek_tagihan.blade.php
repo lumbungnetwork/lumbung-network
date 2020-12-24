@@ -96,16 +96,16 @@
                         <div class="col-xs-4 col-md-12 col-lg-12 col-xl-12">
                             <fieldset class="form-group">
                                 <label>Tagihan</label>
-                                <input type="text" class="form-control" autocomplete="off"
-                                    value="Rp. {{$selling_price}}">
+                                <input type="text" class="form-control" autocomplete="off" value="Rp{{$selling_price}}">
                             </fieldset>
                         </div>
                     </div>
                 </div>
+
                 <div class="rounded-lg bg-white p-3 mb-3">
                     <div class="row">
-                        @if($getData['rc'] == '00')
-                        <div class="col-xl-12 col-xs-12">
+                        @if($dataUser->is_vendor == 0)
+                        <div class="col-12">
                             <fieldset class="form-group">
                                 <label for="user_name">Masukkan Username Vendor Tujuan Belanja Anda:</label>
                                 <small>Ketikkan 3-4 huruf awal, lalu klik opsi yang tampil</small>
@@ -116,21 +116,25 @@
                                     id="get_id-box"></ul>
                             </fieldset>
                         </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-xl-12">
+                                <button type="submit" class="btn btn-lg btn-block btn-success" id="submitBtn"
+                                    onClick="checkOrder()">Lanjut ke Pembayaran</button>
+                            </div>
+                        </div>
+                        @else
+                        <div class="row">
+                            <div class="col-xl-12">
+                                <button class="btn btn-lg btn-block btn-success" id="vendorPayBtn"
+                                    onClick="checkVendorPay()">Bayar
+                                    Sekarang</button>
+                            </div>
+                        </div>
                         @endif
 
                     </div>
-                    <br>
-                    <div class="row">
-                        <div class="col-xl-12">
-                            <button type="submit" class="btn btn-success" id="submitBtn" data-toggle="modal"
-                                data-target="#confirmSubmit" onClick="inputSubmit()">Submit</button>
-                        </div>
-                    </div>
-                    <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
-                        aria-hidden="true" data-backdrop="false">
-                        <div class="modal-dialog" role="document" id="confirmDetail">
-                        </div>
-                    </div>
+
                 </div>
                 @endif
             </div>
@@ -146,9 +150,6 @@
 <link rel="stylesheet" href="{{ asset('asset_new/css/siderbar.css') }}">
 <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/4.9.95/css/materialdesignicons.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/fonts/slick.woff">
 <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
 @stop
@@ -181,26 +182,12 @@
 @if($getData['rc'] == '00')
 
 <script>
-    function inputSubmit(){
-           var vendor_id = $("#id_get_id").val();
-            $.ajax({
-                type: "GET",
-                url: "{{ URL::to('/') }}/m/cek/buy/ppob-pasca?no_hp={{$getData['customer_no']}}&vendor_id="+vendor_id+"&harga={{$selling_price}}&type_pay=1&type={{$type}}&ref_id={{$getData['ref_id']}}&price={{$getData['selling_price']}}&customer_no={{$getData['customer_no']}}&buyer_sku_code={{$buyer_sku_code}}",
-                success: function(url){
-                    $("#confirmDetail" ).empty();
-                    $("#confirmDetail").html(url);
-                }
-            });
-        }
-
-        function confirmSubmit(){
-            var dataInput = $("#form-add").serializeArray();
-            $('#form-add').submit();
-            $('#form-add').remove();
-            $('#loading').show();
-            $('#tutupModal').remove();
-            $('#submit').remove();
-        }
+    var no_hp = {{$getData['customer_no']}};
+    var vendor_id = $("#id_get_id").val();
+    var buyer_sku_code = {{$getData['buyer_sku_code']}};
+    var ref_id = {{$getData['ref_id']}};
+    var price = {{$selling_price}};
+    var product_name = {{$nama}};
 
         $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {
            $(this).val($(this).val().replace(/[^\d].+/, ""));
@@ -208,6 +195,47 @@
                 event.preventDefault();
             }
         });
+
+        function confirmBuy() {
+            var form = $('#form-add');
+            Swal.fire('Sedang Memproses');
+            Swal.showLoading();
+            $(document.body).append(form);
+            form.submit();
+        }
+
+        function checkOrder() {
+            if(vendor_id == '') {
+                errorToast('Anda belum vendor tujuan belanja');
+                return false;
+            }
+
+            $.ajax({
+                type: "GET",
+                url: "{{ URL::to('/') }}/m/check-order-postpaid?no_hp="+no_hp+"&product_name="+product_name+"&vendor_id="+vendor_id+"&price="+price+"&buyer_sku_code="+buyer_sku_code+"&ref_id="+ref_id+"&type={{$type}}",
+                success: function(url){
+                    Swal.fire({
+                        html: url,
+                        showCancelButton: false,
+                        showConfirmButton: false
+                    })
+                }
+            });
+        }
+
+        function checkVendorPay() {
+            $.ajax({
+                type: "GET",
+                url: "{{ URL::to('/') }}/m/confirm-vendor-quickbuy?no_hp="+no_hp+"&product_name="+product_name+"&vendor_id="+vendor_id+"&price="+price+"&buyer_sku_code="+buyer_sku_code+"&ref_id="+ref_id+"&type={{$type}}",
+                success: function(url){
+                    Swal.fire({
+                        html: url,
+                        showCancelButton: false,
+                        showConfirmButton: false
+                    })
+                }
+            });
+        }
 
 </script>
 @endif

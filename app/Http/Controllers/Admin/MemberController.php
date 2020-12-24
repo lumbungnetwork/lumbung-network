@@ -1067,72 +1067,6 @@ class MemberController extends Controller
             ->with('dataUser', $dataUser);
     }
 
-    public function postAddUpgrade(Request $request)
-    {
-        $dataUser = Auth::user();
-        $onlyUser  = array(10);
-        if (!in_array($dataUser->user_type, $onlyUser)) {
-            return redirect()->route('mainDashboard');
-        }
-        if ($dataUser->package_id == null) {
-            return redirect()->route('m_newPackage');
-        }
-        if ($dataUser->is_active == 0) {
-            return redirect()->route('mainDashboard');
-        }
-        $modelPackage = new Package;
-        $modelMembership = new Membership;
-        $modelMember = new Member;
-        $modelPin = new Pin;
-        $userPackage = $modelPackage->getMyPackage($dataUser);
-        $total_pin_all = $userPackage->pin + $request->total_pin;
-        $getNewPackage = $modelPackage->getMyPackagePin($total_pin_all);
-        $dataUpgrade = array(
-            'user_id' => $dataUser->id,
-            'member_type_old' => $dataUser->member_type,
-            'member_type_new' => $getNewPackage->id,
-            'type' => 1
-        );
-        $modelMembership->getInsertMembership($dataUpgrade);
-        $dataMemberUpdate = array(
-            'package_id' => $getNewPackage->id,
-            'member_type' => $getNewPackage->id,
-            'upgrade_at' => date('Y-m-d H:i:s')
-        );
-        $modelMember->getUpdateUsers('id', $dataUser->id, $dataMemberUpdate);
-        $getMylastPin = $modelPin->getMyLastPin($dataUser);
-        $code = sprintf("%03s", $request->total_pin);
-        $memberPin = array(
-            'user_id' => $dataUser->id,
-            'total_pin' => $request->total_pin,
-            'setting_pin' => $getMylastPin->setting_pin,
-            'pin_code' => $getMylastPin->pin_code . $code . $dataUser->id,
-            'is_used' => 1,
-            'used_at' => date('Y-m-d H:i:s'),
-            'used_user_id' => $dataUser->id,
-            'pin_status' => 1,
-            'is_upgrade' => 1
-        );
-        $modelPin->getInsertMemberPin($memberPin);
-        $modelBonusSetting = new Bonussetting;
-        $modelBonus = new Bonus;
-        $getBonusStart = $modelBonusSetting->getActiveBonusStart();
-        $bonus_price = $getBonusStart->start_price * $request->total_pin;
-        $dataInsertBonus = array(
-            'user_id' => $dataUser->sponsor_id,
-            'from_user_id' => $dataUser->id,
-            'type' => 1,
-            'bonus_price' => $bonus_price,
-            'bonus_date' => date('Y-m-d'),
-            'poin_type' => 1,
-            'total_pin' => $request->total_pin
-        );
-        $modelBonus->getInsertBonusMember($dataInsertBonus);
-        return redirect()->route('mainDashboard')
-            ->with('message', 'Upgrade member berhasil')
-            ->with('messageclass', 'success');
-    }
-
     public function getAddRO()
     {
         $dataUser = Auth::user();
@@ -4653,6 +4587,187 @@ class MemberController extends Controller
             ->with('dataUser', $dataUser);
     }
 
+    public function getProductBySKUPrepaid($type, $buyer_sku_code)
+    {
+        $modelMember = new Member;
+        $modelPin = new Pin;
+        $getDataAPI = $modelMember->getDataAPIMobilePulsa();
+        $username   = $getDataAPI->username;
+        $apiKey   = $getDataAPI->api_key;
+
+        $sign = md5($username . $apiKey . 'pricelist');
+        $array = array(
+            'cmd' => 'prepaid',
+            'username' => $username,
+            'sign' => $sign
+        );
+        $json = json_encode($array);
+        $url = $getDataAPI->master_url . '/v1/price-list';
+        $cek = $modelMember->getAPIurlCheck($url, $json);
+        $arrayData = json_decode($cek, true);
+
+        $code = $modelPin->getCodePPOBRef($type);
+
+        foreach ($arrayData['data'] as $row) {
+            if ($row['buyer_sku_code'] == $buyer_sku_code) {
+                //Pulsa & Data
+                if ($type < 3) {
+                    if ($row['price'] <= 40000) {
+                        $priceAwal = $row['price'] + 50;
+                    }
+                    if ($row['price'] > 40000) {
+                        $priceAwal = $row['price'] + 70;
+                    }
+                    $pricePersen = $priceAwal + ($priceAwal * 4 / 100);
+                    $priceRound = round($pricePersen, -2);
+                    $cek3digit = substr($priceRound, -3);
+                    $cek = 500 - $cek3digit;
+                    if ($cek == 0) {
+                        $price = $priceRound;
+                    }
+                    if ($cek > 0 && $cek < 500) {
+                        $price = $priceRound + $cek;
+                    }
+                    if ($cek == 500) {
+                        $price = $priceRound;
+                    }
+                    if ($cek < 0) {
+                        $price = $priceRound + (500 + $cek);
+                    }
+
+                    $real_price = $row['price'] + ($price * 2 / 100);
+                }
+
+                //PLN Prepaid
+                if ($type == 3) {
+                    $priceAwal = $row['price'];
+                    $price3000 = $priceAwal + 2000;
+                    $cek3digit = substr($price3000, -3);
+                    $cek = 500 - $cek3digit;
+                    if ($cek == 0) {
+                        $price = $price3000;
+                    }
+                    if ($cek > 0 && $cek < 500) {
+                        $price = $price3000 + $cek;
+                    }
+                    if ($cek == 500) {
+                        $price = $price3000;
+                    }
+                    if ($cek < 0) {
+                        $price = $price3000 + (500 + $cek);
+                    }
+                    $real_price = $price - 1445;
+                }
+
+                //Emoneys
+                if ($type >= 21) {
+                    $priceAwal = $row['price'];
+                    $price3000 = $priceAwal + 1000;
+                    $cek3digit = substr($price3000, -3);
+                    $cek = 500 - $cek3digit;
+                    if ($cek == 0) {
+                        $price = $price3000;
+                    }
+                    if ($cek > 0 && $cek < 500) {
+                        $price = $price3000 + $cek;
+                    }
+                    if ($cek == 500) {
+                        $price = $price3000;
+                    }
+                    if ($cek < 0) {
+                        $price = $price3000 + (500 + $cek);
+                    }
+                    $real_price = $price - 600;
+                }
+
+                $product = (object) array(
+                    'buyer_sku_code' => $row['buyer_sku_code'],
+                    'desc' => $row['desc'],
+                    'real_price' => $real_price,
+                    'price' => $price,
+                    'brand' => $row['brand'],
+                    'product_name' => $row['product_name'],
+                    'ref_id' => $code
+                );
+
+                return $product;
+            }
+        }
+    }
+
+    public function getProductBySKUPostpaid($type, $buyer_sku_code, $customer_no, $ref_id)
+    {
+        $modelMember = new Member;
+        $getDataAPI = $modelMember->getDataAPIMobilePulsa();
+        $username   = $getDataAPI->username;
+        $apiKey   = $getDataAPI->api_key;
+        $sign = md5($username . $apiKey . $ref_id);
+        $array = array(
+            'commands' => 'inq-pasca',
+            'username' => $username,
+            'buyer_sku_code' => $buyer_sku_code,
+            'customer_no' => $customer_no,
+            'ref_id' => $ref_id,
+            'sign' => $sign,
+        );
+        $url = $getDataAPI->master_url . '/v1/transaction';
+        $json = json_encode($array);
+        $cek = $modelMember->getAPIurlCheck($url, $json);
+        $getData = json_decode($cek, true);
+        if ($getData == null) {
+            Alert::warning('Oops!', 'Periksa kembali nomor yang anda masukkan')->persistent(true);
+            return redirect()->back();
+        }
+
+        //BPJS
+        if ($type == 4) {
+            $price = $getData['data']['selling_price'];
+            $real_price = $getData['data']['selling_price'] - 700;
+        }
+
+        //PLN
+        if ($type == 5) {
+            $price = $getData['data']['selling_price'] + 500;
+            $real_price = $getData['data']['selling_price'] - 1000;
+        }
+
+        //HP & Telkom
+        if ($type == 6 || $type == 7) {
+            $price = $getData['data']['selling_price'] + 1000;
+            $real_price = $getData['data']['selling_price'] - 100;
+        }
+
+        //PDAM
+        if ($type == 8) {
+            $price = $getData['data']['selling_price'] + 800;
+            $real_price = $getData['data']['selling_price'];
+        }
+
+        //PGN
+        if ($type == 9) {
+            $price = $getData['data']['selling_price'] + 1000;
+            $real_price = $getData['data']['selling_price'];
+        }
+
+        //Multifinance
+        if ($type == 10) {
+            $price = $getData['data']['selling_price'] + 5000;
+            $real_price = $getData['data']['selling_price'] - 2600;
+        }
+
+        $product = (object) array(
+            'buyer_sku_code' => $getData['data']['buyer_sku_code'],
+            'desc' => $getData['data']['desc'],
+            'real_price' => $real_price,
+            'price' => $price,
+            'brand' => $getData['data']['brand'],
+            'product_name' => $getData['data']['product_name'],
+            'ref_id' => $ref_id
+        );
+
+        return $product;
+    }
+
     public function getDaftarHargaOperator($operator)
     {
         $dataUser = Auth::user();
@@ -4681,7 +4796,6 @@ class MemberController extends Controller
         $url = $getDataAPI->master_url . '/v1/price-list';
         $cek = $modelMember->getAPIurlCheck($url, $json);
         $arrayData = json_decode($cek, true);
-        // dd($arrayData['data']);
         //category => pulsa
         //brand =>
         //1 => TELKOMSEL
@@ -4807,6 +4921,7 @@ class MemberController extends Controller
         return view('member.digital.daftar-harga-operator')
             ->with('headerTitle', 'Isi Pulsa')
             ->with('daftarHarga', $daftarHarga)
+            ->with('type', 1)
             ->with('daftarHargaCall', $daftarHargaCall)
             ->with('dataUser', $dataUser);
     }
@@ -5052,6 +5167,7 @@ class MemberController extends Controller
             ->with('headerTitle', 'Isi Paket Data')
             ->with('daftarHarga', $daftarHarga)
             ->with('daftarHargaCall', $daftarHargaCall)
+            ->with('type', 2)
             ->with('dataUser', $dataUser);
     }
 
@@ -5197,51 +5313,44 @@ class MemberController extends Controller
         }
         $daftarHarga = null;
         $operatorName = null;
-        $tipe = null;
+        $type = null;
         if ($operator == 1) {
             $daftarHarga = collect($gopay)->sortBy('product_name')->toArray();
-            $operatorName = 'GO PAY';
-            $tipe = 21;
+            $type = 21;
         }
         if ($operator == 2) {
             $daftarHarga = $etoll;
-            $operatorName = 'MANDIRI E-TOLL';
-            $tipe = 22;
+            $type = 22;
         }
         if ($operator == 3) {
             $daftarHarga = $ovo;
-            $operatorName = 'OVO';
-            $tipe = 23;
+            $type = 23;
         }
         if ($operator == 4) {
             $daftarHarga = $dana;
-            $operatorName = 'DANA';
-            $tipe = 24;
+            $type = 24;
         }
         if ($operator == 5) {
             $daftarHarga = $linkaja;
-            $operatorName = 'LinkAja';
-            $tipe = 25;
+            $type = 25;
         }
         if ($operator == 6) {
             $daftarHarga = $shopee;
-            $operatorName = 'SHOPEE PAY';
-            $tipe = 26;
+            $type = 26;
         }
         if ($operator == 7) {
             $daftarHarga = $brizzi;
-            $operatorName = 'BRI BRIZZI';
-            $tipe = 27;
+            $type = 27;
         }
         if ($operator == 8) {
             $daftarHarga = $bnitc;
-            $operatorName = 'TAPCASH BNI';
-            $tipe = 28;
+            $type = 28;
         }
-        return view('member.digital.harga-emoney')
+        return view('member.digital.daftar-harga-operator')
             ->with('daftarHarga', $daftarHarga)
-            ->with('operatorName', $operatorName)
-            ->with('tipe', $tipe)
+            ->with('headerTitle', 'Isi eMoney')
+            ->with('daftarHargaCall', null)
+            ->with('type', $type)
             ->with('dataUser', $dataUser);
     }
 
@@ -5290,9 +5399,8 @@ class MemberController extends Controller
         $cek = $modelMember->getAPIurlCheck($url, $json);
         $getData = json_decode($cek, true);
         if ($getData == null) {
+            Alert::error('Gagal!', 'Data tidak ditemukan, cek kembali nomor yang anda masukkan');
             return redirect()->route('m_cekPLNPrepaid')
-                ->with('message', 'Data tidak ditemukan, periksa kembali nomor yang anda masukkan')
-                ->with('messageclass', 'danger')
                 ->with('customer_no', $request->customer_no);
         }
         $sign = md5($username . $apiKey . 'pricelist');
@@ -5430,140 +5538,81 @@ class MemberController extends Controller
         if ($dataUser->is_active == 0) {
             return redirect()->route('mainDashboard');
         }
-        //4 = TELKOM, 5 = PLN Pasca, 6 = HP Pasca, 7 = BPJS, 8 = PDAM, 9 = PGN, 10 = Multifinance
+
+        $type = $request->type;
+        $buyer_sku_code = $request->buyer_sku_code;
 
         $modelPin = new Pin;
-        if ($request->type >= 1 && $request->type < 4) {
-            //cek saldo vendor
-            $code = $modelPin->getCodePPOBRef($request->type);
-            $dataInsert = array(
-                'buy_metode' => $request->buy_method,
-                'user_id' => $dataUser->id,
-                'vendor_id' => $request->vendor_id,
-                'ppob_code' => $code,
-                'type' => $request->type,
-                'buyer_code' => $request->buyer_sku_code,
-                'product_name' => $request->no_hp,
-                'ppob_price' => $request->price,
-                'ppob_date' => date('Y-m-d'),
-                'harga_modal' => $request->harga_modal,
-                'message' => $request->message
-            );
-            $newPPOB = $modelPin->getInsertPPOB($dataInsert);
-            return redirect()->route('m_detailPPOBMemberTransaction', [$newPPOB->lastID])
-                ->with('message', 'Periksa kembali Order anda di bawah ini, lalu Konfirmasi')
-                ->with('messageclass', 'success');
+
+        if ($type >= 1 && $type < 4 || $type >= 21 && $type < 29) {
+            $productData = $this->getProductBySKUPrepaid($type, $buyer_sku_code);
+        } elseif ($type >= 4 && $type < 11) {
+            $productData = $this->getProductBySKUPostpaid($type, $buyer_sku_code, $request->no_hp, $request->ref_id);
         }
 
-        if ($request->type >= 21 && $request->type < 29) {
-            //cek saldo vendor
-            $code = $modelPin->getCodePPOBRef($request->type);
-            $dataInsert = array(
-                'buy_metode' => $request->buy_method,
-                'user_id' => $dataUser->id,
-                'vendor_id' => $request->vendor_id,
-                'ppob_code' => $code,
-                'type' => $request->type,
-                'buyer_code' => $request->buyer_sku_code,
-                'product_name' => $request->no_hp,
-                'ppob_price' => $request->price,
-                'ppob_date' => date('Y-m-d'),
-                'harga_modal' => $request->harga_modal,
-                'message' => $request->message
-            );
-            $newPPOB = $modelPin->getInsertPPOB($dataInsert);
-            return redirect()->route('m_detailPPOBMemberTransaction', [$newPPOB->lastID])
-                ->with('message', 'Periksa kembali Order anda di bawah ini, lalu Konfirmasi')
-                ->with('messageclass', 'success');
+
+        $dataInsert = array(
+            'user_id' => $dataUser->id,
+            'vendor_id' => $request->vendor_id,
+            'ppob_code' => $productData->ref_id,
+            'type' => $request->type,
+            'buyer_code' => $productData->buyer_sku_code,
+            'product_name' => $request->no_hp,
+            'ppob_price' => $productData->price,
+            'ppob_date' => date('Y-m-d'),
+            'harga_modal' => $productData->real_price,
+            'message' => $productData->desc
+        );
+
+        $newPPOB = $modelPin->getInsertPPOB($dataInsert);
+        Alert::success('Berhasil!', 'Silakan Pilih Metode Pembayaran dan Konfirmasi');
+        return redirect()->route('m_detailPPOBMemberTransaction', [$newPPOB->lastID]);
+    }
+
+    public function postQuickbuyPPOB(Request $request)
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_active == 0) {
+            return redirect()->route('mainDashboard');
         }
 
-        if ($request->type == 4 || $request->type == 6 || $request->type == 8 || $request->type == 9) {
-            //cek saldo vendor
-            $dataInsert = array(
-                'buy_metode' => $request->buy_method,
-                'user_id' => $dataUser->id,
-                'vendor_id' => $request->vendor_id,
-                'ppob_code' => $request->ref_id,
-                'type' => $request->type,
-                'buyer_code' => $request->buyer_sku_code,
-                'product_name' => $request->no_hp,
-                'ppob_price' => $request->price,
-                'ppob_date' => date('Y-m-d'),
-                'harga_modal' => $request->harga_modal,
-                'message' => $request->message
-            );
-            $newPPOB = $modelPin->getInsertPPOB($dataInsert);
-            return redirect()->route('m_detailPPOBMemberTransaction', [$newPPOB->lastID])
-                ->with('message', 'Periksa kembali Order anda di bawah ini, lalu Konfirmasi')
-                ->with('messageclass', 'success');
+        $type = $request->type;
+        $buyer_sku_code = $request->buyer_sku_code;
+
+        $modelPin = new Pin;
+
+        if ($type >= 1 && $type < 4 || $type >= 21 && $type < 29) {
+            $productData = $this->getProductBySKUPrepaid($type, $buyer_sku_code);
+        } elseif ($type >= 4 && $type < 11) {
+            $productData = $this->getProductBySKUPostpaid($type, $buyer_sku_code, $request->no_hp, $request->ref_id);
         }
 
-        if ($request->type == 5) {
-            //cek saldo vendor
-            $dataInsert = array(
-                'buy_metode' => $request->buy_method,
-                'user_id' => $dataUser->id,
-                'vendor_id' => $request->vendor_id,
-                'ppob_code' => $request->ref_id,
-                'type' => $request->type,
-                'buyer_code' => $request->buyer_sku_code,
-                'product_name' => $request->no_hp,
-                'ppob_price' => $request->price,
-                'ppob_date' => date('Y-m-d'),
-                'harga_modal' => ($request->harga_modal  - 1000),
-                'message' => $request->message
-            );
-            $newPPOB = $modelPin->getInsertPPOB($dataInsert);
-            return redirect()->route('m_detailPPOBMemberTransaction', [$newPPOB->lastID])
-                ->with('message', 'Periksa kembali Order anda di bawah ini, lalu Konfirmasi')
-                ->with('messageclass', 'success');
-        }
+        $dataInsert = array(
+            'user_id' => $request->vendor_id,
+            'vendor_id' => $request->vendor_id,
+            'ppob_code' => $productData->ref_id,
+            'type' => $request->type,
+            'buyer_code' => $productData->buyer_sku_code,
+            'product_name' => $request->no_hp,
+            'ppob_price' => $productData->price,
+            'ppob_date' => date('Y-m-d'),
+            'confirm_at' => date('Y-m-d H:i:s'),
+            'harga_modal' => $productData->real_price,
+            'status' => 1,
+            'buy_metode' => 1,
+            'message' => $productData->desc
+        );
 
-        if ($request->type == 7) {
-            //cek saldo vendor
-            $dataInsert = array(
-                'buy_metode' => $request->buy_method,
-                'user_id' => $dataUser->id,
-                'vendor_id' => $request->vendor_id,
-                'ppob_code' => $request->ref_id,
-                'type' => $request->type,
-                'buyer_code' => $request->buyer_sku_code,
-                'product_name' => $request->no_hp,
-                'ppob_price' => $request->price,
-                'ppob_date' => date('Y-m-d'),
-                'harga_modal' => ($request->harga_modal - 700),
-                'message' => $request->message
-            );
-            $newPPOB = $modelPin->getInsertPPOB($dataInsert);
-            return redirect()->route('m_detailPPOBMemberTransaction', [$newPPOB->lastID])
-                ->with('message', 'Periksa kembali Order anda di bawah ini, lalu Konfirmasi')
-                ->with('messageclass', 'success');
-        }
-
-        if ($request->type == 10) {
-            //cek saldo vendor
-            $dataInsert = array(
-                'buy_metode' => $request->buy_method,
-                'user_id' => $dataUser->id,
-                'vendor_id' => $request->vendor_id,
-                'ppob_code' => $request->ref_id,
-                'type' => $request->type,
-                'buyer_code' => $request->buyer_sku_code,
-                'product_name' => $request->no_hp,
-                'ppob_price' => $request->price,
-                'ppob_date' => date('Y-m-d'),
-                'harga_modal' => ($request->harga_modal + 2600),
-                'message' => $request->message
-            );
-            $newPPOB = $modelPin->getInsertPPOB($dataInsert);
-            return redirect()->route('m_detailPPOBMemberTransaction', [$newPPOB->lastID])
-                ->with('message', 'Periksa kembali Order anda di bawah ini, lalu Konfirmasi')
-                ->with('messageclass', 'success');
-        }
-
-        return redirect()->route('mainDashboard')
-            ->with('message', 'Proses gagal, terjadi kesalahan pada sistem')
-            ->with('messageclass', 'danger');
+        $newPPOB = $modelPin->getInsertPPOB($dataInsert);
+        Alert::success('Berhasil!', 'Periksa kembali lalu Konfirmasi Pembelian ini');
+        return redirect()->route('m_vendorDetailPPOB', [$newPPOB->lastID]);
     }
 
     public function getListBuyPPOB(Request $request)
@@ -5638,12 +5687,9 @@ class MemberController extends Controller
         $getDataMaster = $modelPin->getMemberPembayaranPPOB($id, $dataUser);
         $getVendor = $dataUser;
         if ($dataUser->id != $getDataMaster->vendor_id) {
-            $getVendor = null;
-            if ($getDataMaster->buy_metode == 1) {
-                $getVendor = $modelMember->getUsers('id', $getDataMaster->vendor_id);
-                if ($getVendor->is_vendor == null) {
-                    return redirect()->route('mainDashboard');
-                }
+            $getVendor = $modelMember->getUsers('id', $getDataMaster->vendor_id);
+            if ($getVendor->is_vendor == null) {
+                return redirect()->route('mainDashboard');
             }
         }
         return view('member.digital.m_buy_ppob')
@@ -5756,22 +5802,6 @@ class MemberController extends Controller
             ->with('messageclass', 'danger');
     }
 
-    public function getVendorDetailBuyPPOB($id)
-    {
-        $dataUser = Auth::user();
-        $onlyUser  = array(10);
-        if (!in_array($dataUser->user_type, $onlyUser)) {
-            return redirect()->route('mainDashboard');
-        }
-        if ($dataUser->package_id == null) {
-            return redirect()->route('m_newPackage');
-        }
-        if ($dataUser->is_active == 0) {
-            return redirect()->route('mainDashboard');
-        }
-        $modelPin = new Pin;
-    }
-
     public function postConfirmBuyPPOB(Request $request)
     {
         $dataUser = Auth::user();
@@ -5841,14 +5871,10 @@ class MemberController extends Controller
             return redirect()->route('mainDashboard');
         }
         $modelPin = new Pin;
-        $modelMember = new Member;
         $getDataMaster = $modelPin->getVendorPPOBDetail($id, $dataUser);
-        $getMember = $modelMember->getUsers('id', $getDataMaster->user_id);
         return view('member.digital.m_detail_vppob')
-            ->with('headerTitle', 'Konfirmasi Transaksi')
-            ->with('getDataMaster', $getDataMaster)
-            ->with('getMember', $getMember)
-            ->with('dataUser', $dataUser);
+            ->with('headerTitle', 'Transaksi Produk Digital')
+            ->with('getDataMaster', $getDataMaster);
     }
 
     public function getDetailVendorPPOBnew($id)
@@ -6373,9 +6399,12 @@ class MemberController extends Controller
         $cek = $modelMember->getAPIurlCheck($url, $json);
         $getData = json_decode($cek, true);
         if ($getData == null) {
-            return redirect()->back()
-                ->with('message', 'Tidak ada tagihan di nomor ini.')
-                ->with('messageclass', 'danger');
+            Alert::warning('Oops!', 'Periksa kembali nomor yang anda masukkan')->persistent(true);
+            return redirect()->back();
+        }
+        if ($getData['data']['rc'] != '00') {
+            Alert::warning('Oops!', $getData['data']['message'])->persistent(true);
+            return redirect()->back();
         }
         return view('member.digital.pasca-cek_tagihan')
             ->with('getData', $getData['data'])

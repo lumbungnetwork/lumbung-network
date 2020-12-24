@@ -720,7 +720,7 @@ class Sales extends Model
     {
         try {
             $query = DB::table('item_purchase_master')->where('id', '=', $id)->first();
-            $result = strtotime($query->created_at);
+            $result = strtotime($query->created_at) * 1000;
         } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message);
@@ -732,7 +732,7 @@ class Sales extends Model
     {
         try {
             $query = DB::table('master_sales')->where('id', '=', $id)->first();
-            $result = strtotime($query->created_at);
+            $result = strtotime($query->created_at) * 1000;
         } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message);
@@ -744,7 +744,7 @@ class Sales extends Model
     {
         try {
             $query = DB::table('vmaster_sales')->where('id', '=', $id)->first();
-            $result = strtotime($query->created_at);
+            $result = strtotime($query->created_at) * 1000;
         } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message);
@@ -804,7 +804,7 @@ class Sales extends Model
     {
         try {
             $query = DB::table('vitem_purchase_master')->where('id', '=', $id)->first();
-            $result = strtotime($query->created_at);
+            $result = strtotime($query->created_at) * 1000;
         } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message);

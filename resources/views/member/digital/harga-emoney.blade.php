@@ -35,8 +35,9 @@
                         <div class="col-xl-12 col-xs-12">
                             <fieldset class="form-group">
                                 <label for="user_name">Masukan No. {{$operatorName}}</label>
-                                <input type="text" inputmode="numeric" pattern="[0-9]*" class="form-control"
-                                    name="no_hp" id="no_hp" autocomplete="off" placeholder="No.  {{$operatorName}}">
+                                <input type="text" inputmode="numeric" pattern="[0-9]*"
+                                    class="form-control allownumericwithoutdecimal" name="no_hp" id="no_hp"
+                                    autocomplete="off" placeholder="No.  {{$operatorName}}">
                             </fieldset>
                         </div>
 
@@ -49,27 +50,31 @@
                     <div class="row">
                         <div class="col-xs-12 col-md-12 col-lg-12 col-xl-12">
                             <div class="card-box table-responsive">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <td>Produk</td>
-                                            <td>Harga</td>
-                                        </tr>
-                                    </thead>
+                                <table class="price-table table">
                                     <tbody>
+                                        @php
+                                        $no = 1;
+                                        @endphp
                                         @foreach($daftarHarga as $row)
                                         <tr>
                                             <td>
                                                 <div class="pretty p-icon p-curve p-tada">
-                                                    <input type="radio" name="harga" id="harga"
+                                                    <input type="radio" name="harga" id="harga{{$no}}"
                                                         value="{{$row['buyer_sku_code']}}__{{$row['price']}}__{{$row['brand']}}__{{$row['desc']}}__{{$row['real_price']}}__{{$row['product_name']}}">
                                                     <div class="state p-primary-o">
                                                         <i class="icon mdi mdi-check"></i>
                                                         <label>{{$row['product_name']}}</label>
                                                     </div>
+
                                                 </div>
+                                                <a class="btn btn-warning btn-sm float-right mt-2"
+                                                    onclick="priceButton('harga{{$no}}')">Rp{{number_format($row['price'])}}</a>
+                                                <br>
+                                                <small class="text-muted">{{$row['desc']}}</small>
+                                                @php
+                                                $no++;
+                                                @endphp
                                             </td>
-                                            <td>{{number_format($row['price'], 0, ',', ',')}}</td>
                                         </tr>
                                         @endforeach
                                     </tbody>
@@ -121,9 +126,6 @@
 <link rel="stylesheet" href="{{ asset('asset_new/css/siderbar.css') }}">
 <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/4.9.95/css/materialdesignicons.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/fonts/slick.woff">
 <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css" />
@@ -184,6 +186,10 @@
                 event.preventDefault();
             }
         });
+
+        function priceButton(id) {
+            $("#" + id).prop("checked", true).trigger("click").change();
+        }
 
 </script>
 @stop

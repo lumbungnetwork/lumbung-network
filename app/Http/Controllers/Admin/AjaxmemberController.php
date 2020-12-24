@@ -1514,6 +1514,16 @@ class AjaxmemberController extends Controller
         return $dataTopup->status;
     }
 
+    public function getCheckPPOBStatus(Request $request)
+    {
+        $dataUser = Auth::user();
+        $modelPin = new Pin;
+
+        $getDataMaster = $modelPin->getMemberPembayaranPPOB($request->masterSalesID, $dataUser);
+
+        return $getDataMaster->status;
+    }
+
     public function getCekTopupTransaction(Request $request)
     {
         $dataUser = Auth::user();
@@ -2278,6 +2288,259 @@ class AjaxmemberController extends Controller
             ->with('data', $getData)
             ->with('type', $type)
             ->with('dataVendor', $getVendor);
+    }
+
+    public function getVendorQuickBuy(Request $request)
+    {
+        $dataUser = Auth::user();
+        $type = $request->type;
+        $no_hp = $request->no_hp;
+        $vendor_id = $dataUser->id;
+
+        $modelPin = new Pin;
+        $modelTrans = new Transaction;
+        //check 10mins interval for multitrans
+        $cekHP = $modelPin->getCekHpOn10Menit($no_hp);
+        if ($cekHP != null) {
+            return view('member.ajax.confirm_vendor_quickbuy')
+                ->with('data', null)
+                ->with('message', 'No HP ini masih dalam masa tenggang 10 menit dari transaksi sebelumnya.')
+                ->with('dataVendor', null);
+        }
+
+        //get product info
+        $separate = explode('__', $request->product);
+        $buyer_sku_code = $separate[0];
+        $product_name = $separate[1];
+        $price = $separate[2];
+
+        //check available Vendor's deposit
+        $vendorBalance = $this->getVendorAvailableDeposit($vendor_id);
+        if ($price > $vendorBalance) {
+            return view('member.ajax.confirm_vendor_quickbuy')
+                ->with('data', null)
+                ->with('message', 'Saldo Deposit tidak cukup!')
+                ->with('dataVendor', null);
+        }
+
+        $getData = (object) array(
+            'buyer_sku_code' => $buyer_sku_code,
+            'product_name' => $product_name,
+            'no_hp' => $no_hp,
+        );
+
+        return view('member.ajax.confirm_vendor_quickbuy')
+            ->with('data', $getData)
+            ->with('type', $type)
+            ->with('vendor_id', $vendor_id);
+    }
+
+    public function getVendorQuickbuyPostpaid(Request $request)
+    {
+        $type = $request->type;
+        $no_hp = $request->no_hp;
+        $vendor_id = $request->vendor_id;
+        $buyer_sku_code = $request->buyer_sku_code;
+        $ref_id = $request->ref_id;
+        $product_name = $request->product_name;
+        $price = $request->price;
+
+        $modelPin = new Pin;
+        //check 10mins interval for multitrans
+        $cekHP = $modelPin->getCekHpOn10Menit($no_hp);
+        if ($cekHP != null) {
+            return view('member.ajax.confirm_order_postpaid')
+                ->with('data', null)
+                ->with('message', 'No Pelanggan ini baru saja dibayarkan.')
+                ->with('dataVendor', null);
+        }
+
+        //check available Vendor's deposit
+        $vendorBalance = $this->getVendorAvailableDeposit($vendor_id);
+        if ($price > $vendorBalance) {
+            return view('member.ajax.confirm_order_postpaid')
+                ->with('data', null)
+                ->with('message', 'Saldo Deposit tidak cukup!')
+                ->with('dataVendor', null);
+        }
+        $getData = (object) array(
+            'buyer_sku_code' => $buyer_sku_code,
+            'product_name' => $product_name,
+            'ref_id' => $ref_id,
+            'price' => $price,
+            'no_hp' => $no_hp
+        );
+
+        return view('member.ajax.confirm_order_postpaid')
+            ->with('data', $getData)
+            ->with('type', $type)
+            ->with('quickbuy', true)
+            ->with('vendor_id', $vendor_id);
+    }
+
+    public function getCheckOrder(Request $request)
+    {
+        $type = $request->type;
+        $no_hp = $request->no_hp;
+        $vendor_id = $request->vendor_id;
+
+        $modelPin = new Pin;
+        //check 10mins interval for multitrans
+        $cekHP = $modelPin->getCekHpOn10Menit($no_hp);
+        if ($cekHP != null) {
+            return view('member.ajax.confirm_order_pulsa_data_pln')
+                ->with('data', null)
+                ->with('message', 'No HP ini masih dalam masa tenggang 10 menit dari transaksi sebelumnya.')
+                ->with('dataVendor', null);
+        }
+
+        //get product info
+        $separate = explode('__', $request->product);
+        $buyer_sku_code = $separate[0];
+        $product_name = $separate[1];
+        $price = $separate[2];
+
+        //check available Vendor's deposit
+        $vendorBalance = $this->getVendorAvailableDeposit($vendor_id);
+        if ($price > $vendorBalance) {
+            return view('member.ajax.confirm_order_pulsa_data_pln')
+                ->with('data', null)
+                ->with('message', 'Saldo Deposit tidak cukup!')
+                ->with('dataVendor', null);
+        }
+        $getData = (object) array(
+            'buyer_sku_code' => $buyer_sku_code,
+            'product_name' => $product_name,
+            'no_hp' => $no_hp
+        );
+
+        return view('member.ajax.confirm_order_pulsa_data_pln')
+            ->with('data', $getData)
+            ->with('type', $type)
+            ->with('vendor_id', $vendor_id);
+    }
+
+    public function getCheckOrderPostpaid(Request $request)
+    {
+        $type = $request->type;
+        $no_hp = $request->no_hp;
+        $vendor_id = $request->vendor_id;
+        $buyer_sku_code = $request->buyer_sku_code;
+        $ref_id = $request->ref_id;
+        $product_name = $request->product_name;
+        $price = $request->price;
+
+        $modelPin = new Pin;
+        //check 10mins interval for multitrans
+        $cekHP = $modelPin->getCekHpOn10Menit($no_hp);
+        if ($cekHP != null) {
+            return view('member.ajax.confirm_order_postpaid')
+                ->with('data', null)
+                ->with('message', 'No Pelanggan ini baru saja dibayarkan.')
+                ->with('dataVendor', null);
+        }
+
+        //check available Vendor's deposit
+        $vendorBalance = $this->getVendorAvailableDeposit($vendor_id);
+        if ($price > $vendorBalance) {
+            return view('member.ajax.confirm_order_postpaid')
+                ->with('data', null)
+                ->with('message', 'Saldo Deposit tidak cukup!')
+                ->with('dataVendor', null);
+        }
+        $getData = (object) array(
+            'buyer_sku_code' => $buyer_sku_code,
+            'product_name' => $product_name,
+            'ref_id' => $ref_id,
+            'price' => $price,
+            'no_hp' => $no_hp
+        );
+
+        return view('member.ajax.confirm_order_postpaid')
+            ->with('data', $getData)
+            ->with('type', $type)
+            ->with('vendor_id', $vendor_id);
+    }
+
+    public function postConfirmPPOBPayment(Request $request)
+    {
+        $dataUser = Auth::user();
+        $modelPin = new Pin;
+        $masterSalesID = $request->masterSalesID;
+        $getDataMaster = $modelPin->getMemberPembayaranPPOB($masterSalesID, $dataUser);
+        if ($getDataMaster == null) {
+            return response()->json(['success' => false, 'message' => 'Data Pesanan tidak ditemukan!']);
+        }
+
+        if ($request->buy_method == 1) {
+            $dataUpdate = array(
+                'status' => 1,
+                'confirm_at' => date('Y-m-d H:i:s')
+            );
+            $modelPin->getUpdatePPOB('id', $masterSalesID, $dataUpdate);
+
+            return response()->json(['success' => true]);
+        } else if ($request->buy_method == 3) {
+            $hash = $request->tron_transfer;
+            $check = $modelPin->checkUsedHashExist($hash, 'ppob', 'tron_transfer');
+            if ($check) {
+                return response()->json(['success' => false, 'message' => 'Hash Transaksi sudah pernah digunakan pada pembayaran sebelumnya']);
+            }
+            $receiver = 'TC1o89VSHMSPno2FE6SgoCsuy8i4mVSWge';
+            $amount = $getDataMaster->ppob_price;
+            $timestamp = strtotime($getDataMaster->created_at) * 1000;
+
+            $tron = $this->getTron();
+            $i = 1;
+            do {
+                try {
+                    sleep(1);
+                    $response = $tron->getTransaction($hash);
+                } catch (TronException $exception) {
+                    $i++;;
+                    continue;
+                }
+                break;
+            } while ($i < 23);
+
+
+            if (empty($response)) {
+                return response()->json(['success' => false, 'message' => 'Ada gangguan pada sistem Blockchain, laporkan pada Admin!']);
+            };
+
+            $hashTime = $response['raw_data']['timestamp'];
+            $hashSender = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['owner_address']);
+            $hashReceiver = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['to_address']);
+            $hashAsset = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['asset_name']);
+            $hashAmount = $response['raw_data']['contract'][0]['parameter']['value']['amount'];
+
+            if ($hashTime > $timestamp) {
+                if ($hashAmount == $amount * 100) {
+                    if ($hashAsset == '1002652') {
+                        if ($hashReceiver == $receiver) {
+                            $dataUpdate = array(
+                                'status' => 1,
+                                'buy_metode' => 3,
+                                'tron_transfer' => $hash
+                            );
+                            $modelPin->getUpdatePPOB('id', $masterSalesID, $dataUpdate);
+
+                            PPOBexecuteJob::dispatch($masterSalesID)->onQueue('tron');
+
+                            return response()->json(['success' => true]);
+                        } else {
+                            return response()->json(['success' => false, 'message' => 'Alamat Tujuan Transfer Salah!']);
+                        }
+                    } else {
+                        return response()->json(['success' => false, 'message' => 'Bukan token eIDR yang benar!']);
+                    }
+                } else {
+                    return response()->json(['success' => false, 'message' => 'Nominal Transfer Salah!']);
+                }
+            } else {
+                return response()->json(['success' => false, 'message' => 'Hash sudah terpakai!']);
+            }
+        }
     }
 
     public function postCekBuyPPOBPasca(Request $request)

@@ -297,7 +297,6 @@ Route::prefix('/')->group(function () {
     Route::post('/m/confirm/package', 'Admin\MemberController@postActivatePackage')->middleware('auth');
     Route::post('/m/reject/package', 'Admin\MemberController@postRejectPackage')->middleware('auth');
     Route::get('/m/add/upgrade', 'Admin\MemberController@getAddUpgrade')->name('m_newUpgrade')->middleware('auth');
-    Route::post('/m/add/upgrade', 'Admin\MemberController@postAddUpgrade')->middleware('auth');
     Route::get('/m/add/repeat-order', 'Admin\MemberController@getAddRO')->name('m_newRO')->middleware('auth');
     Route::post('/m/add/repeat-order', 'Admin\MemberController@postAddRO')->middleware('auth');
 
@@ -466,9 +465,9 @@ Route::prefix('/')->group(function () {
 
     //        Route::get('/m/prepare/buy/ppob', 'Admin\MemberController@getPreparingBuyPPOB')->middleware('auth');
     Route::post('/m/buy/ppob', 'Admin\MemberController@postBuyPPOB')->middleware('auth');
+    Route::post('/m/quickbuy/ppob', 'Admin\MemberController@postQuickbuyPPOB')->middleware('auth');
     Route::get('/m/list/buy-ppob', 'Admin\MemberController@getListBuyPPOB')->name('m_listPPOBTransaction')->middleware('auth');
     Route::get('/m/detail/buy-ppob/{id}', 'Admin\MemberController@getDetailBuyPPOB')->name('m_detailPPOBMemberTransaction')->middleware('auth');
-    Route::get('/m/vdetail/buy-ppob/{id}', 'Admin\MemberController@getVendorDetailBuyPPOB')->middleware('auth');
     Route::post('/m/confirm/buy-ppob', 'Admin\MemberController@postConfirmBuyPPOB')->middleware('auth');
     Route::get('/m/update/status-ppob/{id}', 'Admin\MemberController@getUpdateStatusPPOB')->middleware('auth');
     Route::get('/m/invoice/ppob/{id}', 'Admin\MemberController@getDetailVendorInvoicePPOB')->name('m_detailPPOBInvoice')->middleware('auth');
@@ -487,7 +486,7 @@ Route::prefix('/')->group(function () {
 
     //vendor
     Route::get('/m/list/vppob-transaction', 'Admin\MemberController@getListVendorPPOBTransactions')->name('m_listVendotPPOBTransactions')->middleware('auth');
-    Route::get('/m/detail/vppob/{id}', 'Admin\MemberController@getDetailVendorPPOB')->middleware('auth');
+    Route::get('/m/detail/vppob/{id}', 'Admin\MemberController@getDetailVendorPPOB')->name('m_vendorDetailPPOB')->middleware('auth');
     Route::post('/m/confirm/vppob', 'Admin\MemberController@postVendorConfirmPPOB')->middleware('auth');
     Route::post('/m/confirm/vppob-new', 'Admin\MemberController@postVendorConfirmPPOBnew')->middleware('auth');
     Route::post('/m/reject/vppob', 'Admin\MemberController@postVendorRejectPPOB')->middleware('auth');
@@ -567,4 +566,11 @@ Route::prefix('/')->group(function () {
     Route::get('/m/cek/member-buy', 'Admin\AjaxmemberController@postMemberBuyPPOBHP')->middleware('auth');
     Route::get('/m/cek/reject/buy-ppob', 'Admin\AjaxmemberController@postRejectBuyPPOBHP')->middleware('auth');
     Route::get('/m/cek/buy/ppob-pasca', 'Admin\AjaxmemberController@postCekBuyPPOBPasca')->middleware('auth');
+
+    //new PPOB AJAX
+    Route::get('/m/confirm-vendor-quickbuy', 'Admin\AjaxmemberController@getVendorQuickBuy')->middleware('auth');
+    Route::get('/m/check-order', 'Admin\AjaxmemberController@getCheckOrder')->middleware('auth');
+    Route::get('/m/check-order-postpaid', 'Admin\AjaxmemberController@getCheckOrderPostpaid')->middleware('auth');
+    Route::get('/m/check-ppob-status', 'Admin\AjaxmemberController@getCheckPPOBStatus')->middleware('auth');
+    Route::post('/m/ajax/confirm-ppob-payment', 'Admin\AjaxmemberController@postConfirmPPOBPayment')->middleware('auth');
 });

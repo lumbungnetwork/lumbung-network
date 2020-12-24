@@ -1404,4 +1404,14 @@ class Member extends Model
         );
         return $data;
     }
+
+    public function getUserTronAddress($user_id)
+    {
+        $sql = DB::table('users')
+            ->where('id', $user_id)
+            ->select('tron')
+            ->first();
+
+        return $sql->tron;
+    }
 }

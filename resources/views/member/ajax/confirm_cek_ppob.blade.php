@@ -3,7 +3,7 @@
     <div class="modal-header">
         <h5 class="modal-title" id="modalLabel">Konfirmasi Data</h5>
     </div>
-    <div class="modal-body"  style="overflow-y: auto;max-height: 330px;">
+    <div class="modal-body" style="overflow-y: auto;">
         <div class="row" id="loading" style="display:none;">
             <div class="col-md-12">
                 <div class="form-group">
@@ -37,46 +37,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-6 col-xs-12">
-                    <div class="form-group">
-                        <label>Harga</label>
-                        <input type="text" class="form-control" readonly="" value="Rp {{number_format($data->price, 0, ',', ',')}}">
-                    </div>
-                </div>
-                <div class="col-md-6 col-xs-12">
-                    <div class="form-group">
-                        <?php
-                            $metode = 'COD';
-                            if($data->buy_method == 3){
-                                $metode = 'eIDR';
-                            }
-                        ?>
-                        <label>Metode Pembayaran</label>
-                        <input type="text" class="form-control" readonly=""  value="{{$metode}}">
-                    </div>
-                </div>
-            </div>
-            @if($data->buy_method == 1)
-            <div class="row">
-                <div class="col-md-12 col-xs-12">
-                    <div class="form-group">
-                        <label>Vendor</label>
-                        <input type="text" class="form-control" readonly="" value="{{$dataVendor->user_code}}">
-                    </div>
-                </div>
-            </div>
-            @endif
-            @if($data->buy_method == 3)
-            <div class="row">
-                <div class="col-md-12 col-xs-12">
-                    <div class="form-group">
-                        <label>Vendor</label>
-                        <input type="text" class="form-control" readonly="" value="Direct">
-                    </div>
-                </div>
-            </div>
-            @endif
+
             <div class="row">
                 <div class="col-md-12 col-xs-12">
                     <div class="form-group">
@@ -85,18 +46,19 @@
                     </div>
                 </div>
             </div>
-            <input type="hidden" name="price"  value="{{$data->price}}">
-            <input type="hidden" name="vendor_id"  value="{{$dataVendor->id}}">
-            <input type="hidden" name="buyer_sku_code"  value="{{$data->buyer_sku_code}}">
-            <input type="hidden" name="buy_method"  value="{{$data->buy_method}}">
-            <input type="hidden" name="type"  value="{{$type}}">
-            <input type="hidden" name="harga_modal"  value="{{$data->harga_modal}}">
-            <input type="hidden" name="message"  value="{{$data->message}}">
-        </form>    
+            <input type="hidden" name="price" value="{{$data->price}}">
+            <input type="hidden" name="vendor_id" value="{{$dataVendor->id}}">
+            <input type="hidden" name="buyer_sku_code" value="{{$data->buyer_sku_code}}">
+            <input type="hidden" name="buy_method" value="{{$data->buy_method}}">
+            <input type="hidden" name="type" value="{{$type}}">
+            <input type="hidden" name="harga_modal" value="{{$data->harga_modal}}">
+            <input type="hidden" name="message" value="{{$data->message}}">
+        </form>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-secondary waves-effect" id="tutupModal" data-dismiss="modal">Tutup</button>
-        <button type="button" class="btn btn-primary waves-effect waves-light" id="submit" onclick="confirmSubmit()">Submit</button>
+        <button type="button" class="btn btn-secondary waves-effect" id="tutupModal" data-dismiss="modal">Tunda</button>
+        <button type="button" class="btn btn-primary waves-effect waves-light" id="submit"
+            onclick="confirmSubmit()">Order</button>
     </div>
 </div>
 @endif
@@ -106,8 +68,8 @@
     <div class="modal-header">
         <h5 class="modal-title" id="modalLabel">Konfirmasi Data</h5>
     </div>
-    <div class="modal-body"  style="overflow-y: auto;max-height: 330px;">
-        <h5 class="text-danger">{{$message}}</h5> 
+    <div class="modal-body" style="overflow-y: auto;max-height: 330px;">
+        <h5 class="text-danger">{{$message}}</h5>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary waves-effect" id="tutupModal" data-dismiss="modal">Tutup</button>

@@ -405,6 +405,17 @@ class Transaction extends Model
         return $sql;
     }
 
+    public function getVendorTotalDepositWithdrawn($vendor_id)
+    {
+        $sql = DB::table('deposit_transaction')
+            ->selectRaw('sum(price) as total')
+            ->where('user_id', '=', $vendor_id)
+            ->where('type', '=', 2)
+            ->where('status', '=', 1)
+            ->first();
+        return $sql;
+    }
+
     public function getTransactionsTarikDepositByAdmin()
     {
         $sql = DB::table('deposit_transaction')

@@ -19,7 +19,7 @@
             <div class="container">
 
                 <div class="rounded-lg bg-white p-3 mb-3">
-                    <h6 class="mb-3">Keranjang Transaksi Member</h6>
+                    <h6 class="mb-3">{{$headerTitle}}</h6>
 
                     @if ( Session::has('message') )
                     <div class="container">
@@ -33,44 +33,28 @@
                     @endif
                 </div>
                 <div class="rounded-lg bg-white p-3 mb-3">
+                    <h6>Pembelian Produk</h6>
                     <div class="row">
-                        <div class="col-xl-12 col-xs-12">
+                        <div class="col-12">
+                            <div class="rounded-lg bg-light shadow p-4 mb-1">
+                                <p class="mb-1">{{$getDataMaster->message}}</p>
+                                <dd>{{$getDataMaster->product_name}}</dd>
+                                <a class="btn btn-sm btn-warning float-right"><span
+                                        style="font-size: 14px;">Rp{{number_format($getDataMaster->ppob_price)}}</span></a>
+                                <div class="clearfix"></div>
+                            </div>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Nama Produk</th>
-                                        <th>Total Harga (Rp.)</th>
-                                        <th>Keterangan</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if($getDataMaster != null)
-                                    <tr>
-                                        <td><b>{{$getDataMaster->message}}</td>
-                                        <td>{{number_format($getDataMaster->ppob_price, 0, ',', ',')}}</td>
-                                        <td>{{$getDataMaster->product_name}}</td>
-                                    </tr>
-                                    @endif
-                                    <tr>
-                                        <td>&nbsp;</td>
-                                        <td><b>Total</b></td>
-                                        <td><b>{{number_format($getDataMaster->ppob_price, 0, ',', ',')}}</b></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+
                     </div>
                 </div>
                 <div class="rounded-lg bg-white p-3 mb-3">
                     <div class="row">
                         <div class="col-sm-12">
                             @if($getDataMaster->status == 2)
-                            <p class="card-text">Status</p>
+                            <p class="mb-0">Status</p>
                             <div class="row" style="margin-bottom: 15px;">
                                 <div class="col-md-12">
-                                    <h5 class="label label-success">Tuntas</h5>
+                                    <h6 class="label label-success"><span style="font-size: 14px;">Tuntas</span></h6>
                                 </div>
                             </div>
                             @if ($getDataMaster->type >=1 && $getDataMaster->type <3 || $getDataMaster->type >=21 &&
@@ -95,7 +79,7 @@
                                             <div class="radio radio-primary" style="margin-bottom: 15px;">
                                                 <input type="radio" name="radio" id="radio1" value="1" checked="">
                                                 <label for="radio1">
-                                                    COD
+                                                    Tunai
                                                 </label>
                                             </div>
                                             @endif
