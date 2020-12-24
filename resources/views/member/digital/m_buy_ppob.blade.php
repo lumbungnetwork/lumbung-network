@@ -27,7 +27,7 @@
                         <small>Vendor: {{$getVendor->user_code}}<strong></strong></small>
                 </div>
 
-                @if ($getData->status == 1 && $getData->buy_metode == 3)
+                @if ($getDataMaster->status == 1 && $getDataMaster->buy_metode == 3)
                 <div class="card shadow rounded bg-light p-3 mb-3">
                     <div id="verification-process" class="row p-3">
                         <img src="/image/magnifying-glass-verifying.gif" style="margin: auto; max-width: 80%;" alt="">
