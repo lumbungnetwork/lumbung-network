@@ -4761,7 +4761,7 @@ class MemberController extends Controller
 
         $product = (object) array(
             'buyer_sku_code' => $getData['data']['buyer_sku_code'],
-            'desc' => $getData['data']['desc'],
+            'desc' => $getData['data']['buyer_sku_code'],
             'real_price' => $real_price,
             'price' => $price,
             'ref_id' => $ref_id
