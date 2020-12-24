@@ -183,7 +183,6 @@
     var no_hp = '{{$getData['customer_no']}}';
     var vendor_id = $("#id_get_id").val();
     var buyer_sku_code = '{{$getData['buyer_sku_code']}}';
-    var ref_id = '{{$getData['ref_id']}}';
     var price = '{{$selling_price}}';
     var product_name = '{{$nama}}';
 
@@ -210,7 +209,7 @@
 
             $.ajax({
                 type: "GET",
-                url: "{{ URL::to('/') }}/m/check-order-postpaid?no_hp="+no_hp+"&product_name="+product_name+"&vendor_id="+vendor_id+"&price="+price+"&buyer_sku_code="+buyer_sku_code+"&ref_id="+ref_id+"&type={{$type}}",
+                url: "{{ URL::to('/') }}/m/check-order-postpaid?no_hp="+no_hp+"&product_name="+product_name+"&vendor_id="+vendor_id+"&price="+price+"&buyer_sku_code="+buyer_sku_code+"&type={{$type}}",
                 success: function(url){
                     Swal.fire({
                         html: url,
@@ -224,7 +223,7 @@
         function checkVendorPay() {
             $.ajax({
                 type: "GET",
-                url: "{{ URL::to('/') }}/m/confirm-vendor-quickbuy-postpaid?no_hp="+no_hp+"&product_name="+product_name+"&price="+price+"&buyer_sku_code="+buyer_sku_code+"&ref_id="+ref_id+"&type={{$type}}",
+                url: "{{ URL::to('/') }}/m/confirm-vendor-quickbuy-postpaid?no_hp="+no_hp+"&product_name="+product_name+"&price="+price+"&buyer_sku_code="+buyer_sku_code+"&type={{$type}}",
                 success: function(url){
                     Swal.fire({
                         html: url,

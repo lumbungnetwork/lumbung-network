@@ -4695,12 +4695,14 @@ class MemberController extends Controller
         }
     }
 
-    public function getProductBySKUPostpaid($type, $buyer_sku_code, $customer_no, $ref_id)
+    public function getProductBySKUPostpaid($type, $buyer_sku_code, $customer_no)
     {
         $modelMember = new Member;
+        $modelPin = new Pin;
         $getDataAPI = $modelMember->getDataAPIMobilePulsa();
         $username   = $getDataAPI->username;
         $apiKey   = $getDataAPI->api_key;
+        $ref_id = $modelPin->getCodePPOBRef($type);
         $sign = md5($username . $apiKey . $ref_id);
         $array = array(
             'commands' => 'inq-pasca',
@@ -4718,42 +4720,43 @@ class MemberController extends Controller
             Alert::warning('Oops!', 'Periksa kembali nomor yang anda masukkan')->persistent(true);
             return redirect()->back();
         }
-        dd($getData);
+
+        $data_price = $getData['data']['selling_price'];
 
         //BPJS
         if ($type == 4) {
-            $price = $getData['data']['selling_price'];
-            $real_price = $getData['data']['selling_price'] - 700;
+            $price = $data_price;
+            $real_price = $data_price - 700;
         }
 
         //PLN
         if ($type == 5) {
-            $price = $getData['data']['selling_price'] + 500;
-            $real_price = $getData['data']['selling_price'] - 1000;
+            $price = $data_price + 500;
+            $real_price = $data_price - 1000;
         }
 
         //HP & Telkom
         if ($type == 6 || $type == 7) {
-            $price = $getData['data']['selling_price'] + 1000;
-            $real_price = $getData['data']['selling_price'] - 100;
+            $price = $data_price + 1000;
+            $real_price = $data_price - 100;
         }
 
         //PDAM
         if ($type == 8) {
-            $price = $getData['data']['selling_price'] + 800;
-            $real_price = $getData['data']['selling_price'];
+            $price = $data_price + 800;
+            $real_price = $data_price;
         }
 
         //PGN
         if ($type == 9) {
-            $price = $getData['data']['selling_price'] + 1000;
-            $real_price = $getData['data']['selling_price'];
+            $price = $data_price + 1000;
+            $real_price = $data_price;
         }
 
         //Multifinance
         if ($type == 10) {
-            $price = $getData['data']['selling_price'] + 5000;
-            $real_price = $getData['data']['selling_price'] - 2600;
+            $price = $data_price + 5000;
+            $real_price = $data_price - 2600;
         }
 
         $product = (object) array(
@@ -5548,7 +5551,7 @@ class MemberController extends Controller
         if ($type >= 1 && $type < 4 || $type >= 21 && $type < 29) {
             $productData = $this->getProductBySKUPrepaid($type, $buyer_sku_code);
         } elseif ($type >= 4 && $type < 11) {
-            $productData = $this->getProductBySKUPostpaid($type, $buyer_sku_code, $request->no_hp, $request->ref_id);
+            $productData = $this->getProductBySKUPostpaid($type, $buyer_sku_code, $request->no_hp);
         }
 
 
@@ -5592,7 +5595,7 @@ class MemberController extends Controller
         if ($type >= 1 && $type < 4 || $type >= 21 && $type < 29) {
             $productData = $this->getProductBySKUPrepaid($type, $buyer_sku_code);
         } elseif ($type >= 4 && $type < 11) {
-            $productData = $this->getProductBySKUPostpaid($type, $buyer_sku_code, $request->no_hp, $request->ref_id);
+            $productData = $this->getProductBySKUPostpaid($type, $buyer_sku_code, $request->no_hp);
         }
 
         $dataInsert = array(
