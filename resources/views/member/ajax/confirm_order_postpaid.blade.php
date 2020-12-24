@@ -22,7 +22,8 @@
             <div class="col-12">
                 <div class="form-group">
                     <label>Tagihan</label>
-                    <input type="text" class="form-control" readonly="" name="price" value="{{$data->price}}">
+                    <input type="text" class="form-control" readonly="" name="price"
+                        value="Rp{{number_format($data->price)}}">
                 </div>
             </div>
         </div>

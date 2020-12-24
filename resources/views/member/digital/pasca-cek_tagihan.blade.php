@@ -96,7 +96,8 @@
                         <div class="col-xs-4 col-md-12 col-lg-12 col-xl-12">
                             <fieldset class="form-group">
                                 <label>Tagihan</label>
-                                <input type="text" class="form-control" autocomplete="off" value="Rp{{$selling_price}}">
+                                <input type="text" class="form-control" autocomplete="off"
+                                    value="Rp{{number_format($selling_price)}}">
                             </fieldset>
                         </div>
                     </div>

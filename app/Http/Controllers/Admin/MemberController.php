@@ -4718,6 +4718,7 @@ class MemberController extends Controller
             Alert::warning('Oops!', 'Periksa kembali nomor yang anda masukkan')->persistent(true);
             return redirect()->back();
         }
+        dd($getData);
 
         //BPJS
         if ($type == 4) {
