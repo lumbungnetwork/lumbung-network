@@ -84,14 +84,11 @@ class PPOBexecuteJob implements ShouldQueue
         $url = $getDataAPI->master_url . '/v1/transaction';
         $json = json_encode($array);
         $cek = $modelMember->getAPIurlCheck($url, $json);
-        Log::debug($cek);
         $arrayData = json_decode($cek, true);
-        Log::debug($arrayData);
-        return;
-
 
         if ($arrayData == null) {
-            dd('stopped because Data from DF is null');
+            Log::debug('stopped because Data from DF is null');
+            die();
         }
 
         if ($arrayData['data']['status'] == 'Pending') {
@@ -239,10 +236,12 @@ class PPOBexecuteJob implements ShouldQueue
         end:
         if ($arrayData['data']['status'] == 'Pending') {
             $dataUpdate = array(
-                'vendor_cek' => $cek
+                'vendor_cek' => $cek,
+                'vendor_approve' => 1
             );
             $modelPin->getUpdatePPOB('id', $getDataMaster->id, $dataUpdate);
-            dd('Stopped with status Pending');
+            Log::debug('stopped because status Pending');
+            die();
         }
     }
 }
