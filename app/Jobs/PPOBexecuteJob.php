@@ -13,6 +13,7 @@ use App\Model\Pin;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Config;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Log;
 
 class PPOBexecuteJob implements ShouldQueue
 {
@@ -83,7 +84,11 @@ class PPOBexecuteJob implements ShouldQueue
         $url = $getDataAPI->master_url . '/v1/transaction';
         $json = json_encode($array);
         $cek = $modelMember->getAPIurlCheck($url, $json);
+        Log::debug($cek);
         $arrayData = json_decode($cek, true);
+        Log::debug($arrayData);
+        return;
+
 
         if ($arrayData == null) {
             dd('stopped because Data from DF is null');

@@ -15,7 +15,7 @@ class DropMoreUnusedColumnsFromUsers extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn(['total_kiri', 'total_kanan', 'kode_pos', 'ktp', 'upgrade_at', 'profile_updated_at', 'grace_period', 'grace_period_at', 'is_vip']);
-            $table->tinyInteger('affiliate');
+            $table->tinyInteger('affiliate')->default('0');
         });
     }
 

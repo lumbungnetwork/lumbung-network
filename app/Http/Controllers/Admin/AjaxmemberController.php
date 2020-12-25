@@ -2524,7 +2524,8 @@ class AjaxmemberController extends Controller
                             $dataUpdate = array(
                                 'status' => 1,
                                 'buy_metode' => 3,
-                                'tron_transfer' => $hash
+                                'tron_transfer' => $hash,
+                                'confirm_at' => date('Y-m-d H:i:s')
                             );
                             $modelPin->getUpdatePPOB('id', $masterSalesID, $dataUpdate);
 
