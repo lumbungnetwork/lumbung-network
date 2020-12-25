@@ -147,11 +147,11 @@
 
                     @if($getDataMaster->status == 2)
                     <p class="card-text">Status</p>
+                    <dd class="text-success">Transaksi Tuntas</dd>
                     <div class="row">
                         <div class="col-md-12">
                             @if($getDataMaster->buy_metode == 1)
                             <dd>Pembayaran Tunai</dd>
-                            <dd class="text-success">Transaksi Tuntas</dd>
                             @endif
 
                             @if($getDataMaster->buy_metode == 3)
