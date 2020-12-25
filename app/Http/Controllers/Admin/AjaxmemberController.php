@@ -2477,6 +2477,7 @@ class AjaxmemberController extends Controller
         if ($request->buy_method == 1) {
             $dataUpdate = array(
                 'status' => 1,
+                'buy_metode' => 1,
                 'confirm_at' => date('Y-m-d H:i:s')
             );
             $modelPin->getUpdatePPOB('id', $masterSalesID, $dataUpdate);

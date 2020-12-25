@@ -95,7 +95,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12">
-                                            @if($getDataMaster->buy_metode == 1)
+                                            @if($getDataMaster->buy_metode >= 1)
                                             @if($getDataMaster->status == 0)
                                             <a class="btn btn-dark"
                                                 href="{{ URL::to('/') }}/m/list/vppob-transaction">Kembali</a>
