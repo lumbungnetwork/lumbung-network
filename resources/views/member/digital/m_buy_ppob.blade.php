@@ -38,7 +38,7 @@
                 </div>
                 @endif
 
-                <div class="rounded-lg bg-white p-3 mb-3">
+                @if($getDataMaster->status < 2) <div class="rounded-lg bg-white p-3 mb-3">
                     <h6>Pembelian Produk</h6>
                     <div class="row">
                         <div class="col-12">
@@ -52,238 +52,239 @@
                         </div>
 
                     </div>
+            </div>
+            @endif
+
+            <div class="rounded-lg bg-white p-3 mb-3">
+                @if($getDataMaster->status == 0)
+                <p class="card-text">Metode Pembayaran</p>
+                <div class="accordion mt-2" id="accordionExample">
+                    @if($getDataMaster->buy_metode == 0)
+                    <div class="card">
+                        <div class="card-header" id="headingOne">
+                            <h1 class="mb-0">
+                                <button class="btn btn-outline-primary btn-lg" id="tunaibutton" type="button"
+                                    data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
+                                    aria-controls="collapseOne">
+                                    Bayar Tunai
+                                </button>
+                            </h1>
+                        </div>
+
+                        <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
+                            data-parent="#accordionExample">
+                            <div class="card-body">
+                                <div class="radio radio-primary">
+                                    <input type="radio" name="radio" id="radio1" value="1">
+                                    <label for="radio1">
+
+                                    </label>
+                                </div>
+                                <small class="text-info">Pembayaran Tunai langsung kepada penjual, memerlukan
+                                    konfirmasi
+                                    manual oleh penjual setelah
+                                    pembayaran lunas.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" id="headingTwo">
+                            <h1 class="mb-0">
+                                <button class="btn btn-outline-warning btn-lg" id="eidrbutton" type="button"
+                                    data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false"
+                                    aria-controls="collapseTwo">
+                                    Bayar via eIDR
+                                </button>
+                            </h1>
+                        </div>
+                        <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo"
+                            data-parent="#accordionExample">
+                            <div class="card-body">
+                                <div class="radio radio-primary">
+                                    <input type="radio" name="radio" id="radio2" value="3" checked>
+                                    <label for="radio2">
+                                        Transfer eIDR ke alamat ini:
+                                        <br>
+                                        <input size="50" type="text" id="eidr-addr"
+                                            style="border: 0; font-size:9.5px; font-weight:200;"
+                                            value="TC1o89VSHMSPno2FE6SgoCsuy8i4mVSWge" readonly>
+                                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                            onclick="copy('eidr-addr')">Copy</button>
+                                    </label>
+                                    <small class="text-info">Terkonfirmasi otomatis.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
                 </div>
+                @endif
 
-                <div class="rounded-lg bg-white p-3 mb-3">
-                    @if($getDataMaster->status == 0)
-                    <p class="card-text">Metode Pembayaran</p>
-                    <div class="accordion mt-2" id="accordionExample">
-                        @if($getDataMaster->buy_metode == 0)
-                        <div class="card">
-                            <div class="card-header" id="headingOne">
-                                <h1 class="mb-0">
-                                    <button class="btn btn-outline-primary btn-lg" id="tunaibutton" type="button"
-                                        data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
-                                        aria-controls="collapseOne">
-                                        Bayar Tunai
-                                    </button>
-                                </h1>
-                            </div>
-
-                            <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
-                                data-parent="#accordionExample">
-                                <div class="card-body">
-                                    <div class="radio radio-primary">
-                                        <input type="radio" name="radio" id="radio1" value="1">
-                                        <label for="radio1">
-
-                                        </label>
-                                    </div>
-                                    <small class="text-info">Pembayaran Tunai langsung kepada penjual, memerlukan
-                                        konfirmasi
-                                        manual oleh penjual setelah
-                                        pembayaran lunas.</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-header" id="headingTwo">
-                                <h1 class="mb-0">
-                                    <button class="btn btn-outline-warning btn-lg" id="eidrbutton" type="button"
-                                        data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false"
-                                        aria-controls="collapseTwo">
-                                        Bayar via eIDR
-                                    </button>
-                                </h1>
-                            </div>
-                            <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo"
-                                data-parent="#accordionExample">
-                                <div class="card-body">
-                                    <div class="radio radio-primary">
-                                        <input type="radio" name="radio" id="radio2" value="3" checked>
-                                        <label for="radio2">
-                                            Transfer eIDR ke alamat ini:
-                                            <br>
-                                            <input size="50" type="text" id="eidr-addr"
-                                                style="border: 0; font-size:9.5px; font-weight:200;"
-                                                value="TC1o89VSHMSPno2FE6SgoCsuy8i4mVSWge" readonly>
-                                            <button type="button" class="btn btn-sm btn-outline-primary"
-                                                onclick="copy('eidr-addr')">Copy</button>
-                                        </label>
-                                        <small class="text-info">Terkonfirmasi otomatis.</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                @if($getDataMaster->status == 1)
+                <p class="card-text">Status</p>
+                <div class="row">
+                    <div class="col-md-12">
+                        @if($getDataMaster->buy_metode == 1)
+                        <dd>Pembayaran Tunai</dd>
+                        <dd><em>Menunggu Konfirmasi dari Vendor <br>(setelah pembayaran dilunasi)</em></dd>
                         @endif
                     </div>
-                    @endif
+                </div>
 
-                    @if($getDataMaster->status == 1)
-                    <p class="card-text">Status</p>
-                    <div class="row">
-                        <div class="col-md-12">
-                            @if($getDataMaster->buy_metode == 1)
-                            <dd>Pembayaran Tunai</dd>
-                            <dd><em>Menunggu Konfirmasi dari Vendor <br>(setelah pembayaran dilunasi)</em></dd>
-                            @endif
-                        </div>
+                @endif
+
+                @if($getDataMaster->status == 2)
+                <p class="card-text">Status</p>
+                <div class="row">
+                    <div class="col-md-12">
+                        @if($getDataMaster->buy_metode == 1)
+                        <dd>Pembayaran Tunai</dd>
+                        <dd class="text-success">Transaksi Tuntas</dd>
+                        @endif
+
+                        @if($getDataMaster->buy_metode == 3)
+                        <dd>Pembayaran via eIDR</dd>
+                        <dd class="text-success">Transaksi Tuntas</dd>
+                        <div id="finalHash"></div>
+                        @endif
                     </div>
+                </div>
 
-                    @endif
+                @endif
 
-                    @if($getDataMaster->status == 2)
-                    <p class="card-text">Status</p>
-                    <div class="row">
-                        <div class="col-md-12">
-                            @if($getDataMaster->buy_metode == 1)
-                            <dd>Pembayaran Tunai</dd>
-                            <dd class="text-success">Transaksi Tuntas</dd>
-                            @endif
+                @if($getDataMaster->status == 10)
+                <p class="card-text">Status</p>
+                <div class="row">
+                    <div class="col-md-12">
 
-                            @if($getDataMaster->buy_metode == 3)
-                            <dd>Pembayaran via eIDR</dd>
-                            <dd class="text-success">Transaksi Tuntas</dd>
-                            <div id="finalHash"></div>
-                            @endif
-                        </div>
+                        <dd class="text-danger">Transaksi Batal</dd>
                     </div>
+                </div>
 
-                    @endif
+                @endif
 
-                    @if($getDataMaster->status == 10)
-                    <p class="card-text">Status</p>
-                    <div class="row">
+                @if($getDataMaster->return_buy != null)
+                <div class="col-sm-12 rounded-lg shadow-sm p-2">
+                    @php
+                    $return_buy = json_decode($getDataMaster->return_buy, true);
+                    @endphp
+
+                    <p class="card-text">Data Pesanan:</p>
+
+                    <div class="row" style="margin-bottom: 15px;">
                         <div class="col-md-12">
+                            {{$getDataMaster->message}}
+                            <br>
+                            No Pel: {{$getDataMaster->product_name}}
+                            @if($getDataMaster->type > 3 && $getDataMaster->type < 21) <br>
+                                a/n: {{$return_buy['data']['customer_name']}}
+                                @endif
 
-                            <dd class="text-danger">Transaksi Batal</dd>
-                        </div>
-                    </div>
-
-                    @endif
-
-                    @if($getDataMaster->return_buy != null)
-                    <div class="col-sm-12 rounded-lg shadow-sm p-2">
-                        @php
-                        $return_buy = json_decode($getDataMaster->return_buy, true);
-                        @endphp
-
-                        <p class="card-text">Data Pesanan:</p>
-
-                        <div class="row" style="margin-bottom: 15px;">
-                            <div class="col-md-12">
-                                {{$getDataMaster->message}}
+                                {{-- PDAM & PLN Pasca --}}
+                                @if ($getDataMaster->type == 8)
+                                @if(isset($return_buy['data']['desc']['alamat']))
                                 <br>
-                                No Pel: {{$getDataMaster->product_name}}
-                                @if($getDataMaster->type > 3 && $getDataMaster->type < 21) <br>
-                                    a/n: {{$return_buy['data']['customer_name']}}
-                                    @endif
+                                Alamat: {{$return_buy['data']['desc']['alamat']}}
+                                @endif
+                                @endif
+                                @if ($getDataMaster->type == 8 || $getDataMaster->type == 5)
+                                <br>
+                                <br>
+                                Detail:
+                                <br>
+                                Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan']}}
+                                <br>
+                                @foreach ($return_buy['data']['desc']['detail'] as $detail)
+                                <br>
+                                Periode Tagihan: {{date('M Y', strtotime($detail['periode']))}}
+                                <br>
+                                Meter Awal: {{$detail['meter_awal']}}
+                                <br>
+                                Meter Akhir: {{$detail['meter_akhir']}}
+                                <br>
+                                Denda: {{$detail['denda']}}
+                                <br>
 
-                                    {{-- PDAM & PLN Pasca --}}
-                                    @if ($getDataMaster->type == 8)
-                                    @if(isset($return_buy['data']['desc']['alamat']))
-                                    <br>
-                                    Alamat: {{$return_buy['data']['desc']['alamat']}}
-                                    @endif
-                                    @endif
-                                    @if ($getDataMaster->type == 8 || $getDataMaster->type == 5)
-                                    <br>
-                                    <br>
-                                    Detail:
-                                    <br>
-                                    Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan']}}
-                                    <br>
-                                    @foreach ($return_buy['data']['desc']['detail'] as $detail)
-                                    <br>
-                                    Periode Tagihan: {{date('M Y', strtotime($detail['periode']))}}
-                                    <br>
-                                    Meter Awal: {{$detail['meter_awal']}}
-                                    <br>
-                                    Meter Akhir: {{$detail['meter_akhir']}}
-                                    <br>
-                                    Denda: {{$detail['denda']}}
-                                    <br>
+                                @endforeach
+                                @endif
 
-                                    @endforeach
+                                {{-- PLN Prepaid --}}
+                                @if ($getDataMaster->type == 3)
+                                <?php $separate = explode('/', $return_buy['data']['sn']) ?>
+                                <br>
+                                a/n: {{$separate[1]}}
+                                <br>
+                                Tipe/Daya: {{$separate[2]}} / {{$separate[3]}}
+                                <br>
+                                Jumlah KWh: {{$separate[4]}}
+                                <br>
+                                Kode Token:
+                                <br>
+                                <span style="font-size: 18px;">{{$separate[0]}}</span>
+
+                                @endif
+
+                                {{-- BPJS --}}
+                                @if ($getDataMaster->type == 7)
+                                <br>
+                                Alamat: {{$return_buy['data']['desc']['alamat']}}
+                                <br>
+                                Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan']}}
+                                <br>
+                                Jumlah Peserta: {{$return_buy['data']['desc']['jumlah_peserta']}}
+                                @endif
+
+                                {{-- Pulsa & Data --}}
+                                @if ($getDataMaster->type >= 1 && $getDataMaster->type < 3) <br>
+                                    <b>SN:</b> {{$return_buy['data']['sn']}}
                                     @endif
-
-                                    {{-- PLN Prepaid --}}
-                                    @if ($getDataMaster->type == 3)
-                                    <?php $separate = explode('/', $return_buy['data']['sn']) ?>
-                                    <br>
-                                    a/n: {{$separate[1]}}
-                                    <br>
-                                    Tipe/Daya: {{$separate[2]}} / {{$separate[3]}}
-                                    <br>
-                                    Jumlah KWh: {{$separate[4]}}
-                                    <br>
-                                    Kode Token:
-                                    <br>
-                                    <span style="font-size: 18px;">{{$separate[0]}}</span>
-
-                                    @endif
-
-                                    {{-- BPJS --}}
-                                    @if ($getDataMaster->type == 7)
-                                    <br>
-                                    Alamat: {{$return_buy['data']['desc']['alamat']}}
-                                    <br>
-                                    Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan']}}
-                                    <br>
-                                    Jumlah Peserta: {{$return_buy['data']['desc']['jumlah_peserta']}}
-                                    @endif
-
-                                    {{-- Pulsa & Data --}}
-                                    @if ($getDataMaster->type >= 1 && $getDataMaster->type < 3) <br>
-                                        <b>SN:</b> {{$return_buy['data']['sn']}}
-                                        @endif
-                            </div>
                         </div>
                     </div>
-                    @endif
-
-
                 </div>
+                @endif
 
-                <div class="rounded-lg bg-white p-3 mb-3">
-                    <div class="row">
-                        <div class="col-12">
-                            <small class="text-muted"><strong> Total pembayaran</strong></small>
-                            <h5>Rp{{number_format($getDataMaster->ppob_price)}}</h5>
-                            @if($getDataMaster->status == 0)
-                            <small class="text-muted"><strong> Saldo eIDR anda</strong></small>
-                            <h6 class="text-success" id="eIDRbalance">Rp{{number_format(0)}}</h6>
-                            @endif
-                        </div>
-                    </div>
-                    @if($getDataMaster->status == 0)
-                    <hr>
-                    <div class="row">
-                        <div class="col-xl-12">
-
-
-                            <button class="btn btn-danger" onclick="cancel()">Batal</button>
-                            <button class="btn btn-success" onclick="confirmPayment()">Konfirmasi</button>
-                            <button class="btn btn-info" id="tronwebPay" style="display: hidden;" disabled>via
-                                TronWeb</button>
-
-                        </div>
-                    </div>
-                    @endif
-
-                    @if($getDataMaster->status > 0)
-                    <div class="row">
-                        <div class="col-6"><a class="btn btn-dark" href="{{ URL::to('/') }}/m/list/buy-ppob">Kembali</a>
-                        </div>
-                    </div>
-                    @endif
-                </div>
 
             </div>
+
+            <div class="rounded-lg bg-white p-3 mb-3">
+                <div class="row">
+                    <div class="col-12">
+                        <small class="text-muted"><strong> Total pembayaran</strong></small>
+                        <h5>Rp{{number_format($getDataMaster->ppob_price)}}</h5>
+                        @if($getDataMaster->status == 0)
+                        <small class="text-muted"><strong> Saldo eIDR anda</strong></small>
+                        <h6 class="text-success" id="eIDRbalance">Rp{{number_format(0)}}</h6>
+                        @endif
+                    </div>
+                </div>
+                @if($getDataMaster->status == 0)
+                <hr>
+                <div class="row">
+                    <div class="col-xl-12">
+
+
+                        <button class="btn btn-danger" onclick="cancel()">Batal</button>
+                        <button class="btn btn-success" onclick="confirmPayment()">Konfirmasi</button>
+                        <button class="btn btn-info" id="tronwebPay" style="display: hidden;" disabled>via
+                            TronWeb</button>
+
+                    </div>
+                </div>
+                @endif
+
+                @if($getDataMaster->status > 0)
+                <div class="row">
+                    <div class="col-6"><a class="btn btn-dark" href="{{ URL::to('/') }}/m/list/buy-ppob">Kembali</a>
+                    </div>
+                </div>
+                @endif
+            </div>
+
         </div>
-        @include('layout.member.nav')
     </div>
-    <div class="overlay"></div>
+    @include('layout.member.nav')
+</div>
+<div class="overlay"></div>
 </div>
 
 @stop

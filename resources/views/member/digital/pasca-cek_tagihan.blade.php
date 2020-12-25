@@ -234,6 +234,26 @@
             });
         }
 
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            width: 200,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
+
+        function errorToast (message) {
+            Toast.fire({
+                icon: 'error',
+                title: message
+            })
+        }
+
 </script>
 @endif
 @stop

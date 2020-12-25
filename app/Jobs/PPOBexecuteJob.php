@@ -123,7 +123,8 @@ class PPOBexecuteJob implements ShouldQueue
                 $i++;
 
                 if ($arrayData == null) {
-                    dd('stopped because Data from DF is null (do while)');
+                    Log::debug('stopped because Data from DF is null (do while');
+                    die();
                 }
             } while ($arrayData['data']['status'] == 'Pending');
         }
