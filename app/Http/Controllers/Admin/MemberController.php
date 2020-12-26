@@ -34,6 +34,7 @@ use App\ValueObjects\Cart\ItemObject;
 use Intervention\Image\ImageManager;
 use GuzzleHttp\Client;
 use RealRashid\SweetAlert\Facades\Alert;
+use App\Jobs\SendRegistrationEmailJob;
 
 
 class MemberController extends Controller
@@ -141,15 +142,25 @@ class MemberController extends Controller
         }
         $modelMember = new Member;
         $sponsor_id = $dataUser->id;
+        $tron = null;
+        if ($request->affiliate == 1) {
+            $tron = 'TKrUoW4kfm2HVrAtpcW9sDBz4GmrbaJcBv';
+        }
+        if ($request->affiliate == 2) {
+            $tron = 'TSirYAN5YC4XfSHHNif62reLABUZ5FCA7L';
+        }
         $dataInsertNewMember = array(
             'name' => $request->user_code,
             'email' => $request->email,
             'password' => bcrypt($request->password),
             'hp' => $request->hp,
+            'tron' => $tron,
             'user_code' => $request->user_code,
+            'affiliate' => $request->affiliate,
             'sponsor_id' => $sponsor_id
         );
         $modelMember->getInsertUsers($dataInsertNewMember);
+
         $dataEmail = array(
             'email' => $request->email,
             'password' => $request->password,
@@ -157,13 +168,9 @@ class MemberController extends Controller
             'user_code' => $request->user_code
         );
         $emailSend = $request->email;
-        Mail::send('member.email.email', $dataEmail, function ($message) use ($emailSend) {
-            $message->to($emailSend, 'Lumbung Network Registration')
-                ->subject('Welcome to Lumbung Network');
-        });
-        return redirect()->back()
-            ->with('message', 'Registrasi member baru berhasil')
-            ->with('messageclass', 'success');
+        SendRegistrationEmailJob::dispatch($dataEmail, $emailSend)->onQueue('mail');
+        Alert::success('Berhasil', 'Registrasi Member baru ' . $request->user_code . ' telah berhasil!')->persistent(true);
+        return redirect()->back();
     }
 
     public function getStatusSponsor()

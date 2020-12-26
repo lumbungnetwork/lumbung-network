@@ -161,6 +161,18 @@
                         @if($dataUser->is_vendor == 1)
                         <a href="" class="btn btn-warning btn-sm btn-block rounded-pill"> Vendor </a>
                         @endif
+                        @if($dataUser->affiliate > 0)
+                        @php
+                        if($dataUser->affiliate == 1) {
+                        $affiliate = "KBB";
+                        } elseif ($dataUser->affiliate == 2) {
+                        $affiliate = "KBB-Pasif";
+                        }
+                        @endphp
+                        <a href="" class="btn btn-success btn-sm btn-block rounded-pill p-0"> <span
+                                style="font-size: 10px;">{{$affiliate}}</span> </a>
+                        @endif
+
                     </div>
                     <?php
                                                 $text = '*Belum memenuhi Belanja Wajib';

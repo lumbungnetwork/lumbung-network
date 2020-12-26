@@ -509,11 +509,11 @@ class AjaxmemberController extends Controller
             $canInsert = (object) array('can' => false,  'pesan' => 'Username sudah terpakai');
         }
         $data = (object) array(
-            'name' => $request->name,
             'email' => $request->email,
             'hp' => $request->hp,
             'username' => $request->user_code,
-            'password' => $request->password
+            'password' => $request->password,
+            'affiliate' => $request->affiliate
         );
         return view('member.ajax.confirm_add_sponsor')
             ->with('dataRequest', $data)

@@ -25,10 +25,6 @@ class Validation extends Model
             $canInsert = (object) array('can' => false, 'pesan' => 'Password tidak boleh kosong');
             return $canInsert;
         }
-        if ($request->name == null) {
-            $canInsert = (object) array('can' => false, 'pesan' => 'Nama tidak boleh kosong');
-            return $canInsert;
-        }
         if ($request->user_code == null) {
             $canInsert = (object) array('can' => false, 'pesan' => 'Username tidak boleh kosong');
             return $canInsert;
@@ -63,7 +59,7 @@ class Validation extends Model
             return $canInsert;
         }
         if (strlen($request->hp) < 9) {
-            $canInsert = (object) array('can' => false, 'pesan' => 'Nomor HP terlalu pendek minimal 8 digit');
+            $canInsert = (object) array('can' => false, 'pesan' => 'Nomor HP terlalu pendek minimal 9 digit');
             return $canInsert;
         }
         if (strlen($request->hp) > 13) {

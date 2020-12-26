@@ -201,6 +201,16 @@ return [
                 'balanceCooldown' => 3,
                 'tries' => 4,
             ],
+            'supervisor-3' => [
+                'connection' => 'redis',
+                'queue' => ['mail'],
+                'balance' => 'auto',
+                'minProcesses' => 1,
+                'maxProcesses' => 10,
+                'balanceMaxShift' => 1,
+                'balanceCooldown' => 3,
+                'tries' => 2,
+            ],
         ],
         'local' => [
             'supervisor-1' => [
