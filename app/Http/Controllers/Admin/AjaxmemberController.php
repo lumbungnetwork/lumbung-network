@@ -269,6 +269,43 @@ class AjaxmemberController extends Controller
         }
     }
 
+    public function postDepositLocalWalletPay(Request $request)
+    {
+        $dataUser = Auth::user();
+        $localWallet = LocalWallet::where('user_id', $dataUser->id)->first();
+        $tron = $this->getTronLocalWallet(Crypt::decryptString($localWallet->private_key));
+        $eIDRbalance = $tron->getTokenBalance(1002652, $localWallet->address, false) / 100;
+
+        $modelTrans = new Transaction;
+        $data = (object) array('id' => $dataUser->id);
+        $transactionData = $modelTrans->getDetailDepositTransactionsMember($request->id_trans, $data);
+        $deposit = $transactionData->price + $transactionData->unique_digit;
+
+        $to = 'TC1o89VSHMSPno2FE6SgoCsuy8i4mVSWge';
+
+        if ($deposit > $eIDRbalance) {
+            return response()->json(['success' => false, 'message' => 'Saldo eIDR tidak cukup!']);
+        } else {
+
+            $amount = $deposit * 100;
+            $tokenID = '1002652';
+            $from = $localWallet->address;
+            try {
+                $transaction = $tron->getTransactionBuilder()->sendToken($to, $amount, $tokenID, $from);
+                $signedTransaction = $tron->signTransaction($transaction);
+                $response = $tron->sendRawTransaction($signedTransaction);
+            } catch (TronException $e) {
+                die($e->getMessage());
+            }
+
+            if ($response['result'] == true) {
+                return response()->json(['success' => true, 'message' => $response['txid']]);
+            } else {
+                return response()->json(['success' => false, 'message' => 'Ada yang salah!']);
+            }
+        }
+    }
+
     public function postPayByLocalWallet(Request $request)
     {
         $dataUser = Auth::user();

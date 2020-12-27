@@ -1705,7 +1705,7 @@ class MemberController extends Controller
         $eIDRbalance = null;
         if ($localWallet != null) {
             if ($localWallet->is_active == 1) {
-                $tron = $this->getTronLocalWallet($localWallet->private_key);
+                $tron = $this->getTron();
                 $localAddress = $localWallet->address;
                 $eIDRbalance = $tron->getTokenBalance(1002652, $localWallet->address, false) / 100;
             }
@@ -4016,7 +4016,7 @@ class MemberController extends Controller
         $eIDRbalance = null;
         if ($localWallet != null) {
             if ($localWallet->is_active == 1) {
-                $tron = $this->getTronLocalWallet($localWallet->private_key);
+                $tron = $this->getTron();
                 $localAddress = $localWallet->address;
                 $eIDRbalance = $tron->getTokenBalance(1002652, $localWallet->address, false) / 100;
             }
@@ -4215,10 +4215,22 @@ class MemberController extends Controller
             $getPerusahaanBank = $modelBank->getBankPerusahaan();
             $getPerusahaanTron = $modelBank->getTronPerusahaan();
         }
+        $localWallet = LocalWallet::where('user_id', $dataUser->id)->first();
+        $localAddress = null;
+        $eIDRbalance = null;
+        if ($localWallet != null) {
+            if ($localWallet->is_active == 1) {
+                $tron = $this->getTron();
+                $localAddress = $localWallet->address;
+                $eIDRbalance = $tron->getTokenBalance(1002652, $localWallet->address, false) / 100;
+            }
+        }
         return view('member.digital.detail-deposit-trans')
             ->with('headerTitle', 'Deposit Transaction')
             ->with('bankPerusahaan', $getPerusahaanBank)
             ->with('tronPerusahaan', $getPerusahaanTron)
+            ->with('localAddress', $localAddress)
+            ->with('eIDRbalance', $eIDRbalance)
             ->with('getData', $getTrans)
             ->with('dataUser', $dataUser);
     }
@@ -4284,37 +4296,32 @@ class MemberController extends Controller
         $modelSettingTrans = new Transaction;
         $modelPin = new Pin;
         $getTrans = $modelSettingTrans->getDetailDepositTransactionsMember($request->id_trans, $dataUser);
-        $hash = $request->tron_transfer;
-        $sender = $request->sender;
+        $hash = $request->hash;
+        $check = $modelPin->checkUsedHashExist($hash, 'deposit_transaction', 'tron_transfer');
+        if ($check) {
+            Alert::error('Gagal', 'Hash Transaksi sudah pernah digunakan pada pembayaran sebelumnya');
+            return redirect()->back();
+        }
+        if (strlen($hash) != 64) {
+            Alert::error('Gagal', 'Hash Transaksi terdapat kesalahan ketik atau Typo!');
+            return redirect()->back();
+        }
+
         $amount = $getTrans->price + $getTrans->unique_digit;
         $timestamp = strtotime($getTrans->created_at);
         $id_trans = $request->id_trans;
         $user_id = $dataUser->id;
-
-        if (strlen($hash) != 64) {
-            return redirect()->back()
-                ->with('message', 'Hash Transaksi Salah atau Typo!')
-                ->with('messageclass', 'danger');
-        }
-
-        // $client = new Client();
-        // sleep(3);
-        // $response = $client->request('GET', 'https://apilist.tronscan.org/api/transaction-info', [
-        //     'query' => ['hash' => $hash]
-        // ]);
 
         sleep(3);
         $tron = $this->getTron();
         $response = $tron->getTransaction($hash);
 
         if (empty($response)) {
-            return redirect()->route('m_addDepositTransaction', [$id_trans])
-                ->with('message', 'Hash Transaksi Bermasalah!')
-                ->with('messageclass', 'danger');
+            Alert::error('Gagal', 'Hash Transaksi bermasalah!');
+            return redirect()->back();
         };
 
         $hashTime = $response['raw_data']['timestamp'];
-        $hashSender = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['owner_address']);
         $hashReceiver = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['to_address']);
         $hashAsset = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['asset_name']);
         $hashAmount = $response['raw_data']['contract'][0]['parameter']['value']['amount'];
@@ -4323,48 +4330,38 @@ class MemberController extends Controller
             if ($hashAmount / 100 == $amount) {
                 if ($hashAsset == '1002652') {
                     if ($hashReceiver == 'TC1o89VSHMSPno2FE6SgoCsuy8i4mVSWge') {
-                        if ($hashSender == $sender) {
-                            $dataUpdate = array(
-                                'status' => 2,
-                                'bank_perusahaan_id' => 9,
-                                'updated_at' => date('Y-m-d H:i:s'),
-                                'is_tron' => 1,
-                                'tron_transfer' => $hash
-                            );
-                            $modelSettingTrans->getUpdateDepositTransaction('id', $id_trans, $dataUpdate);
-                            $memberDeposit = array(
-                                'user_id' => $user_id,
-                                'total_deposito' => $amount,
-                                'transaction_code' => $getTrans->transaction_code,
-                            );
-                            $modelPin->getInsertMemberDeposit($memberDeposit);
-                            return redirect()->route('m_listDepositTransactions')
-                                ->with('message', 'Proses Isi Deposit Vendor berhasil')
-                                ->with('messageclass', 'success');
-                        } else {
-                            return redirect()->route('m_addDepositTransaction', [$id_trans])
-                                ->with('message', 'Bukan Pengirim Yang Sebenarnya!')
-                                ->with('messageclass', 'danger');
-                        }
+                        $dataUpdate = array(
+                            'status' => 2,
+                            'bank_perusahaan_id' => 9,
+                            'updated_at' => date('Y-m-d H:i:s'),
+                            'is_tron' => 1,
+                            'tron_transfer' => $hash
+                        );
+                        $modelSettingTrans->getUpdateDepositTransaction('id', $id_trans, $dataUpdate);
+
+                        $memberDeposit = array(
+                            'user_id' => $user_id,
+                            'total_deposito' => $amount,
+                            'transaction_code' => $getTrans->transaction_code,
+                        );
+                        $modelPin->getInsertMemberDeposit($memberDeposit);
+                        Alert::success('Berhasil', 'Proses Isi Deposit Vendor Berhasil!');
+                        return redirect()->route('mainMyAccount');
                     } else {
-                        return redirect()->route('m_addDepositTransaction', [$id_trans])
-                            ->with('message', 'Alamat Tujuan Transfer Salah!')
-                            ->with('messageclass', 'danger');
+                        Alert::error('Gagal', 'Alamat Tujuan Transfer Salah!');
+                        return redirect()->back();
                     }
                 } else {
-                    return redirect()->route('m_addDepositTransaction', [$id_trans])
-                        ->with('message', 'Bukan Token eIDR yang benar!')
-                        ->with('messageclass', 'danger');
+                    Alert::error('Gagal', 'Bukan Token eIDR yang benar!');
+                    return redirect()->back();
                 }
             } else {
-                return redirect()->route('m_addDepositTransaction', [$id_trans])
-                    ->with('message', 'Nominal Transfer Salah!')
-                    ->with('messageclass', 'danger');
+                Alert::error('Gagal', 'Nominal Transfer Salah!');
+                return redirect()->back();
             }
         } else {
-            return redirect()->route('m_addDepositTransaction', [$id_trans])
-                ->with('message', 'Hash sudah terpakai!')
-                ->with('messageclass', 'danger');
+            Alert::error('Gagal', 'Time Traveler!');
+            return redirect()->back();
         }
     }
 
