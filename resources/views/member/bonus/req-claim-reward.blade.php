@@ -25,7 +25,7 @@
                 <div class="rounded-lg bg-white p-3 mb-3">
                     <div class="col-xl-12 col-xs-12">
                         <div class="card-box tilebox-two">
-                            <h6 class="text-muted text-uppercase m-b-15 m-t-10">Claimed Reward</h6>
+                            <h6 class="text-muted text-uppercase m-b-15 m-t-10">Reward Peringkat</h6>
                         </div>
                     </div>
                 </div>
@@ -43,7 +43,7 @@
                                     <h2 class="m-b-10">{{$dataMy->name}}</h2>
                                     <p class="m-b-10">
                                         <h2 class="m-b-10"><a href="{{ URL::to('/') }}/m/history/reward"
-                                                class="btn btn-success btn-sm">history reward</a></h2>
+                                                class="btn btn-success btn-sm">Reward history</a></h2>
                                     </p>
                                 </div>
                             </div>
@@ -67,9 +67,9 @@
                                     <h2 class="m-b-10">{{$getMyPeringkat->reward_detail}}</h2>
                                     <p class="m-b-10">
                                         <input type="hidden" id="reward_id" value="{{$getMyPeringkat->id}}">
-                                        <button type="submit" class="btn btn-secondary btn-sm" id="submitBtn"
+                                        <button type="submit" class="btn btn-primary btn-sm" id="submitBtn"
                                             data-toggle="modal" data-target="#confirmSubmit"
-                                            onClick="inputSubmit()">claimed</button>
+                                            onClick="inputSubmit()">Claim</button>
                                     </p>
                                 </div>
 
