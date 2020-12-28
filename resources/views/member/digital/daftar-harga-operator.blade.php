@@ -32,6 +32,16 @@
                     </div>
                     @endif
                     <div class="row">
+                        @if($type == 22 || $type == 27 || $type == 28)
+                        <div class="col-xl-12 col-xs-12">
+                            <fieldset class="form-group">
+                                <label for="no_hp">Masukan No. Kartu</label>
+                                <input type="text" inputmode="numeric" pattern="[0-9]*" class="form-control"
+                                    name="no_hp" id="no_hp" autocomplete="off"
+                                    placeholder="No. {{$daftarHarga[0]['brand']}}">
+                            </fieldset>
+                        </div>
+                        @else
                         <div class="col-xl-12 col-xs-12">
                             <fieldset class="form-group">
                                 <label for="no_hp">Masukan No. Tujuan</label>
@@ -40,6 +50,7 @@
                                     placeholder="No. {{$daftarHarga[0]['brand']}}">
                             </fieldset>
                         </div>
+                        @endif
 
 
                     </div>
@@ -242,14 +253,23 @@
             var vendor_id = $("#id_get_id").val();
             var product = $('input[type=radio][name=product]:checked').attr('value');
             var isChecked = $('input[type=radio][name=product]').is(':checked');
+
+            @if($type == 22 || $type == 27 || $type == 28)
+            if(no_hp == '') {
+                errorToast('Anda belum memasukkan No. Kartu');
+            return false;
+            }
+            @else
             if(no_hp == '') {
                 errorToast('Anda belum memasukkan No. HP');
-                return false;
+            return false;
             }
             if(no_hp.substring(0, 2) != '08') {
                 errorToast('No HP harus diawali 08...');
-                return false;
+            return false;
             }
+
+            @endif
             if(isChecked == false) {
                 errorToast('Anda belum memilih nominal');
                 return false;

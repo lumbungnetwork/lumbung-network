@@ -5318,7 +5318,6 @@ class MemberController extends Controller
             }
         }
         $daftarHarga = null;
-        $operatorName = null;
         $type = null;
         if ($operator == 1) {
             $daftarHarga = collect($gopay)->sortBy('product_name')->toArray();
