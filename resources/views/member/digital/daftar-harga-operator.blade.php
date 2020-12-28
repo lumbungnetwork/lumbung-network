@@ -34,10 +34,10 @@
                     <div class="row">
                         <div class="col-xl-12 col-xs-12">
                             <fieldset class="form-group">
-                                <label for="user_name">Masukan No. HP Tujuan</label>
+                                <label for="no_hp">Masukan No. Tujuan</label>
                                 <input type="text" inputmode="numeric" pattern="[0-9]*" class="form-control"
                                     name="no_hp" id="no_hp" autocomplete="off"
-                                    placeholder="No. HP {{$daftarHarga[0]['brand']}}">
+                                    placeholder="No. {{$daftarHarga[0]['brand']}}">
                             </fieldset>
                         </div>
 
