@@ -477,7 +477,7 @@ class AjaxmemberController extends Controller
                 try {
                     sleep(1);
                     $response = $tron->getTransaction($hash);
-                } catch (TronException $exception) {
+                } catch (Throwable $exception) {
                     $i++;;
                     continue;
                 }
@@ -2536,7 +2536,7 @@ class AjaxmemberController extends Controller
                 try {
                     sleep(1);
                     $response = $tron->getTransaction($hash);
-                } catch (TronException $exception) {
+                } catch (Throwable $exception) {
                     $i++;;
                     continue;
                 }
