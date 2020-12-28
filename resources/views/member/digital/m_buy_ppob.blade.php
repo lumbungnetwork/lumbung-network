@@ -425,7 +425,7 @@
                                 'info'
                                 )
                                 setTimeout(function() {
-                                    window.location.reload(true);
+                                    window.location.replace("{{ URL::to('/') }}/m/list/buy-ppob");
                                 }, 3000)
                             } else {
                                 Swal.fire(
