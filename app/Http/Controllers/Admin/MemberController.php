@@ -2732,9 +2732,11 @@ class MemberController extends Controller
             try {
                 sleep(1);
                 $response = $tron->getTransaction($hash);
-            } catch (Throwable $e) {
-                $i++;;
-                continue;
+            } catch (TronException $e) {
+                if ($e->getMessage() == 'Transaction not found') {
+                    $i++;;
+                    continue;
+                }
             }
             break;
         } while ($i < 13);
