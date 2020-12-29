@@ -176,12 +176,13 @@
             $("#id_get_id").val(valNew[0]);
             $("#get_id-box").hide();
         }
+
+        var no_hp = '{{$getData['customer_no']}}';
+        var vendor_id = $("#id_get_id").val();
 </script>
 @if($getData['rc'] == '00')
 
 <script>
-    var no_hp = '{{$getData['customer_no']}}';
-    var vendor_id = $("#id_get_id").val();
     var buyer_sku_code = '{{$getData['buyer_sku_code']}}';
     var price = '{{$selling_price}}';
     var product_name = '{{$nama}}';
