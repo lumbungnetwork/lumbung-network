@@ -2727,25 +2727,9 @@ class MemberController extends Controller
         }
 
         $tron = $this->getTron();
-        $i = 1;
-        do {
-            try {
-                sleep(1);
-                $response = $tron->getTransaction($hash);
-            } catch (TronException $e) {
-                if ($e->getMessage() == 'Transaction not found') {
-                    $i++;;
-                    continue;
-                }
-            }
-            break;
-        } while ($i < 13);
 
-
-        if (empty($response)) {
-            Alert::error('Gagal', 'Hash Transaksi Bermasalah! Laporkan pada Admin');
-            return redirect()->back();
-        };
+        sleep(3);
+        $response = $tron->getTransaction($hash);
 
         $hashTime = $response['raw_data']['timestamp'];
         $hashSender = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['owner_address']);

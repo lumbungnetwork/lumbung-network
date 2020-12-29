@@ -472,23 +472,8 @@ class AjaxmemberController extends Controller
             }
 
             $tron = $this->getTron();
-            $i = 1;
-            do {
-                try {
-                    sleep(1);
-                    $response = $tron->getTransaction($hash);
-                } catch (Throwable $exception) {
-                    $i++;;
-                    continue;
-                }
-                break;
-            } while ($i < 13);
-
-
-            if (empty($response)) {
-                Alert::error('Gagal', 'Hash Transaksi Bermasalah! Laporkan pada Admin');
-                return redirect()->back();
-            };
+            sleep(3);
+            $response = $tron->getTransaction($hash);
 
             $hashTime = $response['raw_data']['timestamp'];
             $hashSender = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['owner_address']);
@@ -2531,22 +2516,8 @@ class AjaxmemberController extends Controller
             $timestamp = strtotime($getDataMaster->created_at) * 1000;
 
             $tron = $this->getTron();
-            $i = 1;
-            do {
-                try {
-                    sleep(1);
-                    $response = $tron->getTransaction($hash);
-                } catch (Throwable $exception) {
-                    $i++;;
-                    continue;
-                }
-                break;
-            } while ($i < 23);
-
-
-            if (empty($response)) {
-                return response()->json(['success' => false, 'message' => 'Ada gangguan pada sistem Blockchain, laporkan pada Admin!']);
-            };
+            sleep(3);
+            $response = $tron->getTransaction($hash);
 
             $hashTime = $response['raw_data']['timestamp'];
             $hashSender = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['owner_address']);
