@@ -202,7 +202,7 @@
         }
 
         function checkOrder() {
-            if(vendor_id == '') {
+            if(vendor_id == undefined) {
                 errorToast('Anda belum mengisi vendor tujuan belanja');
                 return false;
             }
