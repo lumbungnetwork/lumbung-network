@@ -296,6 +296,12 @@
             var no_hp = $("#no_hp").val();
             var product = $('input[type=radio][name=product]:checked').attr('value');
             var isChecked = $('input[type=radio][name=product]').is(':checked');
+            @if($type == 22 || $type == 27 || $type == 28)
+            if(no_hp == '') {
+                errorToast('Anda belum memasukkan No. Kartu');
+                return false;
+            }
+            @else
             if(no_hp == '') {
                 errorToast('Anda belum memasukkan No. HP');
                 return false;
@@ -304,6 +310,8 @@
                 errorToast('No HP harus diawali 08...');
                 return false;
             }
+
+            @endif
             if(isChecked == false) {
                 errorToast('Anda belum memilih nominal');
                 return false;
