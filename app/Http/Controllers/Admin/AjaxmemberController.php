@@ -29,8 +29,6 @@ use App\Jobs\PPOBexecuteJob;
 use Illuminate\Support\Facades\Crypt;
 use App\LocalWallet;
 use Illuminate\Support\Facades\Config;
-use IEXBase\TronAPI\Tron;
-use IEXBase\TronAPI\Provider\HttpProvider;
 use IEXBase\TronAPI\Exception\TronException;
 
 class AjaxmemberController extends Controller
@@ -472,8 +470,21 @@ class AjaxmemberController extends Controller
             }
 
             $tron = $this->getTron();
-            sleep(3);
-            $response = $tron->getTransaction($hash);
+            $i = 1;
+            do {
+                try {
+                    sleep(1);
+                    $response = $tron->getTransaction($hash);
+                } catch (TronException $e) {
+                    $i++;
+                    continue;
+                }
+                break;
+            } while ($i < 23);
+
+            if ($i == 23) {
+                return response()->json(['success' => false, 'message' => 'Hash Transaksi Bermasalah!']);
+            };
 
             $hashTime = $response['raw_data']['timestamp'];
             $hashSender = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['owner_address']);
@@ -2516,8 +2527,21 @@ class AjaxmemberController extends Controller
             $timestamp = strtotime($getDataMaster->created_at) * 1000;
 
             $tron = $this->getTron();
-            sleep(3);
-            $response = $tron->getTransaction($hash);
+            $i = 1;
+            do {
+                try {
+                    sleep(1);
+                    $response = $tron->getTransaction($hash);
+                } catch (TronException $e) {
+                    $i++;
+                    continue;
+                }
+                break;
+            } while ($i < 23);
+
+            if ($i == 23) {
+                return response()->json(['success' => false, 'message' => 'Hash Transaksi Bermasalah!']);
+            };
 
             $hashTime = $response['raw_data']['timestamp'];
             $hashSender = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['owner_address']);

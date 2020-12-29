@@ -35,6 +35,8 @@ use Intervention\Image\ImageManager;
 use GuzzleHttp\Client;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Jobs\SendRegistrationEmailJob;
+use Throwable;
+use IEXBase\TronAPI\Exception\TronException;
 
 
 class MemberController extends Controller
@@ -571,15 +573,22 @@ class MemberController extends Controller
                 ->with('messageclass', 'danger');
         }
 
-        sleep(3);
-
         $tron = $this->getTron();
-        $response = $tron->getTransaction($hash);
+        $i = 1;
+        do {
+            try {
+                sleep(1);
+                $response = $tron->getTransaction($hash);
+            } catch (TronException $e) {
+                $i++;
+                continue;
+            }
+            break;
+        } while ($i < 23);
 
-        if (empty($response)) {
-            return redirect()->back()
-                ->with('message', 'Hash Transaksi Bermasalah!')
-                ->with('messageclass', 'danger');
+        if ($i == 23) {
+            Alert::error('Gagal', 'Hash Transaksi Bermasalah!');
+            return redirect()->back();
         };
 
         $hashTime = $response['raw_data']['timestamp'];
@@ -2198,183 +2207,6 @@ class MemberController extends Controller
             ->with('messageclass', 'success');
     }
 
-    public function postAddRequestStockTron(Request $request)
-    {
-        $dataUser = Auth::user();
-        $onlyUser  = array(10);
-        if (!in_array($dataUser->user_type, $onlyUser)) {
-            return redirect()->route('mainDashboard');
-        }
-        if ($dataUser->package_id == null) {
-            return redirect()->route('m_newPackage');
-        }
-        if ($dataUser->is_stockist == 0) {
-            return redirect()->route('m_SearchStockist');
-        }
-
-        $modelSales = new Sales;
-        $bank_name = 'TronWeb';
-        $account_no = null;
-        $account_name = null;
-        $buy_metode = 0;
-        $hash = $request->transfer;
-        $sender = $request->sender;
-        $amount = $request->royalti;
-        $timestamp = $modelSales->getItemPurchaseMasterTimestamp($request->id_master);
-
-        if (strlen($hash) != 64) {
-            return redirect()->back()
-                ->with('message', 'Hash Transaksi Salah atau Typo!')
-                ->with('messageclass', 'danger');
-        }
-
-        sleep(3);
-
-        $tron = $this->getTron();
-        $response = $tron->getTransaction($hash);
-
-        if (empty($response)) {
-            return redirect()->back()
-                ->with('message', 'Hash Transaksi Bermasalah!')
-                ->with('messageclass', 'danger');
-        };
-
-        $hashTime = $response['raw_data']['timestamp'];
-        $hashSender = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['owner_address']);
-        $hashReceiver = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['to_address']);
-        $hashAsset = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['asset_name']);
-        $hashAmount = $response['raw_data']['contract'][0]['parameter']['value']['amount'];
-
-        if ($hashTime > $timestamp) {
-            if ($hashAmount == $amount * 100) {
-                if ($hashAsset == '1002652') {
-                    if ($hashReceiver == 'TZHYx9bVa4vQz8VpVvZtjwMb4AHqkUChiQ') {
-                        if ($hashSender == $sender) {
-                            $buy_metode = 4;
-                            $tron = $request->tron;
-                            $dataUpdate = array(
-                                'status' => 2,
-                                'buy_metode' => $buy_metode,
-                                'tron' => $tron,
-                                'tron_transfer' => $hash,
-                                'bank_name' => $bank_name,
-                                'account_no' => $account_no,
-                                'account_name' => $account_name,
-                                'metode_at' => date('Y-m-d H:i:s')
-                            );
-                            $modelSales->getUpdateItemPurchaseMaster('id', $request->id_master, $dataUpdate);
-                            return redirect()->route('m_StockistListPruchase')
-                                ->with('message', 'Konfirmasi request Input Stock berhasil')
-                                ->with('messageclass', 'success');
-                        } else {
-                            return redirect()->route('m_StockistDetailPruchase', [$request->id_master])
-                                ->with('message', 'Bukan Pengirim Yang Sebenarnya!')
-                                ->with('messageclass', 'danger');
-                        }
-                    } else {
-                        return redirect()->route('m_StockistDetailPruchase', [$request->id_master])
-                            ->with('message', 'Alamat Tujuan Transfer Salah!')
-                            ->with('messageclass', 'danger');
-                    }
-                } else {
-                    return redirect()->route('m_StockistDetailPruchase', [$request->id_master])
-                        ->with('message', 'Bukan Token eIDR yang benar!')
-                        ->with('messageclass', 'danger');
-                }
-            } else {
-                return redirect()->route('m_StockistDetailPruchase', [$request->id_master])
-                    ->with('message', 'Nominal Transfer Salah!')
-                    ->with('messageclass', 'danger');
-            }
-        } else {
-            return redirect()->route('m_StockistDetailPruchase', [$request->id_master])
-                ->with('message', 'Hash sudah terpakai!')
-                ->with('messageclass', 'danger');
-        }
-    }
-
-    public function postRejectRequestStock(Request $request)
-    {
-        $dataUser = Auth::user();
-        $onlyUser  = array(10);
-        if (!in_array($dataUser->user_type, $onlyUser)) {
-            return redirect()->route('mainDashboard');
-        }
-        if ($dataUser->package_id == null) {
-            return redirect()->route('m_newPackage');
-        }
-        if ($dataUser->is_stockist == 0) {
-            return redirect()->route('m_SearchStockist');
-        }
-        $modelSales = new Sales;
-        $id_master = $request->id_master;
-        $date = date('Y-m-d H:i:s');
-        $dataUpdate = array(
-            'status' => 10,
-            'deleted_at' => $date,
-        );
-        $modelSales->getUpdateItemPurchaseMaster('id', $id_master, $dataUpdate);
-        $dataUpdateItem = array(
-            'deleted_at' => $date,
-        );
-        $modelSales->getUpdateItemPurchase('master_item_id', $id_master, $dataUpdateItem);
-        return redirect()->route('m_StockistListPruchase')
-            ->with('message', 'Request Input Stock dibatalkan')
-            ->with('messageclass', 'success');
-    }
-
-    public function postAddTransferRoyalti(Request $request)
-    {
-        $dataUser = Auth::user();
-        $onlyUser  = array(10);
-        if (!in_array($dataUser->user_type, $onlyUser)) {
-            return redirect()->route('mainDashboard');
-        }
-        if ($dataUser->package_id == null) {
-            return redirect()->route('m_newPackage');
-        }
-        if ($dataUser->is_stockist == 0) {
-            return redirect()->route('m_SearchStockist');
-        }
-        if ($request->metode == 2) {
-            if ($request->royalti_tron_transfer == null) {
-                return redirect()->route('m_MemberDetailStockistReport', array($request->master_id))
-                    ->with('message', 'Anda belum memasukan Hash# transaksi transfer dari Blockchain TRON')
-                    ->with('messageclass', 'danger');
-            }
-        }
-        $modelSales = new Sales;
-        $id_master = $request->master_id;
-        $royalti_metode = $request->metode;
-        $royalti_tron = null;
-        $royalti_tron_transfer = null;
-        $royalti_bank_name = null;
-        $royalti_account_no = null;
-        $royalti_account_name = null;
-        if ($royalti_metode == 1) {
-            $royalti_bank_name = 'BRI';
-            $royalti_account_no = '033601001795562';
-            $royalti_account_name = 'PT LUMBUNG MOMENTUM BANGSA';
-        }
-        if ($royalti_metode == 2) {
-            $royalti_tron = 'TZHYx9bVa4vQz8VpVvZtjwMb4AHqkUChiQ';
-            $royalti_tron_transfer = $request->royalti_tron_transfer;
-        }
-        $dataUpdate = array(
-            'status' => 4,
-            'royalti_metode' => $royalti_metode,
-            'royalti_tron' => $royalti_tron,
-            'royalti_tron_transfer' => $royalti_tron_transfer,
-            'royalti_bank_name' => $royalti_bank_name,
-            'royalti_account_no' => $royalti_account_no,
-            'royalti_account_name' => $royalti_account_name
-        );
-        $modelSales->getUpdateMasterSales('id', $id_master, $dataUpdate);
-        return redirect()->route('m_MemberStockistReport')
-            ->with('message', 'Berhasil konfirmasi transfer royalti')
-            ->with('messageclass', 'success');
-    }
-
     public function getStockistMyStockPurchaseSisa()
     {
         $dataUser = Auth::user();
@@ -2727,9 +2559,22 @@ class MemberController extends Controller
         }
 
         $tron = $this->getTron();
+        $i = 1;
+        do {
+            try {
+                sleep(1);
+                $response = $tron->getTransaction($hash);
+            } catch (TronException $e) {
+                $i++;
+                continue;
+            }
+            break;
+        } while ($i < 23);
 
-        sleep(3);
-        $response = $tron->getTransaction($hash);
+        if ($i == 23) {
+            Alert::error('Gagal', 'Hash Transaksi Bermasalah!');
+            return redirect()->back();
+        };
 
         $hashTime = $response['raw_data']['timestamp'];
         $hashSender = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['owner_address']);
@@ -3432,293 +3277,6 @@ class MemberController extends Controller
             ->with('dataUser', $dataUser);
     }
 
-    public function getVendorInputPurchase()
-    {
-        $dataUser = Auth::user();
-        $onlyUser  = array(10);
-        if (!in_array($dataUser->user_type, $onlyUser)) {
-            return redirect()->route('mainDashboard');
-        }
-        if ($dataUser->package_id == null) {
-            return redirect()->route('m_newPackage');
-        }
-        if ($dataUser->is_vendor == 0) {
-            return redirect()->route('m_SearchVendor');
-        }
-        $modelSales = new Sales;
-        $modelMember = new Member;
-        $getData = null;
-        if ($dataUser->kode_daerah != null) {
-            $provinsi = $modelMember->getProvinsiIdByName($dataUser->provinsi);
-            $kabupaten = $modelMember->getKabupatenIdByName($dataUser->kota);
-            $getData = $modelSales->getAllPurchaseByRegion($provinsi->id_prov, $kabupaten->id_kab, 2); //type 1 = Stockist, 2 = Vendor
-        }
-        return view('member.sales.vendor_input_stock')
-            ->with('getData', $getData)
-            ->with('dataUser', $dataUser);
-    }
-
-    public function postVendorInputPurchase(Request $request)
-    {
-        $dataUser = Auth::user();
-        $onlyUser  = array(10);
-        if (!in_array($dataUser->user_type, $onlyUser)) {
-            return redirect()->route('mainDashboard');
-        }
-        if ($dataUser->package_id == null) {
-            return redirect()->route('m_newPackage');
-        }
-        if ($dataUser->is_vendor == 0) {
-            return redirect()->route('m_SearchVendor');
-        }
-        $modelSales = new Sales;
-        $arrayLog = json_decode($request->cart_list, true);
-        $total_price = 0;
-        foreach ($arrayLog as $rowTotPrice) {
-            $total_price += $rowTotPrice['product_quantity'] * $rowTotPrice['product_price'];
-        }
-        $dataInsertMasterStock = array(
-            'vendor_id' => $dataUser->id,
-            'price' => $total_price
-        );
-        $masterStock = $modelSales->getInsertVendorItemPurchaseMaster($dataInsertMasterStock);
-        foreach ($arrayLog as $row) {
-            $dataInsertItem = array(
-                'purchase_id' => $row['product_id'],
-                'vmaster_item_id' => $masterStock->lastID,
-                'vendor_id' => $dataUser->id,
-                'qty' => $row['product_quantity'],
-                'sisa' => $row['product_quantity'],
-                'price' => $row['product_price']
-            );
-            $modelSales->getInsertVItemPurchase($dataInsertItem);
-            $dataInsertStock = array(
-                'purchase_id' => $row['product_id'],
-                'user_id' => $dataUser->id,
-                'type' => 1,
-                'amount' => $row['product_quantity'],
-            );
-            $modelSales->getInsertVStock($dataInsertStock);
-        }
-        return redirect()->route('m_VendorDetailPruchase', [$masterStock->lastID])
-            ->with('message', 'Silakan pilih Metode Pembayaran anda, lalu Konfirmasi')
-            ->with('messageclass', 'success');
-    }
-
-    public function getVendorDetailRequestStock($id)
-    {
-        $dataUser = Auth::user();
-        $onlyUser  = array(10);
-        if (!in_array($dataUser->user_type, $onlyUser)) {
-            return redirect()->route('mainDashboard');
-        }
-        if ($dataUser->package_id == null) {
-            return redirect()->route('m_newPackage');
-        }
-        if ($dataUser->is_vendor == 0) {
-            return redirect()->route('m_SearchVendor');
-        }
-        $modelSales = new Sales;
-        $getDataMaster = $modelSales->getMemberMasterPurchaseVendorByID($id, $dataUser->id);
-        $getDataItem = $modelSales->getMemberItemPurchaseVendor($getDataMaster->id, $dataUser->id);
-        return view('member.sales.vendor_detail_purchase')
-            ->with('getDataMaster', $getDataMaster)
-            ->with('getDataItem', $getDataItem)
-            ->with('dataUser', $dataUser);
-    }
-
-    public function getVendorListPurchase()
-    {
-        $dataUser = Auth::user();
-        $onlyUser  = array(10);
-        if (!in_array($dataUser->user_type, $onlyUser)) {
-            return redirect()->route('mainDashboard');
-        }
-        if ($dataUser->package_id == null) {
-            return redirect()->route('m_newPackage');
-        }
-        if ($dataUser->is_vendor == 0) {
-            return redirect()->route('m_SearchVendor');
-        }
-        $modelSales = new Sales;
-        $getData = $modelSales->getMemberMasterPurchaseVendor($dataUser->id);
-        $dataAll = array();
-        if ($getData != null) {
-            foreach ($getData as $row) {
-                $detailAll = $modelSales->getMemberItemPurchaseVendor($row->id, $dataUser->id);
-                $dataAll[] = (object) array(
-                    'status' => $row->status,
-                    'created_at' => $row->created_at,
-                    'price' => $row->price,
-                    'id' => $row->id,
-                    'detail_all' => $detailAll
-                );
-            }
-        }
-        return view('member.sales.vendor_purchase')
-            ->with('getData', $dataAll)
-            ->with('dataUser', $dataUser);
-    }
-
-    public function postAddRequestVStock(Request $request)
-    {
-        $dataUser = Auth::user();
-        $onlyUser  = array(10);
-        if (!in_array($dataUser->user_type, $onlyUser)) {
-            return redirect()->route('mainDashboard');
-        }
-        if ($dataUser->package_id == null) {
-            return redirect()->route('m_newPackage');
-        }
-        if ($dataUser->is_vendor == 0) {
-            return redirect()->route('m_SearchVendor');
-        }
-        $modelSales = new Sales;
-        $tron = null;
-        $tron_transfer = null;
-        $bank_name = $request->bank_name;
-        $account_no = $request->account_no;
-        $account_name = $request->account_name;
-        $buy_metode = 2;
-        $dataUpdate = array(
-            'status' => 1,
-            'buy_metode' => $buy_metode,
-            'tron' => $tron,
-            'tron_transfer' => $tron_transfer,
-            'bank_name' => $bank_name,
-            'account_no' => $account_no,
-            'account_name' => $account_name,
-            'metode_at' => date('Y-m-d H:i:s')
-        );
-        $modelSales->getUpdateVendorItemPurchaseMaster('id', $request->id_master, $dataUpdate);
-        return redirect()->route('m_VendorListPruchase')
-            ->with('message', 'Konfirmasi request Vendor Input Stock berhasil')
-            ->with('messageclass', 'success');
-    }
-
-    public function postAddRequestVStockTron(Request $request)
-    {
-        $dataUser = Auth::user();
-        $onlyUser  = array(10);
-        if (!in_array($dataUser->user_type, $onlyUser)) {
-            return redirect()->route('mainDashboard');
-        }
-        if ($dataUser->package_id == null) {
-            return redirect()->route('m_newPackage');
-        }
-        if ($dataUser->is_vendor == 0) {
-            return redirect()->route('m_SearchVendor');
-        }
-        if ($request->transfer == null) {
-            return redirect()->route('m_VendorDetailPruchase', [$request->id_master])
-                ->with('message', 'Hash transaksi transfer dari Blockchain TRON belum diisi')
-                ->with('messageclass', 'danger');
-        }
-        $modelSales = new Sales;
-        $bank_name = 'TronWeb';
-        $account_no = null;
-        $account_name = null;
-        $buy_metode = 0;
-        $hash = $request->transfer;
-        $sender = $request->sender;
-        $amount = $request->royalti;
-        $timestamp = $modelSales->getVendorItemPurchaseMasterTimestamp($request->id_master);
-
-        sleep(3);
-
-        $tron = $this->getTron();
-        $response = $tron->getTransaction($hash);
-
-        if (empty($response)) {
-            return redirect()->back()
-                ->with('message', 'Hash Transaksi Bermasalah!')
-                ->with('messageclass', 'danger');
-        };
-
-        $hashTime = $response['raw_data']['timestamp'];
-        $hashSender = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['owner_address']);
-        $hashReceiver = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['to_address']);
-        $hashAsset = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['asset_name']);
-        $hashAmount = $response['raw_data']['contract'][0]['parameter']['value']['amount'];
-
-        if ($hashTime > $timestamp) {
-            if ($hashAmount == $amount * 100) {
-                if ($hashAsset == '1002652') {
-                    if ($hashReceiver == 'TZHYx9bVa4vQz8VpVvZtjwMb4AHqkUChiQ') {
-                        if ($hashSender == $sender) {
-                            $buy_metode = 4;
-                            $tron = $request->tron;
-                            $dataUpdate = array(
-                                'status' => 2,
-                                'buy_metode' => $buy_metode,
-                                'tron' => $tron,
-                                'tron_transfer' => $hash,
-                                'bank_name' => $bank_name,
-                                'account_no' => $account_no,
-                                'account_name' => $account_name,
-                                'metode_at' => date('Y-m-d H:i:s')
-                            );
-                            $modelSales->getUpdateVendorItemPurchaseMaster('id', $request->id_master, $dataUpdate);
-                            return redirect()->route('m_VendorListPruchase')
-                                ->with('message', 'Proses Input Stock Vendor berhasil')
-                                ->with('messageclass', 'success');
-                        } else {
-                            return redirect()->route('m_VendorListPruchase', [$request->id_master])
-                                ->with('message', 'Bukan Pengirim Yang Sebenarnya!')
-                                ->with('messageclass', 'danger');
-                        }
-                    } else {
-                        return redirect()->route('m_VendorListPruchase', [$request->id_master])
-                            ->with('message', 'Alamat Tujuan Transfer Salah!')
-                            ->with('messageclass', 'danger');
-                    }
-                } else {
-                    return redirect()->route('m_VendorListPruchase', [$request->id_master])
-                        ->with('message', 'Bukan Token eIDR yang benar!')
-                        ->with('messageclass', 'danger');
-                }
-            } else {
-                return redirect()->route('m_VendorListPruchase', [$request->id_master])
-                    ->with('message', 'Nominal Transfer Salah!')
-                    ->with('messageclass', 'danger');
-            }
-        } else {
-            return redirect()->route('m_VendorListPruchase', [$request->id_master])
-                ->with('message', 'Hash sudah terpakai!')
-                ->with('messageclass', 'danger');
-        }
-    }
-
-    public function postRejectRequestVStock(Request $request)
-    {
-        $dataUser = Auth::user();
-        $onlyUser  = array(10);
-        if (!in_array($dataUser->user_type, $onlyUser)) {
-            return redirect()->route('mainDashboard');
-        }
-        if ($dataUser->package_id == null) {
-            return redirect()->route('m_newPackage');
-        }
-        if ($dataUser->is_vendor == 0) {
-            return redirect()->route('m_SearchVendor');
-        }
-        $modelSales = new Sales;
-        $id_master = $request->id_master;
-        $date = date('Y-m-d H:i:s');
-        $dataUpdate = array(
-            'status' => 10,
-            'deleted_at' => $date,
-        );
-        $modelSales->getUpdateVendorItemPurchaseMaster('id', $id_master, $dataUpdate);
-        $dataUpdateItem = array(
-            'deleted_at' => $date,
-        );
-        $modelSales->getUpdateVItemPurchase('vmaster_item_id', $id_master, $dataUpdateItem);
-        return redirect()->route('m_StockistListPruchase')
-            ->with('message', 'Request Input Stock dibatalkan')
-            ->with('messageclass', 'success');
-    }
-
     public function getVendorMyStockPurchaseSisa()
     {
         $dataUser = Auth::user();
@@ -3789,167 +3347,6 @@ class MemberController extends Controller
             ->with('headerTitle', 'Report Belanja')
             ->with('getData', $getData)
             ->with('dataUser', $dataUser);
-    }
-
-    public function postMemberShopingVendor(Request $request)
-    {
-        $dataUser = Auth::user();
-        $onlyUser  = array(10);
-        if (!in_array($dataUser->user_type, $onlyUser)) {
-            return redirect()->route('mainDashboard');
-        }
-        if ($dataUser->package_id == null) {
-            return redirect()->route('m_newPackage');
-        }
-        $modelSales = new Sales;
-        $arrayLog = json_decode($request->cart_list, true);
-        $user_id = $dataUser->id;
-        $vendor_id = $request->vendor_id;
-        $is_vendor = 0;
-        $invoice = $modelSales->getCodeMasterSales($user_id);
-        $sale_date = date('Y-m-d');
-        $total_price = 0;
-        //cek takutnya kelebihan qty
-        foreach ($arrayLog as $rowCekQuantity) {
-            if ($rowCekQuantity['product_quantity'] > $rowCekQuantity['max_qty']) {
-                return redirect()->route('m_MemberShopingVendor', [$vendor_id])
-                    ->with('message', 'total keranjang ' . $rowCekQuantity['nama_produk'] . ' melebihi dari stok yang tersedia')
-                    ->with('messageclass', 'danger');
-            }
-            $cekQuota = $modelSales->getStockByPurchaseIdVendor($vendor_id, $rowCekQuantity['product_id']);
-            $jml_keluar = $modelSales->getSumStockVendor($vendor_id, $rowCekQuantity['product_id']);
-            $total_sisa = $cekQuota->total_qty - $jml_keluar;
-            if ($rowCekQuantity['product_quantity'] > $total_sisa) {
-                return redirect()->route('m_MemberShopingVendor', [$vendor_id])
-                    ->with('message', 'total keranjang ' . $rowCekQuantity['nama_produk'] . ' melebihi dari stok yang tersedia')
-                    ->with('messageclass', 'danger');
-            }
-        }
-        foreach ($arrayLog as $rowTotPrice) {
-            $total_price += $rowTotPrice['product_quantity'] * $rowTotPrice['product_price'];
-        }
-        $dataInsertMasterSales = array(
-            'user_id' => $user_id,
-            'vendor_id' => $vendor_id,
-            'is_vendor' => $is_vendor,
-            'invoice' => $invoice,
-            'total_price' => $total_price,
-            'sale_date' => $sale_date,
-        );
-        $insertMasterSales = $modelSales->getInsertVMasterSales($dataInsertMasterSales);
-        foreach ($arrayLog as $row) {
-            $dataInsert = array(
-                'user_id' => $user_id,
-                'vendor_id' => $vendor_id,
-                'is_vendor' => $is_vendor,
-                'purchase_id' => $row['product_id'],
-                'invoice' => $invoice,
-                'amount' => $row['product_quantity'],
-                'sale_price' => $row['product_quantity'] * $row['product_price'],
-                'sale_date' => $sale_date,
-                'vmaster_sales_id' => $insertMasterSales->lastID
-            );
-            $insertSales = $modelSales->getInsertVSales($dataInsert);
-            $dataInsertStock = array(
-                'purchase_id' => $row['product_id'],
-                'user_id' => $user_id,
-                'type' => 2,
-                'amount' => $row['product_quantity'],
-                'vsales_id' => $insertSales->lastID,
-                'vendor_id' => $vendor_id,
-            );
-            $modelSales->getInsertVStock($dataInsertStock);
-        }
-
-        return redirect()->route('m_MemberVPembayaran', [$insertMasterSales->lastID])
-            ->with('message', 'Silakan pilih metode pembayaran anda lalu Konfirmasi')
-            ->with('messageclass', 'success');
-    }
-
-    public function getMemberVPembayaran($id)
-    {
-        $dataUser = Auth::user();
-        $onlyUser  = array(10);
-        if (!in_array($dataUser->user_type, $onlyUser)) {
-            return redirect()->route('mainDashboard');
-        }
-        if ($dataUser->package_id == null) {
-            return redirect()->route('m_newPackage');
-        }
-        $modelSales = new Sales;
-        $modelMember = new Member;
-        $modelBank = new Bank;
-        $getDataMaster = $modelSales->getMemberPembayaranVMasterSales($id);
-        //klo kosong
-        $getDataSales = $modelSales->getMemberPembayaranVSales($getDataMaster->id);
-        $getVendor = $dataUser;
-        if ($dataUser->id != $getDataMaster->vendor_id) {
-            $getVendor = $modelMember->getUsers('id', $getDataMaster->vendor_id);
-            if ($getVendor->is_vendor == null) {
-                return redirect()->route('mainDashboard');
-            }
-        }
-        $getStockistBank = $modelBank->getBankMemberActive($getVendor);
-        return view('member.sales.m_vpembayaran')
-            ->with('headerTitle', 'Pembayaran')
-            ->with('getDataSales', $getDataSales)
-            ->with('getDataMaster', $getDataMaster)
-            ->with('getStockist', $getVendor)
-            ->with('getStockistBank', $getStockistBank)
-            ->with('dataUser', $dataUser);
-    }
-
-    public function postMemberVPembayaran(Request $request)
-    {
-        $dataUser = Auth::user();
-        $onlyUser  = array(10);
-        if (!in_array($dataUser->user_type, $onlyUser)) {
-            return redirect()->route('mainDashboard');
-        }
-        if ($dataUser->package_id == null) {
-            return redirect()->route('m_newPackage');
-        }
-        $modelSales = new Sales;
-        $tron = null;
-        $tron_transfer = null;
-        $bank_name = null;
-        $account_no = null;
-        $account_name = null;
-        $getStockistBank = null;
-        $buy_metode = 0;
-        $getDataMaster = $modelSales->getMemberPembayaranVMasterSales($request->master_sale_id);
-        if ($request->buy_metode == 1) {
-            $buy_metode = 1;
-        }
-        if ($request->buy_metode == 2) {
-            $buy_metode = 2;
-            $bank_name = $request->bank_name;
-            $account_no = $request->account_no;
-            $account_name = $request->account_name;
-        }
-        if ($request->buy_metode == 3) {
-            $buy_metode = 3;
-            $tron = $request->tron;
-            if ($request->tron_transfer == null) {
-                return redirect()->route('m_MemberVPembayaran', [$request->master_sale_id])
-                    ->with('message', 'Hash transaksi transfer dari Blockchain TRON belum diisi')
-                    ->with('messageclass', 'danger');
-            }
-            $tron_transfer = $request->tron_transfer;
-        }
-        $dataUpdate = array(
-            'status' => 1,
-            'buy_metode' => $buy_metode,
-            'tron' => $tron,
-            'tron_transfer' => $tron_transfer,
-            'bank_name' => $bank_name,
-            'account_no' => $account_no,
-            'account_name' => $account_name,
-        );
-        $modelSales->getUpdateVMasterSales('id', $request->master_sale_id, $dataUpdate);
-        return redirect()->route('m_historyVShoping')
-            ->with('message', 'Konfirmasi pembayaran berhasil.')
-            ->with('messageclass', 'success');
     }
 
     public function getHistoryVShoping(Request $request)
@@ -4298,12 +3695,21 @@ class MemberController extends Controller
         $id_trans = $request->id_trans;
         $user_id = $dataUser->id;
 
-        sleep(3);
         $tron = $this->getTron();
-        $response = $tron->getTransaction($hash);
+        $i = 1;
+        do {
+            try {
+                sleep(1);
+                $response = $tron->getTransaction($hash);
+            } catch (TronException $e) {
+                $i++;
+                continue;
+            }
+            break;
+        } while ($i < 23);
 
-        if (empty($response)) {
-            Alert::error('Gagal', 'Hash Transaksi bermasalah!');
+        if ($i == 23) {
+            Alert::error('Gagal', 'Hash Transaksi Bermasalah!');
             return redirect()->back();
         };
 
