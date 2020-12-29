@@ -178,7 +178,7 @@
         }
 
         var no_hp = '{{$getData['customer_no']}}';
-        var vendor_id = $("#id_get_id").val();
+
 </script>
 @if($getData['rc'] == '00')
 
@@ -203,6 +203,7 @@
         }
 
         function checkOrder() {
+            var vendor_id = $("#id_get_id").val();
             if(vendor_id == undefined) {
                 errorToast('Anda belum mengisi vendor tujuan belanja');
                 return false;
