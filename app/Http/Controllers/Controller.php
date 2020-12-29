@@ -19,8 +19,8 @@ class Controller extends BaseController
 
     public function getTron()
     {
-        $fullNode = new HttpProvider('https://api.trongrid.io');
-        $solidityNode = new HttpProvider('https://api.trongrid.io');
+        $fullNode = new HttpProvider('https://super.guildchat.io');
+        $solidityNode = new HttpProvider('https://solidity.guildchat.io');
         $eventServer = new HttpProvider('https://api.trongrid.io');
 
         try {
@@ -34,8 +34,8 @@ class Controller extends BaseController
 
     public function getTronLocalWallet($pk)
     {
-        $fullNode = new HttpProvider('https://api.trongrid.io');
-        $solidityNode = new HttpProvider('https://api.trongrid.io');
+        $fullNode = new HttpProvider('https://super.guildchat.io');
+        $solidityNode = new HttpProvider('https://solidity.guildchat.io');
         $eventServer = new HttpProvider('https://api.trongrid.io');
 
         try {

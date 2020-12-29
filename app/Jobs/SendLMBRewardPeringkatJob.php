@@ -15,6 +15,7 @@ use IEXBase\TronAPI\Tron;
 use IEXBase\TronAPI\Exception\TronException;
 use Illuminate\Support\Facades\Config;
 use GuzzleHttp\Client;
+use App\Http\Controllers\Controller;
 
 class SendLMBRewardPeringkatJob implements ShouldQueue
 {
@@ -40,22 +41,15 @@ class SendLMBRewardPeringkatJob implements ShouldQueue
      */
     public function handle()
     {
-        //prepare Tron
-        $fullNode = new HttpProvider('https://api.trongrid.io');
-        $solidityNode = new HttpProvider('https://api.trongrid.io');
-        $eventServer = new HttpProvider('https://api.trongrid.io');
-
         //Prepare Telegram
         $fuse = Config::get('services.telegram.rebuild');
         $tgAk = Config::get('services.telegram.lmb');
         $client = new Client;
 
-
-        try {
-            $tron = new Tron($fullNode, $solidityNode, $eventServer, $signServer = null, $explorer = null, $fuse);
-        } catch (TronException $e) {
-            exit($e->getMessage());
-        }
+        //prepare Tron
+        $controller = new Controller;
+        $tron = $controller->getTron();
+        $tron->setPrivateKey($fuse);
 
         //Get Claim Reward Data
         $modelBonus = new Bonus;

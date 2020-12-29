@@ -10,10 +10,9 @@ use Illuminate\Queue\SerializesModels;
 use App\Model\Sales;
 use App\User;
 use Illuminate\Support\Facades\Config;
-use IEXBase\TronAPI\Tron;
-use IEXBase\TronAPI\Provider\HttpProvider;
 use IEXBase\TronAPI\Exception\TronException;
 use GuzzleHttp\Client;
+use App\Http\Controllers\Controller;
 
 class ForwardShoppingPaymentJob implements ShouldQueue
 {
@@ -40,18 +39,13 @@ class ForwardShoppingPaymentJob implements ShouldQueue
     public function handle()
     {
         //prepare Tron
-        $fullNode = new HttpProvider('https://api.trongrid.io');
-        $solidityNode = new HttpProvider('https://api.trongrid.io');
-        $eventServer = new HttpProvider('https://api.trongrid.io');
         $fuse = Config::get('services.telegram.test');
         $tgAk = Config::get('services.telegram.eidr');
         $client = new Client;
 
-        try {
-            $tron = new Tron($fullNode, $solidityNode, $eventServer, $signServer = null, $explorer = null, $fuse);
-        } catch (TronException $e) {
-            exit($e->getMessage());
-        }
+        $controller = new Controller;
+        $tron = $controller->getTron();
+        $tron->setPrivateKey($fuse);
 
         //get Shopping Data
         $modelSales = new Sales;
