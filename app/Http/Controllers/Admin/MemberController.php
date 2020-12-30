@@ -146,11 +146,14 @@ class MemberController extends Controller
         $modelMember = new Member;
         $sponsor_id = $dataUser->id;
         $tron = null;
+        $is_tron = null;
         if ($request->affiliate == 1) {
             $tron = 'TKrUoW4kfm2HVrAtpcW9sDBz4GmrbaJcBv';
+            $is_tron = 1;
         }
         if ($request->affiliate == 2) {
             $tron = 'TSirYAN5YC4XfSHHNif62reLABUZ5FCA7L';
+            $is_tron = 1;
         }
         $dataInsertNewMember = array(
             'name' => $request->user_code,
@@ -158,6 +161,7 @@ class MemberController extends Controller
             'password' => bcrypt($request->password),
             'hp' => $request->hp,
             'tron' => $tron,
+            'is_tron' => $is_tron,
             'user_code' => $request->user_code,
             'affiliate' => $request->affiliate,
             'sponsor_id' => $sponsor_id

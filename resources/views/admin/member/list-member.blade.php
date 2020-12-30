@@ -22,7 +22,7 @@
     <?php //MENU CONTENT  ?>
     <div class="content">
         <div class="row">
-            <div class="col-6">
+            <div class="col-xs-12 col-md-6">
                 <div class="card">
                     <div class="card-body" style="min-height: auto;">
 
@@ -30,21 +30,21 @@
                             {{ csrf_field() }}
                             <div class="row">
                                 <div class="col-12">
-                                    <div class="ml-2 form-check form-check-inline">
+                                    <div class="ml-1 form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="selector" id="inlineRadio1"
-                                            value="1" style="margin-right: -30%;" checked>
-                                        <label class="form-check-label" for="inlineRadio1">Name</label>
-                                    </div>
-                                    <div class="ml-5 form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="selector" id="inlineRadio2"
-                                            value="2" style="margin-right: -20%;">
-                                        <label class="form-check-label" for="inlineRadio2">Tron Address</label>
+                                            value="1" checked>
+                                        <label class="form-check-label" for="inlineRadio1"
+                                            style="margin-left: -30px;">Name</label>
+                                        <input class="form-check-input ml-3" type="radio" name="selector"
+                                            id="inlineRadio2" value="2">
+                                        <label class="form-check-label" for="inlineRadio2"
+                                            style="margin-left: -30px;">Tron Address</label>
                                     </div>
                                 </div>
                                 <div class="col-xs-6 col-md-9">
                                     <div class="form-group">
                                         <input type="text" class="form-control" name="input"
-                                            placeholder="Minimal 3 karakter">
+                                            placeholder="Minimal 3 karakter" autocomplete="off">
                                     </div>
                                 </div>
                                 <div class="col-xs-6 col-md-3">
@@ -61,7 +61,7 @@
                 </div>
             </div>
 
-            <div class="col-6">
+            <div class="col-xs-12 col-md-6">
                 <div class="card">
                     <div class="card-body">
 
@@ -153,31 +153,31 @@
                                         $no = 0;
                                         ?>
                                     @foreach($getData as $row)
-                                    <?php
-                                            $no++;
-                                            $sp = 'Top 001';
-                                            if($row->sp_name != null){
-                                                $sp = $row->sp_name;
-                                            }
-                                            $active = 'non-aktif';
-                                            $label = 'danger';
-                                            if($row->is_active == 1){
-                                                $active= 'aktif';
-                                                $label = 'success';
-                                                $active_at = $row->active_at;
-                                                if($row->pin_activate_at != null){
-                                                    $active_at = $row->pin_activate_at;
-                                                }
-                                                if(strtotime(date('Y-m-d')) >= strtotime('+365 days', strtotime($active_at))){
-                                                    $active= 'expired';
-                                                    $label = 'danger';
-                                                }
-                                            }
-                                            $tron = '';
-                                            if($row->is_tron == 1){
-                                                $tron = $row->tron;
-                                            }
-                                        ?>
+                                    @php
+                                    $no++;
+                                    $sp = 'Top 001';
+                                    if($row->sp_name != null){
+                                    $sp = $row->sp_name;
+                                    }
+                                    $active = 'non-aktif';
+                                    $label = 'danger';
+                                    if($row->is_active == 1){
+                                    $active= 'aktif';
+                                    $label = 'success';
+                                    $active_at = $row->active_at;
+                                    if($row->pin_activate_at != null){
+                                    $active_at = $row->pin_activate_at;
+                                    }
+                                    if(strtotime(date('Y-m-d')) >= strtotime('+365 days', strtotime($active_at))){
+                                    $active= 'expired';
+                                    $label = 'danger';
+                                    }
+                                    }
+                                    $tron = '';
+                                    if($row->is_tron == 1){
+                                    $tron = $row->tron;
+                                    }
+                                    @endphp
                                     <tr>
                                         <td>{{$no}}</td>
                                         <td>{{$row->user_code}}</td>

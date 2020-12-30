@@ -541,10 +541,14 @@ class AjaxmemberController extends Controller
         if ($getCheck->cekCode == 1) {
             $canInsert = (object) array('can' => false,  'pesan' => 'Username sudah terpakai');
         }
+        $user_code = $request->user_code;
+        if ($request->affiliate == 1) {
+            $user_code = $modelMember->getCountNewKBBUserCode();
+        }
         $data = (object) array(
             'email' => $request->email,
             'hp' => $request->hp,
-            'username' => $request->user_code,
+            'username' => $user_code,
             'password' => $request->password,
             'affiliate' => $request->affiliate
         );

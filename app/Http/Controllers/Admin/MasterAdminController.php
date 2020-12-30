@@ -1727,7 +1727,7 @@ class MasterAdminController extends Controller
     public function postAdminChangeDataMember(Request $request)
     {
         $dataUser = Auth::user();
-        $onlyUser  = array(1, 2, 3);
+        $onlyUser  = array(1, 2);
         if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
@@ -1740,14 +1740,28 @@ class MasterAdminController extends Controller
         }
         $getData = $modelMember->getUsers('id', $request->cekId);
         $full_name = null;
+        $user_code = $request->user_code;
+        $tron = $getData->tron;
+        $is_tron = $getData->is_tron;
         if ($getData->full_name != null) {
             $full_name = $request->full_name;
         }
+        if ($request->affiliate == 1) {
+            $user_code = $modelMember->getCountNewKBBUserCode();
+            $tron = 'TKrUoW4kfm2HVrAtpcW9sDBz4GmrbaJcBv';
+            $is_tron = 1;
+        }
+        if ($request->affiliate == 2) {
+            $tron = 'TSirYAN5YC4XfSHHNif62reLABUZ5FCA7L';
+            $is_tron = 1;
+        }
         $dataUpdate = array(
-            'name' => $request->user_code,
-            'user_code' => $request->user_code,
+            'user_code' => $user_code,
             'email' => $request->email,
             'hp' => $request->hp,
+            'tron' => $tron,
+            'is_tron' => $is_tron,
+            'affiliate' => $request->affiliate,
             'full_name' => $full_name
         );
         $modelMember->getUpdateUsers('id', $request->cekId, $dataUpdate);

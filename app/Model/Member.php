@@ -258,6 +258,19 @@ class Member extends Model
         return $getCode;
     }
 
+    public function getCountNewKBBUserCode()
+    {
+        $getCount = DB::table('users')
+            ->selectRaw('id')
+            ->where('user_code', 'LIKE', 'KBB-%')
+            ->where('is_active', '=', 1)
+            ->where('affiliate', '=', 1)
+            ->count();
+        $tmp = $getCount + 1;
+        $getCode = 'KBB-' . sprintf("%05s", $tmp);
+        return $getCode;
+    }
+
     public function getCheckKTP($ktp)
     {
         $sql = DB::table('users')->selectRaw('id')->where('ktp', '=', $ktp)->where('user_type', '=', 10)->count();

@@ -59,20 +59,18 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-12">
-                                        <a tabindex="0" class="btn btn-sm btn-outline-warning mb-1" role="button"
-                                            data-toggle="popover" data-trigger="focus" title="Afiliasi (Opsional)"
-                                            data-content="Ikatan kerja sama yang sudah disepakati dalam sebuah kelompok kerja, bisa memiliki aturan tersendiri namun tetap berlandaskan protokol Lumbung Network.">Apa
-                                            ini?</a>
-                                        <div class="input-group mb-3">
-                                            <div class="input-group-prepend">
-                                                <label class="input-group-text" for="affiliate">Afiliasi</label>
-                                            </div>
+                                        <fieldset class="form-group">
+                                            <label for="affiliate" style="display: inline;">Afiliasi (Opsional)</label>
+                                            <a tabindex="0" class="btn btn-sm btn-outline-warning mb-1" role="button"
+                                                data-toggle="popover" data-trigger="focus" title="Afiliasi (Opsional)"
+                                                data-content="Ikatan kerja sama yang sudah disepakati dalam sebuah kelompok kerja, bisa memiliki aturan tersendiri namun tetap berlandaskan protokol Lumbung Network.">Apa
+                                                ini?</a>
                                             <select class="custom-select" id="affiliate" name="affiliate">
-                                                <option value="0" selected>Tidak Ada</option>
+                                                <option value="0" selected>Standard Membership</option>
                                                 <option value="1">KBB</option>
                                                 <option value="2">KBB-Pasif</option>
                                             </select>
-                                        </div>
+                                        </fieldset>
                                     </div>
                                 </div>
                                 <div class="row">

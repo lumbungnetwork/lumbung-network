@@ -167,6 +167,8 @@
                         $affiliate = "KBB";
                         } elseif ($dataUser->affiliate == 2) {
                         $affiliate = "KBB-Pasif";
+                        } elseif ($dataUser->affiliate == 3) {
+                        $affiliate = "KBB-Aktif";
                         }
                         @endphp
                         <a href="" class="btn btn-success btn-sm btn-block rounded-pill p-0"> <span

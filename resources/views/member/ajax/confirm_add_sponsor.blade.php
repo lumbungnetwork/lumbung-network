@@ -8,6 +8,18 @@
         <form id="form-add" method="POST" action="/m/add/sponsor">
             {{ csrf_field() }}
             <div class="row">
+                @if($dataRequest->affiliate == 1)
+                <div class="col-12">
+                    <div class="form-group">
+                        <label>Username Akun KBB</label>
+                        <input type="text" class="form-control" readonly="" name="user_code"
+                            value="{{$dataRequest->username}}">
+                    </div>
+                </div>
+                <input type="hidden" name="email" value="{{$dataRequest->email}}">
+                <input type="hidden" name="hp" value="{{$dataRequest->hp}}">
+                <input type="hidden" name="password" value="{{$dataRequest->password}}">
+                @else
                 <div class="col-12">
                     <div class="form-group">
                         <label>Email</label>
@@ -35,6 +47,7 @@
                             value="{{$dataRequest->password}}">
                     </div>
                 </div>
+                @endif
                 @if ($dataRequest->affiliate > 0)
                 @php
                 if ($dataRequest->affiliate == 1) {
