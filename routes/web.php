@@ -317,6 +317,8 @@ Route::prefix('/')->group(function () {
     Route::get('/m/summary/bonus', 'Admin\BonusmemberController@getMySummaryBonus')->name('m_myBonusSummary')->middleware('auth');
     Route::get('/m/sponsor/bonus', 'Admin\BonusmemberController@getMySponsorBonus')->name('m_myBonusSponsor')->middleware('auth');
     Route::get('/m/binary/bonus', 'Admin\BonusmemberController@getMyBinaryBonus')->name('m_myBonusBinary')->middleware('auth');
+    Route::get('/m/royalti-calculation', 'Admin\BonusmemberController@getRoyaltiCalculation')->name('m_myBonusRoyaltiCalculation')->middleware('auth');
+    Route::post('/m/royalti-calculation', 'Admin\BonusmemberController@postRoyaltiCalculation')->middleware('auth');
     Route::get('/m/level/bonus', 'Admin\BonusmemberController@getMyLevelBonus')->name('m_myBonusLevel')->middleware('auth');
     Route::get('/m/ro/bonus', 'Admin\BonusmemberController@getMyROBonus')->name('m_myBonusRO')->middleware('auth');
     Route::get('/m/saldo/bonus', 'Admin\BonusmemberController@getMySaldoBonus')->name('m_myBonusSaldo')->middleware('auth');

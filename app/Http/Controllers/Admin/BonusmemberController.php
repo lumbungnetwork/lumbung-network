@@ -105,6 +105,40 @@ class BonusmemberController extends Controller
             ->with('dataUser', $dataUser);
     }
 
+    public function getRoyaltiCalculation()
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        return view('member.bonus.royalti-calculation')
+            ->with('getData', null)
+            ->with('dataUser', $dataUser);
+    }
+
+    public function postRoyaltiCalculation(Request $request)
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        $modelBonus = new Bonus;
+        $date = $request->year . '-' . $request->month;
+        $getData = $modelBonus->getBonusRoyaltiCalculation($dataUser->id, $date);
+        return view('member.bonus.royalti-calculation')
+            ->with('getData', $getData)
+            ->with('date', $date)
+            ->with('dataUser', $dataUser);
+    }
+
     public function getMyROBonus()
     {
         $dataUser = Auth::user();

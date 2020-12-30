@@ -131,6 +131,25 @@ class Bonus extends Model
         return $return;
     }
 
+    public function getBonusRoyaltiCalculation($user_id, $date)
+    {
+        $sql = DB::table('bonus_member')
+            ->join('users', 'bonus_member.from_user_id', '=', 'users.id')
+            ->selectRaw('users.user_code, bonus_member.level_id')
+            ->where('bonus_member.user_id', '=', $user_id)
+            ->where('bonus_member.type', '=', 3)
+            ->where('bonus_member.bonus_date', '=', $date . '-01')
+            ->where('bonus_member.poin_type', '=', 1)
+            ->orderBy('bonus_member.level_id', 'ASC')
+            ->groupBy('bonus_member.id')
+            ->get();
+        $return = null;
+        if (count($sql) > 0) {
+            $return = $sql;
+        }
+        return $return;
+    }
+
     public function getBonusRO($data)
     {
         $sql = DB::table('bonus_member')

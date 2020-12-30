@@ -142,6 +142,100 @@
                 @endif
 
                 <div class="rounded-lg bg-white p-3 mb-3">
+                    <h6 class="mb-3">Bonus</h6>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <div class="rounded-lg shadow p-2">
+                                <p>
+                                    Saldo Bonus:
+                                </p>
+                                <h6 class="text-warning">Rp {{number_format($saldo, 0, ',', '.')}}</h6>
+                            </div>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <div class="row">
+                                <div class="col-6 mb-0">
+                                    <a href="{{ URL::to('/') }}/m/sponsor/bonus" class="text-decoration-none">
+                                        <div class="rounded icon-ppob text-center">
+                                            <div class="box-icon bg-green text-center">
+                                                <i class="mdi mdi-console-network-outline icon-menu"></i>
+                                            </div>
+                                            <dd>Sponsor</dd>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-6 mb-0">
+                                    <a href="{{ URL::to('/') }}/m/binary/bonus" class="text-decoration-none">
+                                        <div class="rounded icon-ppob text-center">
+                                            <div class="box-icon bg-green text-center">
+                                                <i class="mdi mdi-axis-arrow icon-menu"></i>
+                                            </div>
+                                            <dd>Pairing</dd>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-6 mb-0">
+                                    <a href="{{ URL::to('/') }}/m/req/wd" class="text-decoration-none">
+                                        <div class="rounded icon-ppob text-center">
+                                            <div class="box-icon bg-green text-center">
+                                                <i class="mdi mdi-cash-refund icon-menu"></i>
+                                            </div>
+                                            <dd>Withdraw</dd>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-6 mb-0">
+                                    <a href="{{ URL::to('/') }}/m/history/wd" class="text-decoration-none">
+                                        <div class="rounded icon-ppob text-center">
+                                            <div class="box-icon bg-green text-center">
+                                                <i class="mdi mdi-history icon-menu"></i>
+                                            </div>
+                                            <dd>Riwayat</dd>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row mt-5">
+                        <div class="col-6 mb-3">
+                            <div class="rounded-lg shadow p-2">
+                                <p>
+                                    Saldo Bonus Royalti:
+                                </p>
+                                @php
+                                $saldoRO = $dataAll->total_bonus_ro - $dataAll->total_wd_ro - $dataAll->total_tunda_ro -
+                                $dataAll->total_fee_admin_ro;
+                                if($saldo < 0){ $saldo=0; } @endphp <h6 class="text-warning">Rp
+                                    {{number_format($saldoRO, 0, ',', '.')}}</h6>
+                            </div>
+                        </div>
+                        <div class="col-3 mb-3">
+                            <a href="{{ URL::to('/') }}/m/req/wd-royalti" class="text-decoration-none">
+                                <div class="rounded icon-ppob text-center">
+                                    <div class="box-icon bg-green text-center">
+                                        <i class="mdi mdi-console-network-outline icon-menu"></i>
+                                    </div>
+                                    <dd>Withdraw Royalti</dd>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-3 mb-3">
+                            <a href="{{ URL::to('/') }}/m/royalti-calculation" class="text-decoration-none">
+                                <div class="rounded icon-ppob text-center">
+                                    <div class="box-icon bg-green text-center">
+                                        <i class="mdi mdi-axis-arrow icon-menu"></i>
+                                    </div>
+                                    <dd>Kalkulasi Royalti</dd>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rounded-lg bg-white p-3 mb-3">
                     <h5 class="mb-3">eIDR</h5>
                     <div class="form-group mb-0">
                         <label for="input_jml" class="text-muted f-12">Konversi Saldo Bonus ke eIDR</label>
@@ -210,114 +304,6 @@
                                     <small class="f-10"><i class="mdi mdi-history"></i> Riwayat Top-up</small>
                                 </a>
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="rounded-lg bg-white p-3 mb-3">
-                    <h6 class="mb-3">Bonus</h6>
-                    <div class="row">
-                        <div class="col-6 mb-3">
-                            <div class="rounded-lg shadow p-2">
-                                <p>
-                                    Saldo Bonus:
-                                </p>
-                                <h6 class="text-warning">Rp {{number_format($saldo, 0, ',', '.')}}</h6>
-                            </div>
-                        </div>
-                        <div class="col-6 mb-3">
-                            <div class="row">
-                                <div class="col-6 mb-0">
-                                    <a href="{{ URL::to('/') }}/m/sponsor/bonus" class="text-decoration-none">
-                                        <div class="rounded icon-ppob text-center">
-                                            <div class="box-icon bg-green text-center">
-                                                <i class="mdi mdi-console-network-outline icon-menu"></i>
-                                            </div>
-                                            <dd>Sponsor</dd>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="col-6 mb-0">
-                                    <a href="{{ URL::to('/') }}/m/binary/bonus" class="text-decoration-none">
-                                        <div class="rounded icon-ppob text-center">
-                                            <div class="box-icon bg-green text-center">
-                                                <i class="mdi mdi-axis-arrow icon-menu"></i>
-                                            </div>
-                                            <dd>Pairing</dd>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="col-6 mb-0">
-                                    <a href="{{ URL::to('/') }}/m/req/wd" class="text-decoration-none">
-                                        <div class="rounded icon-ppob text-center">
-                                            <div class="box-icon bg-green text-center">
-                                                <i class="mdi mdi-cash-refund icon-menu"></i>
-                                            </div>
-                                            <dd>Withdraw</dd>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="col-6 mb-0">
-                                    <a href="{{ URL::to('/') }}/m/history/wd" class="text-decoration-none">
-                                        <div class="rounded icon-ppob text-center">
-                                            <div class="box-icon bg-green text-center">
-                                                <i class="mdi mdi-history icon-menu"></i>
-                                            </div>
-                                            <dd>Riwayat</dd>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="row">
-                        <div class="col-6 mb-3">
-                            <div class="rounded-lg shadow p-2">
-                                <p>
-                                    Proses Konversi:
-                                </p>
-                                <h6 class="text-warning">Rp
-                                    {{number_format($dataAll->total_tunda_eidr + $dataAll->fee_tunda_eidr, 0, ',', '.')}}
-                                </h6>
-                            </div>
-                        </div>
-                        <div class="col-6 mb-3">
-                            <div class="rounded-lg shadow p-2">
-                                <p>
-                                    Total Dikonversi:
-                                </p>
-                                <h6 class="text-warning">Rp
-                                    {{number_format($dataAll->total_wd_eidr + $dataAll->fee_tuntas_eidr, 0, ',', '.')}}
-                                </h6>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mt-5">
-                        <div class="col-6 mb-3">
-                            <div class="rounded-lg shadow p-2">
-                                <p>
-                                    Saldo Bonus Royalti:
-                                </p>
-                                <?php
-                                        $saldoRO = $dataAll->total_bonus_ro - $dataAll->total_wd_ro - $dataAll->total_tunda_ro - $dataAll->total_fee_admin_ro;
-                                        if($saldo < 0){
-                                            $saldo = 0;
-                                        }
-                                    ?>
-                                <h6 class="text-warning">Rp {{number_format($saldoRO, 0, ',', '.')}}</h6>
-                            </div>
-                        </div>
-                        <div class="col-3 mb-3">
-                            <a href="{{ URL::to('/') }}/m/req/wd-royalti" class="text-decoration-none">
-                                <div class="rounded icon-ppob text-center">
-                                    <div class="box-icon bg-green text-center">
-                                        <i class="mdi mdi-console-network-outline icon-menu"></i>
-                                    </div>
-                                    <dd>Withdraw Royalti</dd>
-                                </div>
-                            </a>
                         </div>
                     </div>
                 </div>
