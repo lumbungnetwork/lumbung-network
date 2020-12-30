@@ -133,156 +133,163 @@
 
                 @endif
 
-                @if($getDataMaster->status == 2)
-                <p class="card-text">Status</p>
-                <div class="row">
-                    <div class="col-md-12">
-                        @if($getDataMaster->buy_metode == 1)
-                        <dd>Pembayaran Tunai</dd>
-                        <dd class="text-success">Transaksi Tuntas</dd>
-                        @endif
-
-                        @if($getDataMaster->buy_metode == 3)
-                        <dd>Pembayaran via eIDR</dd>
-                        <dd class="text-success">Transaksi Tuntas</dd>
-                        <div id="finalHash"></div>
-                        @endif
+                @if ($getDataMaster->status < 2) <div class="col-12">
+                    <div class="alert alert-secondary" role="alert">
+                        <small>Pesanan ini akan otomatis batal dalam <br><span id="countdown"></span></small>
                     </div>
+            </div>
+            @endif
+
+            @if($getDataMaster->status == 2)
+            <p class="card-text">Status</p>
+            <div class="row">
+                <div class="col-md-12">
+                    @if($getDataMaster->buy_metode == 1)
+                    <dd>Pembayaran Tunai</dd>
+                    <dd class="text-success">Transaksi Tuntas</dd>
+                    @endif
+
+                    @if($getDataMaster->buy_metode == 3)
+                    <dd>Pembayaran via eIDR</dd>
+                    <dd class="text-success">Transaksi Tuntas</dd>
+                    <div id="finalHash"></div>
+                    @endif
                 </div>
+            </div>
 
-                @endif
+            @endif
 
-                @if($getDataMaster->status == 10)
-                <p class="card-text">Status</p>
-                <div class="row">
+            @if($getDataMaster->status == 10)
+            <p class="card-text">Status</p>
+            <div class="row">
+                <div class="col-md-12">
+
+                    <dd class="text-danger">Transaksi Batal</dd>
+                </div>
+            </div>
+
+            @endif
+
+            @if($getDataMaster->return_buy != null)
+            <div class="col-sm-12 rounded-lg shadow-sm p-2">
+                @php
+                $return_buy = json_decode($getDataMaster->return_buy, true);
+                @endphp
+
+                <p class="card-text">Data Pesanan:</p>
+
+                <div class="row" style="margin-bottom: 15px;">
                     <div class="col-md-12">
+                        {{$getDataMaster->message}}
+                        <br>
+                        No Pel: {{$getDataMaster->product_name}}
+                        @if($getDataMaster->type > 3 && $getDataMaster->type < 21) <br>
+                            a/n: {{$return_buy['data']['customer_name']}}
+                            @endif
 
-                        <dd class="text-danger">Transaksi Batal</dd>
-                    </div>
-                </div>
-
-                @endif
-
-                @if($getDataMaster->return_buy != null)
-                <div class="col-sm-12 rounded-lg shadow-sm p-2">
-                    @php
-                    $return_buy = json_decode($getDataMaster->return_buy, true);
-                    @endphp
-
-                    <p class="card-text">Data Pesanan:</p>
-
-                    <div class="row" style="margin-bottom: 15px;">
-                        <div class="col-md-12">
-                            {{$getDataMaster->message}}
+                            {{-- PDAM & PLN Pasca --}}
+                            @if ($getDataMaster->type == 8)
+                            @if(isset($return_buy['data']['desc']['alamat']))
                             <br>
-                            No Pel: {{$getDataMaster->product_name}}
-                            @if($getDataMaster->type > 3 && $getDataMaster->type < 21) <br>
-                                a/n: {{$return_buy['data']['customer_name']}}
-                                @endif
+                            Alamat: {{$return_buy['data']['desc']['alamat']}}
+                            @endif
+                            @endif
+                            @if ($getDataMaster->type == 8 || $getDataMaster->type == 5)
+                            <br>
+                            <br>
+                            Detail:
+                            <br>
+                            Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan']}}
+                            <br>
+                            @foreach ($return_buy['data']['desc']['detail'] as $detail)
+                            <br>
+                            Periode Tagihan: {{date('M Y', strtotime($detail['periode']))}}
+                            <br>
+                            Meter Awal: {{$detail['meter_awal']}}
+                            <br>
+                            Meter Akhir: {{$detail['meter_akhir']}}
+                            <br>
+                            Denda: {{$detail['denda']}}
+                            <br>
 
-                                {{-- PDAM & PLN Pasca --}}
-                                @if ($getDataMaster->type == 8)
-                                @if(isset($return_buy['data']['desc']['alamat']))
-                                <br>
-                                Alamat: {{$return_buy['data']['desc']['alamat']}}
-                                @endif
-                                @endif
-                                @if ($getDataMaster->type == 8 || $getDataMaster->type == 5)
-                                <br>
-                                <br>
-                                Detail:
-                                <br>
-                                Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan']}}
-                                <br>
-                                @foreach ($return_buy['data']['desc']['detail'] as $detail)
-                                <br>
-                                Periode Tagihan: {{date('M Y', strtotime($detail['periode']))}}
-                                <br>
-                                Meter Awal: {{$detail['meter_awal']}}
-                                <br>
-                                Meter Akhir: {{$detail['meter_akhir']}}
-                                <br>
-                                Denda: {{$detail['denda']}}
-                                <br>
+                            @endforeach
+                            @endif
 
-                                @endforeach
+                            {{-- PLN Prepaid --}}
+                            @if ($getDataMaster->type == 3)
+                            <?php $separate = explode('/', $return_buy['data']['sn']) ?>
+                            <br>
+                            a/n: {{$separate[1]}}
+                            <br>
+                            Tipe/Daya: {{$separate[2]}} / {{$separate[3]}}
+                            <br>
+                            Jumlah KWh: {{$separate[4]}}
+                            <br>
+                            Kode Token:
+                            <br>
+                            <span style="font-size: 18px;">{{$separate[0]}}</span>
+
+                            @endif
+
+                            {{-- BPJS --}}
+                            @if ($getDataMaster->type == 7)
+                            <br>
+                            Alamat: {{$return_buy['data']['desc']['alamat']}}
+                            <br>
+                            Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan']}}
+                            <br>
+                            Jumlah Peserta: {{$return_buy['data']['desc']['jumlah_peserta']}}
+                            @endif
+
+                            {{-- Pulsa & Data --}}
+                            @if ($getDataMaster->type >= 1 && $getDataMaster->type < 3) <br>
+                                <b>SN:</b> {{$return_buy['data']['sn']}}
                                 @endif
-
-                                {{-- PLN Prepaid --}}
-                                @if ($getDataMaster->type == 3)
-                                <?php $separate = explode('/', $return_buy['data']['sn']) ?>
-                                <br>
-                                a/n: {{$separate[1]}}
-                                <br>
-                                Tipe/Daya: {{$separate[2]}} / {{$separate[3]}}
-                                <br>
-                                Jumlah KWh: {{$separate[4]}}
-                                <br>
-                                Kode Token:
-                                <br>
-                                <span style="font-size: 18px;">{{$separate[0]}}</span>
-
-                                @endif
-
-                                {{-- BPJS --}}
-                                @if ($getDataMaster->type == 7)
-                                <br>
-                                Alamat: {{$return_buy['data']['desc']['alamat']}}
-                                <br>
-                                Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan']}}
-                                <br>
-                                Jumlah Peserta: {{$return_buy['data']['desc']['jumlah_peserta']}}
-                                @endif
-
-                                {{-- Pulsa & Data --}}
-                                @if ($getDataMaster->type >= 1 && $getDataMaster->type < 3) <br>
-                                    <b>SN:</b> {{$return_buy['data']['sn']}}
-                                    @endif
-                        </div>
                     </div>
                 </div>
-                @endif
-
-
             </div>
+            @endif
 
-            <div class="rounded-lg bg-white p-3 mb-3">
-                <div class="row">
-                    <div class="col-12">
-                        <small class="text-muted"><strong> Total pembayaran</strong></small>
-                        <h5>Rp{{number_format($getDataMaster->ppob_price)}}</h5>
-                        @if($getDataMaster->status == 0)
-                        <small class="text-muted"><strong> Saldo eIDR anda</strong></small>
-                        <h6 class="text-success" id="eIDRbalance">Rp{{number_format(0)}}</h6>
-                        @endif
-                    </div>
-                </div>
-                @if($getDataMaster->status == 0)
-                <hr>
-                <div class="row">
-                    <div class="col-xl-12">
-
-
-                        <button class="btn btn-danger" onclick="cancel()">Batal</button>
-                        <button class="btn btn-success" onclick="confirmPayment()">Konfirmasi</button>
-                        <button class="btn btn-info" id="tronwebPay" style="display: hidden;" disabled>via
-                            TronWeb</button>
-
-                    </div>
-                </div>
-                @endif
-
-                @if($getDataMaster->status > 0)
-                <div class="row">
-                    <div class="col-6"><a class="btn btn-dark" href="{{ URL::to('/') }}/m/list/buy-ppob">Kembali</a>
-                    </div>
-                </div>
-                @endif
-            </div>
 
         </div>
+
+        <div class="rounded-lg bg-white p-3 mb-3">
+            <div class="row">
+                <div class="col-12">
+                    <small class="text-muted"><strong> Total pembayaran</strong></small>
+                    <h5>Rp{{number_format($getDataMaster->ppob_price)}}</h5>
+                    @if($getDataMaster->status == 0)
+                    <small class="text-muted"><strong> Saldo eIDR anda</strong></small>
+                    <h6 class="text-success" id="eIDRbalance">Rp{{number_format(0)}}</h6>
+                    @endif
+                </div>
+            </div>
+            @if($getDataMaster->status == 0)
+            <hr>
+            <div class="row">
+                <div class="col-xl-12">
+
+
+                    <button class="btn btn-danger" onclick="cancel()">Batal</button>
+                    <button class="btn btn-success" onclick="confirmPayment()">Konfirmasi</button>
+                    <button class="btn btn-info" id="tronwebPay" style="display: hidden;" disabled>via
+                        TronWeb</button>
+
+                </div>
+            </div>
+            @endif
+
+            @if($getDataMaster->status > 0)
+            <div class="row">
+                <div class="col-6"><a class="btn btn-dark" href="{{ URL::to('/') }}/m/list/buy-ppob">Kembali</a>
+                </div>
+            </div>
+            @endif
+        </div>
+
     </div>
-    @include('layout.member.nav')
+</div>
+@include('layout.member.nav')
 </div>
 <div class="overlay"></div>
 </div>
@@ -657,14 +664,44 @@
 @endif
 
 @if($getDataMaster->status == 2 && $getDataMaster->buy_metode == 3)
-<script>
-    function shortId(a, b) { return a.substr(0, b) + "..." + a.substr(a.length - b, a.length) }
 
-    <?php $finalHash = $getDataMaster->tron_transfer; ?>
+<script>
+    function shortId(a, b) { return a.substr(0, b) + "..." + a.substr(a.length - b, a.length) };
+    @php
+    $finalHash = $getDataMaster->tron_transfer;
+    @endphp
     var finalHash = "{{$finalHash}}";
     $('#finalHash').html(`<small>Hash: <a class="text-info" href='https://tronscan.org/#/transaction/`+finalHash+`' target="_blank">`+
-            shortId(finalHash, 7) +`</a></small>`)
+            shortId(finalHash, 7) +`</a></small>`);
 </script>
 
 @endif
-@stop
+
+@if($getDataMaster->status < 2) <script>
+    $(function() {
+    countdown('countdown');
+    });
+    function countdown(id) {
+    var start = new Date('{{$getDataMaster->created_at}}');
+    var end = new Date(start.getTime() + (70 * 60000));
+    var _second = 1000;
+    var _minute = _second * 60;
+    var _hour = _minute * 60;
+    var _day = _hour * 24;
+    var timer;
+    function showRemaining() {
+    var now = new Date();
+    var distance = end - now;
+    if (distance < 0) { clearInterval(timer);
+        document.getElementById(id).innerHTML='<b>Transaksi Dibatalkan Otomatis</b> ' ; return; } var
+        hours=Math.floor((distance % _day) / _hour); var minutes=Math.floor((distance % _hour) / _minute); var
+        seconds=Math.floor((distance % _minute) / _second); if(hours> 0) {
+        document.getElementById(id).innerHTML=hours + ' jam ' ;
+        document.getElementById(id).innerHTML +=minutes + ' menit ' ; document.getElementById(id).innerHTML +=seconds
+        + ' detik' ;
+        } else {
+        document.getElementById(id).innerHTML = minutes + ' menit ' ; document.getElementById(id).innerHTML +=seconds
+        + ' detik' ;
+        }
+
+        } timer=setInterval(showRemaining, 1000); } </script> @endif @stop

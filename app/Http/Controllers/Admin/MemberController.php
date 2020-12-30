@@ -35,6 +35,7 @@ use Intervention\Image\ImageManager;
 use GuzzleHttp\Client;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Jobs\SendRegistrationEmailJob;
+use App\Jobs\PPOBAutoCancelJob;
 use Throwable;
 use IEXBase\TronAPI\Exception\TronException;
 
@@ -4962,6 +4963,7 @@ class MemberController extends Controller
         );
 
         $newPPOB = $modelPin->getInsertPPOB($dataInsert);
+        PPOBAutoCancelJob::dispatch($newPPOB->lastID)->delay(now()->addMinutes(70))->onQueue('tron');
         Alert::success('Berhasil!', 'Silakan Pilih Metode Pembayaran dan Konfirmasi');
         return redirect()->route('m_detailPPOBMemberTransaction', [$newPPOB->lastID]);
     }
@@ -5008,6 +5010,7 @@ class MemberController extends Controller
         );
 
         $newPPOB = $modelPin->getInsertPPOB($dataInsert);
+        PPOBAutoCancelJob::dispatch($newPPOB->lastID)->delay(now()->addMinutes(70))->onQueue('tron');
         Alert::success('Berhasil!', 'Periksa kembali lalu Konfirmasi Pembelian ini');
         return redirect()->route('m_vendorDetailPPOB', [$newPPOB->lastID]);
     }

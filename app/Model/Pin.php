@@ -411,6 +411,16 @@ class Pin extends Model
         return $sql;
     }
 
+    public function getJobPPOBAutoCancel($masterSalesID)
+    {
+        $sql = DB::table('ppob')
+            ->where('ppob.id', '=', $masterSalesID)
+            ->where('ppob.status', '<', 2)
+            ->whereNull('ppob.deleted_at')
+            ->first();
+        return $sql;
+    }
+
     public function checkUsedHashExist($hash, $table, $column)
     {
         $sql = DB::table($table)

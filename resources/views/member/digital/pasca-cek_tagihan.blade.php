@@ -204,7 +204,7 @@
 
         function checkOrder() {
             var vendor_id = $("#id_get_id").val();
-            if(vendor_id == undefined) {
+            if(vendor_id == '') {
                 errorToast('Anda belum mengisi vendor tujuan belanja');
                 return false;
             }
