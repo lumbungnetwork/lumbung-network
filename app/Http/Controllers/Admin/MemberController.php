@@ -146,7 +146,7 @@ class MemberController extends Controller
         $modelMember = new Member;
         $sponsor_id = $dataUser->id;
         $tron = null;
-        $is_tron = null;
+        $is_tron = 0;
         if ($request->affiliate == 1) {
             $tron = 'TKrUoW4kfm2HVrAtpcW9sDBz4GmrbaJcBv';
             $is_tron = 1;
