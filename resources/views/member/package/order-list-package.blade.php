@@ -121,10 +121,10 @@
 
         function confirmSubmit(){
             var form = $('#form-add');
-            Swal.fire('Sedang Memproses');
-            Swal.showLoading();
             $(document.body).append(form);
             form.submit();
+            Swal.fire('Sedang Memproses');
+            Swal.showLoading();
         }
 
 </script>
