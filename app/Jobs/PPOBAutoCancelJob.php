@@ -36,6 +36,10 @@ class PPOBAutoCancelJob implements ShouldQueue
         $getData = $modelPin->getJobPPOBAutoCancel($this->masterSalesID);
 
         //checking
+        if ($getData == null) {
+            return;
+        }
+
         if ($getData->vendor_cek != null) {
             return;
         }
