@@ -81,6 +81,9 @@
                                 <p class="card-text">Metode Pembayaran</p>
                                 <div class="row" style="margin-bottom: 15px;">
                                     <div class="col-md-12">
+                                        @if($getDataMaster->buy_metode == 0)
+                                        <label><em>Member belum memilih metode pembayaran</em></label>
+                                        @endif
                                         @if($getDataMaster->buy_metode == 1)
                                         <div class="radio radio-primary" style="margin-bottom: 15px;">
                                             <input type="radio" name="radio" id="radio1" value="1" checked="">
@@ -177,7 +180,6 @@
     src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js">
 </script>
 <script src="{{ asset('asset_new/js/sidebar.js') }}"></script>
-@if($getDataMaster->buy_metode >= 1)
 @if($getDataMaster->status < 2) <script>
 
     function inputSubmit(){
@@ -200,6 +202,7 @@
     });
     }
 
+    @if($getDataMaster->vendor_approve == 0)
     function rejectSubmit(){
     $.ajax({
     type: "GET",
@@ -210,6 +213,7 @@
     }
     });
     }
+    @endif
 
     function confirmSubmit(){
     var dataInput = $("#form-add").serializeArray();
@@ -220,7 +224,6 @@
     $('#submit').remove();
     }
     </script>
-    @endif
     @endif
 
     @if($getDataMaster->status < 2) <script>

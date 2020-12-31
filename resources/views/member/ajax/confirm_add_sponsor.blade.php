@@ -70,7 +70,7 @@
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Tutup</button>
         <button type="button" class="btn btn-primary waves-effect waves-light" id="submit"
-            onclick="confirmSubmit()">Submit</button>
+            onclick="confirmSubmit()">OK</button>
     </div>
 </div>
 

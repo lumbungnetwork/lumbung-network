@@ -5455,9 +5455,8 @@ class MemberController extends Controller
                     ->with('message', $arrayData['data']['message'])
                     ->with('messageclass', 'danger');
             }
-            return redirect()->back()
-                ->with('message', 'Transaksi gagal')
-                ->with('messageclass', 'danger');
+            Alert::error('Gagal!', 'Maaf, transaksi gagal!');
+            return redirect()->back();
         }
 
         //so the good news taste sweeter
@@ -5490,9 +5489,8 @@ class MemberController extends Controller
                     ]
                 ]);
             }
-            return redirect()->back()
-                ->with('message', 'Transaksi Berhasil')
-                ->with('messageclass', 'success');
+            Alert::success('Berhasil!', 'Transaksi Berhasil!');
+            return redirect()->back();
         }
 
         //get over it
@@ -5502,9 +5500,8 @@ class MemberController extends Controller
                 'vendor_cek' => $cek
             );
             $modelPin->getUpdatePPOB('id', $request->ppob_id, $dataUpdate);
-            return redirect()->back()
-                ->with('message', 'Transaksi sedang Pending, silakan tekan tombol Konfirmasi lagi.')
-                ->with('messageclass', 'warning');
+            Alert::warning('Pending', 'Transaksi Pending, silakan tekan Konfirmasi lagi.');
+            return redirect()->back();
         }
 
 
@@ -5530,13 +5527,12 @@ class MemberController extends Controller
         $modelPin = new Pin;
         $dataUpdate = array(
             'status' => 3,
-            'reason' => $request->reason,
+            'reason' => 'Dibatalkan oleh Vendor',
             'deleted_at' => date('Y-m-d H:i:s')
         );
         $modelPin->getUpdatePPOB('id', $request->ppob_id, $dataUpdate);
-        return redirect()->route('m_listVendotPPOBTransactions')
-            ->with('message', 'Transaksi berhasil dibatalkan')
-            ->with('messageclass', 'success');
+        Alert::success('Berhasil', 'Transaksi Berhasil Dibatalkan');
+        return redirect()->route('m_listVendotPPOBTransactions');
     }
 
     public function getCekStatusTransaksiApi($id)
