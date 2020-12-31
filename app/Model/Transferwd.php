@@ -564,7 +564,6 @@ class Transferwd extends Model
                 . 'sum(case when status IN (0, 1) then admin_fee else 0 end) as total_fee_admin,'
                 . 'sum(case when status = 1 then admin_fee else 0 end) as fee_tuntas,'
                 . 'sum(case when status = 0 then admin_fee else 0 end) as fee_tunda')
-            ->where('type', '=', 1)
             ->first();
         $total_wd = 0;
         if ($sql->total_wd != null) {
@@ -610,7 +609,6 @@ class Transferwd extends Model
                 . 'sum(case when status IN (0, 1) then admin_fee else 0 end) as total_fee_admin,'
                 . 'sum(case when status = 1 then admin_fee else 0 end) as fee_tuntas,'
                 . 'sum(case when status = 0 then admin_fee else 0 end) as fee_tunda')
-            ->where('type', '=', 1)
             ->whereDate('wd_date', '>=', $date->start_day)
             ->whereDate('wd_date', '<=', $date->end_day)
             ->first();

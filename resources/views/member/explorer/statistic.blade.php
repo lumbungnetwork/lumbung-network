@@ -21,60 +21,60 @@
                     <h5 class="mb-3">Sepanjang Masa</h5>
                     <div class="row">
                         <div class="col-6 mb-3">
-                            <div class="rounded-lg shadow-sm p-2">
+                            <div class="rounded-lg shadow bg-light p-2">
                                 <p>
-                                    <a href="#">Total Aktivasi Member</a>
+                                    <a href="#">Total Aktivasi Keanggotaan</a>
                                 </p>
-                                <h6 class="text-warning">{{number_format($dataAll->total_aktivasi, 0, ',', '.')}}</h6>
+                                <h6 class="text-warning">{{number_format($dataAll->total_aktivasi)}}</h6>
                             </div>
                         </div>
                         <div class="col-6 mb-3">
-                            <div class="rounded-lg shadow-sm p-2">
+                            <div class="rounded-lg shadow bg-light p-2">
                                 <p>
-                                    Total Bonus Dibayarkan
+                                    Total LMB Diklaim:
                                 </p>
-                                <?php
-                                        $total_wd = $dataAll->total_wd + $dataAll->fee_tuntas;
-                                    ?>
-                                <h6 class="text-warning">Rp{{number_format($total_wd, 0, ',', '.')}}</h6>
+                                <h6 class="text-warning">{{number_format($dataAll->lmb_claim)}}</h6>
                             </div>
                         </div>
-                        <div class="col-6 mb-3">
-                            <div class="rounded-lg shadow-sm p-2">
+                        <div class="col-12 mb-3">
+                            <div class="rounded-lg shadow bg-light p-2">
                                 <p>
-                                    Belanja Member Stockist
+                                    Total Belanja Member di Stockist:
                                 </p>
-                                <h6 class="text-warning">Rp{{number_format($dataAll->total_sales, 0, ',', '.')}}</h6>
+                                <h6 class="text-warning">Rp{{number_format($dataAll->total_sales)}}</h6>
                             </div>
                         </div>
-                        <div class="col-6 mb-3">
-                            <div class="rounded-lg shadow-sm p-2">
+                        <div class="col-12 mb-3">
+                            <div class="rounded-lg shadow bg-light p-2">
                                 <p>
-                                    Belanja Member Vendor
+                                    Total Belanja Member di Vendor:
                                 </p>
                                 <h6 class="text-warning">
-                                    Rp{{number_format(($dataAll->total_vsales + $dataAll->total_ppob), 0, ',', '.')}}
+                                    Rp{{number_format(($dataAll->total_vsales + $dataAll->total_ppob))}}
                                 </h6>
                             </div>
                         </div>
-                        <div class="col-6 mb-3">
-                            <div class="rounded-lg shadow-sm p-2">
+                        <div class="col-12 mb-3">
+                            <div class="rounded-lg shadow bg-light p-2">
                                 <p>
-                                    LMB Diklaim
-                                </p>
-                                <h6 class="text-warning">{{number_format($dataAll->lmb_claim, 0, ',', '.')}}</h6>
-                            </div>
-                        </div>
-                        <div class="col-6 mb-3">
-                            <div class="rounded-lg shadow-sm p-2">
-                                <p>
-                                    Dividend LMB
+                                    Total Dividend LMB didistribusikan:
                                 </p>
                                 <?php
                                         $tambahan16persen =  ($dataAll->total_vsales + $dataAll->total_ppob) * 1.6 / 100;
                                         $deviden_lmb = (20 / 100 * $dataAll->total_aktivasi * 100000) + ($dataAll->total_sales * 1 / 100) + $tambahan16persen;
                                     ?>
-                                <h6 class="text-warning">Rp{{number_format($deviden_lmb, 0, ',', '.')}}</h6>
+                                <h6 class="text-warning">Rp{{number_format($deviden_lmb)}}</h6>
+                            </div>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <div class="rounded-lg shadow bg-light p-2">
+                                <p>
+                                    Total Networking Bonus Dibayarkan:
+                                </p>
+                                <?php
+                                        $total_wd = $dataAll->total_wd + $dataAll->fee_tuntas;
+                                    ?>
+                                <h6 class="text-warning">Rp{{number_format($total_wd)}}</h6>
                             </div>
                         </div>
                     </div>
@@ -96,29 +96,28 @@
                                     <tbody>
                                         <tr class="table-active">
                                             <td>Jumlah Aktivasi</td>
-                                            <td>{{number_format($dataAll_month->total_aktivasi, 0, ',', '.')}}</td>
+                                            <td>{{number_format($dataAll_month->total_aktivasi)}}</td>
                                         </tr>
                                         <tr>
-                                            <td>Bonus Dibayarkan</td>
-                                            <td>Rp. {{number_format($total_wd_lastmonth, 0, ',', '.')}}</td>
+                                            <td>Networking Bonus</td>
+                                            <td>Rp{{number_format($total_wd_lastmonth)}}</td>
                                         </tr>
                                         <tr class="table-active">
                                             <td>Koin LMB Diklaim</td>
-                                            <td>{{number_format($dataAll_month->lmb_claim, 0, ',', '.')}}</td>
+                                            <td>{{number_format($dataAll_month->lmb_claim)}}</td>
                                         </tr>
                                         <tr>
                                             <td>Belanja Member (Stockist)</td>
-                                            <td>Rp {{number_format($dataAll_month->total_sales, 0, ',', '.')}}</td>
+                                            <td>Rp{{number_format($dataAll_month->total_sales)}}</td>
                                         </tr>
                                         <tr>
                                             <td>Belanja Member (Vendor)</td>
-                                            <td>Rp.
-                                                {{number_format(($dataAll_month->total_vsales + $dataAll_month->total_ppob), 0, ',', '.')}}
+                                            <td>Rp{{number_format(($dataAll_month->total_vsales + $dataAll_month->total_ppob))}}
                                             </td>
                                         </tr>
                                         <tr class="table-active">
                                             <td>Dividend LMB</td>
-                                            <td>{{number_format($dividen_lmb_lastmonth, 0, ',', '.')}}</td>
+                                            <td>Rp{{number_format($dividen_lmb_lastmonth)}}</td>
                                         </tr>
                                     </tbody>
                                 </table>
