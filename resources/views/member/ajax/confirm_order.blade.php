@@ -1,45 +1,37 @@
 @if($lanjut == true)
-<div class="modal-content">
-    <div class="modal-header">
-        <h5 class="modal-title" id="modalLabel">Konfirmasi Order</h5>
-    </div>
-    <div class="modal-body"  style="overflow-y: auto;max-height: 330px;">
-        <form id="form-add" method="post" action="/m/confirm/package">
-            {{ csrf_field() }}
-            <div class="row">
-                <div class="col-md-12 col-xs-12">
-                    <div class="form-group">
-                        <input type="hidden" name="id_paket" value="{{$data->id_paket}}">
-                        <p class="lead text-muted" style="display: block;text-align: center;">Apakah anda ingin mengaktifasi member baru</p>
-                    </div>
-                </div>
-                
+<form id="form-add" method="post" action="/m/confirm/package">
+    @csrf
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group">
+                <input type="hidden" name="id_paket" value="{{$data->id_paket}}">
+                <dd>Anda yakin untuk
+                    mengaktivasi akun Member ini? <br>1 PIN akan dipakai mengaktivasi</dd>
             </div>
-        </form>    
+        </div>
+
+        <div class="col-12 mt-3">
+            <button type="button" class="btn btn-secondary waves-effect" onclick="swal.close()">Tutup</button>
+            <button type="button" class="btn btn-primary waves-effect waves-light" id="submit"
+                onclick="confirmSubmit()">Aktivasi</button>
+        </div>
+
     </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Tutup</button>
-        <button type="button" class="btn btn-primary waves-effect waves-light" id="submit" onclick="confirmSubmit()">Submit</button>
-    </div>
-</div>
+</form>
 @endif
 
 @if($lanjut == false)
-<div class="modal-content">
-    <div class="modal-header">
-        <h5 class="modal-title" id="modalLabel">Konfirmasi Order</h5>
-    </div>
-    <div class="modal-body"  style="overflow-y: auto;max-height: 330px;">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <p class="lead text-danger" style="display: block;text-align: center;">Pin Anda tidak cukup untuk mengaktifasi member baru. Silakan beli Pin</p>
-                </div>
-            </div>
+<div class="row">
+    <div class="col-12">
+        <div class="form-group">
+            <dd class="text-danger">Anda tidak memiliki PIN
+                Aktivasi untuk mengaktivasi member ini. <br><br>Silakan beli PIN terlebih dahulu.</dd>
         </div>
     </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-dark waves-effect" data-dismiss="modal">Tutup</button>
+
+    <div class="col-12 mt-3">
+        <button type="button" class="btn btn-dark waves-effect" onclick="swal.close()">Tutup</button>
+        <a class="btn btn-success ml-3" href="{{ URL::to('/') }}/m/add/pin">Beli PIN</a>
     </div>
 </div>
 @endif

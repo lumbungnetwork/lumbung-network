@@ -264,9 +264,7 @@ class MemberController extends Controller
         $modelMemberPackage = new Memberpackage;
         $getCheckNewOrder = $modelMemberPackage->getMemberPackageInactive($dataUser);
         if (count($getCheckNewOrder) == 0) {
-            return redirect()->route('mainDashboard')
-                ->with('message', 'No one member order package')
-                ->with('messageclass', 'danger');
+            return redirect()->route('mainDashboard');
         }
         return view('member.package.order-list-package')
             ->with('headerTitle', 'Package')
@@ -309,9 +307,8 @@ class MemberController extends Controller
         $getMylastPin = $modelPin->getMyLastPin($dataUser);
         $sisaPin = $getTotalPin->sum_pin_masuk - $getTotalPin->sum_pin_keluar;
         if ($sisaPin < $getData->total_pin) {
-            return redirect()->route('m_detailOrderPackage', $getData->id)
-                ->with('message', 'Paket tidak cukup untuk mengaktifasi sponsor baru, silakan beli pin')
-                ->with('messageclass', 'danger');
+            Alert::error('Gagal!', 'Tidak Cukup PIN untuk Mengaktivasi Akun Member Baru');
+            return redirect()->route('m_detailOrderPackage', $getData->id);
         }
         $code = sprintf("%03s", $getData->total_pin);
         $memberPin = array(
@@ -355,9 +352,8 @@ class MemberController extends Controller
             'total_sponsor' => $total_sponsor,
         );
         $modelMember->getUpdateUsers('id', $dataUser->id, $dataUpdateSponsor);
-        return redirect()->route('mainDashboard')
-            ->with('message', 'Berhasil mengaktifasi sponsor baru')
-            ->with('messageclass', 'success');
+        Alert::success('Berhasil!', 'Akun Member telah Aktif, silakan melakukan Placement di Binary Tree')->persistent(true);
+        return redirect()->route('m_addPlacement');
     }
 
     public function postRejectPackage(Request $request)
@@ -374,15 +370,13 @@ class MemberController extends Controller
             'status' => 10
         );
         $modelMemberPackage->getUpdateMemberPackage('id', $getData->id, $dataUpdate);
-        $dataUpdateIsActive = array(
-            'is_login' => 0,
-            'sponsor_id' => null,
-            'deleted_at' => date('Y-m-d H:i:s')
-        );
-        $modelMember->getUpdateUsers('id', $getData->request_user_id, $dataUpdateIsActive);
-        return redirect()->route('mainDashboard')
-            ->with('message', 'member baru di reject')
-            ->with('messageclass', 'success');
+
+        $newUser = User::where('id', $getData->request_user_id)->where('is_active', 0)->first();
+        if ($newUser != null) {
+            $newUser->delete();
+        }
+        Alert::success('Berhasil', 'Aktivasi Akun Member Telah Ditolak');
+        return redirect()->route('mainDashboard');
     }
 
     public function getAddPin()
