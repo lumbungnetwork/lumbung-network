@@ -17,3 +17,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+//API
+Route::prefix('/v1')->group(function () {
+    Route::get('/statistic/overview', 'APIController@getStatisticOverview');
+    Route::get('/statistic/{time}/{name}', 'APIController@getStatisticDetail');
+});

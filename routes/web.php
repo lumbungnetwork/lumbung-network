@@ -442,7 +442,6 @@ Route::prefix('/')->group(function () {
 
     Route::get('/m/explorer/statistic', 'Admin\MemberController@getExplorerStatistic')->name('m_ExplorerStatistic')->middleware('auth');
     Route::get('/m/explorer/user', 'Admin\MemberController@getExplorerUser')->name('m_ExplorerUser')->middleware('auth');
-    //        Route::get('/m/pobx/req-{paket}', 'Admin\MemberController@getMyRequestPOBX')->name('m_myReportRequestPulsa')->middleware('auth');
 
     //Vendor Deposit
     Route::get('/m/add/deposit', 'Admin\MemberController@getAddDeposit')->name('m_newDeposit')->middleware('auth');
