@@ -38,6 +38,7 @@ use App\Jobs\SendRegistrationEmailJob;
 use App\Jobs\PPOBAutoCancelJob;
 use Throwable;
 use IEXBase\TronAPI\Exception\TronException;
+use Illuminate\Support\Facades\Http;
 
 
 class MemberController extends Controller
@@ -2885,73 +2886,14 @@ class MemberController extends Controller
         if ($dataUser->package_id == null) {
             return redirect()->route('m_newPackage');
         }
-        $modelMember = new Member;
-        $modelWD = new Transferwd;
-        $modelSales = new Sales;
-        $modelBonus = new Bonus;
 
-        //all time
-        $total_aktivasi = $modelMember->getAllPinActivation();
-        $totalWD = $modelWD->getTotalDiTransferAll();
-        $getSales = $modelSales->getSalesAllHistory();
-        $getVSales = $modelSales->getVSalesAllHistory();
-        $getPPOB = $modelSales->getPPOBAllHistory();
-        $getAllShopLMB = $modelBonus->getAllClaimLMB();
-        $getAllClaimLMB = $modelBonus->getAllClaimRewardLMB();
-        $sum = 0;
-        if ($getAllClaimLMB != null) {
-            $sum = $getAllClaimLMB->tot_reward_1 + $getAllClaimLMB->tot_reward_2 + $getAllClaimLMB->tot_reward_3 + $getAllClaimLMB->tot_reward_4;
-        }
-        $lmb_claim = $sum + $getAllShopLMB->total_claim_shop;
-        $dataAll = (object) array(
-            'total_aktivasi' => $total_aktivasi,
-            'total_wd' => $totalWD->total_wd,
-            'fee_tuntas' => $totalWD->fee_tuntas,
-            'total_sales' => $getSales->total_sales,
-            'total_vsales' => $getVSales->total_sales,
-            'total_ppob' => $getPPOB->total_sales,
-            'lmb_claim' => $lmb_claim
-        );
+        $request = Request::create(\URL::to('/') . '/api/v1/statistic/overview', 'GET');
+        $response = \Route::dispatch($request);
 
-        //last month
-        $last_month = (object) array(
-            'start_day' => date("Y-m-d", strtotime("first day of previous month")),
-            'end_day' => date("Y-m-d", strtotime("last day of previous month"))
-        );
-        $total_aktivasi_date = $modelMember->getAllActivationLastMonth($last_month);
-        $totalWD_date = $modelWD->getTotalDiTransferAllLastMonth($last_month);
-        $getSales_date = $modelSales->getSalesAllHistoryLastMonth($last_month);
-        $getVSales_date = $modelSales->getVSalesAllHistoryLastMonth($last_month);
-        $getPPOB_date = $modelSales->getPPOBAllHistoryLastMonth($last_month);
-        $getPulsaPaketData = $modelSales->getProfitShareFromPulsaPaketDataLastMonth($last_month);
-        $getPLNPrepaid = $modelSales->getProfitShareFromPLNPrepaidLastMonth($last_month);
-        $getTelkomHPPostpaid = $modelSales->getProfitShareFromTelkomHPPostPaidLastMonth($last_month);
-        $getPLNPostpaid = $modelSales->getProfitShareFromPLNPostpaidLastMonth($last_month);
-        $getBPJSPDAM = $modelSales->getProfitShareFromBPJSLastMonth($last_month);
-        $getPGN = $modelSales->getProfitShareFromPGNLastMonth($last_month);
-        $getMultifinance = $modelSales->getProfitShareFromMultifinanceLastMonth($last_month);
-        $getEmoney = $modelSales->getProfitShareFromEmoneyLastMonth($last_month);
-        $profitSharingPool = ($getVSales_date->total_sales * 2 / 100) + $getPulsaPaketData + $getPLNPrepaid + $getTelkomHPPostpaid + $getPLNPostpaid + $getBPJSPDAM + $getPGN + $getMultifinance + $getEmoney;
-        $getAllShopLMB_date = $modelBonus->getAllClaimLMBLastMonth($last_month);
-        $getAllClaimLMB_date = $modelBonus->getAllClaimRewardLMBLastMonth($last_month);
-        $sum_date = 0;
-        if ($getAllClaimLMB_date != null) {
-            $sum_date = $getAllClaimLMB_date->tot_reward_1 + $getAllClaimLMB_date->tot_reward_2 + $getAllClaimLMB_date->tot_reward_3 + $getAllClaimLMB_date->tot_reward_4;
-        }
-        $lmb_claim_date = $sum_date + $getAllShopLMB_date->total_claim_shop;
-        $dataAll_lastmonth = (object) array(
-            'total_aktivasi' => $total_aktivasi_date,
-            'total_wd' => $totalWD_date->total_wd,
-            'fee_tuntas' => $totalWD_date->fee_tuntas,
-            'total_sales' => $getSales_date->total_sales,
-            'total_vsales' => $getVSales_date->total_sales,
-            'total_ppob' => $getPPOB_date->total_sales,
-            'profitSharingPool' => $profitSharingPool,
-            'lmb_claim' => $lmb_claim_date
-        );
+        $getData = $response->getOriginalContent();
+
         return view('member.explorer.statistic')
-            ->with('dataAll', $dataAll)
-            ->with('dataAll_month', $dataAll_lastmonth)
+            ->with('data', $getData['data'])
             ->with('dataUser', $dataUser);
     }
 
