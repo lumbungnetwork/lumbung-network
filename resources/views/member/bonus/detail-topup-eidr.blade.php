@@ -19,7 +19,6 @@
             <div class="container">
                 <div class="card shadow rounded bg-white p-3 mb-3">
                     <h4 class="mb-3">Top-up eIDR</h4>
-                    <span id="showAddress"></span>
                     @if (date('Hi') > '2200')
                     <div class="alert alert-warning alert-dismissible" role="alert">
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -187,8 +186,6 @@
                             <img src="/image/red-dot-pulse.gif" alt=""><small>Pastikan transfer tepat hingga <mark>tiga
                                     digit
                                     terakhir!</mark></small>
-                            <br>
-                            <span class="text-xs-right" id="saldo-eidr"></span>
                             <hr>
                         </div>
                     </div>
@@ -252,9 +249,6 @@
     <link rel="stylesheet" href="{{ asset('asset_new/css/siderbar.css') }}">
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/4.9.95/css/materialdesignicons.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/fonts/slick.woff">
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css">
@@ -267,14 +261,11 @@
     </script>
     <script src="{{ asset('asset_new/js/sidebar.js') }}"></script>
     <script src="{{ asset('asset_member/js/jquery.cart.min.js') }}"></script>
-    <script src="{{ asset('asset_new/js/tronweb.js') }}"></script>
     @if($getData->status == 0)
     <script>
-        @for ($i = 1; $i < 3; $i++)
+        @for ($i = 1; $i < 4; $i++)
             $('#bankbutton{{$i}}').click(function() {
                 $('#radio{{$i}}').prop('checked', true)
-                $('#submitBtn').show();
-                $('#eidr-pay-button').hide();
             })
         @endfor
 

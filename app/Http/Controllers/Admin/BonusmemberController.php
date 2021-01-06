@@ -772,7 +772,6 @@ class BonusmemberController extends Controller
             return redirect()->route('mainDashboard');
         }
         $modelBonus = new Bonus;
-        $modelBank = new Bank;
         $id_topup = $request->id_topup;
         //        $getData = $modelBonus->getTopUpSaldoID($id_topup);
         $dataUpdate = array(
@@ -781,12 +780,25 @@ class BonusmemberController extends Controller
             'updated_at' => date('Y-m-d H:i:s'),
         );
         $modelBonus->getUpdateTopUp('id', $id_topup, $dataUpdate);
+        $getDataTopUp = $modelBonus->getTopUpSaldoID($id_topup);
+        $transfer = $getDataTopUp->nominal + $getDataTopUp->unique_digit;
         $tgAk = Config::get('services.telegram.eidr');
         $client = new Client;
+        $bankName = '';
+        if ($request->bank_perusahaan_id == 26) {
+            $bankName = 'BRI';
+        } elseif ($request->bank_perusahaan_id == 1) {
+            $bankName = 'Mandiri';
+        } else {
+            $bankName = 'BCA';
+        }
         $client->request('GET', 'https://api.telegram.org/bot' . $tgAk . '/sendMessage', [
             'query' => [
                 'chat_id' => '365874331',
-                'text' => 'Top-up eIDR need Manual Action ' . $dataUser->user_code,
+                'text' => 'Top-up eIDR need Manual Action
+                user: ' . $dataUser->user_code . '
+                bank: ' . $bankName . '
+                transfer: Rp' . number_format($transfer),
                 'parse_mode' => 'markdown'
             ]
         ]);
