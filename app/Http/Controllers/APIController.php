@@ -138,6 +138,15 @@ class APIController extends Controller
                 return response()->json([
                     'data' => $data
                 ], 200);
+            } elseif ($name == 'lmb') {
+                $LMBclaimedFromMarketplace = $modelAPI->getClaimedLMBfromMarketplace($last_month);
+                $LMBclaimedFromNetwork = $modelAPI->getClaimedLMBfromNetwork($last_month);
+                return response()->json([
+                    'data' => [
+                        'claimed_from_marketplace' => $LMBclaimedFromMarketplace,
+                        'claimed_from_network' => $LMBclaimedFromNetwork
+                    ]
+                ], 200);
             }
         }
     }

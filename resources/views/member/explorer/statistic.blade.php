@@ -100,18 +100,20 @@
                                     </thead>
                                     <tbody>
                                         <tr class="table-active">
-                                            {{-- <td><a class="text-info"
+                                            <td><a class="text-info"
                                                     onclick="showDetail('last-month', 'activations')">Jumlah
-                                                    Aktivasi</a></td> --}}
-                                            <td>Jumlah Aktivasi</td>
+                                                    Aktivasi</a></td>
                                             <td>{{number_format($data['last-month']['account_activations'])}}</td>
                                         </tr>
                                         <tr>
-                                            <td>Networking Bonus</td>
+                                            <td><a class="text-info"
+                                                    onclick="showDetail('last-month', 'network-bonus')">Network
+                                                    Bonus</a></td>
                                             <td>Rp{{number_format($data['last-month']['network_bonus'])}}</td>
                                         </tr>
                                         <tr class="table-active">
-                                            <td>Koin LMB Diklaim</td>
+                                            <td><a class="text-info" onclick="showDetail('last-month', 'lmb')">LMB
+                                                    Diklaim</a></td>
                                             <td>{{number_format($data['last-month']['lmb_claimed'])}}</td>
                                         </tr>
                                         <tr>
@@ -119,12 +121,16 @@
                                             <td>Rp{{number_format($data['last-month']['stockist_sales'])}}</td>
                                         </tr>
                                         <tr>
-                                            <td>Belanja Member (Vendor)</td>
+                                            <td><a class="text-info"
+                                                    onclick="showDetail('last-month', 'vendor-sales')">Belanja Member
+                                                    (Vendor)</a></td>
                                             <td>Rp{{number_format($data['last-month']['vendor_sales'])}}
                                             </td>
                                         </tr>
                                         <tr class="table-active">
-                                            <td>Dividend LMB</td>
+                                            <td><a class="text-info"
+                                                    onclick="showDetail('last-month', 'dividend')">Dividend
+                                                    LMB</a></td>
                                             <td>Rp{{number_format($data['last-month']['lmb_dividend'])}}</td>
                                         </tr>
                                     </tbody>
@@ -171,7 +177,6 @@
             dataType: 'JSON',
             success: function(response){
                 var res = response.data;
-                console.log(response.data);
 
                 if(time == 'all' && param == 'activations') {
                     var content = `
@@ -186,7 +191,7 @@
                     swal(content);
                 }
 
-                if(time == 'all' && param == 'lmb') {
+                if(param == 'lmb') {
                     var totalLMBclaimed = res.claimed_from_marketplace.total + res.claimed_from_network.total;
                     var content = `
                     <div style="text-align: left;">
@@ -246,7 +251,7 @@
                     swal(content);
                 }
 
-                if(time == 'all' && param == 'dividend') {
+                if(param == 'dividend') {
                 var content = `
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">Dari Membership: ` + new Intl.NumberFormat('id-ID', { style: 'currency', currency:
@@ -263,7 +268,7 @@
                 swal(content);
                 }
 
-                if(time == 'all' && param == 'network-bonus') {
+                if(param == 'network-bonus') {
                 var content = `
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">Bonus Royalti: ` + new Intl.NumberFormat('id-ID', { style: 'currency', currency:
@@ -281,17 +286,34 @@
                 }
 
                 if(time == 'last-month' && param == 'activations') {
+                    var content = '<div style="text-align: left; font-size: 10px;"><dd>Member Baru: ' + res.new_member +'</dd><dd>Resubscribe: ' + res.resubscribe + '</dd><br>'
+                    content += '<h6>Member Baru</h6><table class="table"><thead><tr><th>Username</th><th>Sponsor</th></tr></thead><tbody>'
+                    for (var i = 0; i < res.detail_new_member.length; i++) {
+                        content += '<tr><td>' + res.detail_new_member[i].user_code + '</td><td>' + res.detail_new_member[i].sp_name + '</td></tr>'
+                    }
+
+                    content +='</tbody></table><h6>Resubscribe</h6><table class="table"><thead><tr><th>Username</th><th>Sponsor</th></tr></thead><tbody>';
+
+                    for (var i = 0; i < res.detail_resubscribe.length; i++) {
+                        content += '<tr><td>' + res.detail_resubscribe[i].user_code + '</td><td>' + res.detail_resubscribe[i].sp_name + '</td></tr>'
+                    }
+
+                    content +='</tbody></table></div>'
+
+                    swal(content);
+                }
+
+                if(time == 'last-month' && param == 'vendor-sales') {
                 var content = `
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">Bonus Royalti: ` + new Intl.NumberFormat('id-ID', { style: 'currency', currency:
-                        'IDR' }).format(res.total_royalti_bonus) +`</li>
-                        <li class="list-group-item">Bonus Harian (WD ke Bank): ` + new Intl.NumberFormat('id-ID', { style: 'currency', currency:
-                        'IDR' }).format(res.total_wd_bank) +`</li>
-                        <li class="list-group-item">Bonus Harian (Konversi ke eIDR): ` + new Intl.NumberFormat('id-ID', { style: 'currency', currency:
-                        'IDR' }).format(res.total_konversi_eidr) +`</li>
-                        <li class="list-group-item">Total: ` + new Intl.NumberFormat('id-ID', { style: 'currency', currency:
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Produk Fisik: ` + new Intl.NumberFormat('id-ID', { style: 'currency', currency:
+                        'IDR' }).format(res.physical) +`</li>
+                    <li class="list-group-item">Produk Digital: ` + new Intl.NumberFormat('id-ID', { style: 'currency',
+                        currency:
+                        'IDR' }).format(res.digital) +`</li>
+                    <li class="list-group-item">Total: ` + new Intl.NumberFormat('id-ID', { style: 'currency', currency:
                         'IDR' }).format(res.total) +`</li>
-                    </ul>
+                </ul>
                 `
 
                 swal(content);

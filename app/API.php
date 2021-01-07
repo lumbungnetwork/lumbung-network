@@ -23,8 +23,8 @@ class API extends Model
         $claimedLMBfromMarketplace = DB::table('belanja_reward')
             ->selectRaw('sum(belanja_reward.reward) as total')
             ->where('belanja_reward.status', '=', 1)
-            ->whereDate('belanja_date', '>=', $date->start_day)
-            ->whereDate('belanja_date', '<=', $date->end_day)
+            ->whereDate('tuntas_at', '>=', $date->start_day)
+            ->whereDate('tuntas_at', '<=', $date->end_day)
             ->first();
         $rewardLMB = DB::table('claim_reward')
             ->selectRaw('sum(case when reward_id = 1 then 100 else 0 end) as silver3, '
@@ -148,6 +148,29 @@ class API extends Model
         ];
     }
 
+    public function getClaimedLMBfromMarketplace($date)
+    {
+        $sql = DB::table('belanja_reward')
+            ->selectRaw('sum(case when type = 1 then reward else 0 end) as buyOnStockist, '
+                . 'sum(case when type = 2 then reward else 0 end) as sellOnStockist,'
+                . 'sum(case when type = 3 then reward else 0 end) as buyOnVendor,'
+                . 'sum(case when type = 4 then reward else 0 end) as sellOnVendor,'
+                . 'sum(reward) as total')
+            ->where('status', '=', 1)
+            ->whereIn('type', array(1, 2, 3, 4))
+            ->whereDate('tuntas_at', '>=', $date->start_day)
+            ->whereDate('tuntas_at', '<=', $date->end_day)
+            ->first();
+
+        return [
+            'buy_on_stockist' => floor($sql->buyOnStockist),
+            'sell_on_stockist' => floor($sql->sellOnStockist),
+            'buy_on_vendor' => floor($sql->buyOnVendor),
+            'sell_on_vendor' => floor($sql->sellOnVendor),
+            'total' => floor($sql->total)
+        ];
+    }
+
     public function getAllTimeClaimedLMBfromNetwork()
     {
         $sql = DB::table('claim_reward')
@@ -157,6 +180,27 @@ class API extends Model
                 . 'sum(case when reward_id = 4 then 2000 else 0 end) as gold3')
             ->where('status', '=', 1)
             ->whereIn('reward_id', array(1, 2, 3, 4))
+            ->first();
+        return [
+            'silver3' => $sql->silver3,
+            'silver2' => $sql->silver2,
+            'silver1' => $sql->silver1,
+            'gold3' => $sql->gold3,
+            'total' => $sql->silver3 + $sql->silver2 + $sql->silver1 + $sql->gold3
+        ];
+    }
+
+    public function getClaimedLMBfromNetwork($date)
+    {
+        $sql = DB::table('claim_reward')
+            ->selectRaw('sum(case when reward_id = 1 then 100 else 0 end) as silver3, '
+                . 'sum(case when reward_id = 2 then 200 else 0 end) as silver2,'
+                . 'sum(case when reward_id = 3 then 500 else 0 end) as silver1,'
+                . 'sum(case when reward_id = 4 then 2000 else 0 end) as gold3')
+            ->where('status', '=', 1)
+            ->whereIn('reward_id', array(1, 2, 3, 4))
+            ->whereDate('claim_date', '>=', $date->start_day)
+            ->whereDate('claim_date', '<=', $date->end_day)
             ->first();
         return [
             'silver3' => $sql->silver3,
