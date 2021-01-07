@@ -219,20 +219,20 @@
                 }
 
                 if(time == 'all' && param == 'stockist-sales') {
-                    var content = '<ul class="list-group list-group-flush">'
+                    var content = '<div style="text-align: left;"><ul class="list-group list-group-flush">'
                     for (var key in res.monthly) {
                         if (res.monthly.hasOwnProperty(key)) {
                             var val = res.monthly[key];
                             content +='<li class="list-group-item">' + key + ': ' + new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(val) + '</li>';
                         }
                     }
-                    content +='</ul>' ;
+                    content +='</ul></div>' ;
 
                     swal(content);
                 }
 
                 if(time == 'all' && param == 'vendor-sales') {
-                    var content = '<h6>Produk Fisik</h6><ul class="list-group list-group-flush">'
+                    var content = '<div style="text-align: left;"><h6>Produk Fisik</h6><ul class="list-group list-group-flush">'
                     for (var key in res.physical) {
                         if (res.physical.hasOwnProperty(key)) {
                             var val = res.physical[key];
@@ -247,12 +247,15 @@
                                 'IDR' }).format(val) + '</li>';
                         }
                     }
+                    content +='</div>'
 
                     swal(content);
                 }
 
                 if(param == 'dividend') {
                 var content = `
+                    <div style="text-align: left;">
+                    <h6>Rangkuman</h6>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">Dari Membership: ` + new Intl.NumberFormat('id-ID', { style: 'currency', currency:
                         'IDR' }).format(res.membership_revenue) +`</li>
@@ -263,6 +266,34 @@
                         <li class="list-group-item">Total: ` + new Intl.NumberFormat('id-ID', { style: 'currency', currency:
                         'IDR' }).format(res.total) +`</li>
                     </ul>
+                    <br>
+                    <h6>Detail Kontribusi Vendor (Profit Sharing Pool)</h6>
+                    <small>80% ke Dividend LMB, 15% ke Dividend LNS, 5% Operasional</small>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Pulsa & Paket Data: ` + new Intl.NumberFormat('id-ID', { style: 'currency', currency:
+                            'IDR' }).format(res.profit_share_details.pulsa_data) +`</li>
+                        <li class="list-group-item">PLN Prabayar: ` + new Intl.NumberFormat('id-ID', { style: 'currency', currency:
+                            'IDR' }).format(res.profit_share_details.pln_prepaid) +`</li>
+                        <li class="list-group-item">Telkom: ` + new Intl.NumberFormat('id-ID', { style: 'currency', currency:
+                            'IDR' }).format(res.profit_share_details.telkom) +`</li>
+                        <li class="list-group-item">PLN Pascabayar: ` + new Intl.NumberFormat('id-ID', { style: 'currency', currency:
+                            'IDR' }).format(res.profit_share_details.pln_postpaid) +`</li>
+                        <li class="list-group-item">HP Pascabayar: ` + new Intl.NumberFormat('id-ID', { style: 'currency', currency:
+                            'IDR' }).format(res.profit_share_details.hp_postpaid) +`</li>
+                        <li class="list-group-item">BPJS: ` + new Intl.NumberFormat('id-ID', { style: 'currency', currency:
+                            'IDR' }).format(res.profit_share_details.bpjs) +`</li>
+                        <li class="list-group-item">PDAM: ` + new Intl.NumberFormat('id-ID', { style: 'currency', currency:
+                            'IDR' }).format(res.profit_share_details.pdam) +`</li>
+                        <li class="list-group-item">Gas Negara: ` + new Intl.NumberFormat('id-ID', { style: 'currency', currency:
+                            'IDR' }).format(res.profit_share_details.pgn) +`</li>
+                        <li class="list-group-item">Multifinance: ` + new Intl.NumberFormat('id-ID', { style: 'currency', currency:
+                            'IDR' }).format(res.profit_share_details.multifinance) +`</li>
+                        <li class="list-group-item">E-money: ` + new Intl.NumberFormat('id-ID', { style: 'currency', currency:
+                            'IDR' }).format(res.profit_share_details.emoney) +`</li>
+                        <li class="list-group-item">Produk Fisik: ` + new Intl.NumberFormat('id-ID', { style: 'currency', currency:
+                            'IDR' }).format(res.profit_share_details.physical) +`</li>
+                    </ul>
+                    </div>
                 `
 
                 swal(content);
@@ -270,6 +301,7 @@
 
                 if(param == 'network-bonus') {
                 var content = `
+                    <div style="text-align: left;">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">Bonus Royalti: ` + new Intl.NumberFormat('id-ID', { style: 'currency', currency:
                         'IDR' }).format(res.total_royalti_bonus) +`</li>
@@ -280,6 +312,7 @@
                         <li class="list-group-item">Total: ` + new Intl.NumberFormat('id-ID', { style: 'currency', currency:
                         'IDR' }).format(res.total) +`</li>
                     </ul>
+                    </div>
                 `
 
                 swal(content);
@@ -305,6 +338,7 @@
 
                 if(time == 'last-month' && param == 'vendor-sales') {
                 var content = `
+                <div style="text-align: left;">
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">Produk Fisik: ` + new Intl.NumberFormat('id-ID', { style: 'currency', currency:
                         'IDR' }).format(res.physical) +`</li>
@@ -314,6 +348,7 @@
                     <li class="list-group-item">Total: ` + new Intl.NumberFormat('id-ID', { style: 'currency', currency:
                         'IDR' }).format(res.total) +`</li>
                 </ul>
+                </div>
                 `
 
                 swal(content);

@@ -91,6 +91,7 @@ class APIController extends Controller
                     'data' => [
                         'membership_revenue' => $membershipRevenue['total'] * 20000,
                         'profit_share' => $profitSharingPool['total'] * 80 / 100,
+                        'profit_share_details' => $profitSharingPool['detail'],
                         'stockist_contribution' => $stockistContribution['total'] * 1 / 100,
                         'total' => ($membershipRevenue['total'] * 20000) + ($profitSharingPool['total'] * 80 / 100) + ($stockistContribution['total'] * 1 / 100)
                     ]
@@ -119,6 +120,7 @@ class APIController extends Controller
                     'data' => [
                         'membership_revenue' => $membershipRevenue['total'] * 20000,
                         'profit_share' => $profitSharingPool['total'] * 80 / 100,
+                        'profit_share_details' => $profitSharingPool['detail'],
                         'stockist_contribution' => $stockistContribution['total'] * 1 / 100,
                         'total' => ($membershipRevenue['total'] * 20000) + ($profitSharingPool['total'] * 80 / 100) + ($stockistContribution['total'] * 1 / 100)
                     ]
