@@ -64,6 +64,17 @@ class Member extends Model
         return $sql;
     }
 
+    public function getKBBMember($user_code)
+    {
+        $sql = DB::table('users')
+            ->where('user_code', '=', $user_code)
+            ->where('is_active', '=', 1)
+            ->where('user_type', '=', 10)
+            ->whereIn('affiliate', [2, 3])
+            ->first();
+        return $sql;
+    }
+
     public function getCekMemberNotStockistOrVendor($id)
     {
         $sql = DB::table('users')

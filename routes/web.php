@@ -25,6 +25,11 @@ Route::post('/forgot/passwd', 'FrontEnd\FrontEndController@postForgotPassword');
 Route::get('/auth/passwd/{code}/{email}', 'FrontEnd\FrontEndController@getAuthPassword')->name('passwdauth');
 Route::post('/auth/passwd', 'FrontEnd\FrontEndController@postAuthPassword');
 
+//telegram bot
+Route::post('/zMbH9dshaPZqdGIJtgvQNfsj38MfPRizcDuNeGu5xyvOWJaswzhkhFJaoeHddWaW/webhook', function () {
+    $update = Telegram::commandsHandler(true);
+});
+
 Auth::routes();
 Route::prefix('/')->group(function () {
 

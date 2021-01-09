@@ -352,6 +352,15 @@ class Bonus extends Model
         return $sql;
     }
 
+    public function getTotalClaimedLMBfromMarketplace($id)
+    {
+        $sql = DB::table('belanja_reward')
+            ->where('belanja_reward.user_id', '=', $id)
+            ->where('belanja_reward.status', '=', 1)
+            ->sum('belanja_reward.reward');
+        return $sql;
+    }
+
     public function getBelanjaRewardByMonthYear($id, $month, $year)
     {
         $sql = DB::table('belanja_reward')
