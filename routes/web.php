@@ -582,4 +582,7 @@ Route::prefix('/')->group(function () {
     Route::get('/m/check-ppob-status', 'Admin\AjaxmemberController@getCheckPPOBStatus')->middleware('auth');
     Route::post('/m/ajax/confirm-ppob-payment', 'Admin\AjaxmemberController@postConfirmPPOBPayment')->middleware('auth');
     Route::post('/m/ajax/cancel-ppob-payment', 'Admin\AjaxmemberController@postCancelPPOBPayment')->middleware('auth');
+
+    //telegram AJAX
+    Route::get('/m/ajax/create-telegram-link', 'Admin\AjaxmemberController@getCreateTelegramLink')->middleware('auth');
 });

@@ -30,6 +30,7 @@ use Illuminate\Support\Facades\Crypt;
 use App\LocalWallet;
 use Illuminate\Support\Facades\Config;
 use IEXBase\TronAPI\Exception\TronException;
+use Illuminate\Support\Facades\Cache;
 
 class AjaxmemberController extends Controller
 {
@@ -2737,5 +2738,14 @@ class AjaxmemberController extends Controller
         return view('member.ajax.reject_pembayaran_ppob')
             ->with('id_ppob', $id_ppob)
             ->with('dataUser', $dataUser);
+    }
+
+    public function getCreateTelegramLink()
+    {
+        $dataUser = Auth::user();
+        $length = 10;
+        $linkCode = substr(str_shuffle('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'), 1, $length);
+        Cache::put($linkCode, $dataUser->id, 600);
+        return response()->json(['success' => true, 'message' => $linkCode], 201);
     }
 }

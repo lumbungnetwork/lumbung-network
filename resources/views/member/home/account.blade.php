@@ -69,28 +69,33 @@
                                 $timeleft = $future - $timefromdb;
                                 $daysleft = round((($timeleft/24)/60)/60);
                             ?>
-                        <div class="col-8 mb-3">
-                            <p>
+                        <div class="col-6 mb-3">
+                            <dd>
                                 Masa Aktif Keanggotaan
-                            </p>
+                            </dd>
                             @if($daysleft <= 0) <h5 class="text-danger">Keanggotaan anda sudah kadaluarsa</h5>
                                 @endif
                                 @if($daysleft > 0)
-                                <h5 class="text-warning">{{$daysleft}}</h5>
+                                <h5 class="text-warning mb-0">{{$daysleft}}</h5>
                                 <p class="f-12">Hari sebelum kadaluwarsa</p>
                                 @endif
                         </div>
-                        <div class="col-4 mb-3 px-0">
+                        <div class="col-6 mb-3">
                             <input type="hidden" class="form-control allownumericwithoutdecimal invalidpaste"
                                 id="input_jml_pin" name="total_pin" autocomplete="off" value="1">
-                            <button type="submit" class="btn btn-success" id="submitBtn" data-toggle="modal"
-                                data-target="#confirmSubmit" onClick="inputSubmit()">Resubscribe</button>
+                            <button type="submit" class="btn btn-block btn-success mb-3" id="submitBtn"
+                                data-toggle="modal" data-target="#confirmSubmit"
+                                onClick="inputSubmit()">Resubscribe</button>
+                            <a class="text-decoration-none " onclick="telegram()">
+                                <div class="rounded icon-ppob text-center">
+                                    <div class="box-icon bg-green text-center">
+                                        <i class="mdi mdi-telegram icon-menu"></i>
+                                    </div>
+                                    <dd>Tautkan Telegram</dd>
+                                </div>
+                            </a>
                         </div>
-                        <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog"
-                            aria-labelledby="modalLabel" aria-hidden="true" data-backdrop="false">
-                            <div class="modal-dialog" role="document" id="confirmDetail">
-                            </div>
-                        </div>
+
                     </div>
                 </div>
 
@@ -304,6 +309,11 @@
     </div>
     <!-- Dark Overlay element -->
     <div class="overlay"></div>
+    <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
+        aria-hidden="true" data-backdrop="true">
+        <div class="modal-dialog" role="document" id="confirmDetail">
+        </div>
+    </div>
 </div>
 
 @stop
@@ -339,6 +349,32 @@
             $('#form-add').submit();
             $('#tutupModal').remove();
             $('#submit').remove();
+        }
+
+        function telegram() {
+            Swal.fire({
+                title: 'Tautkan Telegram?',
+                text: "Pastikan anda sudah memiliki Akun Telegram, anda akan diarahkan ke Telegram untuk Start/Mulai",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, tautkan!',
+                cancelButtonText: 'Tidak usah'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire('Lanjutkan Proses di Aplikasi Telegram Anda, Klik START/MULAI');
+                    Swal.showLoading();
+                    $.ajax({
+                        type: "GET",
+                        url: "{{ URL::to('/') }}/m/ajax/create-telegram-link",
+                        success: function(response){
+                        location.assign("https://t.me/LumbungNetworkBot?start=" + response.message);
+                        }
+                    });
+
+                }
+            })
         }
 
         $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {
