@@ -365,8 +365,7 @@ class Sales extends Model
             $query = DB::table('master_sales')->where('id', '=', $masterSalesID)->first();
             $result = $query->total_price * 4 / 100;
         } catch (Throwable $ex) {
-            $message = $ex->getMessage();
-            $result = (object) array('status' => false, 'message' => $message);
+            $result = 0;
         }
         return $result;
     }
@@ -377,8 +376,7 @@ class Sales extends Model
             $query = DB::table('vmaster_sales')->where('id', '=', $masterSalesID)->first();
             $result = $query->total_price * 2 / 100;
         } catch (Throwable $ex) {
-            $message = $ex->getMessage();
-            $result = (object) array('status' => false, 'message' => $message);
+            $result = 0;
         }
         return $result;
     }
@@ -389,8 +387,7 @@ class Sales extends Model
             $query = DB::table('vmaster_sales')->where('id', '=', $masterSalesID)->first();
             $result = $query->total_price;
         } catch (Throwable $ex) {
-            $message = $ex->getMessage();
-            $result = (object) array('status' => false, 'message' => $message);
+            $result = 0;
         }
         return $result;
     }
@@ -401,8 +398,7 @@ class Sales extends Model
             $query = DB::table('master_sales')->where('id', '=', $masterSalesID)->first();
             $result = $query->total_price;
         } catch (Throwable $ex) {
-            $message = $ex->getMessage();
-            $result = (object) array('status' => false, 'message' => $message);
+            $result = 0;
         }
         return $result;
     }
