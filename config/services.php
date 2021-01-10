@@ -45,6 +45,10 @@ return [
 
     ],
 
+    'telegram-bot-api' => [
+        'token' => '1402924705:' . env('BLMB')
+    ],
+
     'stripe' => [
         'model' => App\User::class,
         'key' => env('STRIPE_KEY'),
