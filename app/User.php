@@ -51,4 +51,9 @@ class User extends Authenticatable
     {
         return $this->hasOne('App\LocalWallet');
     }
+
+    public function routeNotificationForTelegram()
+    {
+        return $this->chat_id;
+    }
 }

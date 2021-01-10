@@ -31,6 +31,9 @@ use App\LocalWallet;
 use Illuminate\Support\Facades\Config;
 use IEXBase\TronAPI\Exception\TronException;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Notifications\Notification;
+use NotificationChannels\Telegram\TelegramChannel;
+use App\Notifications\StockistNotification;
 
 class AjaxmemberController extends Controller
 {
@@ -437,6 +440,7 @@ class AjaxmemberController extends Controller
 
     public function postShoppingPayment(Request $request)
     {
+        $dataUser = Auth::user();
         $modelSales = new Sales;
         $items = null;
         if ($request->buy_method == 1) {
@@ -447,9 +451,11 @@ class AjaxmemberController extends Controller
             if ($request->sellerType == 1) {
                 $modelSales->getUpdateMasterSales('id', $request->masterSalesID, $dataUpdate);
                 $items = $modelSales->getMemberPembayaranSalesNew($request->masterSalesID);
+                $price = $modelSales->getMasterTotalPriceStockist($request->masterSalesID);
             } else {
                 $modelSales->getUpdateVMasterSales('id', $request->masterSalesID, $dataUpdate);
                 $items = $modelSales->getMemberPembayaranVSalesNew($request->masterSalesID);
+                $price = $modelSales->getMasterTotalPriceVendor($request->masterSalesID);
             }
 
             foreach ($items as $item) {
@@ -457,6 +463,14 @@ class AjaxmemberController extends Controller
                 $remaining = $product->qty - $item->amount;
                 $product->update(['qty' => $remaining]);
             }
+
+            $notification = [
+                'buyer' => $dataUser->user_code,
+                'price' => 'Rp' . number_format($price),
+                'payment' => 'TUNAI'
+            ];
+
+            User::find($dataUser->id)->notify(new StockistNotification($notification));
 
             return response()->json(['success' => true]);
         } else if ($request->buy_method == 3) {
@@ -515,6 +529,13 @@ class AjaxmemberController extends Controller
                                 $remaining = $product->qty - $item->amount;
                                 $product->update(['qty' => $remaining]);
                             }
+                            $notification = [
+                                'buyer' => $dataUser->user_code,
+                                'price' => 'Rp' . number_format($amount),
+                                'payment' => 'eIDR (Tuntas Otomatis)'
+                            ];
+
+                            User::find($dataUser->id)->notify(new StockistNotification($notification));
                             ForwardShoppingPaymentJob::dispatch($request->masterSalesID, $request->sellerType)->onQueue('tron');
                             return response()->json(['success' => true]);
                         } else {
