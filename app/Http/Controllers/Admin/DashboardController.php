@@ -316,10 +316,12 @@ class DashboardController extends Controller
         $getTransTarik = $modelTrans->getMyTotalTarikDeposit($dataUser);
         $getTotalDeposit = $modelPin->getTotalDepositMember($dataUser);
         $getTotalPPOBOut = $modelPin->getPPOBFly($dataUser->id);
+
         return view('member.home.account')
             ->with('dataDeposit', $getTotalDeposit)
             ->with('dataTarik', $getTransTarik)
             ->with('onTheFly', $getTotalPPOBOut)
+            ->with('telegram', $dataUser->chat_id)
             ->with('dataUser', $dataUser);
     }
 

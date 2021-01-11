@@ -2792,4 +2792,13 @@ class AjaxmemberController extends Controller
         Cache::put($linkCode, $dataUser->id, 600);
         return response()->json(['success' => true, 'message' => $linkCode], 201);
     }
+
+    public function getRemoveTelegramLink()
+    {
+        $dataUser = Auth::user();
+        $data = ['chat_id' => null];
+        $modelMember = new Member;
+        $modelMember->getUpdateUsers('id', $dataUser->id, $data);
+        return response()->json(['success' => true], 201);
+    }
 }

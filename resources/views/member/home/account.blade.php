@@ -83,9 +83,16 @@
                         <div class="col-6 mb-3">
                             <input type="hidden" class="form-control allownumericwithoutdecimal invalidpaste"
                                 id="input_jml_pin" name="total_pin" autocomplete="off" value="1">
-                            <button type="submit" class="btn btn-block btn-success mb-3" id="submitBtn"
-                                data-toggle="modal" data-target="#confirmSubmit"
-                                onClick="inputSubmit()">Resubscribe</button>
+                            <a class="text-decoration-none " id="submitBtn" data-toggle="modal"
+                                data-target="#confirmSubmit" onclick="inputSubmit()">
+                                <div class="rounded icon-ppob text-center">
+                                    <div class="box-icon bg-green text-center">
+                                        <i class="mdi mdi-history icon-menu"></i>
+                                    </div>
+                                    <dd>Resubscribe</dd>
+                                </div>
+                            </a>
+                            @if ($telegram == null)
                             <a class="text-decoration-none " onclick="telegram()">
                                 <div class="rounded icon-ppob text-center">
                                     <div class="box-icon bg-green text-center">
@@ -94,6 +101,16 @@
                                     <dd>Tautkan Telegram</dd>
                                 </div>
                             </a>
+                            @else
+                            <a class="text-decoration-none " onclick="unlinkTelegram()">
+                                <div class="rounded icon-ppob text-center">
+                                    <div class="box-icon bg-green text-center">
+                                        <i class="mdi mdi-telegram icon-menu"></i>
+                                    </div>
+                                    <dd>Hapus Telegram</dd>
+                                </div>
+                            </a>
+                            @endif
                         </div>
 
                     </div>
@@ -370,6 +387,35 @@
                         url: "{{ URL::to('/') }}/m/ajax/create-telegram-link",
                         success: function(response){
                         location.assign("https://t.me/LumbungNetworkBot?start=" + response.message);
+                        }
+                    });
+
+                }
+            })
+        }
+
+        function unlinkTelegram() {
+            Swal.fire({
+                title: 'Hapus Telegram?',
+                text: "Yakin ingin memutuskan hubungan dengan akun Telegram yang terdaftar saat ini?",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Jangan'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire('Memutuskan hubungan...');
+                    Swal.showLoading();
+                    $.ajax({
+                        type: "GET",
+                        url: "{{ URL::to('/') }}/m/ajax/remove-telegram-link",
+                        success: function(response){
+                            if (response.success) {
+                                location.reload();
+                            }
+
                         }
                     });
 

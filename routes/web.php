@@ -585,4 +585,5 @@ Route::prefix('/')->group(function () {
 
     //telegram AJAX
     Route::get('/m/ajax/create-telegram-link', 'Admin\AjaxmemberController@getCreateTelegramLink')->middleware('auth');
+    Route::get('/m/ajax/remove-telegram-link', 'Admin\AjaxmemberController@getRemoveTelegramLink')->middleware('auth');
 });
