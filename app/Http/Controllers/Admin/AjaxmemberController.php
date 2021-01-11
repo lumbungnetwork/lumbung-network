@@ -31,9 +31,9 @@ use App\LocalWallet;
 use Illuminate\Support\Facades\Config;
 use IEXBase\TronAPI\Exception\TronException;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Notifications\Notification;
 use NotificationChannels\Telegram\TelegramChannel;
 use App\Notifications\StockistNotification;
+use App\Notifications\VendorNotification;
 
 class AjaxmemberController extends Controller
 {
@@ -470,7 +470,9 @@ class AjaxmemberController extends Controller
                 'payment' => 'TUNAI'
             ];
 
-            User::find($dataUser->id)->notify(new StockistNotification($notification));
+            if ($dataUser->chat_id != null) {
+                User::find($dataUser->id)->notify(new StockistNotification($notification));
+            }
 
             return response()->json(['success' => true]);
         } else if ($request->buy_method == 3) {
@@ -534,8 +536,10 @@ class AjaxmemberController extends Controller
                                 'price' => 'Rp' . number_format($amount),
                                 'payment' => 'eIDR (Tuntas Otomatis)'
                             ];
+                            if ($dataUser->chat_id != null) {
+                                User::find($dataUser->id)->notify(new StockistNotification($notification));
+                            }
 
-                            User::find($dataUser->id)->notify(new StockistNotification($notification));
                             ForwardShoppingPaymentJob::dispatch($request->masterSalesID, $request->sellerType)->onQueue('tron');
                             return response()->json(['success' => true]);
                         } else {
@@ -2509,6 +2513,17 @@ class AjaxmemberController extends Controller
         $modelPin = new Pin;
         $masterSalesID = $request->masterSalesID;
         $getDataMaster = $modelPin->getMemberPembayaranPPOB($masterSalesID, $dataUser);
+        $vendor = User::find($getDataMaster->vendor_id);
+        $paymentMethod = 'TUNAI';
+        if ($request->buy_method == 3) {
+            $paymentMethod = 'eIDR (Tuntas Otomatis';
+        }
+        $notification = [
+            'buyer' => $dataUser->user_code,
+            'product' => $getDataMaster->message,
+            'price' => $getDataMaster->ppob_price,
+            'payment' => $paymentMethod
+        ];
         if ($getDataMaster == null) {
             return response()->json(['success' => false, 'message' => 'Data Pesanan tidak ditemukan!']);
         }
@@ -2520,6 +2535,10 @@ class AjaxmemberController extends Controller
                 'confirm_at' => date('Y-m-d H:i:s')
             );
             $modelPin->getUpdatePPOB('id', $masterSalesID, $dataUpdate);
+
+            if ($vendor->chat_id != null) {
+                $vendor->notify(new VendorNotification($notification));
+            }
 
             return response()->json(['success' => true]);
         } elseif ($request->buy_method == 3) {
@@ -2568,6 +2587,10 @@ class AjaxmemberController extends Controller
                             $modelPin->getUpdatePPOB('id', $masterSalesID, $dataUpdate);
 
                             PPOBexecuteJob::dispatch($masterSalesID)->onQueue('tron');
+
+                            if ($vendor->chat_id != null) {
+                                $vendor->notify(new VendorNotification($notification));
+                            }
 
                             return response()->json(['success' => true]);
                         } else {
