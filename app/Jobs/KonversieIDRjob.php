@@ -15,6 +15,8 @@ use IEXBase\TronAPI\Provider\HttpProvider;
 use IEXBase\TronAPI\Exception\TronException;
 use GuzzleHttp\Client;
 use App\Http\Controllers\Controller;
+use App\User;
+use App\Notifications\eIDRNotification;
 
 class KonversieIDRjob implements ShouldQueue
 {
@@ -50,6 +52,8 @@ class KonversieIDRjob implements ShouldQueue
             dd('KonversieIDRjob stopped, no data');
         }
 
+        $user = User::find($getData->user_id);
+
         $to = $getData->tron;
         $amount = $getData->wd_total * 100;
 
@@ -75,6 +79,16 @@ class KonversieIDRjob implements ShouldQueue
                 'submit_at' => date('Y-m-d H:i:s'),
             );
             $modelWD->getUpdateWD('id', $this->id, $dataUpdate);
+
+            $notification = [
+                'amount' => $getData->wd_total,
+                'type' => 'Konversi Saldo Bonus ke eIDR',
+                'hash' => $response['txid']
+            ];
+
+            if ($user->chat_id != null) {
+                $user->notify(new eIDRNotification($notification));
+            }
 
             $eIDRbalance = $tron->getTokenBalance($tokenID, $from, $fromTron = false) / 100;
 

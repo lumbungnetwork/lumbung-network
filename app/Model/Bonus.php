@@ -476,7 +476,7 @@ class Bonus extends Model
     {
         $sql = DB::table('belanja_reward')
             ->join('users', 'belanja_reward.user_id', '=', 'users.id')
-            ->selectRaw('belanja_reward.id, belanja_reward.reward, belanja_reward.type, '
+            ->selectRaw('belanja_reward.id, belanja_reward.reward, belanja_reward.type, belanja_reward.user_id, '
                 . 'DATE_FORMAT(belanja_reward.belanja_date, "%M - %Y") as monthly, users.tron, users.user_code')
             ->where('belanja_reward.id', '=', $id)
             ->where('belanja_reward.status', '=', 0)
@@ -781,7 +781,7 @@ class Bonus extends Model
     {
         $sql = DB::table('claim_reward')
             ->join('users', 'claim_reward.user_id', '=', 'users.id')
-            ->selectRaw('claim_reward.id, users.user_code, users.tron, claim_reward.reward_id')
+            ->selectRaw('claim_reward.id, claim_reward.user_id, users.user_code, users.tron, claim_reward.reward_id')
             ->where('claim_reward.status', '=', 0)
             ->where('claim_reward.id', '=', $reward_id)
             ->whereNull('claim_reward.reason')

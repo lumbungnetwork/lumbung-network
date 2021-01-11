@@ -10,13 +10,12 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-
-use IEXBase\TronAPI\Tron;
-use IEXBase\TronAPI\Provider\HttpProviderInterface;
 use IEXBase\TronAPI\Exception\TronException;
 use Illuminate\Support\Facades\Config;
 use GuzzleHttp\Client;
 use App\Http\Controllers\Controller;
+use App\User;
+use App\Notifications\LMBNotification;
 
 class SendLMBRewardJualBeliJob implements ShouldQueue
 {
@@ -59,6 +58,8 @@ class SendLMBRewardJualBeliJob implements ShouldQueue
             dd('SendLMBRewardJualBelijob stopped, data not found!');
         }
 
+        $user = User::find($getData->user_id);
+
         $rewardType = 'Reward Belanja di Stockist';
         if ($getData->type == 2) {
             $rewardType = 'Reward Penjualan Stockist';
@@ -99,6 +100,16 @@ class SendLMBRewardJualBeliJob implements ShouldQueue
             $modelBonus->getUpdateBelanjaReward('id', $getData->id, $dataUpdate);
 
             $shortenHash = substr($txHash, 0, 5) . '...' . substr($txHash, -5);
+
+            $notification = [
+                'amount' => $getData->reward,
+                'type' => $rewardType . ' ' . $getData->monthly,
+                'hash' => $response['txid']
+            ];
+
+            if ($user->chat_id != null) {
+                $user->notify(new LMBNotification($notification));
+            }
 
             $tgMessage = '
 *' . $getData->user_code . '* baru saja Claim ' . $getData->reward . ' LMB dari ' . $rewardType . '

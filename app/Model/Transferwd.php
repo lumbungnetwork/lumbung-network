@@ -385,7 +385,7 @@ class Transferwd extends Model
     {
         $sql = DB::table('transfer_wd')
             ->join('users', 'transfer_wd.user_id', '=', 'users.id')
-            ->selectRaw('transfer_wd.id, users.tron, '
+            ->selectRaw('transfer_wd.id, transfer_wd.user_id, users.tron, '
                 . 'transfer_wd.wd_total')
             ->where('transfer_wd.id', '=', $id)
             ->where('transfer_wd.status', '=', 0)
@@ -415,7 +415,7 @@ class Transferwd extends Model
     {
         $sql = DB::table('transfer_wd')
             ->join('users', 'transfer_wd.user_id', '=', 'users.id')
-            ->selectRaw('transfer_wd.id, users.tron, users.user_code,'
+            ->selectRaw('transfer_wd.id, transfer_wd.user_id, users.tron, users.user_code,'
                 . 'transfer_wd.wd_total')
             ->where('transfer_wd.id', '=', $id)
             ->where('transfer_wd.type', '=', 3)

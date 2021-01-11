@@ -8,11 +8,12 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Model\Bonus;
-
-use IEXBase\TronAPI\Tron;
-use IEXBase\TronAPI\Provider\HttpProvider;
+use App\User;
 use IEXBase\TronAPI\Exception\TronException;
 use Illuminate\Support\Facades\Config;
+use App\Http\Controllers\Controller;
+
+use App\Notifications\eIDRNotification;
 
 class ManualTopUpeIDRjob implements ShouldQueue
 {
@@ -40,22 +41,20 @@ class ManualTopUpeIDRjob implements ShouldQueue
             dd('ManualTopUpeIDRjob stopped, no data');
         }
 
+        $user = User::find($dataUser->user_id);
+
         //prepare TRON
-        $fullNode = new HttpProvider('https://api.trongrid.io');
-        $solidityNode = new HttpProvider('https://api.trongrid.io');
-        $eventServer = new HttpProvider('https://api.trongrid.io');
         $fuse = Config::get('services.telegram.test');
 
-        try {
-            $tron = new Tron($fullNode, $solidityNode, $eventServer, $signServer = null, $explorer = null, $fuse);
-        } catch (TronException $e) {
-            exit($e->getMessage());
-        }
+        $controller = new Controller;
+        $tron = $controller->getTron();
+        $tron->setPrivateKey($fuse);
 
         $to = $getData->tron;
         $amount = $getData->nominal * 100;
         $from = 'TWJtGQHBS8PfZTXvWAYhQEMrx36eX2F9Pc';
         $tokenID = '1002652';
+
         try {
             $transaction = $tron->getTransactionBuilder()->sendToken($to, $amount, $tokenID, $from);
             $signedTransaction = $tron->signTransaction($transaction);
@@ -73,6 +72,16 @@ class ManualTopUpeIDRjob implements ShouldQueue
                 'submit_at' => date('Y-m-d H:i:s'),
             );
             $modelBonus->getUpdateTopUp('id', $getData->id, $dataUpdate);
+
+            $notification = [
+                'amount' => $getData->nominal,
+                'type' => 'Top-up eIDR',
+                'hash' => $response['txid']
+            ];
+
+            if ($user->chat_id != null) {
+                $user->notify(new eIDRNotification($notification));
+            }
             return;
         }
     }

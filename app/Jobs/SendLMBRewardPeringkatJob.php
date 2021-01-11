@@ -11,11 +11,12 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-use IEXBase\TronAPI\Tron;
 use IEXBase\TronAPI\Exception\TronException;
 use Illuminate\Support\Facades\Config;
 use GuzzleHttp\Client;
 use App\Http\Controllers\Controller;
+use App\User;
+use App\Notifications\LMBNotification;
 
 class SendLMBRewardPeringkatJob implements ShouldQueue
 {
@@ -57,6 +58,8 @@ class SendLMBRewardPeringkatJob implements ShouldQueue
         if ($getData == null) {
             dd('SendLMBRewardPeringkatjob stopped, data not found!');
         }
+
+        $user = User::find($getData->user_id);
 
         $rewardType = 'Silver III';
         $reward = 100;
@@ -113,6 +116,16 @@ class SendLMBRewardPeringkatJob implements ShouldQueue
             $modelBonus->getUpdateClaimReward('id', $getData->id, $dataUpdate);
 
             $shortenHash = substr($txHash, 0, 5) . '...' . substr($txHash, -5);
+
+            $notification = [
+                'amount' => $reward,
+                'type' => 'Reward Pencapaian ' . $rewardType,
+                'hash' => $response['txid']
+            ];
+
+            if ($user->chat_id != null) {
+                $user->notify(new LMBNotification($notification));
+            }
 
             $tgMessage = '
             Selamat!

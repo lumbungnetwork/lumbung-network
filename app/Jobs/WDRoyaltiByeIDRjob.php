@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Config;
 use IEXBase\TronAPI\Exception\TronException;
 use GuzzleHttp\Client;
 use App\Http\Controllers\Controller;
+use App\User;
+use App\Notifications\eIDRNotification;
 
 class WDRoyaltiByeIDRjob implements ShouldQueue
 {
@@ -49,6 +51,8 @@ class WDRoyaltiByeIDRjob implements ShouldQueue
             dd('WDRoyaltiByeIDRjob stopped, no data');
         }
 
+        $user = User::find($getData->user_id);
+
         $to = $getData->tron;
         $amount = $getData->wd_total * 100;
 
@@ -74,6 +78,16 @@ class WDRoyaltiByeIDRjob implements ShouldQueue
                 'submit_at' => date('Y-m-d H:i:s'),
             );
             $modelWD->getUpdateWD('id', $this->id, $dataUpdate);
+
+            $notification = [
+                'amount' => $getData->wd_total,
+                'type' => 'Konversi Bonus Royalti ke eIDR',
+                'hash' => $response['txid']
+            ];
+
+            if ($user->chat_id != null) {
+                $user->notify(new eIDRNotification($notification));
+            }
 
             $eIDRbalance = $tron->getTokenBalance($tokenID, $from, $fromTron = false) / 100;
 
