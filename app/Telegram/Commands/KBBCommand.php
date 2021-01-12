@@ -147,11 +147,12 @@ class KBBCommand extends Command
         } elseif ($args['param'] == 'sponsoring') {
             $getInvite = $modelMember->getInviteCount($dataUser->id);
             $getSponsoring = $modelMember->getSponsorPeringkat($dataUser);
+            $text = '';
             if ($getSponsoring == null && count($getInvite) == 0) {
-                $text = 'Akun ' . $dataUser->user_code . ' belum ada mensponsori/mengajak akun lain.';
+                $text .= 'Akun ' . $dataUser->user_code . ' belum ada mensponsori/mengajak akun lain.';
+                $this->replyWithMessage(compact('text'));
+                return;
             } else {
-                $text = '';
-
                 if (count($getInvite) > 0) {
                     $text .=
                         'Daftar member KBB yang diajak oleh akun ' . $dataUser->user_code . ':' . chr(10) . chr(10);
@@ -160,17 +161,20 @@ class KBBCommand extends Command
                         $text .= $no . '. ' . $row->user_code . chr(10);
                         $no++;
                     }
+                    $text .= chr(10) . '============' . chr(10);
                 }
-                $text .= 'Daftar akun yang disponsori oleh akun ' . $dataUser->user_code . ':' . chr(10) . chr(10);
-                $no = 1;
-                foreach ($getSponsoring as $row) {
-                    $text .= $no . '. ' . $row->user_code . ' - ' . $row->name . ' (' . $row->total_sponsor . ')' . chr(10);
-                    $no++;
+                if ($getSponsoring != null) {
+                    $text .= 'Daftar akun yang disponsori oleh akun ' . $dataUser->user_code . ':' . chr(10) . chr(10);
+                    $no = 1;
+                    foreach ($getSponsoring as $row) {
+                        $text .= $no . '. ' . $row->user_code . ' - ' . $row->name . ' (' . $row->total_sponsor . ')' . chr(10);
+                        $no++;
+                    }
                 }
-            }
 
-            $this->replyWithMessage(compact('text'));
-            return;
+                $this->replyWithMessage(['text' => $text, 'parse_mode' => 'markdown']);
+                return;
+            }
         } else {
             $text = 'Perintah yang anda masukkan kurang tepat!' . chr(10) . chr(10);
             $text .= 'Pergunakan parameter seperti "status" atau "bonus" diikuti dengan "username" yang ingin diperiksa.' . chr(10) . chr(10);
