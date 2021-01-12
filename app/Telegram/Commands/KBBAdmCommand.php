@@ -43,6 +43,8 @@ class KBBAdmCommand extends Command
 
         if (!in_array($chat_id, $whitelist)) {
             $text = 'unauthorized access!';
+            $this->replyWithMessage(compact('text'));
+            return;
         } else {
             $params = explode(' ', $textContent);
             if (!isset($params[1])) {
