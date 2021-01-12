@@ -7,6 +7,7 @@ use Telegram;
 use App\Model\Member;
 use App\Model\Bonus;
 use App\Model\Transferwd;
+use App\User;
 
 /**
  * Class KBBCommand.
@@ -43,10 +44,14 @@ class KBBCommand extends Command
         $response = $this->getUpdate();
 
         if (empty($args)) {
-            $text = 'Perintah yang anda gunakan kurang tepat.' . chr(10) . chr(10);
-            $text .= 'Pergunakan parameter "status" atau "bonus" diikuti dengan "username" yang ingin diperiksa.' . chr(10) . chr(10);
-            $text .= 'Contoh: /kbb status Budi001';
-            $this->replyWithMessage(compact('text'));
+            $text = 'Petunjuk penggunaan "perintah" Bot KBB yang tepat: .' . chr(10) . chr(10);
+            $text .= 'Pergunakan parameter seperti "status" atau "bonus" diikuti dengan "username" yang ingin diperiksa.' . chr(10) . chr(10);
+            $text .= 'Contoh: "/kbb status Budi001"' . chr(10) . chr(10);
+            $text .= 'Parameter yang tersedia:' . chr(10);
+            $text .= '1. _status_ (untuk melihat status suatu akun)' . chr(10);
+            $text .= '2. _bonus_ (untuk melihat bonus suatu akun)' . chr(10);
+            $text .= '3. _sponsoring_ (untuk melihat daftar akun yang disponsori oleh suatu akun)' . chr(10);
+            $this->replyWithMessage(['text' => $text, 'parse_mode' => 'markdown']);
             return;
         }
 
@@ -55,7 +60,7 @@ class KBBCommand extends Command
 
         if ($dataUser == null) {
             $text = 'Username yang anda masukkan tidak ada atau tidak terdaftar sebagai member KBB';
-            $this->replyWithMessage(compact('text'));
+            $this->replyWithMessage(['text' => $text, 'parse_mode' => 'markdown']);
             return;
         }
 
@@ -105,6 +110,11 @@ class KBBCommand extends Command
             }
 
             $text .= 'Peringkat: ' . $rank . chr(10);
+
+            if ($dataUser->invited_by != null) {
+                $host = User::find($dataUser->invited_by);
+                $text .= 'Diajak oleh: ' . $host->user_code . chr(10);
+            }
             $this->replyWithMessage(compact('text'));
             return;
         } elseif ($args['param'] == 'bonus') {
@@ -139,7 +149,18 @@ class KBBCommand extends Command
             if ($getSponsoring == null) {
                 $text = 'Akun ' . $dataUser->user_code . ' belum ada mensponsori akun lain.';
             } else {
-                $text = 'Daftar member yang disponsori oleh akun ' . $dataUser->user_code . ':' . chr(10) . chr(10);
+                $text = '';
+                $getInvite = $modelMember->getInviteCount($dataUser->id);
+                if ($getInvite != null) {
+                    $text .=
+                        'Daftar member KBB yang diajak oleh akun ' . $dataUser->user_code . ':' . chr(10) . chr(10);
+                    $no = 1;
+                    foreach ($getInvite as $row) {
+                        $text .= $no . '. ' . $row->user_code . chr(10);
+                        $no++;
+                    }
+                }
+                $text .= 'Daftar akun yang disponsori oleh akun ' . $dataUser->user_code . ':' . chr(10) . chr(10);
                 $no = 1;
                 foreach ($getSponsoring as $row) {
                     $text .= $no . '. ' . $row->user_code . ' - ' . $row->name . ' (' . $row->total_sponsor . ')' . chr(10);
@@ -150,14 +171,14 @@ class KBBCommand extends Command
             $this->replyWithMessage(compact('text'));
             return;
         } else {
-            $text = 'Petunjuk penggunaan "perintah" Bot KBB yang tepat: .' . chr(10) . chr(10);
+            $text = 'Perintah yang anda masukkan kurang tepat!' . chr(10) . chr(10);
             $text .= 'Pergunakan parameter seperti "status" atau "bonus" diikuti dengan "username" yang ingin diperiksa.' . chr(10) . chr(10);
             $text .= 'Contoh: "/kbb status Budi001"' . chr(10) . chr(10);
             $text .= 'Parameter yang tersedia:' . chr(10);
             $text .= '1. _status_ (untuk melihat status suatu akun)' . chr(10);
             $text .= '2. _bonus_ (untuk melihat bonus suatu akun)' . chr(10);
             $text .= '3. _sponsoring_ (untuk melihat daftar akun yang disponsori oleh suatu akun)' . chr(10);
-            $this->replyWithMessage(compact('text'));
+            $this->replyWithMessage(['text' => $text, 'parse_mode' => 'markdown']);
             return;
         }
     }

@@ -75,6 +75,18 @@ class Member extends Model
         return $sql;
     }
 
+    public function getInviteCount($user_id)
+    {
+        $sql = DB::table('users')
+            ->selectRaw('users.id, users.user_code')
+            ->where('invited_by', '=', $user_id)
+            ->where('is_active', '=', 1)
+            ->where('user_type', '=', 10)
+            ->whereIn('affiliate', [2, 3])
+            ->get();
+        return $sql;
+    }
+
     public function getCekMemberNotStockistOrVendor($id)
     {
         $sql = DB::table('users')
