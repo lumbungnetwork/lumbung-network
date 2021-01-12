@@ -151,7 +151,7 @@ class KBBCommand extends Command
             } else {
                 $text = '';
                 $getInvite = $modelMember->getInviteCount($dataUser->id);
-                if ($getInvite != null) {
+                if (count($getInvite) > 0) {
                     $text .=
                         'Daftar member KBB yang diajak oleh akun ' . $dataUser->user_code . ':' . chr(10) . chr(10);
                     $no = 1;
