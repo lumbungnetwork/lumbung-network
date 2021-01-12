@@ -134,10 +134,29 @@ class KBBCommand extends Command
             $text .= 'Reward LMB Jual-Beli: ' . number_format($totalClaimedLMBfromMarketplace, 2) . ' LMB' . chr(10);
             $this->replyWithMessage(compact('text'));
             return;
+        } elseif ($args['param'] == 'sponsoring') {
+            $getSponsoring = $modelMember->getSponsorPeringkat($dataUser);
+            if ($getSponsoring == null) {
+                $text = 'Akun ' . $dataUser->user_code . ' belum ada mensponsori akun lain.';
+            } else {
+                $text = 'Daftar member yang disponsori oleh akun ' . $dataUser->user_code . ':' . chr(10) . chr(10);
+                $no = 1;
+                foreach ($getSponsoring as $row) {
+                    $text .= $no . '. ' . $row->user_code . ' - ' . $row->name . ' (' . $row->total_sponsor . ')' . chr(10);
+                    $no++;
+                }
+            }
+
+            $this->replyWithMessage(compact('text'));
+            return;
         } else {
-            $text = 'Perintah yang anda gunakan kurang tepat.' . chr(10) . chr(10);
-            $text .= 'Pergunakan parameter "status" atau "bonus" diikuti dengan "username" yang ingin diperiksa.' . chr(10) . chr(10);
-            $text .= 'Contoh: /kbb status Budi001';
+            $text = 'Petunjuk penggunaan "perintah" Bot KBB yang tepat: .' . chr(10) . chr(10);
+            $text .= 'Pergunakan parameter seperti "status" atau "bonus" diikuti dengan "username" yang ingin diperiksa.' . chr(10) . chr(10);
+            $text .= 'Contoh: "/kbb status Budi001"' . chr(10) . chr(10);
+            $text .= 'Parameter yang tersedia:' . chr(10);
+            $text .= '1. _status_ (untuk melihat status suatu akun)' . chr(10);
+            $text .= '2. _bonus_ (untuk melihat bonus suatu akun)' . chr(10);
+            $text .= '3. _sponsoring_ (untuk melihat daftar akun yang disponsori oleh suatu akun)' . chr(10);
             $this->replyWithMessage(compact('text'));
             return;
         }
