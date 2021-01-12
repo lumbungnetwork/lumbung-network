@@ -36,7 +36,7 @@ class KBBAdmCommand extends Command
     {
         $response = $this->getUpdate();
         $chat_id = $response->getMessage()->getChat()->getId();
-        $whitelist = [1049542881, 365874331];
+        $whitelist = [1049542881, 365874331, -418820766];
         $textContent = $response->getMessage()->getText();
 
         $modelMember = new Member;
