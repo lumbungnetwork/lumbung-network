@@ -145,12 +145,13 @@ class KBBCommand extends Command
             $this->replyWithMessage(compact('text'));
             return;
         } elseif ($args['param'] == 'sponsoring') {
+            $getInvite = $modelMember->getInviteCount($dataUser->id);
             $getSponsoring = $modelMember->getSponsorPeringkat($dataUser);
-            if ($getSponsoring == null) {
-                $text = 'Akun ' . $dataUser->user_code . ' belum ada mensponsori akun lain.';
+            if ($getSponsoring == null && count($getInvite) == 0) {
+                $text = 'Akun ' . $dataUser->user_code . ' belum ada mensponsori/mengajak akun lain.';
             } else {
                 $text = '';
-                $getInvite = $modelMember->getInviteCount($dataUser->id);
+
                 if (count($getInvite) > 0) {
                     $text .=
                         'Daftar member KBB yang diajak oleh akun ' . $dataUser->user_code . ':' . chr(10) . chr(10);
