@@ -2,33 +2,310 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use BotMan\BotMan\BotMan;
-use BotMan\BotMan\BotManFactory;
-use BotMan\BotMan\Drivers\DriverManager;
-
-$config = [
-    // Your driver-specific configuration
-    "telegram" => [
-        "token" => "1554087832:AAF0i3zB8Imm8xLP6AFWVF6Lr4a5crwn8Z4"
-    ]
-];
-
-// Load the driver(s) you want to use
-DriverManager::loadDriver(\BotMan\Drivers\Telegram\TelegramDriver::class);
-
-// Create an instance
-$botman = BotManFactory::create($config);
-
-// Give the bot something to listen for.
-$botman->hears('hello', function (BotMan $bot) {
-    $bot->reply('Eureka!');
-});
-
-// Start listening
-$botman->listen();
+use App\Model\Member;
+use Telegram\Bot\Keyboard\Keyboard;
+use Telegram\Bot\Laravel\Facades\Telegram;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
+use App\User;
 
 class TelegramBotController extends Controller
 {
-    //
+
+    public function handleRequest()
+    {
+        $telegram = Telegram::commandsHandler(true);
+
+        if (!$telegram->hasCommand()) {
+
+            if ($telegram->isType('callback_query')) {
+                $callback = $telegram->getCallbackQuery();
+                $callback_id = $callback->getId();
+                $chat_id = $callback->getMessage()->getChat()->getId();
+                $name = $callback->getFrom()->getFirstName();
+                $voter_id = $callback->getFrom()->getId();
+                $message_id = $callback->getMessage()->getMessageId();
+                $message_text = $callback->getMessage()->getText();
+                $message_reply_markup = $callback->getMessage()->getReplyMarkup();
+                $split_callback_data = explode(' ', $callback->getData());
+                $command = $split_callback_data[0];
+                $request_id = $split_callback_data[1];
+                $type = $split_callback_data[2];
+                $username1 = $split_callback_data[3];
+                $cache_key = $callback->getData();
+                $voters = Cache::get('voters' . $request_id . $type);
+                $votersName = Cache::get('votersname' . $request_id . $type);
+
+                if (empty($voters)) {
+                    $message_text .= chr(10) . chr(10) . 'Proses Moderasi:';
+                }
+                if (in_array($voter_id, $voters)) {
+                    Telegram::answerCallbackQuery([
+                        'callback_query_id' => $callback_id,
+                        'text' => 'Anda sudah memberikan tanggapan',
+                        'show_alert' => true
+                    ]);
+                    return;
+                } else {
+                    $voters[] = $voter_id;
+                    $votersName[] = $name;
+                }
+
+                $voteCount = Cache::get($cache_key);
+                $voteCount++;
+                if ($voteCount > 2) {
+                    $callback_data = [
+                        'chat_id' => $chat_id,
+                        'message_id' => $message_id,
+                        'callback_query_id' => $callback_id,
+                        'request_id' => $request_id,
+                        'voters' => json_encode($votersName),
+                        'username1' => $username1
+                    ];
+                }
+                switch ($command) {
+                    case 'accept':
+                        if ($voteCount > 2) {
+                            if ($type == 'stockist') {
+                                $this->finalizeStockistRequest($callback_data, 1);
+                            } elseif ($type == 'vendor') {
+                                $this->finalizeVendorRequest($callback_data, 1);
+                            }
+
+                            return;
+                        } else {
+                            $callback_response_text = 'Anda menyetujui pengajuan ini';
+                            $message_text .= chr(10) . $name . ' *menyetujui* pengajuan ini';
+                        }
+
+                        break;
+
+                    case 'reject':
+                        if ($voteCount > 2) {
+                            if ($type == 'stockist') {
+                                $this->finalizeStockistRequest($callback_data, 0);
+                            } elseif ($type == 'vendor') {
+                                $this->finalizeVendorRequest($callback_data, 0);
+                            }
+                            return;
+                        } else {
+                            $callback_response_text = 'Anda menolak pengajuan ini';
+                            $message_text .= chr(10) . $name . ' *menolak* pengajuan ini';
+                        }
+
+                        break;
+                }
+                Telegram::answerCallbackQuery([
+                    'callback_query_id' => $callback_id,
+                    'text' => $callback_response_text
+                ]);
+
+                $response = Telegram::editMessageText([
+                    'chat_id' => $chat_id,
+                    'message_id' => $message_id,
+                    'text' => $message_text,
+                    'parse_mode' => 'markdown',
+                    'reply_markup' => $message_reply_markup
+                ]);
+
+                Cache::put($cache_key, $voteCount, 172800);
+                Cache::put('voters' . $request_id . $type, $voters, 172800);
+                Cache::put('votersname' . $request_id . $type, $votersName, 172800);
+
+
+                return;
+            }
+        }
+        return 'ok';
+    }
+
+    public function sendStockistApplyRequest($data)
+    {
+        $nama1 = $data['nama1'];
+        $nama2 = $data['nama2'];
+        $nama3 = $data['nama3'];
+        $username1 = $data['username1'];
+        $username2 = $data['username2'];
+        $username3 = $data['username3'];
+        $delegate = $data['delegate'];
+        $request_id = $data['request_id'];
+
+        $acceptKey = 'accept ' . $request_id . ' stockist ' . $username1;
+        $rejectKey = 'reject ' . $request_id . ' stockist ' . $username1;
+
+        Cache::put($acceptKey, 0, 172800);
+        Cache::put($rejectKey, 0, 172800);
+        Cache::put('voters' . $request_id . 'stockist', [], 172800);
+        Cache::put('votersname' . $request_id . 'stockist', [], 172800);
+
+        $keyboard = Keyboard::make()
+            ->inline()
+            ->row(
+                Keyboard::inlineButton(['text' => 'Setuju', 'callback_data' => $acceptKey]),
+                Keyboard::inlineButton(['text' => 'Tolak', 'callback_data' => $rejectKey])
+            );
+
+        $message_text = '*Permohonan Pengajuan Stockist*' . chr(10) . chr(10);
+        $message_text .= 'Username: ' . $username1 . ' (' . $nama1 . ')' . chr(10) . chr(10);
+        $message_text .= 'Username pendamping: ' . chr(10);
+        $message_text .= $username2 . ' (' . $nama2 . ')' . chr(10);
+        $message_text .= $username3 . ' (' . $nama3 . ')' . chr(10) . chr(10);
+        $message_text .= 'Delegasi: ' . $delegate . chr(10);
+
+        $response = Telegram::sendMessage([
+            'chat_id' => Config::get('services.telegram.delegates'),
+            'text' => $message_text,
+            'parse_mode' => 'markdown',
+            'reply_markup' => $keyboard
+        ]);
+    }
+
+    public function sendVendorApplyRequest($data)
+    {
+        $nama1 = $data['nama1'];
+        $nama2 = $data['nama2'];
+        $nama3 = $data['nama3'];
+        $nama4 = $data['nama4'];
+        $nama5 = $data['nama5'];
+        $username1 = $data['username1'];
+        $username2 = $data['username2'];
+        $username3 = $data['username3'];
+        $username4 = $data['username4'];
+        $username5 = $data['username5'];
+        $delegate = $data['delegate'];
+        $request_id = $data['request_id'];
+
+        $acceptKey = 'accept ' . $request_id . ' vendor ' . $username2;
+        $rejectKey = 'reject ' . $request_id . ' vendor ' . $username2;
+
+        Cache::put($acceptKey, 0, 172800);
+        Cache::put($rejectKey, 0, 172800);
+        Cache::put('voters' . $request_id . 'vendor', [], 172800);
+        Cache::put('votersname' . $request_id . 'vendor', [], 172800);
+
+        $keyboard = Keyboard::make()
+            ->inline()
+            ->row(
+                Keyboard::inlineButton(['text' => 'Setuju', 'callback_data' => $acceptKey]),
+                Keyboard::inlineButton(['text' => 'Tolak', 'callback_data' => $rejectKey])
+            );
+
+        $message_text = '*Permohonan Pengajuan Vendor*' . chr(10) . chr(10);
+        $message_text .= 'Username Vendor: ' . $username2 . ' (' . $nama2 . ')' . chr(10) . chr(10);
+        $message_text .= 'Username pendamping: ' . chr(10);
+        $message_text .= $username1 . ' (' . $nama1 . ')' . chr(10);
+        $message_text .= $username3 . ' (' . $nama3 . ')' . chr(10);
+        $message_text .= $username4 . ' (' . $nama4 . ')' . chr(10);
+        $message_text .= $username5 . ' (' . $nama5 . ')' . chr(10) . chr(10);
+        $message_text .= 'Delegasi: ' . $delegate . chr(10);
+
+        $response = Telegram::sendMessage([
+            'chat_id' => Config::get('services.telegram.delegates'),
+            'text' => $message_text,
+            'parse_mode' => 'markdown',
+            'reply_markup' => $keyboard
+        ]);
+    }
+
+    public function finalizeStockistRequest($callback_data, $approval)
+    {
+        $modelMember = new Member;
+
+        if ($approval > 0) {
+            Telegram::answerCallbackQuery([
+                'callback_query_id' => $callback_data['callback_query_id'],
+                'text' => 'Pengajuan Stokis Disetujui Penuh',
+                'show_alert' => false
+            ]);
+
+            $response = Telegram::editMessageText([
+                'chat_id' => $callback_data['chat_id'],
+                'message_id' => $callback_data['message_id'],
+                'text' => '*Pengajuan Stockist ' . $callback_data['username1'] . ' Berhasil Disetujui oleh mufakat Delegasi*' . chr(10) . chr(10) . $callback_data['voters'],
+                'parse_mode' => 'markdown'
+            ]);
+
+            $data = [
+                'status' => 1,
+                'active_at' => date("Y-m-d H:i:s"),
+                'reason' => $callback_data['voters']
+            ];
+
+            $modelMember->getUpdateStockist('id', $callback_data['request_id'], $data);
+
+            $user = User::where('user_code', $callback_data['username1'])->first();
+            $user->is_stockist = 1;
+            $user->stockist_at = date("Y-m-d H:i:s");
+            $user->save();
+        } else {
+            Telegram::answerCallbackQuery([
+                'callback_query_id' => $callback_data['callback_query_id'],
+                'text' => 'Pengajuan Stokis Ditolak',
+                'show_alert' => false
+            ]);
+
+            $response = Telegram::editMessageText([
+                'chat_id' => $callback_data['chat_id'],
+                'message_id' => $callback_data['message_id'],
+                'text' => '*Pengajuan Stockist ' . $callback_data['username1'] . ' telah DITOLAK oleh mufakat Delegasi*' . chr(10) . chr(10) . $callback_data['voters'],
+                'parse_mode' => 'markdown'
+            ]);
+
+            $modelMember->deleteRequestStockist($callback_data['request_id']);
+        }
+
+        return;
+    }
+
+    public function finalizeVendorRequest($callback_data, $approval)
+    {
+        $modelMember = new Member;
+
+
+        if ($approval > 0) {
+            Telegram::answerCallbackQuery([
+                'callback_query_id' => $callback_data['callback_query_id'],
+                'text' => 'Pengajuan Vendor Disetujui Penuh',
+                'show_alert' => false
+            ]);
+
+            $response = Telegram::editMessageText([
+                'chat_id' => $callback_data['chat_id'],
+                'message_id' => $callback_data['message_id'],
+                'text' => '*Pengajuan Vendor ' . $callback_data['username1'] . ' Berhasil Disetujui oleh mufakat Delegasi*' . chr(10) . chr(10) . $callback_data['voters'],
+                'parse_mode' => 'markdown'
+            ]);
+
+            $data = [
+                'status' => 1,
+                'active_at' => date("Y-m-d H:i:s"),
+                'reason' => $callback_data['voters']
+            ];
+
+            $modelMember->getUpdateVendor('id', $callback_data['request_id'], $data);
+
+            $user = User::where('user_code', $callback_data['username1'])->first();
+            $user->is_vendor = 1;
+            $user->vendor_at = date("Y-m-d H:i:s");
+            $user->save();
+        } else {
+            Telegram::answerCallbackQuery([
+                'callback_query_id' => $callback_data['callback_query_id'],
+                'text' => 'Pengajuan Vendor Ditolak',
+                'show_alert' => false
+            ]);
+
+            $response = Telegram::editMessageText([
+                'chat_id' => $callback_data['chat_id'],
+                'message_id' => $callback_data['message_id'],
+                'text' => '*Pengajuan Vendor ' . $callback_data['username1'] . ' telah DITOLAK oleh mufakat Delegasi*' . chr(10) . chr(10) . $callback_data['voters'],
+                'parse_mode' => 'markdown'
+            ]);
+
+            $modelMember->deleteRequestVendor($callback_data['request_id']);
+        }
+
+        return;
+    }
 }

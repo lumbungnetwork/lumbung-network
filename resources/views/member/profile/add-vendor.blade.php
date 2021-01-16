@@ -33,8 +33,7 @@
                             <div class="checkbox checkbox-success">
                                 <input id="checkbox1" type="checkbox">
                                 <label for="checkbox1">
-                                    Saya telah memiliki 5 (lima) Hak Usaha atas nama saya sendiri, di mana 4 (empat) di
-                                    antaranya saya sponsori langsung.
+                                    Saya telah memiliki 5 (lima) Hak Usaha atas nama saya sendiri.
                                 </label>
                             </div>
                         </div>
@@ -87,6 +86,16 @@
                                 </label>
                             </div>
                         </div>
+                        <div class="col-12">
+                            <fieldset class="form-group">
+                                <select class="form-control" name="delegate" id="delegate">
+                                    <option value="">--Pilih Delegasi--</option>
+                                    @foreach ($delegates as $delegate)
+                                    <option value="{{$delegate->name}}">{{$delegate->name}}</option>
+                                    @endforeach
+                                </select>
+                            </fieldset>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-12">
@@ -114,14 +123,12 @@
                         <div class="col-12">
                             <div class="rounded-lg shadow bg-white p-3">
                                 <h6 class="text-muted mt-2">Silakan transfer 100 LMB ke alamat TRON di bawah ini:</h6>
-                                <input size="45" type="text" id="eidr-addr"
-                                    style="border: 0; font-size:12px; font-weight:200;"
-                                    value="TPu2RaFyEkujmC6K1MtP3LwcunNEmRhxgf" readonly>
-                                <button type="button" class="btn btn-sm btn-outline-primary"
+                                <small id="eidr-addr">TPu2RaFyEkujmC6K1MtP3LwcunNEmRhxgf</small>
+                                <button type="button" class="btn btn-sm btn-outline-primary mt-2"
                                     onclick="copy('eidr-addr')">Copy</button>
                                 <br>
-                                <h6 class="text-muted mt-4">Lalu Copy dan Paste (tempel) Hash dari transaksi tersebut ke
-                                    kolom di bawah ini:</h6>
+                                <dd class="text-muted mt-4">Lalu Copy dan Paste (tempel) Hash dari transaksi tersebut ke
+                                    kolom di bawah ini:</dd>
                                 <div class="form-group">
                                     <textarea onchange="cleanHash()" class="form-control" style="font-size: 11px;"
                                         id="hash" rows="2" name="tron_transfer" placeholder="Transaction Hash #"
@@ -156,9 +163,6 @@
 <link rel="stylesheet" href="{{ asset('asset_new/css/siderbar.css') }}">
 <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/4.9.95/css/materialdesignicons.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/fonts/slick.woff">
 <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
 @stop
@@ -194,9 +198,10 @@
             var hu3 = $("#hu3").val();
             var hu4 = $("#hu4").val();
             var hu5 = $("#hu5").val();
+            var delegate = $("#delegate").val();
             $.ajax({
                 type: "GET",
-                url: "{{ URL::to('/') }}/m/cek/req-vendor?syarat1="+syarat1+"&syarat3="+syarat3+"&syarat4="+syarat4+"&syarat5="+syarat5+"&hu1="+hu1+"&hu2="+hu2+"&hu3="+hu3+"&hu4="+hu4+"&hu5="+hu5+"&hash="+hash,
+                url: "{{ URL::to('/') }}/m/cek/req-vendor?syarat1="+syarat1+"&syarat3="+syarat3+"&syarat4="+syarat4+"&syarat5="+syarat5+"&hu1="+hu1+"&hu2="+hu2+"&hu3="+hu3+"&hu4="+hu4+"&hu5="+hu5+"&hash="+hash+"&delegate="+delegate,
                 success: function(url){
                     $("#confirmDetail" ).empty();
                     $("#confirmDetail").html(url);
@@ -218,10 +223,31 @@
 
         function copy(id) {
             var copyText = document.getElementById(id);
-            copyText.select();
-            copyText.setSelectionRange(0, 99999)
-            document.execCommand("copy");
-            alert("Berhasil menyalin: " + copyText.value);
+            var textArea = document.createElement("textarea");
+            textArea.value = copyText.textContent;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand("Copy");
+            textArea.remove();
+            successToast("Berhasil di-Copy");
+        }
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            width: 200,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
+        function successToast (message) {
+            Toast.fire({
+                icon: 'success',
+                title: message
+            })
         }
 
         function cleanHash() {

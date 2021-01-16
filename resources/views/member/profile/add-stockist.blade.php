@@ -33,15 +33,14 @@
                             <div class="checkbox checkbox-success">
                                 <input id="checkbox1" type="checkbox">
                                 <label for="checkbox1">
-                                    Saya telah memiliki 3 (tiga) Hak Usaha atas nama saya sendiri. Di mana 2 (dua) di
-                                    antaranya saya sponsori langsung.
+                                    Saya telah memiliki 3 (tiga) Akun (Hak Usaha) atas nama saya sendiri.
                                 </label>
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-12 mt-2">
-                            <label for="input_email">Berikut adalah kedua username Hak Usaha tersebut:</label>
+                            <label for="input_email">Berikut adalah dua username Hak Usaha tersebut:</label>
                         </div>
                     </div>
                     <div class="row">
@@ -67,6 +66,16 @@
                                     tinggal/usaha saya.
                                 </label>
                             </div>
+                        </div>
+                        <div class="col-12">
+                            <fieldset class="form-group">
+                                <select class="form-control" name="delegate" id="delegate">
+                                    <option value="">--Pilih Delegasi--</option>
+                                    @foreach ($delegates as $delegate)
+                                    <option value="{{$delegate->name}}">{{$delegate->name}}</option>
+                                    @endforeach
+                                </select>
+                            </fieldset>
                         </div>
                     </div>
                     <div class="row">
@@ -106,9 +115,6 @@
 <link rel="stylesheet" href="{{ asset('asset_new/css/siderbar.css') }}">
 <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/4.9.95/css/materialdesignicons.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/fonts/slick.woff">
 <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
 @stop
@@ -134,9 +140,10 @@
             }
             var hu2 = $("#hu2").val();
             var hu3 = $("#hu3").val();
+            var delegate = $("#delegate").val();
             $.ajax({
                 type: "GET",
-                url: "{{ URL::to('/') }}/m/cek/req-stockist?syarat1="+syarat1+"&syarat3="+syarat3+"&syarat4="+syarat4+"&hu2="+hu2+"&hu3="+hu3,
+                url: "{{ URL::to('/') }}/m/cek/req-stockist?syarat1="+syarat1+"&syarat3="+syarat3+"&syarat4="+syarat4+"&hu2="+hu2+"&hu3="+hu3+"&delegate="+delegate,
                 success: function(url){
                     $("#confirmDetail" ).empty();
                     $("#confirmDetail").html(url);

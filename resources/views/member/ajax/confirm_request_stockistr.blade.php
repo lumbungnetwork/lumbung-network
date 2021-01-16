@@ -11,8 +11,12 @@
                 <div class="col-md-12">
                     <div class="form-group">
                         <input type="hidden" name="success" value="1">
+                        <input type="hidden" name="username2" value="{{$data->username2}}">
+                        <input type="hidden" name="username3" value="{{$data->username3}}">
+                        <input type="hidden" name="delegate" value="{{$data->delegate}}">
                         <h4 class="text-success" style="text-align: center;"> Syarat pengajuan Stockist anda telah
-                            terpenuhi. Silakan submit agar diverifikasi oleh admin</h4>
+                            terpenuh, silakan ajukan. Pengajuan Stokis anda akan diperiksa dan dimoderasi oleh Tim
+                            Delegasi.</h4>
                     </div>
                 </div>
             </div>
@@ -21,7 +25,7 @@
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary waves-effect" id="tutupModal" data-dismiss="modal">Tutup</button>
         <button type="button" class="btn btn-primary waves-effect waves-light" id="submit"
-            onclick="confirmSubmit()">Submit</button>
+            onclick="confirmSubmit()">Ajukan</button>
     </div>
 </div>
 

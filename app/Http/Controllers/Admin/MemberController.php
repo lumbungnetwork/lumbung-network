@@ -36,6 +36,7 @@ use GuzzleHttp\Client;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Jobs\SendRegistrationEmailJob;
 use App\Jobs\PPOBAutoCancelJob;
+use App\Jobs\ProcessRequestToDelegatesJob;
 use Throwable;
 use IEXBase\TronAPI\Exception\TronException;
 use Illuminate\Support\Facades\Http;
@@ -1411,8 +1412,10 @@ class MemberController extends Controller
                 ->with('message', 'Anda sudah pernah mengajukan menjadi stockist')
                 ->with('messageclass', 'danger');
         }
+        $delegates = $modelMember->getDelegates();
         return view('member.profile.add-stockist')
             ->with('headerTitle', 'Aplikasi Pengajuan Stockist')
+            ->with('delegates', $delegates)
             ->with('dataUser', $dataUser);
     }
 
@@ -1433,12 +1436,14 @@ class MemberController extends Controller
         }
         $modelMember = new Member;
         $dataInsert = array(
-            'user_id' => $dataUser->id
+            'user_id' => $dataUser->id,
+            'usernames' => $dataUser->user_code . ' ' . $request->username2 . ' ' . $request->username3,
+            'delegate' => $request->delegate
         );
-        $modelMember->getInsertStockist($dataInsert);
-        return redirect()->route('m_SearchStockist')
-            ->with('message', 'Aplikasi Pengajuan Stockist berhasil dibuat')
-            ->with('messageclass', 'success');
+        $sendRequest = $modelMember->getInsertStockist($dataInsert);
+        ProcessRequestToDelegatesJob::dispatch(1, $sendRequest->lastID)->onQueue('tron');
+        Alert::success('Berhasil', 'Aplikasi Pengajuan Stockist telah diajukan ke Tim Delegasi');
+        return redirect()->route('m_SearchStockist');
     }
 
     public function getSearchStockist()
@@ -3063,9 +3068,11 @@ class MemberController extends Controller
                 ->with('message', 'Anda sudah pernah mengajukan menjadi vendor')
                 ->with('messageclass', 'danger');
         }
+        $delegates = $modelMember->getDelegates();
         return view('member.profile.add-vendor')
             ->with('headerTitle', 'Aplikasi Pengajuan Vendor')
             ->with('timestamp', $timestamp)
+            ->with('delegates', $delegates)
             ->with('dataUser', $dataUser);
     }
 
@@ -3086,12 +3093,16 @@ class MemberController extends Controller
         }
         $modelMember = new Member;
         $dataInsert = array(
-            'user_id' => $dataUser->id
+            'user_id' => $dataUser->id,
+            'usernames' => $request->username1 . ' ' . $request->username2 . ' ' . $request->username3 . ' ' . $request->username4 . ' ' . $request->username5,
+            'delegate' => $request->delegate,
+            'hash' => $request->hash
         );
-        $modelMember->getInsertVendor($dataInsert);
-        return redirect()->route('m_SearchVendor')
-            ->with('message', 'Permohonan Vendor berhasil diajukan, hubungi Delegasi anda untuk konfirmasi final.')
-            ->with('messageclass', 'success');
+        $sendRequest = $modelMember->getInsertVendor($dataInsert);
+        ProcessRequestToDelegatesJob::dispatch(2, $sendRequest->lastID)->onQueue('tron');
+
+        Alert::success('Berhasil!', 'Pengajuan Vendor anda telah diteruskan ke Tim Delegasi');
+        return redirect()->route('m_SearchVendor');
     }
 
     public function getSearchVendor()

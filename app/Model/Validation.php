@@ -4,6 +4,7 @@ namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use Validator;
 
 class Validation extends Model
@@ -242,8 +243,12 @@ class Validation extends Model
             $canInsert = (object) array('can' => false, 'pesan' => 'Username pada Hak Usaha ke-3 Anda tidak ada');
             return $canInsert;
         }
-        if ($data->hu2 == $data->hu3) {
+        if ($data->hu1 == $data->hu2 || $data->hu1 == $data->hu3 || $data->hu2 == $data->hu3) {
             $canInsert = (object) array('can' => false, 'pesan' => 'Username pada Hak Usaha tidak boleh ada yang sama');
+            return $canInsert;
+        }
+        if ($data->delegate == null) {
+            $canInsert = (object) array('can' => false, 'pesan' => 'Nama Delegasi belum diisi.');
             return $canInsert;
         }
         return $canInsert;
@@ -251,6 +256,8 @@ class Validation extends Model
 
     public function getCheckRequestVendor($data)
     {
+        $controller = new Controller;
+
         $canInsert = (object) array('can' => true, 'pesan' => '');
         if ($data->alamat->provinsi == null || $data->alamat->kota == null || $data->alamat->kecamatan == null || $data->alamat->kelurahan == null) {
             $canInsert = (object) array('can' => false, 'pesan' => 'Data Alamat Profil belum lengkap.');
@@ -289,10 +296,20 @@ class Validation extends Model
             $canInsert = (object) array('can' => false, 'pesan' => 'Username pada Hak Usaha 5 Anda tidak ada');
             return $canInsert;
         }
+        if ($data->delegate == null) {
+            $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum memilih Delegasi yang menanungi anda.');
+            return $canInsert;
+        }
         if (strlen($data->hash) != 64) {
             $canInsert = (object) array('can' => false, 'pesan' => 'Ada yang salah dengan HASH transaksi anda');
             return $canInsert;
         }
+
+        if (DB::table('vendor_request')->where('hash', $data->hash)->exists()) {
+            $canInsert = (object) array('can' => false, 'pesan' => 'Transfer LMB ini sudah terpakai untuk validasi Vendor sebelumnya');
+            return $canInsert;
+        }
+
         if (
             $data->hu2 == $data->hu3 || $data->hu2 == $data->hu4 || $data->hu2 == $data->hu5
             || $data->hu3 == $data->hu4 || $data->hu3 == $data->hu5
@@ -301,6 +318,29 @@ class Validation extends Model
             $canInsert = (object) array('can' => false, 'pesan' => 'Username pada Hak Usaha tidak boleh ada yang sama');
             return $canInsert;
         }
+
+        $tron = $controller->getTron();
+        $hashCheck = $tron->getTransaction($data->hash);
+        $amount = 100000000; //100 LMB (6 decimals)
+        $to = 'TPu2RaFyEkujmC6K1MtP3LwcunNEmRhxgf';
+        $asset = '1002640';
+        if ($hashCheck['raw_data']['contract'][0]['parameter']['value']['amount'] == $amount) {
+            if ($tron->fromHex($hashCheck['raw_data']['contract'][0]['parameter']['value']['asset_name']) == $asset) {
+                if ($tron->fromHex($hashCheck['raw_data']['contract'][0]['parameter']['value']['to_address']) == $to) {
+                    return $canInsert;
+                } else {
+                    $canInsert = (object) array('can' => false, 'pesan' => 'Alamat tujuan transfer tidak tepat!');
+                    return $canInsert;
+                }
+            } else {
+                $canInsert = (object) array('can' => false, 'pesan' => 'Aset yang dijaminkan harus LMB!');
+                return $canInsert;
+            }
+        } else {
+            $canInsert = (object) array('can' => false, 'pesan' => 'Jumlah Transfer tidak tepat');
+            return $canInsert;
+        }
+
         return $canInsert;
     }
 

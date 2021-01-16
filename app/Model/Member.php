@@ -967,6 +967,13 @@ class Member extends Model
         return $return;
     }
 
+    public function getDelegates()
+    {
+        return DB::table('delegates')
+            ->selectRaw('name')
+            ->get();
+    }
+
     public function getInsertStockist($data)
     {
         try {
@@ -989,6 +996,42 @@ class Member extends Model
             $result = (object) array('status' => false, 'message' => $message);
         }
         return $result;
+    }
+
+    public function deleteRequestStockist($request_id)
+    {
+        return DB::table('stockist_request')
+            ->where('stockist_request.id', '=', $request_id)
+            ->where('stockist_request.status', '=', 0)
+            ->delete();
+    }
+
+    public function deleteRequestVendor($request_id)
+    {
+        return DB::table('vendor_request')
+            ->where('vendor_request.id', '=', $request_id)
+            ->where('vendor_request.status', '=', 0)
+            ->delete();
+    }
+
+    public function getRequestStockist($request_id)
+    {
+        $sql = DB::table('stockist_request')
+            ->selectRaw('stockist_request.id, stockist_request.usernames, stockist_request.delegate')
+            ->where('stockist_request.id', '=', $request_id)
+            ->where('stockist_request.status', '=', 0)
+            ->first();
+        return $sql;
+    }
+
+    public function getRequestVendor($request_id)
+    {
+        $sql = DB::table('vendor_request')
+            ->selectRaw('vendor_request.id, vendor_request.usernames, vendor_request.delegate')
+            ->where('vendor_request.id', '=', $request_id)
+            ->where('vendor_request.status', '=', 0)
+            ->first();
+        return $sql;
     }
 
     public function getCekMemberReqSotckist($id)

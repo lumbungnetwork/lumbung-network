@@ -42,6 +42,7 @@ return [
         'lmb' => '1402924705:' . env('BLMB'),
         'rebuild' => env('DLMB') . env('CLMB'),
         'retest' => env('DLMB') . env('ALMB'),
+        'delegates' => env('TELEGRAM_DELEGATES_CHAT_ID'),
 
     ],
 

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Telegram\Bot\Laravel\Facades\Telegram;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,9 +27,7 @@ Route::get('/auth/passwd/{code}/{email}', 'FrontEnd\FrontEndController@getAuthPa
 Route::post('/auth/passwd', 'FrontEnd\FrontEndController@postAuthPassword');
 
 //telegram bot
-Route::post('/zMbH9dshaPZqdGIJtgvQNfsj38MfPRizcDuNeGu5xyvOWJaswzhkhFJaoeHddWaW/webhook', function () {
-    $update = Telegram::commandsHandler(true);
-});
+Route::post('/zMbH9dshaPZqdGIJtgvQNfsj38MfPRizcDuNeGu5xyvOWJaswzhkhFJaoeHddWaW/webhook', 'TelegramBotController@handleRequest');
 
 Auth::routes();
 Route::prefix('/')->group(function () {
