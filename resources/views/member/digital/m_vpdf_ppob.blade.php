@@ -71,7 +71,7 @@
             <tbody>
                 <tr>
                     <td colspan="2">
-                        {{-- 4 = TELKOM, 5 = PLN Pasca, 6 = HP Pasca, 7 = BPJS, 8 = PDAM --}}
+                        {{-- 4 = BPJS, 5 = PLN Pasca, 6 = HP Pasca, 7 = Telkom, 8 = PDAM --}}
                         <span style="font-size: 14px; font-weight: 600;">Produk:
                             {{$getDataMaster->message}}</span>
                         <br>
@@ -132,13 +132,32 @@
                         @endif
 
                         {{-- BPJS --}}
-                        @if ($getDataMaster->type == 7)
+                        @if ($getDataMaster->type == 4)
                         <br>
                         Alamat: {{$return_buy['data']['desc']['alamat']}}
                         <br>
                         Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan']}}
                         <br>
                         Jumlah Peserta: {{$return_buy['data']['desc']['jumlah_peserta']}}
+                        @endif
+
+                        {{-- Telkom --}}
+                        @if ($getDataMaster->type == 7)
+                        <br>
+                        Detail:
+                        <br>
+                        Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan']}}
+                        <br>
+                        @foreach ($return_buy['data']['desc']['detail'] as $detail)
+                        <br>
+                        Periode Tagihan: {{$detail['periode']}}
+                        <br>
+                        Nilai Tagihan: Rp{{number_format($detail['nilai_tagihan'] + 1000)}}
+                        <br>
+                        Admin: Rp{{number_format($detail['admin'])}}
+                        <br>
+
+                        @endforeach
                         @endif
                         <br>
                     </td>
