@@ -42,6 +42,7 @@ return [
                 App\Telegram\Commands\KBBCommand::class,
                 App\Telegram\Commands\StartCommand::class,
                 App\Telegram\Commands\KBBAdmCommand::class,
+                App\Telegram\Commands\DebugCommand::class,
             ],
         ],
 
