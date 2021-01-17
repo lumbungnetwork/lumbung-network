@@ -952,6 +952,7 @@ class AjaxmemberController extends Controller
             'total_tunda' => $totalWD->total_tunda,
             'saldo' => (int) ($totalBonusAll->total_bonus - ($totalWD->total_wd + $totalWD->total_tunda + $totalWD->total_fee_admin + $totalWDeIDR->total_wd + $totalWDeIDR->total_tunda + $totalWDeIDR->total_fee_admin)),
             'admin_fee' => 6500,
+            'affiliate' => $dataUser->affiliate,
             'bank' => $id_bank
         );
         $canInsert = $modelValidasi->getCheckWD($dataAll);
@@ -982,6 +983,7 @@ class AjaxmemberController extends Controller
             'total_tunda' => $totalWD->total_tunda,
             'saldo' => (int) ($totalBonusAll->total_bonus - ($totalWD->total_wd + $totalWD->total_tunda + $totalWD->total_fee_admin)),
             'admin_fee' => 6500,
+            'affiliate' => $dataUser->affiliate,
             'bank' => $id_bank
         );
         $canInsert = $modelValidasi->getCheckWD($dataAll);
@@ -1009,6 +1011,7 @@ class AjaxmemberController extends Controller
             'total_tunda_eidr' => $totalWDeIDR->total_tunda,
             'saldo' => (int) ($totalBonusAll->total_bonus - ($totalWD->total_wd + $totalWD->total_tunda + $totalWD->total_fee_admin + $totalWDeIDR->total_wd + $totalWDeIDR->total_tunda + $totalWDeIDR->total_fee_admin)),
             'admin_fee' => 3000,
+            'affliate' => $dataUser->affiliate,
             'tron' => $dataUser->tron
         );
         $canInsert = $modelValidasi->getCheckWDeIDR($dataAll);
@@ -1036,6 +1039,7 @@ class AjaxmemberController extends Controller
             'total_tunda_eidr' => $totalWDeIDR->total_tunda,
             'saldo' => (int) ($totalBonusAll->total_bonus - ($totalWD->total_wd + $totalWD->total_tunda + $totalWD->total_fee_admin + $totalWDeIDR->total_wd + $totalWDeIDR->total_tunda + $totalWDeIDR->total_fee_admin)),
             'admin_fee' => 3000,
+            'affiliate' => $dataUser->affiliate,
             'tron' => $dataUser->tron
         );
         $canInsert = $modelValidasi->getCheckWDeIDR($dataAll);

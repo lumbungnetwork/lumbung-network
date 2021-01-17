@@ -178,6 +178,10 @@ class Validation extends Model
     public function getCheckWD($data)
     {
         $canInsert = (object) array('can' => true, 'pesan' => '');
+        if ($data->affiliate == 2) {
+            $canInsert = (object) array('can' => false, 'pesan' => 'Akun KBB-Pasif Hanya Bisa menarik Bonus melalui sistem KBB');
+            return $canInsert;
+        }
         if ($data->bank == null) {
             $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum mengisi data profil dan data bank');
             return $canInsert;
@@ -196,6 +200,10 @@ class Validation extends Model
     public function getCheckWDeIDR($data)
     {
         $canInsert = (object) array('can' => true, 'pesan' => '');
+        if ($data->affiliate == 2) {
+            $canInsert = (object) array('can' => false, 'pesan' => 'Akun KBB-Pasif Hanya Bisa menarik Bonus melalui sistem KBB');
+            return $canInsert;
+        }
         if ($data->tron == null) {
             $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum mengisi data alamat TRON');
             return $canInsert;
