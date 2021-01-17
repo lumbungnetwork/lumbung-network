@@ -49,7 +49,7 @@ class API extends Model
             'lmb_claimed' => $claimedLMBfromMarketplace->total + $rewardLMB->silver3 + $rewardLMB->silver2 + $rewardLMB->silver1 + $rewardLMB->gold3,
             'network_bonus' => (int) $networkBonus->total,
             'stockist_sales' => (int) $stockistSales['total'],
-            'vendor_sales' => $vendorSales['total']
+            'vendor_sales' => (int) $vendorSales['total']
         ];
     }
     public function getAllTimeActivations()
@@ -182,10 +182,10 @@ class API extends Model
             ->whereIn('reward_id', array(1, 2, 3, 4))
             ->first();
         return [
-            'silver3' => $sql->silver3,
-            'silver2' => $sql->silver2,
-            'silver1' => $sql->silver1,
-            'gold3' => $sql->gold3,
+            'silver3' => (int) $sql->silver3,
+            'silver2' => (int) $sql->silver2,
+            'silver1' => (int) $sql->silver1,
+            'gold3' => (int) $sql->gold3,
             'total' => $sql->silver3 + $sql->silver2 + $sql->silver1 + $sql->gold3
         ];
     }
@@ -203,10 +203,10 @@ class API extends Model
             ->whereDate('claim_date', '<=', $date->end_day)
             ->first();
         return [
-            'silver3' => $sql->silver3,
-            'silver2' => $sql->silver2,
-            'silver1' => $sql->silver1,
-            'gold3' => $sql->gold3,
+            'silver3' => (int) $sql->silver3,
+            'silver2' => (int) $sql->silver2,
+            'silver1' => (int) $sql->silver1,
+            'gold3' => (int) $sql->gold3,
             'total' => $sql->silver3 + $sql->silver2 + $sql->silver1 + $sql->gold3
         ];
     }
@@ -244,7 +244,7 @@ class API extends Model
             ->first();
 
         return [
-            'total' => $sql->total
+            'total' => (int) $sql->total
         ];
     }
 
@@ -305,8 +305,8 @@ class API extends Model
             ->whereDate('ppob.ppob_date', '<=', $date->end_day)
             ->first();
 
-        $physicalSales = $physical->total;
-        $digitalSales = $digital->total;
+        $physicalSales = (int) $physical->total;
+        $digitalSales = (int) $digital->total;
 
         return [
             'total' => $physicalSales + $digitalSales,
@@ -338,16 +338,16 @@ class API extends Model
         return [
             'detail' => [
                 'pulsa_data' => floor($sql->pulsa_data),
-                'pln_prepaid' => $sql->pln_prepaid,
-                'telkom' => $sql->telkom,
-                'pln_postpaid' => $sql->pln_postpaid,
-                'hp_postpaid' => $sql->hp_postpaid,
-                'bpjs' => $sql->bpjs,
-                'pdam' => $sql->pdam,
-                'pgn' => $sql->pgn,
-                'multifinance' => $sql->multifinance,
-                'emoney' => $sql->emoney,
-                'physical' => $physicalSalesContribution
+                'pln_prepaid' => (int) $sql->pln_prepaid,
+                'telkom' => (int) $sql->telkom,
+                'pln_postpaid' => (int) $sql->pln_postpaid,
+                'hp_postpaid' => (int) $sql->hp_postpaid,
+                'bpjs' => (int) $sql->bpjs,
+                'pdam' => (int) $sql->pdam,
+                'pgn' => (int) $sql->pgn,
+                'multifinance' => (int) $sql->multifinance,
+                'emoney' => (int) $sql->emoney,
+                'physical' => (int) $physicalSalesContribution
             ],
 
             'total' => floor($sql->pulsa_data) + $sql->pln_prepaid + $sql->telkom + $sql->pln_postpaid + $sql->hp_postpaid + $sql->bpjs + $sql->pdam + $sql->pgn + $sql->multifinance + $sql->emoney + $physicalSalesContribution
@@ -379,16 +379,16 @@ class API extends Model
         return [
             'detail' => [
                 'pulsa_data' => floor($sql->pulsa_data),
-                'pln_prepaid' => $sql->pln_prepaid,
-                'telkom' => $sql->telkom,
-                'pln_postpaid' => $sql->pln_postpaid,
-                'hp_postpaid' => $sql->hp_postpaid,
-                'bpjs' => $sql->bpjs,
-                'pdam' => $sql->pdam,
-                'pgn' => $sql->pgn,
-                'multifinance' => $sql->multifinance,
-                'emoney' => $sql->emoney,
-                'physical' => $physicalSalesContribution
+                'pln_prepaid' => (int) $sql->pln_prepaid,
+                'telkom' => (int) $sql->telkom,
+                'pln_postpaid' => (int) $sql->pln_postpaid,
+                'hp_postpaid' => (int) $sql->hp_postpaid,
+                'bpjs' => (int) $sql->bpjs,
+                'pdam' => (int) $sql->pdam,
+                'pgn' => (int) $sql->pgn,
+                'multifinance' => (int) $sql->multifinance,
+                'emoney' => (int) $sql->emoney,
+                'physical' => (int) $physicalSalesContribution
             ],
 
             'total' => floor($sql->pulsa_data) + $sql->pln_prepaid + $sql->telkom + $sql->pln_postpaid + $sql->hp_postpaid + $sql->bpjs + $sql->pdam + $sql->pgn + $sql->multifinance + $sql->emoney + $physicalSalesContribution
