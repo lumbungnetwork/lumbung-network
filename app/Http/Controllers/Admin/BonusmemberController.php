@@ -505,9 +505,8 @@ class BonusmemberController extends Controller
         );
         $getRewardId = $modelBonus->getInsertClaimReward($dataInsert);
         SendLMBRewardPeringkatJob::dispatch($getRewardId->lastID)->onQueue('tron');
-        return redirect()->route('m_requestClaimReward')
-            ->with('message', 'Claim Reward berhasil')
-            ->with('messageclass', 'success');
+        Alert::success('Berhasil!', 'Reward LMB segera masuk ke Alamat TRON anda');
+        return redirect()->route('m_requestClaimReward');
     }
 
     public function getHistoryReward()
