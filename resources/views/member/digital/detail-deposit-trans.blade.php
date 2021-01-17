@@ -107,11 +107,12 @@
                         <label>
                             Transfer eIDR ke alamat ini:
                             <br>
-                            <div class="mt-2 mb-2"><mark id="eidr-addr">TC1o89VSHMSPno2FE6SgoCsuy8i4mVSWge</mark></div>
-
-                            <button type="button" class="btn btn-sm btn-outline-primary float-right"
-                                onclick="copy('eidr-addr')">Copy</button>
+                            <div class="mt-2 mb-2">
+                                <small><mark id="eidr-addr">TC1o89VSHMSPno2FE6SgoCsuy8i4mVSWge</mark></small>
+                            </div>
                         </label>
+                        <button type="button" class="btn btn-sm btn-outline-primary float-right"
+                            onclick="copy('eidr-addr')">Copy</button>
                     </address>
 
                 </div>
@@ -432,20 +433,20 @@
                 },
                 showCancelButton: true,
                 cancelButtonText: 'Tunda'
+
             })
 
-            if(text != undefined) {
-                if (text.includes("tronscan")) {
-                    let hashOnly = text.split("/")[5];
-                    text = hashOnly;
-                    if(text) {
-                        $('#hash').val(text);
-                        $('#form-confirm').submit();
-                        Swal.fire('Sedang Memproses');
-                        Swal.showLoading();
-                    }
-                }
+            if (text.includes("tronscan")) {
+                let hashOnly = text.split("/")[5];
+                text = hashOnly;
             }
+            if(text) {
+                $('#hash').val(text);
+                $('#form-confirm').submit();
+                Swal.fire('Sedang Memproses');
+                Swal.showLoading();
+            }
+
         }
     }
 
