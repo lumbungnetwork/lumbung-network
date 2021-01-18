@@ -97,6 +97,27 @@ class KBBAdmCommand extends Command
                     $this->replyWithMessage(['text' => $text, 'parse_mode' => 'markdown']);
                     return;
                 }
+            } elseif ($params[1] == 'cek') {
+                $query = User::where('user_code', 'LIKE', '%' . $params[2] . '%')->where('is_active', 1)->select('user_code')->get();
+                $text = 'Berikut beberapa username yang serupa dengan: ' . $params[2] . chr(10) . chr(10);
+
+                foreach ($query as $row) {
+                    $text .= $row->user_code . chr(10);
+                }
+                $this->replyWithMessage(['text' => $text, 'parse_mode' => 'markdown']);
+                return;
+            } elseif ($params[1] == 'reset') {
+                $query = User::where('user_code', $params[2])->first();
+                if ($query == null) {
+                    $text = 'User tidak ditemukan';
+                } else {
+                    $query->password = bcrypt('QWERTASD123a');
+                    $query->save();
+                    $text = 'Password berhasil direset menjadi QWERTASD123a';
+                }
+
+                $this->replyWithMessage(['text' => $text, 'parse_mode' => 'markdown']);
+                return;
             } else {
                 $text = 'Perintah salah, periksa kembali';
                 $this->replyWithMessage(['text' => $text, 'parse_mode' => 'markdown']);
