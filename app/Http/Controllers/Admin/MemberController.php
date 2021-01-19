@@ -4797,6 +4797,7 @@ class MemberController extends Controller
         return view('member.digital.daftar-hargapln')
             ->with('headerTitle', 'Daftar Harga PLN')
             ->with('daftarHarga', $daftarHargaPLN)
+            ->with('type', 3)
             ->with('dataCustomer', $getData['data'])
             ->with('dataUser', $dataUser);
     }

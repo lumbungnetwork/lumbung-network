@@ -275,7 +275,7 @@
                 return false;
             }
             if(vendor_id == '') {
-                errorToast('Anda belum vendor tujuan belanja');
+                errorToast('Anda belum memilih vendor tujuan belanja');
                 return false;
             }
 

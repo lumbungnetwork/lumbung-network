@@ -65,8 +65,8 @@
                                         <tr>
                                             <td>
                                                 <div class="pretty p-icon p-curve p-tada">
-                                                    <input type="radio" name="harga" id="harga{{$no}}"
-                                                        value="{{$row['buyer_sku_code']}}__{{$row['price']}}__{{$row['brand']}}__{{$row['desc']}}__{{$row['real_price']}}__{{$row['product_name']}}">
+                                                    <input type="radio" name="product" id="harga{{$no}}"
+                                                        value="{{$row['buyer_sku_code']}}__{{$row['product_name']}}__{{$row['price']}}">
                                                     <div class="state p-primary-o">
                                                         <i class="icon mdi mdi-check"></i>
                                                         <label>{{$row['product_name']}}</label>
@@ -92,10 +92,11 @@
                 @endif
 
                 <div class="rounded-lg bg-white p-3 mb-3">
+                    @if($dataUser->is_vendor == 0)
                     <div class="row">
-                        <div class="col-12" id="vendor_name">
+                        <div class="col-xl-12 col-xs-12" id="vendor_name">
                             <fieldset class="form-group">
-                                <label for="user_name">Masukkan Username Vendor Tujuan Belanja Anda:</label>
+                                <label for="user_name">Masukkan Username Vendor Tujuan:</label><br>
                                 <small>Ketikkan 3-4 huruf awal, lalu klik opsi yang tampil</small>
                                 <input type="text" class="form-control" id="get_id" name="user_name" autocomplete="off">
                                 <input type="hidden" name="get_id" id="id_get_id">
@@ -106,14 +107,22 @@
                         </div>
 
                     </div>
-                    <br>
                     <div class="row">
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-lg btn-block btn-success" id="submitBtn"
-                                data-toggle="modal" data-target="#confirmSubmit" onClick="inputSubmit()">Order
+                        <div class="col-xl-12">
+                            <button class="btn btn-lg btn-block btn-success" id="submitBtn" onClick="checkOrder()">Order
                                 Sekarang</button>
                         </div>
                     </div>
+                    @else
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <button class="btn btn-lg btn-block btn-success" id="vendorPayBtn"
+                                onClick="checkVendorPay()">Bayar
+                                Sekarang</button>
+                        </div>
+                    </div>
+
+                    @endif
 
                 </div>
             </div>
@@ -167,31 +176,76 @@
         }
 </script>
 <script>
-    function inputSubmit(){
-           var no_hp = $("#nomor-pelanggan").val();
-           var vendor_id = $("#id_get_id").val();
-           var harga = $('input[type=radio][name=harga]:checked').attr('value');
+    $("input[type=radio][name=product]").change(function() {
+        if(this.checked) {
+            setTimeout(function(){
+                $("html, body").animate({ scrollTop: 2000 }, 1500);
+            }, 800);
+
+        }
+    });
+
+    function priceButton(id) {
+        $("#" + id).prop("checked", true).trigger("click").change();
+    }
+
+    function confirmBuy() {
+        var form = $('#form-add');
+        Swal.fire('Sedang Memproses');
+        Swal.showLoading();
+        $(document.body).append(form);
+        form.submit();
+    }
+
+        function checkOrder() {
+            var no_hp = $("#nomor-pelanggan").val();
+            var vendor_id = $("#id_get_id").val();
+            var product = $('input[type=radio][name=product]:checked').attr('value');
+            var isChecked = $('input[type=radio][name=product]').is(':checked');
+
+            if(isChecked == false) {
+                errorToast('Anda belum memilih nominal');
+                return false;
+            }
+            if(vendor_id == '') {
+                errorToast('Anda belum memilih vendor tujuan belanja');
+                return false;
+            }
+
             $.ajax({
                 type: "GET",
-                url: "{{ URL::to('/') }}/m/cek/buy/ppob?no_hp="+no_hp+"&vendor_id="+vendor_id+"&harga="+harga+"&type_pay=1&type=3",
+                url: "{{ URL::to('/') }}/m/check-order?no_hp="+no_hp+"&product="+product+"&vendor_id="+vendor_id+"&type={{$type}}",
                 success: function(url){
-                    $("#confirmDetail" ).empty();
-                    $("#confirmDetail").html(url);
+                    Swal.fire({
+                        html: url,
+                        showCancelButton: false,
+                        showConfirmButton: false
+                    })
                 }
             });
         }
 
-        function confirmSubmit(){
-            var dataInput = $("#form-add").serializeArray();
-            $('#form-add').submit();
-            $('#form-add').remove();
-            $('#loading').show();
-            $('#tutupModal').remove();
-            $('#submit').remove();
-        }
+        function checkVendorPay() {
+            var no_hp = $("#nomor-pelanggan").val();
+            var product = $('input[type=radio][name=product]:checked').attr('value');
+            var isChecked = $('input[type=radio][name=product]').is(':checked');
 
-        function priceButton(id) {
-            $("#" + id).prop("checked", true).trigger("click").change();
+            if(isChecked == false) {
+                errorToast('Anda belum memilih nominal');
+                return false;
+            }
+
+            $.ajax({
+                type: "GET",
+                url: "{{ URL::to('/') }}/m/confirm-vendor-quickbuy?no_hp="+no_hp+"&product="+product+"&type={{$type}}",
+                success: function(url){
+                    Swal.fire({
+                        html: url,
+                        showCancelButton: false,
+                        showConfirmButton: false
+                    })
+                }
+            });
         }
 
         $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {
@@ -200,5 +254,25 @@
                 event.preventDefault();
             }
         });
+
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            width: 200,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
+
+        function errorToast (message) {
+            Toast.fire({
+                icon: 'error',
+                title: message
+            })
+        }
 </script>
 @stop
