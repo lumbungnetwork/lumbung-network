@@ -320,7 +320,7 @@
 
 <!-- Modal-->
 <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true"
-    data-backdrop="false">
+    data-backdrop="true">
     <div class="modal-dialog" role="document" id="confirmDetail">
     </div>
 </div>
