@@ -71,6 +71,8 @@ class TelegramBotController extends Controller
                                 $this->finalizeStockistRequest($callback_data, 1);
                             } elseif ($type == 'vendor') {
                                 $this->finalizeVendorRequest($callback_data, 1);
+                            } elseif ($type == 'tron') {
+                                $this->finalizeResetTronRequest($callback_data, 1);
                             }
 
                             return;
@@ -87,6 +89,8 @@ class TelegramBotController extends Controller
                                 $this->finalizeStockistRequest($callback_data, 0);
                             } elseif ($type == 'vendor') {
                                 $this->finalizeVendorRequest($callback_data, 0);
+                            } elseif ($type == 'tron') {
+                                $this->finalizeResetTronRequest($callback_data, 0);
                             }
                             return;
                         } else {
@@ -208,6 +212,40 @@ class TelegramBotController extends Controller
         ]);
     }
 
+    public function sendResetTronRequest($data)
+    {
+        $name = $data['name'];
+        $username = $data['username'];
+        $delegate = $data['delegate'];
+        $request_id = $data['request_id'];
+
+        $acceptKey = 'accept ' . $request_id . ' tron ' . $username;
+        $rejectKey = 'reject ' . $request_id . ' tron ' . $username;
+
+        Cache::put($acceptKey, 0, 172800);
+        Cache::put($rejectKey, 0, 172800);
+        Cache::put('voters' . $request_id . 'tron', [], 172800);
+        Cache::put('votersname' . $request_id . 'tron', [], 172800);
+
+        $keyboard = Keyboard::make()
+            ->inline()
+            ->row(
+                Keyboard::inlineButton(['text' => 'Setuju', 'callback_data' => $acceptKey]),
+                Keyboard::inlineButton(['text' => 'Tolak', 'callback_data' => $rejectKey])
+            );
+
+        $message_text = '*Permohonan Pengajuan Reset Alamat TRON*' . chr(10) . chr(10);
+        $message_text .= 'Username: ' . $username . ' (' . $name . ')' . chr(10);
+        $message_text .= 'Delegasi: ' . $delegate . chr(10);
+
+        Telegram::sendMessage([
+            'chat_id' => Config::get('services.telegram.delegates'),
+            'text' => $message_text,
+            'parse_mode' => 'markdown',
+            'reply_markup' => $keyboard
+        ]);
+    }
+
     public function finalizeStockistRequest($callback_data, $approval)
     {
         $modelMember = new Member;
@@ -304,6 +342,61 @@ class TelegramBotController extends Controller
             ]);
 
             $modelMember->deleteRequestVendor($callback_data['request_id']);
+        }
+
+        return;
+    }
+
+    public function finalizeResetTronRequest($callback_data, $approval)
+    {
+        $modelMember = new Member;
+
+
+        if ($approval > 0) {
+            Telegram::answerCallbackQuery([
+                'callback_query_id' => $callback_data['callback_query_id'],
+                'text' => 'Pengajuan Vendor Disetujui Penuh',
+                'show_alert' => false
+            ]);
+
+            $response = Telegram::editMessageText([
+                'chat_id' => $callback_data['chat_id'],
+                'message_id' => $callback_data['message_id'],
+                'text' => '*Pengajuan Reset Alamat TRON ' . $callback_data['username1'] . ' Berhasil Disetujui oleh mufakat Delegasi*' . chr(10) . chr(10) . $callback_data['voters'],
+                'parse_mode' => 'markdown'
+            ]);
+
+            $data = [
+                'status' => 1,
+                'voters' => $callback_data['voters']
+            ];
+
+            $modelMember->getUpdateResetTron('id', $callback_data['request_id'], $data);
+
+            $user = User::where('user_code', $callback_data['username1'])->first();
+            $user->is_tron = 0;
+            $user->tron = null;
+            $user->save();
+        } else {
+            Telegram::answerCallbackQuery([
+                'callback_query_id' => $callback_data['callback_query_id'],
+                'text' => 'Pengajuan Vendor Ditolak',
+                'show_alert' => false
+            ]);
+
+            $response = Telegram::editMessageText([
+                'chat_id' => $callback_data['chat_id'],
+                'message_id' => $callback_data['message_id'],
+                'text' => '*Pengajuan Vendor ' . $callback_data['username1'] . ' telah DITOLAK oleh mufakat Delegasi*' . chr(10) . chr(10) . $callback_data['voters'],
+                'parse_mode' => 'markdown'
+            ]);
+
+            $data = [
+                'status' => 2,
+                'voters' => $callback_data['voters']
+            ];
+
+            $modelMember->getUpdateResetTron('id', $callback_data['request_id'], $data);
         }
 
         return;

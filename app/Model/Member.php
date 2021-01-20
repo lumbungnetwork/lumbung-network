@@ -1493,4 +1493,38 @@ class Member extends Model
 
         return $sql->tron;
     }
+
+    public function getInsertResetTron($data)
+    {
+        try {
+            $lastInsertedID = DB::table('reset_tron')->insertGetId($data);
+            $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message, 'lastID' => null);
+        }
+        return $result;
+    }
+
+    public function getUpdateResetTron($fieldName, $name, $data)
+    {
+        try {
+            DB::table('reset_tron')->where($fieldName, '=', $name)->update($data);
+            $result = (object) array('status' => true, 'message' => null);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message);
+        }
+        return $result;
+    }
+
+    public function getResetTronRequest($fieldName, $name)
+    {
+        $sql = DB::table('reset_tron')
+            ->selectRaw('reset_tron.id, reset_tron.user_id, reset_tron.delegate')
+            ->where($fieldName, '=', $name)
+            ->where('reset_tron.status', '=', 0)
+            ->first();
+        return $sql;
+    }
 }

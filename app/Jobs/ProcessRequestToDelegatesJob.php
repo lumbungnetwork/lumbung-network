@@ -96,6 +96,21 @@ class ProcessRequestToDelegatesJob implements ShouldQueue
             $telegramBotController->sendVendorApplyRequest($data);
 
             return;
+        } elseif ($this->type == 3) {
+            $reqData = $modelMember->getResetTronRequest('id', $this->request_id);
+            $user = User::find($reqData->user_id);
+
+            $data = [
+
+                'name' => $user->full_name,
+                'username' => $user->user_code,
+                'delegate' => $reqData->delegate,
+                'request_id' => $reqData->id,
+            ];
+
+            $telegramBotController->sendResetTronRequest($data);
+
+            return;
         }
     }
 }

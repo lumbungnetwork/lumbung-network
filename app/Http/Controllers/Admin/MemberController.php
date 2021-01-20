@@ -1333,12 +1333,16 @@ class MemberController extends Controller
             return redirect()->route('m_newPackage');
         }
         if ($dataUser->is_tron == 0) {
-            return redirect()->route('m_newTron')
-                ->with('message', 'data Tron belum ada, silakan isi data tron anda')
-                ->with('messageclass', 'danger');
+            Alert::warning('Oops!', 'Alamat TRON anda masih kosong, silakan mengisi dan menautkan alamat TRON anda');
+            return redirect()->route('m_newTron');
         }
+        $modelMember = new Member;
+        $delegates = $modelMember->getDelegates();
+        $reset = $modelMember->getResetTronRequest('user_id', $dataUser->id);
         return view('member.profile.my-tron')
             ->with('headerTitle', 'Tron')
+            ->with('delegates', $delegates)
+            ->with('reset', $reset)
             ->with('dataUser', $dataUser);
     }
 
@@ -1355,6 +1359,7 @@ class MemberController extends Controller
         if ($dataUser->is_tron == 1) {
             return redirect()->route('m_myTron');
         }
+
         return view('member.profile.add-tron')
             ->with('headerTitle', 'TRON')
             ->with('dataUser', $dataUser);
@@ -1383,6 +1388,34 @@ class MemberController extends Controller
         return redirect()->route('m_myTron')
             ->with('message', 'Data Tron berhasil dibuat')
             ->with('messageclass', 'success');
+    }
+
+    public function postResetTron(Request $request)
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_tron == 0) {
+            return redirect()->route('m_myTron');
+        }
+        $modelMember = new Member;
+        $data = [
+            'user_id' => $dataUser->id,
+            'username' => $dataUser->user_code,
+            'delegate' => $request->delegate,
+            'old_address' => $dataUser->tron
+        ];
+
+        $request = $modelMember->getInsertResetTron($data);
+        ProcessRequestToDelegatesJob::dispatch(3, $request->lastID)->onQueue('tron');
+
+        Alert::success('Berhasil', 'Pengajuan Reset alamat TRON telah diajukan ke delegasi. Silakan menghubungi Delegasi anda');
+        return redirect()->route('m_myTron');
     }
 
     public function getRequestMemberStockist()

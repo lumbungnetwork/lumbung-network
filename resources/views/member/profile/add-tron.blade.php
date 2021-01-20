@@ -29,15 +29,20 @@
                     @endif
 
                     <div class="row">
-                        <div class="col-xl-12 col-xs-12">
+                        <div class="col-12">
                             <fieldset class="form-group">
                                 <label for="tron">Masukan Alamat Tron Anda</label>
                                 <input type="text" class="form-control" id="tron" name="tron" autocomplete="off">
                             </fieldset>
+
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary float-right" id="submitBtn" data-toggle="modal"
+                                data-target="#confirmSubmit" onClick="inputSubmit()">Tautkan</button>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-12 col-xs-12">
+                        <div class="col-12">
                             <div class="rounded-lg shadow p-3">
                                 <h6 class="text-danger">Perhatian!!!</h6>
                                 <p>
@@ -50,31 +55,17 @@
                                     Lumbung Network merekomendasikan aplikasi Tronlink Pro, TokenPocket atau Klever
                                     (Download di AppStore atau PlayStore).
                                 </p>
-                                <p>
-                                    Anda hanya bisa memasukan alamat TRON 1 kali saja. Apabila anda ingin mengganti
-                                    alamat TRON anda,
-                                    anda harus mengajukan permohonan tertulis kepada tim Delegasi di daerah anda.
-                                </p>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-xl-6">
-                            <button type="submit" class="btn btn-primary" id="submitBtn" data-toggle="modal"
-                                data-target="#confirmSubmit" onClick="inputSubmit()">Submit</button>
-                        </div>
-                    </div>
-                    <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
-                        aria-hidden="true" data-backdrop="false">
-                        <div class="modal-dialog" role="document" id="confirmDetail">
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>
         @include('layout.member.nav')
     </div>
     <div class="overlay"></div>
+
 </div>
 
 @stop

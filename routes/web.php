@@ -276,6 +276,7 @@ Route::prefix('/')->group(function () {
     Route::get('/m/tron', 'Admin\MemberController@getMyTron')->name('m_myTron')->middleware('auth');
     Route::get('/m/add/tron', 'Admin\MemberController@getAddMyTron')->name('m_newTron')->middleware('auth');
     Route::post('/m/add/tron', 'Admin\MemberController@postAddMyTron')->middleware('auth');
+    Route::post('/m/reset/tron', 'Admin\MemberController@postResetTron')->middleware('auth');
 
     //Bank
     Route::get('/m/bank', 'Admin\MemberController@getMyBank')->name('m_myBank')->middleware('auth');
