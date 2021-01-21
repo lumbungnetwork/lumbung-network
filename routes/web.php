@@ -395,6 +395,8 @@ Route::prefix('/')->group(function () {
 
     //New Member Shopping
     Route::get('/m/shopping/{seller_id}', 'Admin\MemberController@getShopping')->name('m_Shopping')->middleware('auth');
+    Route::get('/m/getpos', 'Admin\MemberController@getPos')->name('m_Pos')->middleware('auth');
+    Route::get('/m/pos', 'Admin\MemberController@getPosShopping')->name('m_Pos')->middleware('auth');
 
     Route::post('/m/settlement', 'Admin\MemberController@postSettlement')->name('m_Settlement')->middleware('auth');
     Route::get('/m/shopping/payment/{masterSalesID}/{sellerType}', 'Admin\MemberController@getShoppingPayment')->name('m_ShoppingPayment')->middleware('auth');
@@ -411,6 +413,7 @@ Route::prefix('/')->group(function () {
     Route::get('m/ajax/delete-cart-item', 'Admin\AjaxmemberController@getDeleteCartItem')->middleware('auth');
     Route::get('/m/ajax/get-cart-total', 'Admin\AjaxmemberController@getCartTotal')->middleware('auth');
     Route::get('/m/ajax/cart-checkout', 'Admin\AjaxmemberController@getCartCheckout')->middleware('auth');
+    Route::get('/m/ajax/pos-cart-checkout', 'Admin\AjaxmemberController@getPosCartCheckout')->middleware('auth');
     Route::post('/m/ajax/shopping-payment', 'Admin\AjaxmemberController@postShoppingPayment')->middleware('auth');
     Route::post('/m/ajax/cancel-shopping-payment-buyer', 'Admin\AjaxmemberController@postCancelShoppingPaymentBuyer')->middleware('auth');
     Route::post('/m/ajax/create-local-wallet', 'Admin\AjaxmemberController@postCreateLocalWallet')->middleware('auth');

@@ -78,14 +78,25 @@ class AjaxmemberController extends Controller
             return response()->json(['success' => false, 'message' => 'Stock Produk tidak cukup!']);
         }
 
-        \Cart::session($dataUser->id)->add(array(
-            'id' => $Product->id,
-            'name' => $Product->name,
-            'price' => $Product->price,
-            'quantity' => $request->quantity,
-            'attributes' => array(),
-            'associatedModel' => $Product
-        ));
+        if (isset($request->buyer_id)) {
+            \Cart::session($request->buyer_id)->add(array(
+                'id' => $Product->id,
+                'name' => $Product->name,
+                'price' => $Product->price,
+                'quantity' => $request->quantity,
+                'attributes' => array(),
+                'associatedModel' => $Product
+            ));
+        } else {
+            \Cart::session($dataUser->id)->add(array(
+                'id' => $Product->id,
+                'name' => $Product->name,
+                'price' => $Product->price,
+                'quantity' => $request->quantity,
+                'attributes' => array(),
+                'associatedModel' => $Product
+            ));
+        }
 
         return response()->json(['success' => true, 'message' => 'Produk berhasil ditambahkan ke keranjang!']);
     }
@@ -197,6 +208,96 @@ class AjaxmemberController extends Controller
         }
         $status = true;
         return view('member.ajax.checkout')
+            ->with('status', $status)
+            ->with('sellerType', $sellerType)
+            ->with('masterSalesID', $insertMasterSales->lastID);
+    }
+    public function getPosCartCheckout(Request $request)
+    {
+        $user = User::find($request->buyer_id);
+        $seller = Auth::user();
+        $sellerType = 1; // 1 = Stockist, 2 = Vendor
+        if ($seller->is_vendor == 1) {
+            $sellerType = 2;
+        }
+        $getTotal = \Cart::session($user->id)->getSubTotal();
+        $cartItems = \Cart::session($user->id)->getContent();
+        $itemsArray = $cartItems->toArray();
+
+        //check available stock
+
+        foreach ($itemsArray as $item) {
+            $stock = Product::find($item['id'])->qty;
+            $remaining = $stock - $item['quantity'];
+            if ($remaining < 0) {
+                $status = false;
+                return view('member.ajax.pos_checkout')
+                    ->with('status', $status)
+                    ->with('name', $item['name'])
+                    ->with('stock', $item['associatedModel']['qty']);
+            }
+        }
+
+        $modelSales = new Sales;
+        $invoice = $modelSales->getCodeMasterSales($user->id);
+        $sale_date = date('Y-m-d');
+
+        if ($sellerType == 1) {
+
+            $dataInsertMasterSales = array(
+                'user_id' => $user->id,
+                'stockist_id' => $seller->id,
+                'invoice' => $invoice,
+                'total_price' => $getTotal,
+                'sale_date' => $sale_date,
+                'status' => 1,
+                'buy_metode' => 1,
+            );
+            $insertMasterSales = $modelSales->getInsertMasterSales($dataInsertMasterSales);
+
+            foreach ($itemsArray as $item) {
+                $dataInsert = array(
+                    'user_id' => $user->id,
+                    'stockist_id' => $seller->id,
+                    'purchase_id' => $item['id'],
+                    'invoice' => $invoice,
+                    'amount' => $item['quantity'],
+                    'sale_price' => $item['quantity'] * $item['price'],
+                    'sale_date' => $sale_date,
+                    'master_sales_id' => $insertMasterSales->lastID
+                );
+                $insertSales = $modelSales->getInsertSales($dataInsert);
+            }
+        } else if ($sellerType == 2) {
+
+            $dataInsertMasterSales = array(
+                'user_id' => $user->id,
+                'vendor_id' => $seller->id,
+                'invoice' => $invoice,
+                'total_price' => $getTotal,
+                'sale_date' => $sale_date,
+                'status' => 1,
+                'buy_metode' => 1,
+            );
+            $insertMasterSales = $modelSales->getInsertVMasterSales($dataInsertMasterSales);
+
+            foreach ($itemsArray as $item) {
+                $dataInsert = array(
+                    'user_id' => $user->id,
+                    'vendor_id' => $seller->id,
+                    'purchase_id' => $item['id'],
+                    'invoice' => $invoice,
+                    'amount' => $item['quantity'],
+                    'sale_price' => $item['quantity'] * $item['price'],
+                    'sale_date' => $sale_date,
+                    'vmaster_sales_id' => $insertMasterSales->lastID
+                );
+                $insertSales = $modelSales->getInsertVSales($dataInsert);
+            }
+        }
+        \Cart::session($user->id)->clear();
+        $status = true;
+        return view('member.ajax.pos_checkout')
             ->with('status', $status)
             ->with('sellerType', $sellerType)
             ->with('masterSalesID', $insertMasterSales->lastID);

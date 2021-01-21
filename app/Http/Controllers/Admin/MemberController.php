@@ -2807,6 +2807,70 @@ class MemberController extends Controller
             ->with('user', $dataUser);
     }
 
+    public function getPos()
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_stockist == 0 && $dataUser->is_vendor == 0) {
+            return redirect()->back();
+        }
+        if ($dataUser->is_profile == 0) {
+            Alert::error('Oops!', 'Silakan isi data profile anda terlebih dulu');
+            return redirect()->route('m_newProfile');
+        }
+
+        return view('member.sales.pos_input_buyer')
+            ->with('user', null);
+    }
+
+    public function getPosShopping(Request $request)
+    {
+        $buyer = User::select('id', 'user_code')->where('user_code', $request->username)->first();
+        if ($buyer == null) {
+            Alert::error('Oops!', 'Username tidak ditemukan, periksa kembali username yang anda masukkan');
+            return redirect()->back()->with('username', $request->username);
+        }
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        $seller_id = $dataUser->id;
+
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_stockist == 0 && $dataUser->is_vendor == 0) {
+            return redirect()->back();
+        }
+        if ($dataUser->is_profile == 0) {
+            Alert::error('Oops!', 'Silakan isi data profile anda terlebih dulu');
+            return redirect()->route('m_newProfile');
+        }
+        $getSellerData = User::select('alamat', 'is_stockist', 'is_vendor')->where('id', $seller_id)->first();
+        $getSellerProfile = SellerProfile::where('seller_id', $seller_id)->first();
+        $getSellerProducts = Product::where('seller_id', $seller_id)->where('is_active', 1)->get();
+        $getCategories = Category::select('id', 'name')->where('id', '<', 11)->get();
+
+        if ($getSellerData->is_vendor == 1) {
+            $getCategories = Category::select('id', 'name')->where('id', '>', 10)->get();
+        }
+
+        return view('member.sales.pos_shopping')
+            ->with('sellerProfile', $getSellerProfile)
+            ->with('sellerAddress', $getSellerData->alamat)
+            ->with('seller_id', $seller_id)
+            ->with('categories', $getCategories)
+            ->with('products', $getSellerProducts)
+            ->with('user', $buyer);
+    }
+
     public function postAddToCart(Request $request)
     {
         $dataUser = Auth::user();

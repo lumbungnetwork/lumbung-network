@@ -141,12 +141,12 @@
                             </a>
                         </div>
                         <div class="col-3 mb-3">
-                            <a href="#" class="text-decoration-none">
+                            <a href="{{ URL::to('/') }}/m/getpos" class="text-decoration-none">
                                 <div class="rounded icon-ppob text-center">
                                     <div class="box-icon bg-green text-center">
-                                        <i class="mdi mdi-view-grid-outline icon-menu"></i>
+                                        <i class="mdi mdi-desktop-classic icon-menu"></i>
                                     </div>
-                                    <dd>Resource</dd>
+                                    <dd>P.O.S</dd>
                                 </div>
                             </a>
                         </div>
@@ -189,12 +189,12 @@
                             </a>
                         </div>
                         <div class="col-3 mb-3">
-                            <a href="#" class="text-decoration-none">
+                            <a href="{{ URL::to('/') }}/m/getpos" class="text-decoration-none">
                                 <div class="rounded icon-ppob text-center">
                                     <div class="box-icon bg-green text-center">
-                                        <i class="mdi mdi-view-grid-outline icon-menu"></i>
+                                        <i class="mdi mdi-desktop-classic icon-menu"></i>
                                     </div>
-                                    <dd>Resource</dd>
+                                    <dd>P.O.S</dd>
                                 </div>
                             </a>
                         </div>
