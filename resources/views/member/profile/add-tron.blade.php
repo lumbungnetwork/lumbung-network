@@ -36,7 +36,7 @@
                             </fieldset>
 
                         </div>
-                        <div class="col-12">
+                        <div class="col-12 mb-3">
                             <button type="submit" class="btn btn-primary float-right" id="submitBtn" data-toggle="modal"
                                 data-target="#confirmSubmit" onClick="inputSubmit()">Tautkan</button>
                         </div>
@@ -65,6 +65,11 @@
         @include('layout.member.nav')
     </div>
     <div class="overlay"></div>
+    <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
+        aria-hidden="true" data-backdrop="true">
+        <div class="modal-dialog" role="document" id="confirmDetail">
+        </div>
+    </div>
 
 </div>
 

@@ -1385,9 +1385,8 @@ class MemberController extends Controller
         );
         $modelMember = new Member;
         $modelMember->getUpdateUsers('id', $dataUser->id, $dataUpdate);
-        return redirect()->route('m_myTron')
-            ->with('message', 'Data Tron berhasil dibuat')
-            ->with('messageclass', 'success');
+        Alert::success('Berhasil!', 'Alamat TRON telah ditautkan dengan akun ini');
+        return redirect()->route('m_myTron');
     }
 
     public function postResetTron(Request $request)
