@@ -125,7 +125,7 @@ class KBBAdmCommand extends Command
                 } else {
                     $query->invited_by = null;
                     $query->save();
-                    $text = 'Data _invited_by_ telah direset';
+                    $text = 'Data invited telah direset';
                 }
 
                 $this->replyWithMessage(['text' => $text, 'parse_mode' => 'markdown']);
