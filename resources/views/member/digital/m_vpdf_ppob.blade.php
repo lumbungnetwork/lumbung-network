@@ -97,7 +97,7 @@
                         <br>
                         @foreach ($return_buy['data']['desc']['detail'] as $detail)
                         <br>
-                        Periode Tagihan: {{date('M Y', strtotime($detail['periode']))}}
+                        Periode Tagihan: {{$detail['periode']}}
                         <br>
                         Meter Awal: {{$detail['meter_awal']}}
                         <br>
