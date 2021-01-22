@@ -106,7 +106,7 @@ class KBBAdmCommand extends Command
                 }
                 $this->replyWithMessage(['text' => $text, 'parse_mode' => 'markdown']);
                 return;
-            } elseif ($params[1] == 'reset') {
+            } elseif ($params[1] == 'reset-pass') {
                 $query = User::where('user_code', $params[2])->first();
                 if ($query == null) {
                     $text = 'User tidak ditemukan';
@@ -114,6 +114,18 @@ class KBBAdmCommand extends Command
                     $query->password = bcrypt('QWERTASD123a');
                     $query->save();
                     $text = 'Password berhasil direset menjadi QWERTASD123a';
+                }
+
+                $this->replyWithMessage(['text' => $text, 'parse_mode' => 'markdown']);
+                return;
+            } elseif ($params[1] == 'reset-invite') {
+                $query = User::where('user_code', $params[2])->first();
+                if ($query == null) {
+                    $text = 'User tidak ditemukan';
+                } else {
+                    $query->invited_by = null;
+                    $query->save();
+                    $text = 'Data _invited_by_ telah direset';
                 }
 
                 $this->replyWithMessage(['text' => $text, 'parse_mode' => 'markdown']);
