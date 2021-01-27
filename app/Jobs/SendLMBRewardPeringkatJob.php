@@ -105,6 +105,13 @@ class SendLMBRewardPeringkatJob implements ShouldQueue
 
         if ($response['result'] == true) {
             $txHash = $response['txid'];
+            //fail check
+            sleep(4);
+            try {
+                $tron->getTransaction($txHash);
+            } catch (TronException $e) {
+                $this->fail();
+            }
             //log to app history
             $dataUpdate = array(
                 'status' => 1,
