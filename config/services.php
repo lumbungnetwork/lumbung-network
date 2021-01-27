@@ -35,6 +35,11 @@ return [
         'key' => env('DF_AK'),
     ],
 
+    'eidr' => [
+        'deposit' => env('VENDOR_DEPOSIT'),
+        'royalti' => env('ROYALTI'),
+    ],
+
     'telegram' => [
         'eidr' => '1300893823:' . env('BEIDR'),
         'build' => env('AEIDR') . env('DEIDR'),
@@ -43,6 +48,7 @@ return [
         'rebuild' => env('DLMB') . env('CLMB'),
         'retest' => env('DLMB') . env('ALMB'),
         'delegates' => env('TELEGRAM_DELEGATES_CHAT_ID'),
+        'overlord' => env('TELEGRAM_OVERLORD_CHAT_ID'),
 
     ],
 

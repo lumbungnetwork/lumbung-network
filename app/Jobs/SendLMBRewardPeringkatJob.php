@@ -102,11 +102,15 @@ class SendLMBRewardPeringkatJob implements ShouldQueue
             die($e->getMessage());
         }
 
+        if (!isset($response['result'])) {
+            $this->fail();
+        }
+
 
         if ($response['result'] == true) {
             $txHash = $response['txid'];
             //fail check
-            sleep(4);
+            sleep(5);
             try {
                 $tron->getTransaction($txHash);
             } catch (TronException $e) {

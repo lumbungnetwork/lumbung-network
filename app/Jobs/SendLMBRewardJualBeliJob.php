@@ -95,7 +95,7 @@ class SendLMBRewardJualBeliJob implements ShouldQueue
 
             $txHash = $response['txid'];
             //fail check
-            sleep(4);
+            sleep(5);
             try {
                 $tron->getTransaction($txHash);
             } catch (TronException $e) {

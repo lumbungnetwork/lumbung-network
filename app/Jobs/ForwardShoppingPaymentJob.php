@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Config;
 use IEXBase\TronAPI\Exception\TronException;
 use GuzzleHttp\Client;
 use App\Http\Controllers\Controller;
+use App\Jobs\eIDRrebalanceJob;
+use Telegram\Bot\Laravel\Facades\Telegram;
 
 class ForwardShoppingPaymentJob implements ShouldQueue
 {
@@ -40,8 +42,6 @@ class ForwardShoppingPaymentJob implements ShouldQueue
     {
         //prepare Tron
         $fuse = Config::get('services.telegram.test');
-        $tgAk = Config::get('services.telegram.eidr');
-        $client = new Client;
 
         $controller = new Controller;
         $tron = $controller->getTron();
@@ -55,7 +55,7 @@ class ForwardShoppingPaymentJob implements ShouldQueue
         } elseif ($shoppingData->status == 2) {
             $totalPrice = $shoppingData->total_price;
             $royalti = 0;
-            $sellerTron = '';
+            $sellerTron = null;
             if ($this->sellerType == 1) {
                 $royalti = $totalPrice * 4 / 100;
                 $seller = User::find($shoppingData->stockist_id);
@@ -64,6 +64,14 @@ class ForwardShoppingPaymentJob implements ShouldQueue
                 $royalti = $totalPrice * 2 / 100;
                 $seller = User::find($shoppingData->vendor_id);
                 $sellerTron = $seller->tron;
+            }
+            if ($sellerTron == null) {
+                Telegram::sendMessage([
+                    'chat_id' => Config::get('services.telegram.overlord'),
+                    'text' => 'ForwardShoppingPaymentJob failed because the seller address is null' . chr(10) . 'Seller: ' . $seller->user_code,
+                    'parse_mode' => 'markdown'
+                ]);
+                $this->delete();
             }
             $netPayment = $totalPrice - $royalti;
 
@@ -82,29 +90,33 @@ class ForwardShoppingPaymentJob implements ShouldQueue
                 die($e->getMessage());
             }
 
+            if (!isset($response['result'])) {
+                $this->fail();
+            }
+
             //cleanup
             if ($response['result'] == true) {
+
+                //fail check
+                sleep(5);
+                try {
+                    $tron->getTransaction($response['txid']);
+                } catch (TronException $e) {
+                    $this->fail();
+                }
 
                 $eIDRbalance = $tron->getTokenBalance($tokenID, $from, $fromTron = false) / 100;
 
                 if ($eIDRbalance < 1500000) {
-                    $client->request('GET', 'https://api.telegram.org/bot' . $tgAk . '/sendMessage', [
-                        'query' => [
-                            'chat_id' => '365874331',
-                            'text' => 'EIDR balance left: ' . $eIDRbalance,
-                            'parse_mode' => 'markdown'
-                        ]
-                    ]);
+                    eIDRrebalanceJob::dispatch()->onQueue('tron');
                 }
 
                 return;
             } else {
-                $client->request('GET', 'https://api.telegram.org/bot' . $tgAk . '/sendMessage', [
-                    'query' => [
-                        'chat_id' => '365874331',
-                        'text' => 'Anomaly on ForwardShoppingPayment! MasterSalesID: ' . $this->masterSalesID,
-                        'parse_mode' => 'markdown'
-                    ]
+                Telegram::sendMessage([
+                    'chat_id' => Config::get('services.telegram.overlord'),
+                    'text' => 'ForwardShoppingPaymentJob failed because anomaly' . chr(10) . 'MasterSalesID: ' . $this->masterSalesID,
+                    'parse_mode' => 'markdown'
                 ]);
                 return;
             }

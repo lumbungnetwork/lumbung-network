@@ -12,7 +12,7 @@ use App\User;
 use IEXBase\TronAPI\Exception\TronException;
 use Illuminate\Support\Facades\Config;
 use App\Http\Controllers\Controller;
-
+use App\Jobs\eIDRrebalanceJob;
 use App\Notifications\eIDRNotification;
 
 class ManualTopUpeIDRjob implements ShouldQueue
@@ -38,7 +38,7 @@ class ManualTopUpeIDRjob implements ShouldQueue
         $dataUser = $modelBonus->getUserIdfromTopUpId($this->topup_id);
         $getData = $modelBonus->getJobTopUpSaldoIDUserId($this->topup_id, $dataUser->user_id);
         if ($getData == null) {
-            dd('ManualTopUpeIDRjob stopped, no data');
+            $this->delete();
         }
 
         $user = User::find($dataUser->user_id);
@@ -63,10 +63,23 @@ class ManualTopUpeIDRjob implements ShouldQueue
             die($e->getMessage());
         }
 
+        if (!isset($response['result'])) {
+            $this->fail();
+        }
+
         if ($response['result'] == true) {
+            $txHash = $response['txid'];
+            //fail check
+            sleep(6);
+            try {
+                $tron->getTransaction($txHash);
+            } catch (TronException $e) {
+                $this->fail();
+            }
+
             $dataUpdate = array(
                 'status' => 2,
-                'reason' => $response['txid'],
+                'reason' => $txHash,
                 'tuntas_at' => date('Y-m-d H:i:s'),
                 'submit_by' => $getData->user_id,
                 'submit_at' => date('Y-m-d H:i:s'),
@@ -76,12 +89,19 @@ class ManualTopUpeIDRjob implements ShouldQueue
             $notification = [
                 'amount' => $getData->nominal,
                 'type' => 'Top-up eIDR',
-                'hash' => $response['txid']
+                'hash' => $txHash
             ];
 
             if ($user->chat_id != null) {
                 $user->notify(new eIDRNotification($notification));
             }
+
+            $eIDRbalance = $tron->getTokenBalance($tokenID, $from, $fromTron = false) / 100;
+
+            if ($eIDRbalance < 1500000) {
+                eIDRrebalanceJob::dispatch()->onQueue('tron');
+            }
+
             return;
         }
     }

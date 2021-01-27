@@ -10,10 +10,10 @@ use Illuminate\Queue\SerializesModels;
 use App\Model\Transferwd;
 use Illuminate\Support\Facades\Config;
 use IEXBase\TronAPI\Exception\TronException;
-use GuzzleHttp\Client;
 use App\Http\Controllers\Controller;
 use App\User;
 use App\Notifications\eIDRNotification;
+use App\Jobs\eIDRrebalanceJob;
 
 class WDRoyaltiByeIDRjob implements ShouldQueue
 {
@@ -36,8 +36,6 @@ class WDRoyaltiByeIDRjob implements ShouldQueue
     {
         //prepare Tron
         $fuse = Config::get('services.telegram.test');
-        $tgAk = Config::get('services.telegram.eidr');
-        $client = new Client;
 
         //prepare Tron
         $controller = new Controller;
@@ -65,16 +63,29 @@ class WDRoyaltiByeIDRjob implements ShouldQueue
             $signedTransaction = $tron->signTransaction($transaction);
             $response = $tron->sendRawTransaction($signedTransaction);
         } catch (TronException $e) {
-            die($e->getMessage());
+            $this->fail();
+        }
+
+        if (!isset($response['result'])) {
+            $this->fail();
         }
 
         //log to app history
         if ($response['result'] == true) {
+            $txHash = $response['txid'];
+            //fail check
+            sleep(6);
+            try {
+                $tron->getTransaction($txHash);
+            } catch (TronException $e) {
+                $this->fail();
+            }
+
             $dataUpdate = array(
                 'status' => 1,
                 'transfer_at' => date('Y-m-d H:i:s'),
                 'submit_by' => 1,
-                'reason' => $response['txid'],
+                'reason' => $txHash,
                 'submit_at' => date('Y-m-d H:i:s'),
             );
             $modelWD->getUpdateWD('id', $this->id, $dataUpdate);
@@ -82,7 +93,7 @@ class WDRoyaltiByeIDRjob implements ShouldQueue
             $notification = [
                 'amount' => $getData->wd_total,
                 'type' => 'Konversi Bonus Royalti ke eIDR',
-                'hash' => $response['txid']
+                'hash' => $txHash
             ];
 
             if ($user->chat_id != null) {
@@ -92,13 +103,7 @@ class WDRoyaltiByeIDRjob implements ShouldQueue
             $eIDRbalance = $tron->getTokenBalance($tokenID, $from, $fromTron = false) / 100;
 
             if ($eIDRbalance < 1500000) {
-                $client->request('GET', 'https://api.telegram.org/bot' . $tgAk . '/sendMessage', [
-                    'query' => [
-                        'chat_id' => '365874331',
-                        'text' => 'EIDR balance left: ' . $eIDRbalance,
-                        'parse_mode' => 'markdown'
-                    ]
-                ]);
+                eIDRrebalanceJob::dispatch()->onQueue('tron');
             }
 
             return;
