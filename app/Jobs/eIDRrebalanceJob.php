@@ -100,8 +100,8 @@ class eIDRrebalanceJob implements ShouldQueue
         }
 
         $message_text = 'eIDR Rebalancing just executed' . chr(10);
-        $message_text .= 'From Deposit: ' . $depositBalance - 10 . chr(10);
-        $message_text .= 'From Royalti: ' . $royaltiBalance - 10 . chr(10);
+        $message_text .= 'From Deposit: Rp' . number_format($depositBalance) . chr(10);
+        $message_text .= 'From Royalti: Rp' . number_format($royaltiBalance) . chr(10);
 
         Telegram::sendMessage([
             'chat_id' => Config::get('services.telegram.overlord'),
