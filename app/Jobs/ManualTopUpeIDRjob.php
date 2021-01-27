@@ -20,10 +20,12 @@ class ManualTopUpeIDRjob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private $topup_id;
+    private $approval;
 
-    public function __construct($topup_id)
+    public function __construct($approval, $topup_id)
     {
         $this->topup_id = $topup_id;
+        $this->approval = $approval;
     }
 
     /**
@@ -43,66 +45,78 @@ class ManualTopUpeIDRjob implements ShouldQueue
 
         $user = User::find($dataUser->user_id);
 
-        //prepare TRON
-        $fuse = Config::get('services.telegram.test');
+        if ($this->approval == 0) {
+            $dataUpdate = array(
+                'status' => 3,
+                'reason' => 'Rejected (TG)',
+                'deleted_at' => date('Y-m-d H:i:s'),
+                'submit_by' => $dataUser->id,
+                'submit_at' => date('Y-m-d H:i:s'),
+            );
+            $modelBonus->getUpdateTopUp('id', $this->topup_id, $dataUpdate);
+            return;
+        } elseif ($this->approval == 1) {
+            //prepare TRON
+            $fuse = Config::get('services.telegram.test');
 
-        $controller = new Controller;
-        $tron = $controller->getTron();
-        $tron->setPrivateKey($fuse);
+            $controller = new Controller;
+            $tron = $controller->getTron();
+            $tron->setPrivateKey($fuse);
 
-        $to = $getData->tron;
-        $amount = $getData->nominal * 100;
-        $from = 'TWJtGQHBS8PfZTXvWAYhQEMrx36eX2F9Pc';
-        $tokenID = '1002652';
+            $to = $getData->tron;
+            $amount = $getData->nominal * 100;
+            $from = 'TWJtGQHBS8PfZTXvWAYhQEMrx36eX2F9Pc';
+            $tokenID = '1002652';
 
-        try {
-            $transaction = $tron->getTransactionBuilder()->sendToken($to, $amount, $tokenID, $from);
-            $signedTransaction = $tron->signTransaction($transaction);
-            $response = $tron->sendRawTransaction($signedTransaction);
-        } catch (TronException $e) {
-            die($e->getMessage());
-        }
-
-        if (!isset($response['result'])) {
-            $this->fail();
-        }
-
-        if ($response['result'] == true) {
-            $txHash = $response['txid'];
-            //fail check
-            sleep(6);
             try {
-                $tron->getTransaction($txHash);
+                $transaction = $tron->getTransactionBuilder()->sendToken($to, $amount, $tokenID, $from);
+                $signedTransaction = $tron->signTransaction($transaction);
+                $response = $tron->sendRawTransaction($signedTransaction);
             } catch (TronException $e) {
+                die($e->getMessage());
+            }
+
+            if (!isset($response['result'])) {
                 $this->fail();
             }
 
-            $dataUpdate = array(
-                'status' => 2,
-                'reason' => $txHash,
-                'tuntas_at' => date('Y-m-d H:i:s'),
-                'submit_by' => $getData->user_id,
-                'submit_at' => date('Y-m-d H:i:s'),
-            );
-            $modelBonus->getUpdateTopUp('id', $getData->id, $dataUpdate);
+            if ($response['result'] == true) {
+                $txHash = $response['txid'];
+                //fail check
+                sleep(6);
+                try {
+                    $tron->getTransaction($txHash);
+                } catch (TronException $e) {
+                    $this->fail();
+                }
 
-            $notification = [
-                'amount' => $getData->nominal,
-                'type' => 'Top-up eIDR',
-                'hash' => $txHash
-            ];
+                $dataUpdate = array(
+                    'status' => 2,
+                    'reason' => $txHash,
+                    'tuntas_at' => date('Y-m-d H:i:s'),
+                    'submit_by' => $getData->user_id,
+                    'submit_at' => date('Y-m-d H:i:s'),
+                );
+                $modelBonus->getUpdateTopUp('id', $getData->id, $dataUpdate);
 
-            if ($user->chat_id != null) {
-                $user->notify(new eIDRNotification($notification));
+                $notification = [
+                    'amount' => $getData->nominal,
+                    'type' => 'Top-up eIDR',
+                    'hash' => $txHash
+                ];
+
+                if ($user->chat_id != null) {
+                    $user->notify(new eIDRNotification($notification));
+                }
+
+                $eIDRbalance = $tron->getTokenBalance($tokenID, $from, $fromTron = false) / 100;
+
+                if ($eIDRbalance < 1500000) {
+                    eIDRrebalanceJob::dispatch()->onQueue('tron');
+                }
+
+                return;
             }
-
-            $eIDRbalance = $tron->getTokenBalance($tokenID, $from, $fromTron = false) / 100;
-
-            if ($eIDRbalance < 1500000) {
-                eIDRrebalanceJob::dispatch()->onQueue('tron');
-            }
-
-            return;
         }
     }
 }

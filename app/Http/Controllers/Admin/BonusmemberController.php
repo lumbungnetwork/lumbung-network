@@ -18,6 +18,7 @@ use App\Model\Bonus;
 use App\Model\Sales;
 use App\Model\Bank;
 use App\Jobs\SendLMBRewardPeringkatJob;
+use App\Http\Controllers\TelegramBotController;
 
 
 class BonusmemberController extends Controller
@@ -781,8 +782,6 @@ class BonusmemberController extends Controller
         $modelBonus->getUpdateTopUp('id', $id_topup, $dataUpdate);
         $getDataTopUp = $modelBonus->getTopUpSaldoID($id_topup);
         $transfer = $getDataTopUp->nominal + $getDataTopUp->unique_digit;
-        $tgAk = Config::get('services.telegram.eidr');
-        $client = new Client;
         $bankName = '';
         if ($request->bank_perusahaan_id == 26) {
             $bankName = 'BRI';
@@ -791,16 +790,14 @@ class BonusmemberController extends Controller
         } else {
             $bankName = 'BCA';
         }
-        $client->request('GET', 'https://api.telegram.org/bot' . $tgAk . '/sendMessage', [
-            'query' => [
-                'chat_id' => '365874331',
-                'text' => 'Top-up eIDR need Manual Action
-                user: ' . $dataUser->user_code . '
-                bank: ' . $bankName . '
-                transfer: Rp' . number_format($transfer),
-                'parse_mode' => 'markdown'
-            ]
-        ]);
+        $data = [
+            'username' => $dataUser->user_code,
+            'bank' => $bankName,
+            'amount' => $transfer,
+            'request_id' => $id_topup
+        ];
+        $telegramBotController = new TelegramBotController;
+        $telegramBotController->sendeIDRTopupRequest($data);
         // TopUpeIDRjob::dispatch($id_topup, $dataUser->id);
         return redirect()->back();
     }

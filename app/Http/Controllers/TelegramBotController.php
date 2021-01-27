@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use App\User;
+use App\Jobs\ManualTopUpeIDRjob;
 
 class TelegramBotController extends Controller
 {
@@ -22,17 +23,64 @@ class TelegramBotController extends Controller
             if ($telegram->isType('callback_query')) {
                 $callback = $telegram->getCallbackQuery();
                 $callback_id = $callback->getId();
-                $chat_id = $callback->getMessage()->getChat()->getId();
-                $name = $callback->getFrom()->getFirstName();
-                $voter_id = $callback->getFrom()->getId();
-                $message_id = $callback->getMessage()->getMessageId();
-                $message_text = $callback->getMessage()->getText();
-                $message_reply_markup = $callback->getMessage()->getReplyMarkup();
                 $split_callback_data = explode(' ', $callback->getData());
                 $command = $split_callback_data[0];
                 $request_id = $split_callback_data[1];
                 $type = $split_callback_data[2];
                 $username1 = $split_callback_data[3];
+                $chat_id = $callback->getMessage()->getChat()->getId();
+                $message_id = $callback->getMessage()->getMessageId();
+                $message_text = $callback->getMessage()->getText();
+                $message_reply_markup = $callback->getMessage()->getReplyMarkup();
+
+                if ($type == 'topup') {
+                    if ($chat_id == Config::get('services.telegram.overlord')) {
+                        if ($command == 'accept') {
+                            ManualTopUpeIDRjob::dispatch(1, $request_id)->onQueue('tron');
+
+                            Telegram::answerCallbackQuery([
+                                'callback_query_id' => $callback_id,
+                                'text' => 'Request Approved!'
+                            ]);
+
+                            $message_text .= chr(10) . '*APPROVED*';
+                            Telegram::editMessageText([
+                                'chat_id' => $chat_id,
+                                'message_id' => $message_id,
+                                'text' => $message_text,
+                                'parse_mode' => 'markdown'
+                            ]);
+
+                            return;
+                        } elseif ($command == 'reject') {
+                            ManualTopUpeIDRjob::dispatch(0, $request_id)->onQueue('tron');
+                            Telegram::answerCallbackQuery([
+                                'callback_query_id' => $callback_id,
+                                'text' => 'Request Rejected!'
+                            ]);
+
+                            $message_text .= chr(10) . '*REJECTED*';
+                            Telegram::editMessageText([
+                                'chat_id' => $chat_id,
+                                'message_id' => $message_id,
+                                'text' => $message_text,
+                                'parse_mode' => 'markdown'
+                            ]);
+
+                            return;
+                        }
+                    } else {
+                        Telegram::answerCallbackQuery([
+                            'callback_query_id' => $callback_id,
+                            'text' => 'Who are you?',
+                            'show_alert' => true
+                        ]);
+                        return;
+                    }
+                }
+
+                $name = $callback->getFrom()->getFirstName();
+                $voter_id = $callback->getFrom()->getId();
                 $cache_key = $callback->getData();
                 $voters = Cache::get('voters' . $request_id . $type);
                 $votersName = Cache::get('votersname' . $request_id . $type);
@@ -240,6 +288,36 @@ class TelegramBotController extends Controller
 
         Telegram::sendMessage([
             'chat_id' => Config::get('services.telegram.delegates'),
+            'text' => $message_text,
+            'parse_mode' => 'markdown',
+            'reply_markup' => $keyboard
+        ]);
+    }
+
+    public function sendeIDRTopupRequest($data)
+    {
+        $username = $data['username'];
+        $bank = $data['bank'];
+        $amount = $data['amount'];
+        $request_id = $data['request_id'];
+
+        $acceptKey = 'accept ' . $request_id . ' topup ' . $username;
+        $rejectKey = 'reject ' . $request_id . ' topup ' . $username;
+
+        $keyboard = Keyboard::make()
+            ->inline()
+            ->row(
+                Keyboard::inlineButton(['text' => 'Approve', 'callback_data' => $acceptKey]),
+                Keyboard::inlineButton(['text' => 'Reject', 'callback_data' => $rejectKey])
+            );
+
+        $message_text = '*Top-up eIDR Request*' . chr(10) . chr(10);
+        $message_text .= 'Bank: ' . $bank . chr(10);
+        $message_text .= 'Username: ' . $username . chr(10);
+        $message_text .= 'Amount: Rp' . number_format($amount) . chr(10);
+
+        Telegram::sendMessage([
+            'chat_id' => Config::get('services.telegram.overlord'),
             'text' => $message_text,
             'parse_mode' => 'markdown',
             'reply_markup' => $keyboard

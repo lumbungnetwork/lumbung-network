@@ -2302,7 +2302,7 @@ class MasterAdminController extends Controller
         }
         $getRowID = $request->id;
         foreach ($getRowID as $getID) {
-            ManualTopUpeIDRjob::dispatchNow($getID);
+            ManualTopUpeIDRjob::dispatchNow(1, $getID);
         }
         $modelAdmin = new Admin;
         $logHistory = array(
