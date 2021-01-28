@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Cache;
 use App\Model\Member;
 use App\User;
 use Illuminate\Support\Facades\Config;
+use GuzzleHttp\Client;
 
 /**
  * Class HelpCommand.
@@ -67,7 +68,6 @@ class SudoCommand extends Command
                     $this->replyWithMessage(compact('text'));
                     return;
                 } else {
-                    $modelMember = new Member;
                     $username   = Config::get('services.digiflazz.user');
                     $apiKey   = Config::get('services.digiflazz.key');
                     $sign = md5($username . $apiKey . 'deposit');
