@@ -74,10 +74,10 @@ class SudoCommand extends Command
 
                     $url = 'https://api.digiflazz.com/v1/deposit';
                     $client = new Client;
-                    $response = $client->post($url, [
+                    $response = $client->request('POST', $url, [
                         'json' => [
                             'username' => $username,
-                            'amount' => $params[3],
+                            'amount' => 102000,
                             'Bank' => 'BRI',
                             'owner_name' => 'Lumbung',
                             'sign' => $sign
