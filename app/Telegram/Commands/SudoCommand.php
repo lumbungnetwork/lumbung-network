@@ -57,55 +57,63 @@ class SudoCommand extends Command
                 return;
             }
 
-            // if ($params[1] == 'topup' && $params[2] == 'df') {
-            //     if (!isset($params[3])) {
-            //         $text = 'Topup amount needed!';
-            //         $this->replyWithMessage(compact('text'));
-            //         return;
-            //     } elseif ($params[3] < 100000) {
-            //         $text = 'Topup amount insufficient!';
-            //         $this->replyWithMessage(compact('text'));
-            //         return;
-            //     } else {
-            //         $modelMember = new Member;
-            //         $getDataAPI = $modelMember->getDataAPIMobilePulsa();
-            //         $username   = $getDataAPI->username;
-            //         $apiKey   = $getDataAPI->api_key;
-            //         $sign = md5($username . $apiKey . 'deposit');
+            if ($params[1] == 'topup' && $params[2] == 'df') {
+                if (!isset($params[3])) {
+                    $text = 'Topup amount needed!';
+                    $this->replyWithMessage(compact('text'));
+                    return;
+                } elseif ($params[3] < 100000) {
+                    $text = 'Topup amount insufficient!';
+                    $this->replyWithMessage(compact('text'));
+                    return;
+                } else {
+                    $modelMember = new Member;
+                    $username   = Config::get('services.digiflazz.user');
+                    $apiKey   = Config::get('services.digiflazz.key');
+                    $sign = md5($username . $apiKey . 'deposit');
 
-            //         $data = [
-            //             'username' => $username,
-            //             'amount' => $params[3],
-            //             'bank' => 'BRI',
-            //             'owner_name' => 'LUMBUNG',
-            //             'sign' => $sign
-            //         ];
+                    $data = array(
+                        'username' => $username,
+                        'amount' => $params[3],
+                        'Bank' => 'BRI',
+                        'owner_name' => 'Lumbung',
+                        'sign' => $sign
+                    );
 
-            //         $url = $getDataAPI->master_url . '/v1/deposit';
-            //         $json = json_encode($data);
-            //         $cek = $modelMember->getAPIurlCheck($url, $json);
-            //         $arrayData = json_decode($cek, true);
-            //         $data = $arrayData['data'];
+                    $url = 'https://api.digiflazz.com/v1/deposit';
+                    $json = json_encode($data);
+                    $client = new Client;
+                    $response = $client->post($url, [
+                        'body' => $json
+                    ]);
+                    if ($response) {
+                        $arrayData = json_decode($response->getBody()->getContents(), true);
+                        $data = $arrayData['data'];
 
-            //         if ($data['rc'] != '00') {
-            //             $text = 'Topup Request Failed!';
-            //             $this->replyWithMessage(['text' => $text, 'parse_mode' => 'markdown']);
-            //             return;
-            //         }
+                        if ($data['rc'] != '00') {
+                            $text = 'Topup Request Failed!';
+                            $this->replyWithMessage(['text' => $text, 'parse_mode' => 'markdown']);
+                            return;
+                        }
 
-            //         $text = 'Topup Details:';
-            //         $text2 = $data['amount'];
-            //         $text3 = $data['notes'];
-            //         $this->replyWithMessage(compact('text'));
-            //         $this->replyWithMessage(compact('text2'));
-            //         $this->replyWithMessage(compact('text3'));
-            //         return;
-            //     }
-            // } else {
-            //     $text = 'Bad commands!';
-            //     $this->replyWithMessage(['text' => $text, 'parse_mode' => 'markdown']);
-            //     return;
-            // }
+                        $text = 'Topup Details:';
+                        $text2 = $data['amount'];
+                        $text3 = $data['notes'];
+                        $this->replyWithMessage(compact('text'));
+                        $this->replyWithMessage(compact('text2'));
+                        $this->replyWithMessage(compact('text3'));
+                        return;
+                    } else {
+                        $text = 'Bad Response!';
+                        $this->replyWithMessage(['text' => $text, 'parse_mode' => 'markdown']);
+                        return;
+                    }
+                }
+            } else {
+                $text = 'Bad commands!';
+                $this->replyWithMessage(['text' => $text, 'parse_mode' => 'markdown']);
+                return;
+            }
         }
     }
 }
