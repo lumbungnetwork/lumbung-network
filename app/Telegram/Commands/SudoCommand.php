@@ -63,7 +63,7 @@ class SudoCommand extends Command
                     $text = 'Topup amount needed!';
                     $this->replyWithMessage(compact('text'));
                     return;
-                } elseif ($params[3] < 100000) {
+                } elseif ($params[3] < 200000) {
                     $text = 'Topup amount insufficient!';
                     $this->replyWithMessage(compact('text'));
                     return;
