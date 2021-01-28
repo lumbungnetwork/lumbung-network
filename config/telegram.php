@@ -43,6 +43,7 @@ return [
                 App\Telegram\Commands\StartCommand::class,
                 App\Telegram\Commands\KBBAdmCommand::class,
                 App\Telegram\Commands\DebugCommand::class,
+                App\Telegram\Commands\SudoCommand::class,
             ],
         ],
 

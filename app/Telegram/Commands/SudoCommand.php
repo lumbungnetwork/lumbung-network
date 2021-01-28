@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Config;
 /**
  * Class HelpCommand.
  */
-class KBBAdmCommand extends Command
+class SudoCommand extends Command
 {
     /**
      * @var string Command Name
