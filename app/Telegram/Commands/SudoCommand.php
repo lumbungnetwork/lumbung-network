@@ -87,7 +87,7 @@ class SudoCommand extends Command
                     } catch (\GuzzleHttp\Exception\ClientException $ex) {
                         $text = 'Bad Response!' . chr(10);
                         $text .= 'Exception: ' . $ex . chr(10);
-                        $this->replyWithMessage(['text' => $text, 'parse_mode' => 'markdown']);
+                        $this->replyWithMessage(['text' => $text]);
                         return;
                     }
 
@@ -97,7 +97,7 @@ class SudoCommand extends Command
 
                         if ($data['rc'] != '00') {
                             $text = 'Topup Request Failed!';
-                            $this->replyWithMessage(['text' => $text, 'parse_mode' => 'markdown']);
+                            $this->replyWithMessage(['text' => $text]);
                             return;
                         }
 
@@ -110,7 +110,7 @@ class SudoCommand extends Command
                         return;
                     } else {
                         $text = 'Bad Response!';
-                        $this->replyWithMessage(['text' => $text, 'parse_mode' => 'markdown']);
+                        $this->replyWithMessage(['text' => $text]);
                         return;
                     }
                 }
