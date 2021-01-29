@@ -86,7 +86,7 @@ class SudoCommand extends Command
                         ]);
                     } catch (\GuzzleHttp\Exception\ClientException $ex) {
                         $text = 'Bad Response!' . chr(10);
-                        $text .= 'Exception: ' . $ex . chr(10);
+                        $text .= 'Exception: ' . $ex->getMessage() . chr(10);
                         $this->replyWithMessage(['text' => $text]);
                         return;
                     }
