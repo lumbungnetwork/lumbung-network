@@ -74,15 +74,23 @@ class SudoCommand extends Command
 
                     $url = 'https://api.digiflazz.com/v1/deposit';
                     $client = new Client;
-                    $response = $client->request('POST', $url, [
-                        'json' => [
-                            'username' => $username,
-                            'amount' => 102000,
-                            'Bank' => 'BRI',
-                            'owner_name' => 'Lumbung',
-                            'sign' => $sign
-                        ]
-                    ]);
+                    try {
+                        $response = $client->request('POST', $url, [
+                            'json' => [
+                                'username' => $username,
+                                'amount' => $params[3],
+                                'Bank' => 'BRI',
+                                'owner_name' => 'Lumbung',
+                                'sign' => $sign
+                            ]
+                        ]);
+                    } catch (\GuzzleHttp\Exception\ClientException $ex) {
+                        $text = 'Bad Response!' . chr(10);
+                        $text .= 'Exception: ' . $ex . chr(10);
+                        $this->replyWithMessage(['text' => $text, 'parse_mode' => 'markdown']);
+                        return;
+                    }
+
                     if ($response) {
                         $arrayData = json_decode($response->getBody()->getContents(), true);
                         $data = $arrayData['data'];
