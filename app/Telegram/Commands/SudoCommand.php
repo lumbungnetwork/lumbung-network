@@ -71,6 +71,7 @@ class SudoCommand extends Command
                     $username   = Config::get('services.digiflazz.user');
                     $apiKey   = Config::get('services.digiflazz.key');
                     $sign = md5($username . $apiKey . 'deposit');
+                    $amount = (int) $params[3];
 
                     $url = 'https://api.digiflazz.com/v1/deposit';
                     $client = new Client;
@@ -78,7 +79,7 @@ class SudoCommand extends Command
                         $response = $client->request('POST', $url, [
                             'json' => [
                                 'username' => $username,
-                                'amount' => $params[3],
+                                'amount' => $amount,
                                 'Bank' => 'BRI',
                                 'owner_name' => 'Lumbung',
                                 'sign' => $sign
