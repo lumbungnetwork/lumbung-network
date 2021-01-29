@@ -105,9 +105,9 @@ class SudoCommand extends Command
                         $text = 'Topup Details:';
                         $text2 = $data['amount'];
                         $text3 = $data['notes'];
-                        $this->replyWithMessage(compact('text'));
-                        $this->replyWithMessage(compact('text2'));
-                        $this->replyWithMessage(compact('text3'));
+                        $this->replyWithMessage(['text' => $text]);
+                        $this->replyWithMessage(['text' => $text2]);
+                        $this->replyWithMessage(['text' => $text3]);
                         return;
                     } else {
                         $text = 'Bad Response!';
