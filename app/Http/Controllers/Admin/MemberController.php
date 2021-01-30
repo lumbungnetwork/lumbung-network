@@ -1402,6 +1402,10 @@ class MemberController extends Controller
         if ($dataUser->is_tron == 0) {
             return redirect()->route('m_myTron');
         }
+        if ($dataUser->affiliate == 2) {
+            Alert::error('Gagal!', 'Akun KBB-Pasif tidak bisa melakukan Reset');
+            return redirect()->back();
+        }
         $modelMember = new Member;
         $data = [
             'user_id' => $dataUser->id,

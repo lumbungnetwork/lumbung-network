@@ -70,8 +70,10 @@
                             <option value="{{$delegate->name}}">{{$delegate->name}}</option>
                             @endforeach
                         </select>
-                        <small id="delegateWarn" class="text-danger" style="display: none;">Silakan Pilih Delegasi
-                            anda.</small>
+                        <small id="delegateWarn" class="text-danger" style="display: none;">Silakan Pilih
+                            Delegasi</small>
+                        <dd id="kbbWarn" class="text-danger" style="display: none;">Akun KBB-Pasif tidak bisa
+                            melakukan Reset.</dd>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -100,6 +102,11 @@
 <script src="{{ asset('asset_new/js/sidebar.js') }}"></script>
 <script>
     function reset() {
+        if({{$dataUser->affiliate}} == 2) {
+            $('#kbbWarn').show();
+            $('#submit').remove();
+            return false;
+        }
         if ($('#delegate').val() == '') {
             $('#delegateWarn').show();
             return false;

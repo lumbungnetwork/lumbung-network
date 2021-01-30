@@ -227,7 +227,8 @@ class AjaxmemberController extends Controller
         //check available stock
 
         foreach ($itemsArray as $item) {
-            $stock = Product::find($item['id'])->qty;
+            $product = Product::find($item['id']);
+            $stock = $product->qty;
             $remaining = $stock - $item['quantity'];
             if ($remaining < 0) {
                 $status = false;
@@ -235,6 +236,8 @@ class AjaxmemberController extends Controller
                     ->with('status', $status)
                     ->with('name', $item['name'])
                     ->with('stock', $item['associatedModel']['qty']);
+            } else {
+                $product->update(['qty' => $remaining]);
             }
         }
 
