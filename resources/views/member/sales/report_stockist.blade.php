@@ -25,7 +25,7 @@
                 <div class="rounded-lg bg-white p-3 mb-3">
                     <div class="row">
                         <div class="col-12">
-                            <a href="{{ URL::to('/') }}/m/getpos" class="text-decoration-none">
+                            <a href="{{ URL::to('/') }}/m/getpos" class="text-decoration-none float-right">
                                 <div class="rounded icon-ppob text-center">
                                     <div class="box-icon bg-green text-center">
                                         <i class="mdi mdi-desktop-classic icon-menu"></i>
@@ -37,7 +37,7 @@
                         <div class="col-12">
                             <div class="card-box tilebox-one">
                                 <i class="icon-trophy pull-xs-right text-muted text-warning"></i>
-                                <h6 class="text-muted text-uppercase m-b-20">Report Stockist</h6>
+                                <h6 class="text-muted m-b-20">Riwayat Penjualan</h6>
                             </div>
                         </div>
                     </div>
@@ -45,47 +45,47 @@
                     <div class="row">
                         <div class="table-responsive">
 
-                            <table id="datatable" class="table table-striped table-bordered" style="font-size: 14px;">
+                            <table id="datatable" class="table" style="font-size: 14px;">
                                 <thead>
-                                    <tr>
-                                        <th>Tgl</th>
-                                        <th>Pembeli</th>
-                                        <th>Nominal(Rp)</th>
-                                    </tr>
+                                    <th><em>Klik status untuk melihat detail</em></th>
                                 </thead>
                                 <tbody>
                                     @if($getData != null)
                                     @foreach($getData as $row)
-                                    <?php
-
-                                                    $status = 'proses stockist';
-                                                    $label = 'warning';
-                                                    if($row->status == 2){
-                                                        $status = 'tuntas';
-                                                        $label = 'success';
-                                                    }
-                                                    if($row->status == 10){
-                                                        $status = 'batal';
-                                                        $label = 'danger';
-                                                    }
-                                                    $buy = 'proses pemilihan';
-                                                    if($row->buy_metode == 1){
-                                                        $buy = 'Tunai';
-                                                    }
-                                                    if($row->buy_metode == 2){
-                                                        $buy = 'Transfer Bank';
-                                                    }
-                                                    if($row->buy_metode == 3){
-                                                        $buy = 'eIDR';
-                                                    }
-                                                ?>
+                                    @php
+                                    $status = 'proses stockist';
+                                    $label = 'warning';
+                                    if($row->status == 2){
+                                    $status = 'tuntas';
+                                    $label = 'success';
+                                    }
+                                    if($row->status == 10){
+                                    $status = 'batal';
+                                    $label = 'danger';
+                                    }
+                                    $buy = 'proses pemilihan';
+                                    if($row->buy_metode == 1){
+                                    $buy = 'Tunai';
+                                    }
+                                    if($row->buy_metode == 2){
+                                    $buy = 'Transfer Bank';
+                                    }
+                                    if($row->buy_metode == 3){
+                                    $buy = 'eIDR';
+                                    }
+                                    @endphp
                                     <tr>
-                                        <td>{{$row->created_at}}</td>
-                                        <td>{{$row->user_code}}<br><a class="label label-primary f-12"
-                                                href="{{ URL::to('/') }}/m/detail/stockist-report/{{$row->id}}">detail</a>
+
+                                        <td style="display:block; box-sizing:border-box; clear:both">
+                                            <div class="rounded-lg bg-light shadow px-3 py-2 mb-1">
+                                                <small class="float-right">{{$row->created_at}}</small>
+                                                <p class="mb-1">{{$row->user_code}}</p>
+                                                <a class="btn btn-sm btn-{{$label}} float-right"
+                                                    href="{{ URL::to('/') }}/m/detail/stockist-report/{{$row->id}}"><span
+                                                        style="font-size: 14px;">{{$status}}</span></a>
+                                                <dd>Rp{{number_format($row->sale_price)}}</dd>
+                                            </div>
                                         </td>
-                                        <td>{{number_format($row->sale_price, 0, ',', ',')}}<br><span
-                                                class="label label-{{$label}}">{{$status}}</span></td>
 
                                     </tr>
                                     @endforeach
@@ -113,11 +113,15 @@
 <link rel="stylesheet" href="{{ asset('asset_new/css/siderbar.css') }}">
 <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/4.9.95/css/materialdesignicons.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/fonts/slick.woff">
 <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+<style>
+    table {
+        width: 100%;
+        table-layout: fixed;
+        overflow-wrap: break-word;
+    }
+</style>
 @stop
 
 @section('javascript')
@@ -131,7 +135,7 @@
     $(document).ready(function() {
         $('#datatable').DataTable({
             lengthChange: false,
-            order: [[ 0, "desc" ]]
+            order: [[0, 'desc']],
         });
 
     } );
