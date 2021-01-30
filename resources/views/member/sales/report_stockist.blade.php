@@ -24,7 +24,17 @@
 
                 <div class="rounded-lg bg-white p-3 mb-3">
                     <div class="row">
-                        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
+                        <div class="col-12">
+                            <a href="{{ URL::to('/') }}/m/getpos" class="text-decoration-none">
+                                <div class="rounded icon-ppob text-center">
+                                    <div class="box-icon bg-green text-center">
+                                        <i class="mdi mdi-desktop-classic icon-menu"></i>
+                                    </div>
+                                    <dd>P.O.S</dd>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-12">
                             <div class="card-box tilebox-one">
                                 <i class="icon-trophy pull-xs-right text-muted text-warning"></i>
                                 <h6 class="text-muted text-uppercase m-b-20">Report Stockist</h6>
