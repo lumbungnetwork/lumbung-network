@@ -149,9 +149,13 @@ class MemberController extends Controller
         $sponsor_id = $dataUser->id;
         $tron = null;
         $is_tron = 0;
+        $is_stockist = 0;
+        $stockist_at = null;
         if ($request->affiliate == 1) {
             $tron = 'TKrUoW4kfm2HVrAtpcW9sDBz4GmrbaJcBv';
             $is_tron = 1;
+            $is_stockist = 1;
+            $stockist_at = date('Y-m-d H:i:s');
         }
         if ($request->affiliate == 2) {
             $tron = 'TSirYAN5YC4XfSHHNif62reLABUZ5FCA7L';
@@ -166,7 +170,9 @@ class MemberController extends Controller
             'is_tron' => $is_tron,
             'user_code' => $request->user_code,
             'affiliate' => $request->affiliate,
-            'sponsor_id' => $sponsor_id
+            'sponsor_id' => $sponsor_id,
+            'is_stockist' => $is_stockist,
+            'stockist_at' => $stockist_at
         );
         $modelMember->getInsertUsers($dataInsertNewMember);
 
