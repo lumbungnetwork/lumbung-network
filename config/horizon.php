@@ -166,7 +166,7 @@ return [
     |
     */
 
-    'memory_limit' => 64,
+    'memory_limit' => 256,
 
     /*
     |--------------------------------------------------------------------------
@@ -186,17 +186,18 @@ return [
                 'queue' => ['default'],
                 'balance' => 'auto',
                 'minProcesses' => 1,
-                'maxProcesses' => 10,
+                'maxProcesses' => 4,
                 'balanceMaxShift' => 1,
                 'balanceCooldown' => 3,
                 'tries' => 20,
+                'timeout' => 900,
             ],
             'supervisor-2' => [
                 'connection' => 'redis',
                 'queue' => ['tron'],
                 'balance' => 'auto',
                 'minProcesses' => 1,
-                'maxProcesses' => 10,
+                'maxProcesses' => 2,
                 'balanceMaxShift' => 1,
                 'balanceCooldown' => 3,
                 'tries' => 4,
@@ -210,6 +211,13 @@ return [
                 'balanceMaxShift' => 1,
                 'balanceCooldown' => 3,
                 'tries' => 2,
+            ],
+            'supervisor-4' => [
+                'connection' => 'redis',
+                'queue' => ['oneliner'],
+                'balance' => 'simple',
+                'processes' => 1,
+                'tries' => 3,
             ],
         ],
         'local' => [

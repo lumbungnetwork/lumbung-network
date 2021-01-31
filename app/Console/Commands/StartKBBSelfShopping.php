@@ -51,7 +51,7 @@ class StartKBBSelfShopping extends Command
         $quantity = 5;
 
         foreach ($accounts as $account) {
-            KBBSelfShopping::dispatch($account->id, $quantity)->onQueue('tron');
+            KBBSelfShopping::dispatch($account->id, $quantity)->onQueue('oneliner');
         }
 
         return;

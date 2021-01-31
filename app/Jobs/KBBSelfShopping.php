@@ -116,6 +116,8 @@ class KBBSelfShopping implements ShouldQueue
             );
             $insertSales = $modelSales->getInsertSales($dataInsert);
 
+            sleep(3);
+
             return;
         } else {
             $this->fail();
