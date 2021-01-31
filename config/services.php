@@ -38,6 +38,7 @@ return [
     'eidr' => [
         'deposit' => env('VENDOR_DEPOSIT'),
         'royalti' => env('ROYALTI'),
+        'kbbmaster' => env('KBBMASTER'),
     ],
 
     'telegram' => [
