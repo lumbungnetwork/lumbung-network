@@ -130,7 +130,7 @@ class KBBCommand extends Command
 
             $saldoBonus = floor($totalBonus->total_bonus) - $totalWD->total_wd - $totalWD->total_tunda - $totalWD->total_fee_admin - $totalWDeIDR->total_wd - $totalWDeIDR->total_tunda - $totalWDeIDR->total_fee_admin;
             $saldoBonusRoyalti = floor($totalBonusRoyalti->total_bonus) - $totalWDRoyalti->total_wd - $totalWDRoyalti->total_tunda - $totalWDRoyalti->total_fee_admin;
-            $bonusTuntas = $totalWDeIDR->total_wd + $totalWDeIDR->total_fee_admin + $totalWDRoyalti->total_wd + $totalWDRoyalti->total_fee_admin;
+            $bonusTuntas = $totalWDeIDR->total_wd + $totalWDeIDR->total_fee_admin + $totalWDRoyalti->total_wd + $totalWDRoyalti->total_fee_admin + $totalWD->total_wd + $totalWD->total_tunda + $totalWD->total_fee_admin;
             $bonusTersedia = $saldoBonus + $saldoBonusRoyalti;
 
             $text = 'Username: ' . $dataUser->user_code . chr(10);
