@@ -11,11 +11,10 @@ use App\Model\Sales;
 use App\Model\Bonus;
 use App\User;
 use App\Jobs\SendLMBRewardJualBeliJob;
-use Illuminate\Foundation\Bus\DispatchesJobs;
 
 class KBBMasterClaimShoppingRewardJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, DispatchesJobs;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
      * Create a new job instance.
