@@ -74,7 +74,7 @@ class KBBMasterClaimShoppingRewardJob implements ShouldQueue
                 'total_belanja' => $spending
             );
             $getRewardId = $modelBonus->getInsertBelanjaReward($dataInsert);
-            dispatch(new SendLMBRewardJualBeliJob($getRewardId->lastID))->onQueue('tron');
+            SendLMBRewardJualBeliJob::dispatchNow($getRewardId->lastID);
             return;
         }
     }
