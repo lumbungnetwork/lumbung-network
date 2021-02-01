@@ -40,7 +40,7 @@ class KBBMasterClaimShoppingRewardJob implements ShouldQueue
         //get last month spending
         $modelSales = new Sales;
         $modelBonus = new Bonus;
-        $spending = $modelSales->getSingleMemberPreviousMonthStockistSpending($this->user_id);
+        $spending = $modelSales->getSingleMemberPreviousMonthStockistSpending($user->id);
 
         if ($spending == null) {
             $this->delete();
@@ -66,7 +66,7 @@ class KBBMasterClaimShoppingRewardJob implements ShouldQueue
             $year = date('Y', strtotime('last month'));
 
             $dataInsert = array(
-                'user_id' => $this->user_id,
+                'user_id' => $user->id,
                 'reward' => $reward,
                 'month' => $month,
                 'year' => $year,
