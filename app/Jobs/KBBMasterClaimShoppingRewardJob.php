@@ -11,10 +11,11 @@ use App\Model\Sales;
 use App\Model\Bonus;
 use App\User;
 use App\Jobs\SendLMBRewardJualBeliJob;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 
 class KBBMasterClaimShoppingRewardJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, DispatchesJobs;
 
     /**
      * Create a new job instance.
@@ -74,7 +75,8 @@ class KBBMasterClaimShoppingRewardJob implements ShouldQueue
                 'total_belanja' => $spending
             );
             $getRewardId = $modelBonus->getInsertBelanjaReward($dataInsert);
-            SendLMBRewardJualBeliJob::dispatch($getRewardId->lastID)->onQueue('tron');
+            dispatch(new SendLMBRewardJualBeliJob($getRewardId->lastID))->onQueue('tron');
+            return;
         }
     }
 }
