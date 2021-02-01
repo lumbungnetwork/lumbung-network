@@ -55,7 +55,7 @@ class SendLMBRewardJualBeliJob implements ShouldQueue
         $modelBonus = new Bonus;
         $getData = $modelBonus->getJobDetailBelanjaReward($this->reward_id);
         if ($getData == null) {
-            dd('SendLMBRewardJualBelijob stopped, data not found!');
+            $this->delete();
         }
 
         $user = User::find($getData->user_id);
@@ -153,7 +153,7 @@ class SendLMBRewardJualBeliJob implements ShouldQueue
 
             return;
         } else {
-            dd('SendLMBRewardJualBelijob FAILED, Tron Transfer FAILED. (' . $getData->user_code . ' claim: ' . $amount . ')');
+            $this->fail();
         }
     }
 }

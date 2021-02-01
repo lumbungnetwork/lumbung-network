@@ -1369,6 +1369,22 @@ class Sales extends Model
         return $return;
     }
 
+    public function getSingleMemberPreviousMonthStockistSpending($user_id)
+    {
+        $first_day = date('Y-m-d', strtotime('first day of last month'));
+        $last_day = date('Y-m-d', strtotime('last day of last month'));
+
+        $sql = DB::table('master_sales')
+            ->selectRaw('sum(master_sales.total_price) as total_spend')
+            ->where('master_sales.user_id', '=', $user_id)
+            ->where('master_sales.status', '=', 2)
+            ->whereDate('master_sales.sale_date', '>=', $first_day)
+            ->whereDate('master_sales.sale_date', '<=', $last_day)
+            ->first();
+
+        return $sql->total_spend;
+    }
+
     public function getMemberVendorMasterSalesMonthly($id)
     {
         $start_day = date("Y-m-01");
