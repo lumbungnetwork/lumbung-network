@@ -50,7 +50,7 @@ class ManualTopUpeIDRjob implements ShouldQueue
                 'status' => 3,
                 'reason' => 'Rejected (TG)',
                 'deleted_at' => date('Y-m-d H:i:s'),
-                'submit_by' => $dataUser->id,
+                'submit_by' => $user->id,
                 'submit_at' => date('Y-m-d H:i:s'),
             );
             $modelBonus->getUpdateTopUp('id', $this->topup_id, $dataUpdate);
