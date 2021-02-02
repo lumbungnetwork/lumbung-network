@@ -56,7 +56,7 @@ class SendLMBRewardPeringkatJob implements ShouldQueue
         $modelBonus = new Bonus;
         $getData = $modelBonus->getClaimRewardLMBbyId($this->reward_id);
         if ($getData == null) {
-            dd('SendLMBRewardPeringkatjob stopped, data not found!');
+            $this->delete();
         }
 
         $user = User::find($getData->user_id);
