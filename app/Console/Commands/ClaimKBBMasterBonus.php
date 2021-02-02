@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Jobs\KBBMasterBonusJob;
+use Illuminate\Support\Facades\DB;
 
 class ClaimKBBMasterBonus extends Command
 {
