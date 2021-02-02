@@ -106,6 +106,16 @@ class WDRoyaltiByeIDRjob implements ShouldQueue
                 eIDRrebalanceJob::dispatch()->onQueue('tron');
             }
 
+            if ($user->affiliate >= 1 && $user->affiliate < 4) {
+                KbbBonus::create([
+                    'user_id' => $user->id,
+                    'affiliate' => $user->affiliate,
+                    'type' => 3,
+                    'amount' => $getData->wd_total,
+                    'hash' => $txHash
+                ]);
+            }
+
             return;
         }
     }

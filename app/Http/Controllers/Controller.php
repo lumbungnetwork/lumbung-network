@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Model\Pin;
 use App\Model\Transaction;
+use App\Model\Bonus;
+use App\Model\Transferwd;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -77,5 +79,35 @@ class Controller extends BaseController
         $available_balance = $total_credits - $total_debits - $total_withdrawn - $total_onTheFly;
 
         return $available_balance;
+    }
+
+    public function getMemberAvailableBonus($user_id)
+    {
+        $dataUser = (object) array(
+            'id' => $user_id
+        );
+
+        $bonus = new Bonus;
+        $transfered = new Transferwd;
+
+        //daily bonus
+
+        $getTotalBonus = $bonus->getTotalBonus($dataUser);
+        $totalWD = $transfered->getTotalDiTransfer($dataUser);
+        $totalWDeIDR = $transfered->getTotalDiTransfereIDR($dataUser);
+
+        $totalAvailable = ($getTotalBonus->total_bonus - ($totalWD->total_wd + $totalWD->total_tunda + $totalWD->total_fee_admin + $totalWDeIDR->total_wd + $totalWDeIDR->total_tunda + $totalWDeIDR->total_fee_admin));
+
+        //royalti bonus
+        $totalBonusAll = $bonus->getTotalBonusRoyalti($dataUser);
+        $totalWD = $transfered->getTotalDiTransferRoyalti($dataUser);
+        $totalWDeIDR = $transfered->getTotalDiTransferRoyaltieIDR($dataUser);
+
+        $totalAvailableRoyaltiBonus = ($totalBonusAll->total_bonus - ($totalWD->total_wd + $totalWD->total_tunda + $totalWD->total_fee_admin + $totalWDeIDR->total_wd + $totalWDeIDR->total_tunda + $totalWDeIDR->total_fee_admin));
+
+        return (object) array(
+            'daily_bonus' => $totalAvailable,
+            'royalti_bonus' => $totalAvailableRoyaltiBonus
+        );
     }
 }

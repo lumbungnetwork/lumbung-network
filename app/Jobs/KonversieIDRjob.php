@@ -15,6 +15,7 @@ use App\Http\Controllers\Controller;
 use App\User;
 use App\Notifications\eIDRNotification;
 use App\Jobs\eIDRrebalanceJob;
+use App\KbbBonus;
 
 class KonversieIDRjob implements ShouldQueue
 {
@@ -102,6 +103,16 @@ class KonversieIDRjob implements ShouldQueue
 
             if ($eIDRbalance < 1500000) {
                 eIDRrebalanceJob::dispatch()->onQueue('tron');
+            }
+
+            if ($user->affiliate >= 1 && $user->affiliate < 4) {
+                KbbBonus::create([
+                    'user_id' => $user->id,
+                    'affiliate' => $user->affiliate,
+                    'type' => 5,
+                    'amount' => $getData->wd_total,
+                    'hash' => $txHash
+                ]);
             }
 
             return;
