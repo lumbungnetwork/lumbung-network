@@ -59,6 +59,8 @@ class protest extends Command
                 'text' => $message_text,
                 'parse_mode' => 'markdown'
             ]);
+
+            sleep(4);
         }
         return;
     }
