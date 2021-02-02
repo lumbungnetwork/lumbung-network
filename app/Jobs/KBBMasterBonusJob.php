@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Routing\Controller;
+use App\Http\Controllers\Controller;
 use App\Jobs\KonversieIDRjob;
 use App\Jobs\WDRoyaltiByeIDRjob;
 use App\Model\Transferwd;
