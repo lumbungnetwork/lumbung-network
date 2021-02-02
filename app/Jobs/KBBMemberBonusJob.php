@@ -7,6 +7,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use App\Http\Controllers\Controller;
+use App\Model\Transferwd;
 
 class KBBMemberBonusJob implements ShouldQueue
 {

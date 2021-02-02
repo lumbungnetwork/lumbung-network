@@ -42,6 +42,7 @@ class ClaimKBBMemberBonus extends Command
         $accounts = DB::table('users')->select('users.id')
             ->whereIn('users.affiliate', [2, 3])
             ->where('users.is_active', 1)
+            ->where('users.tron', 'TSirYAN5YC4XfSHHNif62reLABUZ5FCA7L')
             ->get();
 
         foreach ($accounts as $account) {
