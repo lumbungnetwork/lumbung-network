@@ -46,7 +46,7 @@ class WDRoyaltiByeIDRjob implements ShouldQueue
         $modelWD = new Transferwd;
         $getData = $modelWD->getIDWDRoyaltiByeIDR($this->id);
         if ($getData == null) {
-            dd('WDRoyaltiByeIDRjob stopped, no data');
+            $this->delete();
         }
 
         $user = User::find($getData->user_id);

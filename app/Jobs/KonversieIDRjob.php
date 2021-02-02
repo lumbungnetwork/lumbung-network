@@ -46,7 +46,7 @@ class KonversieIDRjob implements ShouldQueue
         $modelWD = new Transferwd;
         $getData = $modelWD->getIDKonversiWDeIDR($this->id);
         if ($getData == null) {
-            dd('KonversieIDRjob stopped, no data');
+            $this->delete();
         }
 
         $user = User::find($getData->user_id);
