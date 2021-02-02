@@ -40,9 +40,9 @@ class KBBMasterClaimShoppingRewardJob implements ShouldQueue
         //get last month spending
         $modelSales = new Sales;
         $modelBonus = new Bonus;
-        $spending = $modelSales->getSingleMemberPreviousMonthStockistSpending($user->id);
+        $spending = $modelSales->getLastMonthStockistSpending($user->id);
 
-        if ($spending == null) {
+        if ($spending < 100000) {
             $this->delete();
         } else {
 

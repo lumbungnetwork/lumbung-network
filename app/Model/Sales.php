@@ -1369,7 +1369,7 @@ class Sales extends Model
         return $return;
     }
 
-    public function getSingleMemberPreviousMonthStockistSpending($user_id)
+    public function getLastMonthStockistSpending($user_id)
     {
         $first_day = date('Y-m-d', strtotime('first day of last month'));
         $last_day = date('Y-m-d', strtotime('last day of last month'));
@@ -1381,8 +1381,12 @@ class Sales extends Model
             ->whereDate('master_sales.sale_date', '>=', $first_day)
             ->whereDate('master_sales.sale_date', '<=', $last_day)
             ->first();
+        $return = 0;
+        if ($sql != null) {
+            $return = $sql->total_spend;
+        }
 
-        return $sql->total_spend;
+        return $return;
     }
 
     public function getMemberVendorMasterSalesMonthly($id)
