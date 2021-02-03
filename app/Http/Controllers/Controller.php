@@ -96,18 +96,23 @@ class Controller extends BaseController
         $totalWD = $transfered->getTotalDiTransfer($dataUser);
         $totalWDeIDR = $transfered->getTotalDiTransfereIDR($dataUser);
 
-        $totalAvailable = ($getTotalBonus->total_bonus - ($totalWD->total_wd + $totalWD->total_tunda + $totalWD->total_fee_admin + $totalWDeIDR->total_wd + $totalWDeIDR->total_tunda + $totalWDeIDR->total_fee_admin));
+        $dailyWithdrawn = $totalWD->total_wd + $totalWD->total_tunda + $totalWD->total_fee_admin + $totalWDeIDR->total_wd + $totalWDeIDR->total_tunda + $totalWDeIDR->total_fee_admin;
+        $totalAvailable = $getTotalBonus->total_bonus - $dailyWithdrawn;
+
 
         //royalti bonus
-        $totalBonusAll = $bonus->getTotalBonusRoyalti($dataUser);
-        $totalWD = $transfered->getTotalDiTransferRoyalti($dataUser);
-        $totalWDeIDR = $transfered->getTotalDiTransferRoyaltieIDR($dataUser);
+        $totalBonusRoyalti = $bonus->getTotalBonusRoyalti($dataUser);
+        $totalWDroyalti = $transfered->getTotalDiTransferRoyalti($dataUser);
+        $totalWDroyaltieIDR = $transfered->getTotalDiTransferRoyaltieIDR($dataUser);
 
-        $totalAvailableRoyaltiBonus = ($totalBonusAll->total_bonus - ($totalWD->total_wd + $totalWD->total_tunda + $totalWD->total_fee_admin + $totalWDeIDR->total_wd + $totalWDeIDR->total_tunda + $totalWDeIDR->total_fee_admin));
+        $royaltiWithdrawn = $totalWDroyalti->total_wd + $totalWDroyalti->total_tunda + $totalWDroyalti->total_fee_admin + $totalWDroyaltieIDR->total_wd + $totalWDroyaltieIDR->total_tunda + $totalWDroyaltieIDR->total_fee_admin;
+        $totalAvailableRoyaltiBonus = $totalBonusRoyalti->total_bonus - $royaltiWithdrawn;
 
         return (object) array(
             'daily_bonus' => $totalAvailable,
-            'royalti_bonus' => $totalAvailableRoyaltiBonus
+            'daily_withdrawn' => $dailyWithdrawn,
+            'royalti_bonus' => $totalAvailableRoyaltiBonus,
+            'royalti_withdrawn' => $royaltiWithdrawn
         );
     }
 }

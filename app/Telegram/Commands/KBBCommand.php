@@ -8,6 +8,7 @@ use App\Model\Member;
 use App\Model\Bonus;
 use App\Model\Transferwd;
 use App\User;
+use App\Http\Controllers\Controller;
 
 /**
  * Class KBBCommand.
@@ -42,6 +43,7 @@ class KBBCommand extends Command
     {
         $args = $this->getArguments();
         $response = $this->getUpdate();
+        $controller = new Controller;
 
         if (empty($args)) {
             $text = 'Petunjuk penggunaan "perintah" Bot KBB yang tepat: .' . chr(10) . chr(10);
@@ -118,20 +120,11 @@ class KBBCommand extends Command
             $this->replyWithMessage(compact('text'));
             return;
         } elseif ($args['param'] == 'bonus') {
+            $bonuses = $controller->getMemberAvailableBonus($dataUser->id);
             $modelBonus = new Bonus;
-            $modelWD = new Transferwd;
-            $totalBonus = $modelBonus->getTotalBonus($dataUser);
-            $totalWD = $modelWD->getTotalDiTransfer($dataUser);
-            $totalWDeIDR = $modelWD->getTotalDiTransfereIDR($dataUser);
-            $totalBonusRoyalti = $modelBonus->getTotalBonusRoyalti($dataUser);
-            $totalWDRoyalti = $modelWD->getTotalDiTransferRoyalti($dataUser);
-
             $totalClaimedLMBfromMarketplace = $modelBonus->getTotalClaimedLMBfromMarketplace($dataUser->id);
-
-            $saldoBonus = floor($totalBonus->total_bonus) - $totalWD->total_wd - $totalWD->total_tunda - $totalWD->total_fee_admin - $totalWDeIDR->total_wd - $totalWDeIDR->total_tunda - $totalWDeIDR->total_fee_admin;
-            $saldoBonusRoyalti = floor($totalBonusRoyalti->total_bonus) - $totalWDRoyalti->total_wd - $totalWDRoyalti->total_tunda - $totalWDRoyalti->total_fee_admin;
-            $bonusTuntas = $totalWDeIDR->total_wd + $totalWDeIDR->total_fee_admin + $totalWDRoyalti->total_wd + $totalWDRoyalti->total_fee_admin + $totalWD->total_wd + $totalWD->total_tunda + $totalWD->total_fee_admin;
-            $bonusTersedia = $saldoBonus + $saldoBonusRoyalti;
+            $bonusTuntas = $bonuses->daily_withdrawn + $bonuses->royalti_withdrawn;
+            $bonusTersedia = $bonuses->daily_bonus + $bonuses->royalti_bonus;
 
             $text = 'Username: ' . $dataUser->user_code . chr(10);
             $text .= 'Bonus tersedia: Rp' . number_format($bonusTersedia) . chr(10);
@@ -140,7 +133,7 @@ class KBBCommand extends Command
             if ($dataUser->affiliate == 2) {
                 $bonusRights = 25;
             }
-            $text .= 'Hak Bonus: Rp' . number_format(($bonusRights / 100) * $saldoBonus) . chr(10);
+            $text .= 'Hak Bonus: Rp' . number_format(($bonusRights / 100) * $bonusTersedia) . chr(10);
             $text .= 'Reward LMB Jual-Beli: ' . number_format($totalClaimedLMBfromMarketplace, 2) . ' LMB' . chr(10);
             $this->replyWithMessage(compact('text'));
             return;
