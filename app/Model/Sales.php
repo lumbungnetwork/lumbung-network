@@ -627,7 +627,7 @@ class Sales extends Model
     {
         $sql = DB::table('master_sales')
             ->selectRaw('master_sales.user_id as id, sum(master_sales.total_price) as month_sale_price')
-            ->where('master_sales.status', '>', 0)
+            ->where('master_sales.status', 2)
             ->whereDate('master_sales.sale_date', '>=', $date->startDay)
             ->whereDate('master_sales.sale_date', '<=', $date->endDay)
             ->whereNull('master_sales.deleted_at')

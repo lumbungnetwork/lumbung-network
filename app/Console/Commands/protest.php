@@ -42,14 +42,18 @@ class protest extends Command
     {
         $sql = DB::table('transfer_wd')
             ->join('users', 'users.id', '=', 'transfer_wd.user_id')
-            ->join('bank', 'bank.user_id', '=', 'transfer_wd.user_id')
-            ->select('users.user_code', 'transfer_wd.wd_total', 'bank.bank_name', 'bank.account_no', 'bank.account_name')
+            ->leftJoin('bank', 'bank.user_id', '=', 'transfer_wd.user_id')
+            ->select('users.user_code', 'users.affiliate', 'transfer_wd.wd_total', 'bank.bank_name', 'bank.account_no', 'bank.account_name')
             ->where('transfer_wd.id', '>=', 1237)
             ->where('transfer_wd.id', '<=', 1250)
             ->get();
         foreach ($sql as $row) {
+            $amount = number_format($row->wd_total);
+            if ($row->affiliate == 2) {
+                $amount = number_format($row->wd_total / 4) . ' (25% from Rp' . number_format($row->wd_total);
+            }
             $message_text = $row->user_code . chr(10);
-            $message_text .= 'Amount: ' . $row->wd_total . chr(10);
+            $message_text .= 'Amount: Rp' . $amount . chr(10);
             $message_text .= 'Bank: ' . $row->bank_name . chr(10);
             $message_text .= 'Acc No.: ' . $row->account_no . chr(10);
             $message_text .= 'Acc Name: ' . $row->account_name . chr(10);
@@ -60,7 +64,7 @@ class protest extends Command
                 'parse_mode' => 'markdown'
             ]);
 
-            sleep(4);
+            sleep(3);
         }
         return;
     }
