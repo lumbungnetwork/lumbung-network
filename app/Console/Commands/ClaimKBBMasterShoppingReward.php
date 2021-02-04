@@ -13,14 +13,14 @@ class ClaimKBBMasterShoppingReward extends Command
      *
      * @var string
      */
-    protected $signature = 'kbb:shopreward';
+    protected $signature = 'kbb:shopreward {affiliate}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Start Claiming KBB Master Shopping Reward Jobs';
+    protected $description = 'Start Claiming KBB Account Shopping Reward Jobs, Args= 1 for Master, 2 for passive';
 
     /**
      * Create a new command instance.
@@ -39,8 +39,9 @@ class ClaimKBBMasterShoppingReward extends Command
      */
     public function handle()
     {
+        $affiliate = $this->argument('affiliate');
         $accounts = DB::table('users')->select('users.id')
-            ->where('users.affiliate', 1)
+            ->where('users.affiliate', $affiliate)
             ->where('users.is_active', 1)
             ->get();
 
