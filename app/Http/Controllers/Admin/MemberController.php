@@ -2845,6 +2845,11 @@ class MemberController extends Controller
             Alert::error('Oops!', 'Username tidak ditemukan, periksa kembali username yang anda masukkan');
             return redirect()->back()->with('username', $request->username);
         }
+
+        if ($buyer->is_active == 0) {
+            Alert::error('Oops!', 'Akun member ini belum diaktivasi.');
+            return redirect()->back()->with('username', $request->username);
+        }
         $dataUser = Auth::user();
         $onlyUser  = array(10);
         $seller_id = $dataUser->id;
