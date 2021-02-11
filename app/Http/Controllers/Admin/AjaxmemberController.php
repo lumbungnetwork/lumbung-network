@@ -1928,6 +1928,15 @@ class AjaxmemberController extends Controller
             ->with('dataUser', $dataUser);
     }
 
+    public function getSearchUserbyUsercode(Request $request)
+    {
+        $query = User::where('user_code', 'LIKE', '%' . $request->name . '%')->where('is_active', 1)->where('user_type', 10)->select('id', 'user_code')->get();
+        $dataUser =  Auth::user();
+        return view('member.ajax.get_name_autocomplete')
+            ->with('getData', $query)
+            ->with('dataUser', $dataUser);
+    }
+
     public function postCekAddRequestVStock(Request $request)
     {
         $dataUser = Auth::user();
@@ -2459,6 +2468,11 @@ class AjaxmemberController extends Controller
         $type = $request->type;
         $no_hp = $request->no_hp;
         $vendor_id = $dataUser->id;
+        $user_id = $request->user_id;
+
+        if ($user_id == '') {
+            $user_id = null;
+        }
 
         $modelPin = new Pin;
         $modelTrans = new Transaction;
@@ -2490,6 +2504,7 @@ class AjaxmemberController extends Controller
             'buyer_sku_code' => $buyer_sku_code,
             'product_name' => $product_name,
             'no_hp' => $no_hp,
+            'user_id' => $user_id,
         );
 
         return view('member.ajax.confirm_vendor_quickbuy')

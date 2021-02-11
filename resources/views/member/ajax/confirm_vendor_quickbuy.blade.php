@@ -19,6 +19,8 @@
     <input type="hidden" name="vendor_id" value="{{$vendor_id}}">
     <input type="hidden" name="buyer_sku_code" value="{{$data->buyer_sku_code}}">
     <input type="hidden" name="type" value="{{$type}}">
+    <input type="hidden" name="user_id" value="{{$data->user_id}}">
+
     <button type="button" class="btn btn-success" onclick="confirmBuy()">Konfirmasi</button>
     <button type="button" class="btn btn-secondary" onclick="swal.close()">Tunda</button>
 </form>

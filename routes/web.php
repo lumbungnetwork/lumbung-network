@@ -552,6 +552,7 @@ Route::prefix('/')->group(function () {
     Route::get('/m/cek/reject-topup', 'Admin\AjaxmemberController@getCekRejectTopup')->middleware('auth');
     Route::get('/m/cek/req-vendor', 'Admin\AjaxmemberController@getCekRequestMemberVendor')->middleware('auth');
     Route::get('/m/cek/usercode-vendor', 'Admin\AjaxmemberController@getSearchUserCodeVendor')->middleware('auth');
+    Route::get('/m/cek/usercode-buyer', 'Admin\AjaxmemberController@getSearchUserbyUsercode')->middleware('auth');
     Route::get('/m/cek/add-vstock', 'Admin\AjaxmemberController@postCekAddRequestVStock')->middleware('auth');
     Route::get('/m/cek/reject-vstock', 'Admin\AjaxmemberController@postCekRejectRequestVStock')->middleware('auth');
     Route::get('/m/cek/member-vpembayaran', 'Admin\AjaxmemberController@getCekMemberVPembayaran')->middleware('auth');

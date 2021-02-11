@@ -5044,6 +5044,14 @@ class MemberController extends Controller
         if ($dataUser->is_active == 0) {
             return redirect()->route('mainDashboard');
         }
+        if ($dataUser->is_vendor == 0) {
+            return redirect()->route('mainDashboard');
+        }
+
+        $user_id = $request->user_id;
+        if ($user_id == null) {
+            $user_id = $dataUser->id;
+        }
 
         $type = $request->type;
         $buyer_sku_code = $request->buyer_sku_code;
@@ -5057,8 +5065,8 @@ class MemberController extends Controller
         }
 
         $dataInsert = array(
-            'user_id' => $request->vendor_id,
-            'vendor_id' => $request->vendor_id,
+            'user_id' => $user_id,
+            'vendor_id' => $dataUser->id,
             'ppob_code' => $productData->ref_id,
             'type' => $request->type,
             'buyer_code' => $productData->buyer_sku_code,

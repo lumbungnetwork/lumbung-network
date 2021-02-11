@@ -115,10 +115,24 @@
                     </div>
                     @else
                     <div class="row">
-                        <div class="col-xl-12">
+                        <div style="display: none" class="col-12" id="buyer_name">
+                            <fieldset class="form-group">
+                                <label for="user_name">Masukkan Username Pembeli:</label><br>
+                                <small>Ketikkan 3-4 huruf awal, lalu klik opsi yang tampil</small>
+                                <input type="text" class="form-control" id="get_id" name="user_name" autocomplete="off">
+                                <input type="hidden" name="get_id" id="id_get_id">
+                                <ul class="typeahead dropdown-menu"
+                                    style="max-height: 120px; overflow: auto;border: 1px solid #ddd;width: 96%;margin-left: 11px;"
+                                    id="get_id-box"></ul>
+                            </fieldset>
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-lg btn-block btn-info" id="showBuyerInput"
+                                onClick="showBuyerInput()">Beli untuk User
+                                lain</button>
                             <button class="btn btn-lg btn-block btn-success" id="vendorPayBtn"
-                                onClick="checkVendorPay()">Bayar
-                                Sekarang</button>
+                                onClick="checkVendorPay()">Beli Langsung sebagai
+                                Vendor</button>
                         </div>
                     </div>
 
@@ -156,11 +170,22 @@
 </script>
 <script src="{{ asset('asset_new/js/sidebar.js') }}"></script>
 <script type="text/javascript">
+    @if($dataUser->is_vendor == 0)
+    var uri = "/m/cek/usercode-vendor";
+    @else
+    var uri = "/m/cek/usercode-buyer";
+    function showBuyerInput() {
+        $("#showBuyerInput").hide();
+        $("#buyer_name").show();
+        $("#vendorPayBtn").html('Lanjutkan Pembayaran');
+    }
+    @endif
+
     $(document).ready(function(){
             $("#get_id").keyup(function(){
                 $.ajax({
                     type: "GET",
-                    url: "{{ URL::to('/') }}/m/cek/usercode-vendor" + "?name=" + $(this).val() ,
+                    url: "{{ URL::to('/') }}" + uri + "?name=" + $(this).val(),
                     success: function(data){
                         $("#get_id-box").show();
                         $("#get_id-box").html(data);
@@ -229,7 +254,7 @@
             var no_hp = $("#nomor-pelanggan").val();
             var product = $('input[type=radio][name=product]:checked').attr('value');
             var isChecked = $('input[type=radio][name=product]').is(':checked');
-
+            var user_id = $("#id_get_id").val();
             if(isChecked == false) {
                 errorToast('Anda belum memilih nominal');
                 return false;
@@ -237,7 +262,7 @@
 
             $.ajax({
                 type: "GET",
-                url: "{{ URL::to('/') }}/m/confirm-vendor-quickbuy?no_hp="+no_hp+"&product="+product+"&type={{$type}}",
+                url: "{{ URL::to('/') }}/m/confirm-vendor-quickbuy?no_hp="+no_hp+"&product="+product+"&user_id="+user_id+"&type={{$type}}",
                 success: function(url){
                     Swal.fire({
                         html: url,
