@@ -4,8 +4,6 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use Telegram\Bot\Laravel\Facades\Telegram;
-use Illuminate\Support\Facades\Config;
 
 class protest extends Command
 {
@@ -14,14 +12,14 @@ class protest extends Command
      *
      * @var string
      */
-    protected $signature = 'kbb:test';
+    protected $signature = 'versatile:run';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'A versatile command';
 
     /**
      * Create a new command instance.
@@ -40,31 +38,16 @@ class protest extends Command
      */
     public function handle()
     {
-        $sql = DB::table('transfer_wd')
-            ->join('users', 'users.id', '=', 'transfer_wd.user_id')
-            ->leftJoin('bank', 'bank.user_id', '=', 'transfer_wd.user_id')
-            ->select('users.user_code', 'users.affiliate', 'transfer_wd.wd_total', 'bank.bank_name', 'bank.account_no', 'bank.account_name')
-            ->where('transfer_wd.id', '>=', 1237)
-            ->where('transfer_wd.id', '<=', 1250)
-            ->get();
-        foreach ($sql as $row) {
-            $amount = number_format($row->wd_total);
-            if ($row->affiliate == 2) {
-                $amount = number_format($row->wd_total / 4) . ' (25% from Rp' . number_format($row->wd_total);
+        $users = DB::table('users')->select('id', 'active_at', 'pin_activate_at')->where('is_active', 1)->get();
+
+        foreach ($users as $user) {
+            if ($user->pin_activate_at == null) {
+                $expired = date('Y-m-d', strtotime('+ 365 days', strtotime($user->active_at)));
+                DB::table('users')->where('id', $user->id)->update(['expired_at' => $expired]);
+            } else {
+                $expired = date('Y-m-d', strtotime('+ 365 days', strtotime($user->pin_activate_at)));
+                DB::table('users')->where('id', $user->id)->update(['expired_at' => $expired]);
             }
-            $message_text = $row->user_code . chr(10);
-            $message_text .= 'Amount: Rp' . $amount . chr(10);
-            $message_text .= 'Bank: ' . $row->bank_name . chr(10);
-            $message_text .= 'Acc No.: ' . $row->account_no . chr(10);
-            $message_text .= 'Acc Name: ' . $row->account_name . chr(10);
-
-            Telegram::sendMessage([
-                'chat_id' => Config::get('services.telegram.overlord'),
-                'text' => $message_text,
-                'parse_mode' => 'markdown'
-            ]);
-
-            sleep(3);
         }
         return;
     }

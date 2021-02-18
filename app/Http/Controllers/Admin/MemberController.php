@@ -351,6 +351,7 @@ class MemberController extends Controller
         $dataUpdateIsActive = array(
             'is_active' => 1,
             'active_at' => date('Y-m-d H:i:s'),
+            'expired_at' => date('Y-m-d H:i:s', strtotime('+ 365 days', strtotime('now'))),
             'member_type' => $getData->package_id
         );
         $modelMember = new Member;
@@ -1158,6 +1159,7 @@ class MemberController extends Controller
         $dataUpdatePackageId = array(
             'pin_activate' => $new_total_pin,
             'pin_activate_at' => date('Y-m-d H:i:s'),
+            'expired_at' => date('Y-m-d H:i:s', strtotime('+ 365 days', strtotime('now'))),
         );
         $modelMember->getUpdateUsers('id', $dataUser->id, $dataUpdatePackageId);
 
