@@ -2842,7 +2842,7 @@ class MemberController extends Controller
 
     public function getPosShopping(Request $request)
     {
-        $buyer = User::select('id', 'user_code', 'is_active')->where('user_code', $request->username)->first();
+        $buyer = User::select('id', 'user_code', 'is_active', 'expired_at')->where('user_code', $request->username)->first();
         if ($buyer == null) {
             Alert::error('Oops!', 'Username tidak ditemukan, periksa kembali username yang anda masukkan');
             return redirect()->back()->with('username', $request->username);
@@ -2852,6 +2852,13 @@ class MemberController extends Controller
             Alert::error('Oops!', 'Akun member ini belum diaktivasi.');
             return redirect()->back()->with('username', $request->username);
         }
+
+        $expiration = strtotime($buyer->expired_at) - strtotime('now');
+        if ($expiration < 0) {
+            Alert::error('Oops!', 'Akun member ini sudah Expired.');
+            return redirect()->back()->with('username', $request->username);
+        }
+
         $dataUser = Auth::user();
         $onlyUser  = array(10);
         $seller_id = $dataUser->id;
