@@ -2840,7 +2840,7 @@ class MemberController extends Controller
 
     public function getPosShopping(Request $request)
     {
-        $buyer = User::select('id', 'user_code')->where('user_code', $request->username)->first();
+        $buyer = User::select('id', 'user_code', 'is_active')->where('user_code', $request->username)->first();
         if ($buyer == null) {
             Alert::error('Oops!', 'Username tidak ditemukan, periksa kembali username yang anda masukkan');
             return redirect()->back()->with('username', $request->username);
