@@ -48,10 +48,32 @@ class StartKBBSelfShopping extends Command
             ->where('products.type', '=', 1)
             ->get();
 
-        $quantity = 5;
+        $stockists = DB::table('users')->select('users.id')
+            ->where('users.affiliate', 1)->take(20)->get();
+
+        $stockistIDs = [];
+
+        foreach ($stockists as $stockist) {
+            $stockistIDs[] = $stockist->id;
+        }
+
+        $id = 0; //for stockist iteration
+
+        $quantity = 1; //buying quantity, 100K+ IDR each
+
+        $i = 0; //for accounts iteration
 
         foreach ($accounts as $account) {
-            KBBSelfShopping::dispatch($account->id, $quantity)->onQueue('oneliner');
+            if ($i == 50) {
+                $id++;
+                $i = 0;
+            }
+
+            $stockistID = $stockistIDs[$id];
+
+            $i++;
+
+            KBBSelfShopping::dispatch($account->id, $quantity, $stockistID)->onQueue('oneliner');
         }
 
         return;

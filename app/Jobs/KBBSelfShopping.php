@@ -24,10 +24,12 @@ class KBBSelfShopping implements ShouldQueue
      */
     private $user_id;
     private $quantity;
-    public function __construct($user_id, $quantity)
+    private $stockistID;
+    public function __construct($user_id, $quantity, $stockistID)
     {
         $this->user_id = $user_id;
         $this->quantity = $quantity;
+        $this->stockistID = $stockistID;
     }
 
     /**
@@ -94,7 +96,7 @@ class KBBSelfShopping implements ShouldQueue
 
             $dataInsertMasterSales = array(
                 'user_id' => $this->user_id,
-                'stockist_id' => $this->user_id,
+                'stockist_id' => $this->stockistID,
                 'invoice' => $invoice,
                 'total_price' => $total_price,
                 'sale_date' => $sale_date,
@@ -106,7 +108,7 @@ class KBBSelfShopping implements ShouldQueue
 
             $dataInsert = array(
                 'user_id' => $this->user_id,
-                'stockist_id' => $this->user_id,
+                'stockist_id' => $this->stockistID,
                 'purchase_id' => $product->id,
                 'invoice' => $invoice,
                 'amount' => $this->quantity,
