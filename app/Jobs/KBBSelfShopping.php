@@ -54,7 +54,7 @@ class KBBSelfShopping implements ShouldQueue
             $this->delete();
         }
 
-        $product = Product::where('seller_id', $this->user_id)->first();
+        $product = Product::where('seller_id', $this->stockistID)->first();
         if ($product == null) {
             $this->fail();
         }
