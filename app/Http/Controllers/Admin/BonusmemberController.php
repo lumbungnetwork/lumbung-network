@@ -19,6 +19,7 @@ use App\Model\Sales;
 use App\Model\Bank;
 use App\Jobs\SendLMBRewardPeringkatJob;
 use App\Http\Controllers\TelegramBotController;
+use RealRashid\SweetAlert\Facades\Alert;
 
 
 class BonusmemberController extends Controller
