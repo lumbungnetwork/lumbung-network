@@ -52,7 +52,7 @@ class CheckClaimedKBBMemberBonus extends Command
         }
         foreach ($sql as $row) {
             $message_text = $row->user_code . chr(10);
-            $message_text .= 'Amount: Rp' . number_format($row->wd_total) . chr(10);
+            $message_text .= 'Amount: Rp' . number_format($row->amount) . chr(10);
             $message_text .= 'Bank: ' . $row->bank_name . chr(10);
             $message_text .= 'Acc No.: ' . $row->account_no . chr(10);
             $message_text .= 'Acc Name: ' . $row->account_name . chr(10);
