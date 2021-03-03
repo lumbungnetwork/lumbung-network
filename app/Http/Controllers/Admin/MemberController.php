@@ -1778,6 +1778,42 @@ class MemberController extends Controller
             ->with('dataUser', $dataUser);
     }
 
+    public function printShoppingReceipt($id)
+    {
+        $dataUser = Auth::user();
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+        if ($dataUser->is_stockist == 0 && $dataUser->is_vendor == 0) {
+            return redirect()->route('mainDashboard');
+        }
+
+        $type = 1;
+
+        if ($dataUser->is_vendor == 1) {
+            $type = 2;
+        }
+
+        $modelSales = new Sales;
+
+        if ($type == 1) {
+            $getDataSales = $modelSales->getMemberReportSalesStockistDetail($id, $dataUser->id);
+            $getDataItem = $modelSales->getMemberPembayaranSalesNew($id);
+        } else {
+            $getDataSales = $modelSales->getMemberReportSalesVendorDetail($id, $dataUser->id);
+            $getDataItem = $modelSales->getMemberPembayaranVSalesNew($id);
+        }
+
+        $shopName = '';
+        $sellerProfile = SellerProfile::where('seller_id', $dataUser->id)->select('shop_name')->first();
+        $shopName .= $sellerProfile->shop_name;
+
+        return view('member.digital.m_invoice_physical_products')
+            ->with('dataSales', $getDataSales)
+            ->with('shopName', $shopName)
+            ->with('dataItem', $getDataItem);
+    }
+
     public function getEditAddress()
     {
         $dataUser = Auth::user();

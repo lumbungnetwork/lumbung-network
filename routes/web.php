@@ -367,6 +367,7 @@ Route::prefix('/')->group(function () {
 
     Route::get('/m/stockist-report', 'Admin\MemberController@getMemberStockistReport')->name('m_MemberStockistReport')->middleware('auth');
     Route::get('/m/detail/stockist-report/{id}', 'Admin\MemberController@getMemberDetailStockistReport')->name('m_MemberDetailStockistReport')->middleware('auth');
+    Route::get('/m/print-shopping-receipt/{id}', 'Admin\MemberController@printShoppingReceipt')->name('m_SellerPrintShoppingReceipt')->middleware('auth');
     Route::get('/m/purchase/input-stock', 'Admin\MemberController@getStockistInputPurchase')->name('m_StockistInputPruchase')->middleware('auth');
     Route::post('/m/purchase/input-stock', 'Admin\MemberController@postStockistInputPurchase')->middleware('auth');
     Route::get('/m/purchase/list-stock', 'Admin\MemberController@getStockistListPurchase')->name('m_StockistListPruchase')->middleware('auth');

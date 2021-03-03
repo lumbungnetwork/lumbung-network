@@ -144,6 +144,11 @@
                             <button class="btn btn-success" id="confirmButton" disabled>Konfirmasi</button>
                             @endif
 
+                            @if ($getDataSales->status == 2)
+                            <a class="btn btn-warning" href="/m/print-shopping-receipt/{{$getDataSales->id}}">Print
+                                Struk</a>
+                            @endif
+
 
                         </div>
                     </div>
