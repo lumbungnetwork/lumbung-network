@@ -53,14 +53,14 @@
                                     @if($getData != null)
                                     @foreach($getData as $row)
                                     @php
-                                    $status = 'proses stockist';
+                                    $status = 'Proses stockist';
                                     $label = 'warning';
                                     if($row->status == 2){
-                                    $status = 'tuntas';
+                                    $status = 'Tuntas';
                                     $label = 'success';
                                     }
                                     if($row->status == 10){
-                                    $status = 'batal';
+                                    $status = 'Batal';
                                     $label = 'danger';
                                     }
                                     $buy = 'proses pemilihan';
@@ -80,9 +80,15 @@
                                             <div class="rounded-lg bg-light shadow px-3 py-2 mb-1">
                                                 <small class="float-right">{{$row->created_at}}</small>
                                                 <p class="mb-1">{{$row->user_code}}</p>
+
                                                 <a class="btn btn-sm btn-{{$label}} float-right"
                                                     href="{{ URL::to('/') }}/m/detail/stockist-report/{{$row->id}}"><span
                                                         style="font-size: 14px;">{{$status}}</span></a>
+                                                @if ($row->status == 2)
+                                                <a class="mr-2 btn btn-sm btn-warning float-right"
+                                                    href="{{ URL::to('/') }}/m/print-shopping-receipt/{{$row->id}}"><span
+                                                        style="font-size: 14px;">Print Struk</span></a>
+                                                @endif
                                                 <dd>Rp{{number_format($row->sale_price)}}</dd>
                                             </div>
                                         </td>
