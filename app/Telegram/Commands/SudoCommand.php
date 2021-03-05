@@ -115,6 +115,27 @@ class SudoCommand extends Command
                         return;
                     }
                 }
+            } elseif ($params[1] == 'saldo' && $params[2] == 'df') {
+                //get Saldo Digiflazz
+                $modelMember = new Member;
+                $getDataAPI = $modelMember->getDataAPIMobilePulsa();
+                $username   = $getDataAPI->username;
+                $apiKey   = $getDataAPI->api_key;
+                $sign = md5($username . $apiKey . 'depo');
+                $array = array(
+                    'cmd' => 'deposit',
+                    'username' => $username,
+                    'sign' => $sign
+                );
+                $json = json_encode($array);
+                $url = $getDataAPI->master_url . '/v1/cek-saldo';
+                $cek = $modelMember->getAPIurlCheck($url, $json);
+                $arrayResult = json_decode($cek, true);
+                $saldoDigiflazz = $arrayResult['data']['deposit'];
+
+                $text = 'Rp' . number_format($saldoDigiflazz);
+                $this->replyWithMessage(['text' => $text]);
+                return;
             } else {
                 $text = 'Bad commands!';
                 $this->replyWithMessage(['text' => $text, 'parse_mode' => 'markdown']);
