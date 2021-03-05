@@ -7,6 +7,8 @@ use Telegram;
 use Illuminate\Support\Facades\Cache;
 use App\Model\Member;
 use App\User;
+use App\Jobs\KBBLiquidateBonus;
+use App\KbbBonus;
 
 /**
  * Class HelpCommand.
@@ -130,9 +132,31 @@ class KBBAdmCommand extends Command
 
                 $this->replyWithMessage(['text' => $text, 'parse_mode' => 'markdown']);
                 return;
+            } elseif ($params[1] == 'liquidate') {
+                $query = User::where('user_code', $params[2])->select('id')->first();
+                if ($query == null) {
+                    $text = 'User tidak ditemukan';
+                } else {
+                    KBBLiquidateBonus::dispatchNow($query->id)->onQueue('tron');
+                    $results = KbbBonus::where('user_id', $query->id)
+                        ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-30 minutes')))
+                        ->select('amount', 'type')->get();
+                    $text = '';
+
+                    if (count($results) < 1) {
+                        $text = 'nada';
+                        $this->replyWithMessage(['text' => $text]);
+                        return;
+                    }
+                    foreach ($results as $result) {
+                        $text .= 'Rp' . $result->amount . ' (' . $result->type . ')' . chr(10);
+                    }
+                    $this->replyWithMessage(['text' => $text]);
+                    return;
+                }
             } else {
                 $text = 'Perintah salah, periksa kembali';
-                $this->replyWithMessage(['text' => $text, 'parse_mode' => 'markdown']);
+                $this->replyWithMessage(['text' => $text]);
                 return;
             }
         }
