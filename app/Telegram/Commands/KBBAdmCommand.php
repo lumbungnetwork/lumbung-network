@@ -138,6 +138,7 @@ class KBBAdmCommand extends Command
                     $text = 'User tidak ditemukan';
                 } else {
                     KBBLiquidateBonus::dispatchNow($query->id);
+                    sleep(7);
                     $results = KbbBonus::where('user_id', $query->id)
                         ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-30 minutes')))
                         ->select('amount', 'type')->get();
