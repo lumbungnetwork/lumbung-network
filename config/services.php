@@ -58,7 +58,7 @@ return [
     ],
 
     'app' => [
-        'url' => env('APP_URL')
+        'url' => env('BASE_URL')
     ],
 
     'stripe' => [
