@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Config;
 |
 */
 
-Route::domain('member.lumbung.test')->group(function () {
+Route::domain('member.' . Config::get('services.app.url'))->group(function () {
     Route::get('/', 'Admin\HomeController@getFront')->name('frontLogin');
     Route::get('/area/login', 'Admin\HomeController@getAreaLogin')->name('areaLogin');
     Route::post('/area/login', 'Admin\HomeController@postAreaLogin');
