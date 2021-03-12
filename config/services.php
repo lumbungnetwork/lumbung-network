@@ -57,6 +57,10 @@ return [
         'token' => '1402924705:' . env('BLMB')
     ],
 
+    'app' => [
+        'url' => env('APP_URL')
+    ],
+
     'stripe' => [
         'model' => App\User::class,
         'key' => env('STRIPE_KEY'),
