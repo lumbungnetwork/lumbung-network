@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Telegram\Bot\Laravel\Facades\Telegram;
+use Illuminate\Support\Facades\Config;
 
 /*
 |--------------------------------------------------------------------------
@@ -594,4 +595,15 @@ Route::domain('member.lumbung.test')->group(function () {
         Route::get('/m/ajax/create-telegram-link', 'Admin\AjaxmemberController@getCreateTelegramLink')->middleware('auth');
         Route::get('/m/ajax/remove-telegram-link', 'Admin\AjaxmemberController@getRemoveTelegramLink')->middleware('auth');
     });
+});
+
+Route::domain('finance.' . Config::get('services.app.url'))->group(function () {
+    Route::get('/', function () {
+        return view('lumbung_finance')->with('title', 'Lumbung Finance');
+    });
+});
+
+
+Route::get('/', function () {
+    return view('home')->with('title', 'Lumbung Network');
 });
