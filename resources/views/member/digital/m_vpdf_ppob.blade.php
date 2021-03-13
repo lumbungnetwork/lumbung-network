@@ -62,9 +62,10 @@
 
                     </td>
                     <td style="text-align:right">
-                        Vendor: {{$dataUser->user_code}}
+
+                        Vendor: {{$seller}}
                         <br>
-                        Buyer: {{$getMember->user_code}}
+                        Buyer: {{$buyer}}
                     </td>
                 </tr>
                 <tr class="information">
@@ -237,11 +238,7 @@
     <div id="editor"></div>
     <br>
     <br>
-    @if ($dataUser->is_vendor == 0)
-    <a class="hidden-print" href="/m/list/buy-ppob">Kembali</a>
-    @else
-    <a class="hidden-print" href="/m/list/vppob-transaction">Kembali</a>
-    @endif
+    <a class="hidden-print" href="{{url()->previous()}}">Kembali</a>
     <button class="hidden-print" id="btnPrint">Print Struk</button>&nbsp;&nbsp;
 
     <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>

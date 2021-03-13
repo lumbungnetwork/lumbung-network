@@ -29,6 +29,7 @@ use App\User;
 use App\ProductImages;
 use App\SellerProfile;
 use App\LocalWallet;
+use App\Ppob;
 use App\Services\AbstractService;
 use App\ValueObjects\Cart\ItemObject;
 use Intervention\Image\ImageManager;
@@ -5261,15 +5262,15 @@ class MemberController extends Controller
         if ($dataUser->is_active == 0) {
             return redirect()->route('mainDashboard');
         }
-        $modelPin = new Pin;
-        $modelMember = new Member;
-        $getDataMaster = $modelPin->getVendorPPOBDetail($id, $dataUser);
-        $getMember = $modelMember->getUsers('id', $getDataMaster->user_id);
-        //        dd($getDataMaster);
+
+        $getDataMaster = Ppob::find($id);
+        $buyer = User::where('id', $getDataMaster->user_id)->select('user_code')->first();
+        $seller = User::where('id', $getDataMaster->vendor_id)->select('user_code')->first();
+
         return view('member.digital.m_vpdf_ppob')
             ->with('getDataMaster', $getDataMaster)
-            ->with('getMember', $getMember)
-            ->with('dataUser', $dataUser);
+            ->with('buyer', $buyer->user_code)
+            ->with('seller', $seller->user_code);
     }
 
     public function getUpdateStatusPPOB($id)
