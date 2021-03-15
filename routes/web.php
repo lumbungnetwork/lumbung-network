@@ -262,6 +262,7 @@ Route::domain('member.' . Config::get('services.app.url'))->group(function () {
         Route::get('/m/networking', 'Admin\DashboardController@getMemberNetworking')->name('mainNetworking')->middleware('auth');
         Route::get('/m/wallet', 'Admin\DashboardController@getMemberWallet')->name('mainWallet')->middleware('auth');
         Route::get('/m/explorers', 'Admin\DashboardController@getMemberExplorers')->name('mainExplorer')->middleware('auth');
+        Route::get('/m/staking', 'Admin\DashboardController@getMemberStaking')->name('mainStaking')->middleware('auth');
         Route::get('/m/my-account', 'Admin\DashboardController@getMemberMyAccount')->name('mainMyAccount')->middleware('auth');
         Route::get('/m/notification', 'Admin\DashboardController@getMemberNotification')->name('mainNotification')->middleware('auth');
 
@@ -594,6 +595,11 @@ Route::domain('member.' . Config::get('services.app.url'))->group(function () {
         //telegram AJAX
         Route::get('/m/ajax/create-telegram-link', 'Admin\AjaxmemberController@getCreateTelegramLink')->middleware('auth');
         Route::get('/m/ajax/remove-telegram-link', 'Admin\AjaxmemberController@getRemoveTelegramLink')->middleware('auth');
+
+        //Staking AJAX
+        Route::post('/m/ajax/confirm-staking', 'Admin\AjaxmemberController@postConfirmStake')->middleware('auth');
+        Route::post('/m/ajax/confirm-unstaking', 'Admin\AjaxmemberController@postConfirmUnstake')->middleware('auth');
+        Route::post('/m/ajax/claim-dividend', 'Admin\AjaxmemberController@postClaimDividend')->middleware('auth');
     });
 });
 

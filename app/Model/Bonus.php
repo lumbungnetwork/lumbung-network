@@ -8,6 +8,166 @@ use Throwable;
 
 class Bonus extends Model
 {
+    public function insertLMBDividend($data)
+    {
+        try {
+            DB::table('lmb_dividend')->insertOrIgnore($data);
+            $result = (object) array('status' => true);
+        } catch (Throwable $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message);
+        }
+        return $result;
+    }
+
+    public function getLMBDividendPool()
+    {
+        try {
+            $div = DB::table('lmb_dividend')->selectRaw('
+		sum(case when status = 0 then amount else 0 end) as debits,
+		sum(case when status = 1 then amount else 0 end) as credits
+                    ')
+                ->first();
+            $result = $div->credits - $div->debits;
+        } catch (Throwable $ex) {
+            $message = $ex->getMessage();
+            $result = 0;
+        }
+        return $result;
+    }
+
+    public function insertUserDividend($data)
+    {
+        try {
+            $lastInsertedID = DB::table('users_dividend')->insertGetId($data);
+            $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
+        } catch (Throwable $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message);
+        }
+        return $result;
+    }
+
+    public function updateUserDividend($fieldName, $name, $data)
+    {
+        try {
+            DB::table('users_dividend')->where($fieldName, '=', $name)->update($data);
+            $result = (object) array('status' => true, 'message' => null);
+        } catch (Throwable $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message);
+        }
+        return $result;
+    }
+
+    public function getUserDividend($id)
+    {
+        try {
+            $div = DB::table('users_dividend')->selectRaw('
+                sum(case when type = 0 then amount else 0 end) as claimed,
+                sum(case when type = 1 then amount else 0 end) as rewarded
+            ')->where('user_id', $id)
+                ->first();
+            $net = round($div->rewarded - $div->claimed, 2, PHP_ROUND_HALF_DOWN);
+            $result = (object) array(
+                'claimed' => (float) $div->claimed,
+                'rewarded' => (float) $div->rewarded,
+                'net' => $net
+            );
+        } catch (Throwable $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array(
+                'claimed' => 0,
+                'rewarded' => 0,
+                'net' => 0
+            );
+        }
+        return $result;
+    }
+
+    public function insertUserStake($data)
+    {
+        try {
+            $lastID = DB::table('staking')->insertGetId($data);
+            $result = (object) array('status' => true, 'lastID' => $lastID);
+        } catch (Throwable $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message);
+        }
+        return $result;
+    }
+
+    public function getStakedLMB()
+    {
+        try {
+            $lmb = DB::table('staking')->selectRaw('
+                sum(case when type = 1 then amount else 0 end) as staked,
+                sum(case when type = 2 then amount else 0 end) as unstaked
+            ')->first();
+            $result = $lmb->staked - $lmb->unstaked;
+            if ($result < 0) {
+                $result = 0;
+            }
+        } catch (Throwable $ex) {
+            $message = $ex->getMessage();
+            $result = 0;
+        }
+        return $result;
+    }
+
+    public function getUserStakedLMB($id)
+    {
+        try {
+            $lmb = DB::table('staking')->selectRaw('
+		sum(case when type = 1 then amount else 0 end) as staked,
+		sum(case when type = 2 then amount else 0 end) as unstaked
+                    ')
+                ->where('user_id', $id)
+                ->first();
+            $result = $lmb->staked - $lmb->unstaked;
+        } catch (Throwable $ex) {
+            $message = $ex->getMessage();
+            $result = 0;
+        }
+        return $result;
+    }
+
+    public function getUserUnstakeProgress($id)
+    {
+        try {
+            $lmb = DB::table('unstake')->selectRaw('
+		        sum(case when status = 0 then amount else 0 end) as processing
+            ')
+                ->where('user_id', $id)
+                ->first();
+            $result = $lmb->processing;
+        } catch (Throwable $ex) {
+            $message = $ex->getMessage();
+            $result = 0;
+        }
+        return $result;
+    }
+
+    public function insertUnstakingData($data)
+    {
+        try {
+            $lastInsertedID = DB::table('unstake')->insertGetId($data);
+            $result = (object) array('status' => true, 'message' => null, 'lastID' => $lastInsertedID);
+        } catch (Throwable $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message);
+        }
+        return $result;
+    }
+
+    public function getAllStakers()
+    {
+        return DB::table('staking')->selectRaw('
+            sum(case when type = 1 then amount else 0 end) as staked,
+            sum(case when type = 2 then amount else 0 end) as unstaked, 
+            user_id
+        ')->groupBy('user_id')->get();
+    }
 
     public function getInsertBonusMember($data)
     {

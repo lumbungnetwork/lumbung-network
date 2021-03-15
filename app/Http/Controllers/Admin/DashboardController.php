@@ -167,7 +167,10 @@ class DashboardController extends Controller
         }
         $ppobSumSelainPulsaData = $getDataPPOBSelainPulsaData->total_ppob * 2500;
         $belanjaVendor = $vsum + $ppobSum + $ppobSumSelainPulsaData;
-        //        dd($vsum);
+
+        $LMBDividendPool = $modelBonus->getLMBDividendPool();
+        $userStakedLMB = $modelBonus->getUserStakedLMB($dataUser->id);
+
         return view('member.home.dashboard')
             ->with('headerTitle', 'Dashboard')
             ->with('dataOrder', $getCheckNewOrder)
@@ -179,6 +182,8 @@ class DashboardController extends Controller
             ->with('getDataVendorPPOBMemberBuy', $getDataVendorPPOBMemberBuy)
             ->with('sum', $sum)
             ->with('vsum', $belanjaVendor)
+            ->with(compact('LMBDividendPool'))
+            ->with(compact('userStakedLMB'))
             ->with('dataUser', $dataUser);
     }
 
@@ -302,6 +307,34 @@ class DashboardController extends Controller
         }
         return view('member.home.explorer')
             ->with('headerTitle', 'Explorer')
+            ->with('dataUser', $dataUser);
+    }
+
+    public function getMemberStaking()
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+
+        $modelBonus = new Bonus;
+        $LMBDividendPool = $modelBonus->getLMBDividendPool();
+        $totalStakedLMB = $modelBonus->getStakedLMB();
+        $userStakedLMB = $modelBonus->getUserStakedLMB($dataUser->id);
+        $userDividend = $modelBonus->getUserDividend($dataUser->id);
+        $userUnstaking = $modelBonus->getUserUnstakeProgress($dataUser->id);
+
+        return view('member.home.staking')
+            ->with('headerTitle', 'Staking')
+            ->with(compact('LMBDividendPool'))
+            ->with(compact('totalStakedLMB'))
+            ->with(compact('userStakedLMB'))
+            ->with(compact('userDividend'))
+            ->with(compact('userUnstaking'))
             ->with('dataUser', $dataUser);
     }
 

@@ -223,8 +223,26 @@
         </div>
     </div>
 
+    <div class="container" id="dividend-lmb">
+        <div class="rounded-lg shadow-lg bg-white p-3 text-center">
+            <div class="row">
+                <div class="col-7 p-2">
+                    <h5 class="text-warning">Rp{{number_format($LMBDividendPool)}}</h5>
+                    <dd class="mb-0">LMB Dividend Pool</dd>
+                    <small>Next distribution: Rp{{number_format($LMBDividendPool * 2/100)}}</small>
+                </div>
+                <div class="col-5 p-2">
+                    <p class="mb-0">Your stake</p>
+                    <h6>{{$userStakedLMB}} LMB</h6>
+                    <a href="/m/staking" class="btn btn-sm btn-success">Stake</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
     <!-- 2 menu -->
-    <div class="container" id="stockist-vendor-btn">
+    <div class="container mt-3" id="stockist-vendor-btn">
         <div class="row">
             <div class="col-6">
                 <div class="rounded-lg shadow-lg bg-white p-3 text-center">
@@ -375,6 +393,7 @@
 <script src="{{ asset('asset_new/js/sidebar.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"></script>
 <script src="{{ asset('asset_new/js/fitty.min.js') }}"></script>
+
 
 <script>
     $('.slider-promo').slick({

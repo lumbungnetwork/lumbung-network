@@ -57,6 +57,10 @@ return [
         'token' => '1402924705:' . env('BLMB')
     ],
 
+    'tron' => [
+        'lmb_staking' => env('LMBSTAKING')
+    ],
+
     'app' => [
         'url' => env('BASE_URL')
     ],

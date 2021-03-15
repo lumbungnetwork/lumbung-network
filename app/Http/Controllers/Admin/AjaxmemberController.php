@@ -22,6 +22,7 @@ use App\Product;
 use App\Category;
 use App\User;
 use App\SellerProfile;
+use App\Staking;
 use App\Services\AbstractService;
 use App\ValueObjects\Cart\ItemObject;
 use App\Jobs\ForwardShoppingPaymentJob;
@@ -34,6 +35,7 @@ use Illuminate\Support\Facades\Cache;
 use NotificationChannels\Telegram\TelegramChannel;
 use App\Notifications\StockistNotification;
 use App\Notifications\VendorNotification;
+use App\Jobs\UserClaimDividendJob;
 
 class AjaxmemberController extends Controller
 {
@@ -2934,5 +2936,123 @@ class AjaxmemberController extends Controller
         $modelMember = new Member;
         $modelMember->getUpdateUsers('id', $dataUser->id, $data);
         return response()->json(['success' => true], 201);
+    }
+
+    public function postConfirmStake(Request $request)
+    {
+        $dataUser = Auth::user();
+        $modelPin = new Pin;
+        $modelBonus = new Bonus;
+
+        $hash = $request->hash;
+        $check = $modelPin->checkUsedHashExist($hash, 'staking', 'hash');
+        if ($check) {
+            return response()->json(['success' => false, 'message' => 'Hash Transaksi sudah pernah digunakan pada pembayaran sebelumnya']);
+        }
+        $receiver = 'TY8JfoCbsJ4qTh1r9HBtmZ88xQLsb6MKuZ';
+        $amount = $request->amount;
+
+        $tron = $this->getTron();
+        $i = 1;
+        do {
+            try {
+                sleep(1);
+                $response = $tron->getTransaction($hash);
+            } catch (TronException $e) {
+                $i++;
+                continue;
+            }
+            break;
+        } while ($i < 23);
+
+        if ($i == 23) {
+            return response()->json(['success' => false, 'message' => 'Hash Transaksi Bermasalah!']);
+        };
+
+        $hashTime = $response['raw_data']['timestamp'];
+        $hashSender = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['owner_address']);
+        $hashReceiver = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['to_address']);
+        $hashAsset = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['asset_name']);
+        $hashAmount = $response['raw_data']['contract'][0]['parameter']['value']['amount'];
+
+        if ($hashAmount == $amount * 1000000) {
+            if ($hashAsset == '1002640') {
+                if ($hashReceiver == $receiver) {
+
+                    $modelBonus->insertUserStake([
+                        'user_id' => $dataUser->id,
+                        'type' => 1,
+                        'amount' => $amount,
+                        'hash' => $hash,
+                        'created_at' => date('Y-m-d H:i:s')
+                    ]);
+
+                    return response()->json(['success' => true]);
+                } else {
+                    return response()->json(['success' => false, 'message' => 'Alamat Tujuan Transfer Salah!']);
+                }
+            } else {
+                return response()->json(['success' => false, 'message' => 'Bukan token LMB yang benar!']);
+            }
+        } else {
+            return response()->json(['success' => false, 'message' => 'Nominal Transfer Salah!']);
+        }
+    }
+
+    public function postConfirmUnstake(Request $request)
+    {
+        $dataUser = Auth::user();
+        $modelBonus = new Bonus;
+        $amount = $request->amount;
+
+        if ($amount <= 0) {
+            return response()->json(['success' => false, 'message' => 'Amount cannot be zero or less!']);
+        }
+
+        $userStakedLMB = $modelBonus->getUserStakedLMB($dataUser->id);
+        $newStakedLMB = $userStakedLMB - $amount;
+        if ($newStakedLMB < 0) {
+            return response()->json(['success' => false, 'message' => 'Amount exceeds staked balance!']);
+        } else {
+            $due_date = date('Y-m-d', strtotime('Next week'));
+            $unstake = $modelBonus->insertUserStake([
+                'user_id' => $dataUser->id,
+                'type' => 2,
+                'amount' => $amount,
+                'hash' => 'Unstaking Process (' . $due_date . ')',
+                'created_at' => date('Y-m-d H:i:s')
+            ]);
+
+            $modelBonus->insertUnstakingData([
+                'staking_id' => $unstake->lastID,
+                'user_id' => $dataUser->id,
+                'amount' => $amount,
+                'due_date' => $due_date,
+                'created_at' => date('Y-m-d H:i:s')
+            ]);
+
+            return response()->json(['success' => true]);
+        }
+    }
+
+    public function postClaimDividend(Request $request)
+    {
+        $dataUser = Auth::user();
+        $modelBonus = new Bonus;
+        $userDividend = $modelBonus->getUserDividend($dataUser->id);
+
+        if ($userDividend->net >= 1000) {
+            $deductDiv = $modelBonus->insertUserDividend([
+                'user_id' => $dataUser->id,
+                'type' => 0,
+                'amount' => $userDividend->net,
+                'date' => date('Y-m-d H:i:s')
+            ]);
+            UserClaimDividendJob::dispatch($dataUser->id, $deductDiv->lastID)->onQueue('tron');
+            sleep(4);
+            return response()->json(['success' => true]);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Not enough available dividend!']);
+        }
     }
 }
