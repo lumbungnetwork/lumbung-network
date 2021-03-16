@@ -85,11 +85,32 @@ class Bonus extends Model
         return $result;
     }
 
+    public function getUserClaimedDividend($id)
+    {
+        return DB::table('users_dividend')
+            ->select('date', 'amount', 'hash')
+            ->where('user_id', $id)
+            ->where('type', 0)
+            ->get();
+    }
+
     public function insertUserStake($data)
     {
         try {
             $lastID = DB::table('staking')->insertGetId($data);
             $result = (object) array('status' => true, 'lastID' => $lastID);
+        } catch (Throwable $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message);
+        }
+        return $result;
+    }
+
+    public function updateUserStake($fieldName, $name, $data)
+    {
+        try {
+            DB::table('staking')->where($fieldName, '=', $name)->update($data);
+            $result = (object) array('status' => true, 'message' => null);
         } catch (Throwable $ex) {
             $message = $ex->getMessage();
             $result = (object) array('status' => false, 'message' => $message);
@@ -132,6 +153,14 @@ class Bonus extends Model
         return $result;
     }
 
+    public function getUserStakingHistory($id)
+    {
+        return DB::table('staking')
+            ->selectRaw('DATE_FORMAT(created_at, "%M - %Y") as date, amount, type, hash')
+            ->where('user_id', $id)
+            ->get();
+    }
+
     public function getUserUnstakeProgress($id)
     {
         try {
@@ -160,13 +189,39 @@ class Bonus extends Model
         return $result;
     }
 
+    public function updateUnstakingData($fieldName, $name, $data)
+    {
+        try {
+            DB::table('unstake')->where($fieldName, '=', $name)->update($data);
+            $result = (object) array('status' => true, 'message' => null);
+        } catch (Throwable $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message);
+        }
+        return $result;
+    }
+
     public function getAllStakers()
     {
         return DB::table('staking')->selectRaw('
             sum(case when type = 1 then amount else 0 end) as staked,
             sum(case when type = 2 then amount else 0 end) as unstaked, 
-            user_id
+            user_id,
+            sum(case when type = 1 then amount else - amount end) as net
         ')->groupBy('user_id')->get();
+    }
+
+    public function getAllStakersLeaderboard()
+    {
+        return DB::table('staking')
+            ->join('users', 'staking.user_id', '=', 'users.id')
+            ->selectRaw('
+                sum(case when staking.type = 1 then staking.amount else - staking.amount end) as net,
+                users.user_code
+            ')
+            ->groupBy('staking.user_id')
+            ->orderBy('net', 'DESC')
+            ->get();
     }
 
     public function getInsertBonusMember($data)

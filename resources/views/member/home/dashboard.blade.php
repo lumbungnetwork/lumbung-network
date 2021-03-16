@@ -233,7 +233,7 @@
                 </div>
                 <div class="col-5 p-2">
                     <p class="mb-0">Your stake</p>
-                    <h6>{{$userStakedLMB}} LMB</h6>
+                    <h6>{{number_format($userStakedLMB, 2)}} LMB</h6>
                     <a href="/m/staking" class="btn btn-sm btn-success">Stake</a>
                 </div>
             </div>

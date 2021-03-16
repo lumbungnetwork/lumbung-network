@@ -263,6 +263,9 @@ Route::domain('member.' . Config::get('services.app.url'))->group(function () {
         Route::get('/m/wallet', 'Admin\DashboardController@getMemberWallet')->name('mainWallet')->middleware('auth');
         Route::get('/m/explorers', 'Admin\DashboardController@getMemberExplorers')->name('mainExplorer')->middleware('auth');
         Route::get('/m/staking', 'Admin\DashboardController@getMemberStaking')->name('mainStaking')->middleware('auth');
+        Route::get('/m/staking-leaderboard', 'Admin\DashboardController@getMemberStakingLeaderboard')->name('mainStakingLeaderboard')->middleware('auth');
+        Route::get('/m/claimed-dividend-history', 'Admin\DashboardController@getClaimedDividendHistory')->name('mainClaimedDividendHistory')->middleware('auth');
+        Route::get('/m/staking-history', 'Admin\DashboardController@getStakingHistory')->name('mainStakingHistory')->middleware('auth');
         Route::get('/m/my-account', 'Admin\DashboardController@getMemberMyAccount')->name('mainMyAccount')->middleware('auth');
         Route::get('/m/notification', 'Admin\DashboardController@getMemberNotification')->name('mainNotification')->middleware('auth');
 

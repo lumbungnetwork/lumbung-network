@@ -11,6 +11,7 @@ use App\Model\Bonus;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Config;
 use App\User;
+use Illuminate\Support\Facades\DB;
 
 class UserClaimDividendJob implements ShouldQueue
 {
@@ -42,11 +43,11 @@ class UserClaimDividendJob implements ShouldQueue
         $tron->setPrivateKey(Config::get('services.telegram.test'));
         $user = User::where('id', $this->user_id)->select('id', 'tron')->first();
 
-        $userDividend = $modelBonus->getUserDividend($user->id);
+        $claim = DB::table('users_dividend')->select('hash', 'amount')->where('id', $this->div_id)->first();
 
-        if ($userDividend->net >= 1000) {
+        if ($claim->hash == null) {
             $to = $user->tron;
-            $amount = $userDividend->net * 100;
+            $amount = $claim->amount * 100;
             $tokenID = '1002652';
             $from = 'TWJtGQHBS8PfZTXvWAYhQEMrx36eX2F9Pc';
             //send eIDR

@@ -10,7 +10,8 @@
         <div class="bg-gradient-sm">
             <nav class="navbar navbar-expand-lg navbar-light bg-transparent w-100">
                 <div class="container">
-                    <a class="navbar-brand" href="#">
+                    <a class="navbar-brand" href="{{ URL::to('/') }}/m/dashboard">
+                        <i class="fa fa-arrow-left"></i> Beranda
                     </a>
                     <a href="{{ URL::to('/') }}/user_logout" class="btn btn-navbar btn-transparent">
                         <i class="fas fa-power-off text-danger icon-bottom"></i>
@@ -25,7 +26,11 @@
 
                     <div class="rounded-lg shadow-lg bg-white p-3">
                         <p>Total Staked LMB</p>
-                        <h4 class="mt-2 text-right">{{number_format($totalStakedLMB)}} LMB</h4>
+
+                        <h4 class="mt-2 text-right">{{number_format(round($totalStakedLMB, 2, PHP_ROUND_HALF_DOWN), 2)}}
+                            LMB</h4>
+                        <a href="/m/staking-leaderboard" class="text-info float-right">Leaderboard</a>
+                        <div class="clearfix"></div>
 
                     </div>
 
@@ -49,8 +54,12 @@
                             data-target="#stakeModal" disabled>Stake</button>
                         <button class="ml-2 btn btn-sm btn-danger" id="unstake-btn" data-toggle="modal"
                             data-target="#unstakeModal" disabled>Unstake</button>
+                        @if ($userUnstaking > 0)
+                        <dd class="text-warning">Unstaking in progress: {{$userUnstaking}}</dd>
+                        @endif
                         <small class="mt-2 text-danger d-block" id="tronweb-warning">Use Tronlink or Dapp enabled
                             browser</small>
+                        <a href="/m/staking-history" class="text-info">History</a>
                     </div>
 
                     <div class="mb-3 rounded-lg shadow-lg bg-white p-3">
@@ -61,8 +70,8 @@
 
                     <div class="mb-3 rounded-lg shadow-lg bg-white p-3">
                         <p>Total Claimed</p>
-                        <p class="text-warning d-inline">{{$userDividend->claimed}} eIDR</p>
-                        <button class="ml-3 btn btn-sm btn-success" id="claimed-history-btn">History</button>
+                        <p class="text-warning mb-0">{{$userDividend->claimed}} eIDR</p>
+                        <a href="/m/claimed-dividend-history" class="text-info">History</a>
                     </div>
 
                 </div>
@@ -113,10 +122,8 @@
                             </div>
                             <button class="btn btn-danger float-right" id="unstake">Unstake</button>
                         </div>
-                        <small>Unstake LMB need 7 cycle to complete.</small>
-                        @if ($userUnstaking > 0)
-                        <dd class="text-warning">Unstaking in progress: {{$userUnstaking}}</dd>
-                        @endif
+                        <small class="text-danger">Unstake LMB need 7 cycle to complete.</small>
+
                     </div>
 
                 </div>

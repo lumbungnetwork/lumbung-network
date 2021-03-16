@@ -338,6 +338,63 @@ class DashboardController extends Controller
             ->with('dataUser', $dataUser);
     }
 
+    public function getMemberStakingLeaderboard()
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+
+        $modelBonus = new Bonus;
+        $stakers = $modelBonus->getAllStakersLeaderboard();
+
+        return view('member.home.staking-leaderboard')
+            ->with('headerTitle', 'Staking Leaderboard')
+            ->with(compact('stakers'));
+    }
+
+    public function getClaimedDividendHistory()
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+
+        $modelBonus = new Bonus;
+        $data = $modelBonus->getUserClaimedDividend($dataUser->id);
+
+        return view('member.home.history')
+            ->with('headerTitle', 'Claimed Div History')
+            ->with(compact('data'));
+    }
+
+    public function getStakingHistory()
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+
+        $modelBonus = new Bonus;
+        $data = $modelBonus->getUserStakingHistory($dataUser->id);
+
+        return view('member.home.history')
+            ->with('headerTitle', 'Staking History')
+            ->with(compact('data'));
+    }
+
     public function getMemberMyAccount()
     {
         $dataUser = Auth::user();

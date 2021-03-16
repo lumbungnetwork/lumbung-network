@@ -48,7 +48,7 @@ class DistributeDailyLMBDiv extends Command
         $stakers = $modelBonus->getAllStakers();
 
         foreach ($stakers as $staker) {
-            $netStakedLMB = $staker->staked - $staker->unstaked;
+            $netStakedLMB = $staker->net;
 
             if ($netStakedLMB > 0) {
                 $dividend = round($netStakedLMB * $dividendPerLMB, 2, PHP_ROUND_HALF_DOWN);
