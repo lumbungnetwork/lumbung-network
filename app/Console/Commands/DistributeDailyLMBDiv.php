@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Model\Bonus;
+use Illuminate\Support\Facades\DB;
 
 class DistributeDailyLMBDiv extends Command
 {
@@ -38,6 +39,11 @@ class DistributeDailyLMBDiv extends Command
      */
     public function handle()
     {
+        $check = DB::table('lmb_dividend')->latest()->first();
+        if ($check->created_at >= date('Y-m-d H:i:s', strtotime('Today +2 minutes'))) {
+            return;
+        }
+
         $modelBonus = new Bonus;
 
         $LMBDividendPool = $modelBonus->getLMBDividendPool();

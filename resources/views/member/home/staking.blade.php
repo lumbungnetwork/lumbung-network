@@ -59,7 +59,7 @@
                         @endif
                         <small class="mt-2 text-danger d-block" id="tronweb-warning">Use Tronlink or Dapp enabled
                             browser</small>
-                        <a href="/m/staking-history" class="text-info">History</a>
+                        <a href="/m/staking-history" class="text-info d-block">History</a>
                     </div>
 
                     <div class="mb-3 rounded-lg shadow-lg bg-white p-3">
