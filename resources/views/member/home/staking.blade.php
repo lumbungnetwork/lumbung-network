@@ -80,7 +80,8 @@
                         <div class="availableLMB"></div>
                         <div class="input-group mb-3">
 
-                            <input type="text" class="form-control" placeholder="0 LMB" id="inputLMB">
+                            <input type="text" inputmode="numeric" pattern="[0-9]*" class="form-control"
+                                placeholder="0 LMB" id="inputLMB">
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" type="button" id="max-btn"
                                     onclick="inputMax()">Max</button>
@@ -104,8 +105,8 @@
 
                         <div class="input-group mb-3">
 
-                            <input type="text" class="form-control" placeholder="0 LMB" id="outputLMB" min="1"
-                                max="{{$userStakedLMB}}">
+                            <input type="text" inputmode="numeric" pattern="[0-9]*" class="form-control"
+                                placeholder="0 LMB" id="outputLMB" min="1" max="{{$userStakedLMB}}">
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" type="button" id="max-btn"
                                     onclick="outputMax()">Max</button>
