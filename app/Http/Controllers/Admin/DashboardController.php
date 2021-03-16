@@ -18,6 +18,7 @@ use App\Model\Pengiriman;
 use App\Model\Transaction;
 use App\Model\Membership;
 use Illuminate\Support\Facades\DB;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class DashboardController extends Controller
 {
@@ -319,6 +320,11 @@ class DashboardController extends Controller
         }
         if ($dataUser->package_id == null) {
             return redirect()->route('m_newPackage');
+        }
+
+        if ($dataUser->expired_at < date('Y-m-d', strtotime('Today +1 minute'))) {
+            Alert::error('Oops!', 'Keanggotaan anda sudah EXPIRED!');
+            return redirect()->route('mainDashboard');
         }
 
         $modelBonus = new Bonus;

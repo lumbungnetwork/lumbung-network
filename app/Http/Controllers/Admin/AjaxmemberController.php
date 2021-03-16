@@ -3002,6 +3002,9 @@ class AjaxmemberController extends Controller
     public function postConfirmUnstake(Request $request)
     {
         $dataUser = Auth::user();
+        if ($dataUser->expired_at < date('Y-m-d', strtotime('Today +1 minute'))) {
+            return response()->json(['success' => false, 'message' => 'Membership Expired!']);
+        }
         $modelBonus = new Bonus;
         $amount = $request->amount;
 
@@ -3038,6 +3041,9 @@ class AjaxmemberController extends Controller
     public function postClaimDividend(Request $request)
     {
         $dataUser = Auth::user();
+        if ($dataUser->expired_at < date('Y-m-d', strtotime('Today +1 minute'))) {
+            return response()->json(['success' => false, 'message' => 'Membership Expired!']);
+        }
         $modelBonus = new Bonus;
         $userDividend = $modelBonus->getUserDividend($dataUser->id);
 
