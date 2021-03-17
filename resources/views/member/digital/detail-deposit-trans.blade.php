@@ -345,8 +345,7 @@
                     var tx = await tronWeb.trx.sendToken(
                         toAddress,
                         sendAmount,
-                        "1002652",
-                        userAddress,
+                        "1002652"
                     );
 
                     // var signedTx = await tronWeb.trx.sign(tx);
