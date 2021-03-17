@@ -342,7 +342,7 @@
                 sendAmount = {{$total}} * 100;
 
                 try {
-                    var tx = await tronWeb.transactionBuilder.sendAsset(
+                    var tx = await tronWeb.transactionBuilder.sendToken(
                         toAddress,
                         sendAmount,
                         "1002652",
