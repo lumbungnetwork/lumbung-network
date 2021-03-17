@@ -35,6 +35,18 @@ class Member extends Model
         return $result;
     }
 
+    public function insertResubscribe($data)
+    {
+        try {
+            DB::table('resubscribe')->insertGetId($data);
+            $result = (object) array('status' => true);
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $result = (object) array('status' => false, 'message' => $message);
+        }
+        return $result;
+    }
+
     public function getAllMember()
     {
         $sql = DB::table('users')

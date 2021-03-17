@@ -36,6 +36,7 @@ use NotificationChannels\Telegram\TelegramChannel;
 use App\Notifications\StockistNotification;
 use App\Notifications\VendorNotification;
 use App\Jobs\UserClaimDividendJob;
+use Throwable;
 
 class AjaxmemberController extends Controller
 {
@@ -3059,6 +3060,83 @@ class AjaxmemberController extends Controller
             return response()->json(['success' => true]);
         } else {
             return response()->json(['success' => false, 'message' => 'Not enough available dividend!']);
+        }
+    }
+
+    public function postResubscribe(Request $request)
+    {
+        $dataUser = Auth::user();
+        $modelPin = new Pin;
+        $modelBonus = new Bonus;
+
+        $hash = $request->hash;
+        $check = $modelPin->checkUsedHashExist($hash, 'resubscribe', 'hash');
+        if ($check) {
+            return response()->json(['success' => false, 'message' => 'Hash Transaksi sudah pernah digunakan pada pembayaran sebelumnya']);
+        }
+        $receiver = 'TLsV52sRDL79HXGGm9yzwKibb6BeruhUzy';
+        $amount = 100;
+
+        $tron = $this->getTron();
+        $i = 1;
+        do {
+            try {
+                sleep(3);
+                $response = $tron->getTransaction($hash);
+            } catch (Throwable $e) {
+                $i++;
+                continue;
+            }
+            break;
+        } while ($i < 23);
+
+        if ($i == 23) {
+            return response()->json(['success' => false, 'message' => 'Hash Transaksi Bermasalah!']);
+        };
+
+        $hashTime = $response['raw_data']['timestamp'];
+        $hashSender = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['owner_address']);
+        $hashReceiver = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['to_address']);
+        $hashAsset = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['asset_name']);
+        $hashAmount = $response['raw_data']['contract'][0]['parameter']['value']['amount'];
+
+        if ($hashAmount == $amount * 1000000) {
+            if ($hashAsset == '1002640') {
+                if ($hashReceiver == $receiver) {
+
+                    $newTotalPin = $dataUser->pin_activate + 1;
+                    $modelMember = new Member;
+
+                    $modelMember->getUpdateUsers('id', $dataUser->id, [
+                        'pin_activate' => $newTotalPin,
+                        'pin_activate_at' => date('Y-m-d H:i:s'),
+                        'expired_at' => date('Y-m-d H:i:s', strtotime('Next year'))
+                    ]);
+
+                    $modelBonus->getInsertBonusMember([
+                        'user_id' => $dataUser->sponsor_id,
+                        'from_user_id' => $dataUser->id,
+                        'type' => 1,
+                        'bonus_price' => 20000,
+                        'bonus_date' => date('Y-m-d'),
+                        'poin_type' => 1,
+                        'total_pin' => 1
+                    ]);
+
+                    $modelMember->insertResubscribe([
+                        'user_id' => $dataUser->id,
+                        'hash' => $hash
+                    ]);
+
+                    return response()->json(['success' => true]);
+                } else {
+                    return response()->json(['success' => false, 'message' => 'Alamat Tujuan Transfer Salah!']);
+                }
+            } else {
+                return response()->json(['success' => false, 'message' => 'Bukan token LMB yang benar!']);
+            }
+        } else {
+            return response()->json(['success' => false, 'message' => 'Nominal Transfer Salah!']);
         }
     }
 }

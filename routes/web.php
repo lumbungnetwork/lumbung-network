@@ -603,6 +603,9 @@ Route::domain('member.' . Config::get('services.app.url'))->group(function () {
         Route::post('/m/ajax/confirm-staking', 'Admin\AjaxmemberController@postConfirmStake')->middleware('auth');
         Route::post('/m/ajax/confirm-unstaking', 'Admin\AjaxmemberController@postConfirmUnstake')->middleware('auth');
         Route::post('/m/ajax/claim-dividend', 'Admin\AjaxmemberController@postClaimDividend')->middleware('auth');
+
+        //Resubscribe
+        Route::post('/m/ajax/confirm-resubscribe', 'Admin\AjaxmemberController@postResubscribe')->middleware('auth');
     });
 });
 

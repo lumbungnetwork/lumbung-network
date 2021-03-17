@@ -59,16 +59,12 @@
                                 </div>
                             </a>
                         </div>
-                        <?php
-                                $active_at = $dataUser->active_at;
-                                if($dataUser->pin_activate_at != null){
-                                    $active_at = $dataUser->pin_activate_at;
-                                }
-                                $future = strtotime('+365 days', strtotime($active_at));
-                                $timefromdb =time();
-                                $timeleft = $future - $timefromdb;
-                                $daysleft = round((($timeleft/24)/60)/60);
-                            ?>
+
+                        @php
+                        $expiration = strtotime($dataUser->expired_at);
+                        $timeleft = $expiration - time();
+                        $daysleft = round((($timeleft/24)/60)/60);
+                        @endphp
                         <div class="col-6 mb-3">
                             <dd>
                                 Masa Aktif Keanggotaan
@@ -81,10 +77,9 @@
                                 @endif
                         </div>
                         <div class="col-6 mb-3">
-                            <input type="hidden" class="form-control allownumericwithoutdecimal invalidpaste"
-                                id="input_jml_pin" name="total_pin" autocomplete="off" value="1">
-                            <a class="text-decoration-none " id="submitBtn" data-toggle="modal"
-                                data-target="#confirmSubmit" onclick="inputSubmit()">
+
+                            <a class="text-decoration-none " id="resubscribe-btn" data-toggle="modal"
+                                data-target="#resubscribeModal">
                                 <div class="rounded icon-ppob text-center">
                                     <div class="box-icon bg-green text-center">
                                         <i class="mdi mdi-history icon-menu"></i>
@@ -324,11 +319,34 @@
 
 
     </div>
-    <!-- Dark Overlay element -->
-    <div class="overlay"></div>
-    <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
-        aria-hidden="true" data-backdrop="true">
-        <div class="modal-dialog" role="document" id="confirmDetail">
+
+    <!-- Resubscribe Modal -->
+    <div class="modal fade" id="resubscribeModal" tabindex="-1" role="dialog" aria-labelledby="resubscribeModal"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Resubscribe</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Perbarui keanggotaan tahunan anda dengan membakar (<i>burning</i>) <em>100 LMB</em>.
+                    <br>
+                    <i>Renew your annual membership by burning 100 LMB</i>
+                    <div class="mt-3 float-right card rounded-lg bg-light p-4">
+                        <div id="showAddress"></div>
+                        <h6 class="text-success availableLMB">0 LMB</h6>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <small class="mt-2 text-danger d-block" id="tronweb-warning">Use Tronlink or Dapp enabled
+                        browser</small>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-success" id="tronwebPay" disabled>Resubscribe</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -349,24 +367,160 @@
 </script>
 <script src="{{ asset('asset_new/js/sidebar.js') }}"></script>
 <script>
-    function inputSubmit(){
-           var total_pin = $("#input_jml_pin").val();
-            $.ajax({
-                type: "GET",
-                url: "{{ URL::to('/') }}/m/cek/repeat-order?total_pin="+total_pin,
-                success: function(url){
-                    $("#confirmDetail" ).empty();
-                    $("#confirmDetail").html(url);
-                }
-            });
-        }
+    let _token = '{{ csrf_token() }}';
 
-        function confirmSubmit(){
-            var dataInput = $("#form-add").serializeArray();
-            $('#form-add').submit();
-            $('#tutupModal').remove();
-            $('#submit').remove();
+    //TronWeb Validation by Swal
+    function eAlert(message) {
+        Swal.fire({
+            title: 'Gagal!',
+            text: message,
+            icon: 'error',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK',
+            allowOutsideClick: false
+        }).then((result) => {
+                if (result.isConfirmed) {
+                window.location.reload(true);
+            }
+        })
+    }
+    
+    //TronWeb
+    var toAddress = 'TLsV52sRDL79HXGGm9yzwKibb6BeruhUzy';
+    var userAddress, tronWeb;
+    const sendAmount = 100 * 1000000;
+    
+    $(document).ready(function () {
+        setTimeout(function () {
+            main()
+        }, 200)
+        console.log('ready');
+
+    });
+    
+    
+    var waiting = 0;
+    
+    async function main() {
+        if (!(window.tronWeb && window.tronWeb.ready)) return (waiting += 1, 50 == waiting) ? void console.log('Failed to connect to TronWeb') : (console.warn("main retries", "Could not connect to TronLink.", waiting), void setTimeout(main,
+        500));
+        tronWeb = window.tronWeb;
+        try {
+            await showTronBalance();
+        } catch (a) {
+            console.log(a);
         }
+    
+    }
+    
+    function shortId(a, b) { return a.substr(0, b) + "..." + a.substr(a.length - b, a.length) }
+    
+    //show LMB balance
+    async function showTronBalance() {
+        userAddress = tronWeb.defaultAddress.base58;
+        let tokenBalancesArray;
+        let balanceCheck = await tronWeb.trx
+        .getAccount(userAddress)
+        .then((result) => (tokenBalancesArray = result.assetV2));
+        balanceCheck;
+
+        let LMBexist = await tokenBalancesArray.some(function (tokenID) {
+        return tokenID.key == "1002640";
+        });
+        if (LMBexist) {
+        let LMBarray = await tokenBalancesArray.find(function (tokenID) {
+        return tokenID.key == "1002640";
+        });
+        let LMBbalance = LMBarray.value / 1000000;
+
+        
+        
+        if (LMBbalance >= 100) {
+            if ({{$daysleft}} < 7) {
+                $('#tronwebPay').attr("disabled", false); 
+            }
+            
+            $('#tronweb-warning').remove();
+        } else {
+            $('#tronweb-warning').html('Not enough LMB Available');
+        }
+        
+        $("#showAddress").html(`<dd class='text-secondary'>Active Wallet: <mark>${shortId(userAddress, 5)}</mark></dd> `);
+        $(".availableLMB").html(`<h6 class='text-success'>Available: ${LMBbalance.toLocaleString("en-US")} LMB`);
+        
+        } else {
+        $("#LMBbalance").html(`Alamat TRON ini tidak memiliki LMB`);
+        }
+    }
+    
+    //Pay using TronWeb service
+    $("#tronwebPay").click(async function () {
+        try {
+            var tx = await tronWeb.transactionBuilder.sendAsset(
+                toAddress,
+                sendAmount,
+                "1002640",
+                userAddress,
+            );
+            
+            var signedTx = await tronWeb.trx.sign(tx);
+            var broastTx = await tronWeb.trx.sendRawTransaction(signedTx);
+            if (broastTx.result) {
+                postAJAXtronweb(broastTx.txid);
+            } else {
+                eAlert('Transaksi Gagal, periksa koneksi dan ulangi kembali');
+            }
+        } catch (e) {
+            if (e.includes("assetBalance is not sufficient")) {
+                eAlert("Saldo LMB tidak mencukupi");
+            } else if (e.includes("assetBalance must be greater than")) {
+                eAlert("Alamat TRON ini tidak memiliki LMB");
+            } else if (e.includes("declined by user")) {
+                eAlert("Anda membatalkan Transaksi");
+            } else if (e.includes("cancle")) {
+                eAlert("Anda membatalkan Transaksi");
+            } else {
+                eAlert("Ada yang salah, restart aplikasi wallet ini.")
+            }
+        }
+        
+        
+    });
+
+    function postAJAXtronweb(hash) {
+        Swal.fire('Sedang Memproses...');
+        Swal.showLoading();
+        $.ajax({
+            type: "POST",
+            url: "{{ URL::to('/') }}/m/ajax/confirm-resubscribe",
+            data: {
+            hash:hash,
+            _token:_token
+            },
+            success: function(response){
+                if(response.success) {
+                    Swal.fire(
+                    'Success!',
+                    'Resubscribe Berhasil!',
+                    'success'
+                    )
+                    setTimeout(function() {
+                        window.location.reload(true);
+                    }, 3000)
+                } else {
+                    Swal.fire(
+                    'Oops!',
+                    response.message,
+                    'error'
+                    )
+                    setTimeout(function() {
+                        window.location.reload(true);
+                    }, 5000)
+                }
+
+            }
+        })
+    }
 
         function telegram() {
             Swal.fire({
@@ -422,19 +576,6 @@
                 }
             })
         }
-
-        $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {
-           $(this).val($(this).val().replace(/[^\d].+/, ""));
-            if ((event.which < 48 || event.which > 57)) {
-                event.preventDefault();
-            }
-        });
-
-        $('.invalidpaste').on('paste', function (event) {
-            if (event.originalEvent.clipboardData.getData('Text').match(/[^\d]/)) {
-                event.preventDefault();
-            }
-        });
 
 </script>
 @stop
