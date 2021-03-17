@@ -23,7 +23,7 @@ class Controller extends BaseController
     {
         $fullNode = new HttpProvider('https://super.guildchat.io');
         $solidityNode = new HttpProvider('https://solidity.guildchat.io');
-        $eventServer = new HttpProvider('https://api.trongrid.io');
+        $eventServer = new HttpProvider('https://api.tronstack.io');
 
         try {
             $tron = new Tron($fullNode, $solidityNode, $eventServer);
@@ -38,7 +38,7 @@ class Controller extends BaseController
     {
         $fullNode = new HttpProvider('https://super.guildchat.io');
         $solidityNode = new HttpProvider('https://solidity.guildchat.io');
-        $eventServer = new HttpProvider('https://api.trongrid.io');
+        $eventServer = new HttpProvider('https://api.tronstack.io');
 
         try {
             $tron = new Tron($fullNode, $solidityNode, $eventServer, $signServer = null, $explorer = null, $pk);
