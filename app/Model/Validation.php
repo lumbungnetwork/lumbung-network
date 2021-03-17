@@ -208,8 +208,8 @@ class Validation extends Model
             $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum mengisi data alamat TRON');
             return $canInsert;
         }
-        if ($data->req_wd < 10000) {
-            $canInsert = (object) array('can' => false, 'pesan' => 'Batas minimum Penarikan ke eIDR adalah Rp10.000,-');
+        if ($data->req_wd < 5000) {
+            $canInsert = (object) array('can' => false, 'pesan' => 'Batas minimum Penarikan ke eIDR adalah Rp5.000,-');
             return $canInsert;
         }
         if (($data->req_wd - $data->saldo) > 0) {

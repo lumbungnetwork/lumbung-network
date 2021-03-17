@@ -241,7 +241,7 @@
                         <label for="input_jml" class="text-muted f-12">Konversi Saldo Bonus ke eIDR</label>
                         <a tabindex="0" class="btn btn-sm btn-outline-warning" role="button" data-toggle="popover"
                             data-trigger="focus" title="Konversi Saldo Bonus ke eIDR"
-                            data-content="Mengajukan Penarikan Saldo Bonus ke Dompet Tron anda dalam bentuk eIDR. Minimum penarikan Rp10.000,- (Biaya Rp3.000,- per konversi.)">Apa
+                            data-content="Mengajukan Penarikan Saldo Bonus ke Dompet Tron anda dalam bentuk eIDR. Minimum penarikan Rp5.000,- (Biaya Rp3.000,- per konversi.)">Apa
                             ini?</a>
 
                         <div class="form-row mt-2">
