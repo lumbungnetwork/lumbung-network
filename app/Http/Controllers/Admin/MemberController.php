@@ -2480,6 +2480,20 @@ class MemberController extends Controller
                     if ($hashReceiver == 'TZHYx9bVa4vQz8VpVvZtjwMb4AHqkUChiQ') {
                         if ($hashSender == $sender) {
 
+                            $lmbDiv = $amount;
+                            if ($request->sellerType == 1) {
+                                $lmbDiv = $amount / 2; //1% from sales
+                            }
+
+                            $modelBonus = new Bonus;
+                            $modelBonus->insertLMBDividend([
+                                'amount' => $lmbDiv,
+                                'type' => $request->sellerType,
+                                'status' => 1,
+                                'source_id' => $request->masterSalesID,
+                                'created_at' => date('Y-m-d H:i:s')
+                            ]);
+
                             $dataUpdate = array(
                                 'status' => 2,
                                 'tron_transfer' => $hash

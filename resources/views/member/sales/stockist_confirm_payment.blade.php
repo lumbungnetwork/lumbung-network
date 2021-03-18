@@ -113,7 +113,7 @@
                             <small class="text-muted"><strong> Total Belanja Member</strong></small>
                             <h5>Rp{{number_format($getDataSales->sale_price)}}</h5>
                             @if($getDataSales->status == 1)
-                            <?php $royalti = $getDataSales->sale_price * 4 / 100 ?>
+                            <?php $royalti = $getDataSales->sale_price * 2 / 100 // 2% reduction from proposal #04?>
                             <small class="text-muted"><strong> Kontribusi Bagi Hasil</strong></small>
                             <h5>Rp{{number_format($royalti)}}</h5>
                             <small class="text-muted"><strong> Saldo eIDR anda</strong></small>

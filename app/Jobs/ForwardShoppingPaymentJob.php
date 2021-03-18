@@ -11,7 +11,7 @@ use App\Model\Sales;
 use App\User;
 use Illuminate\Support\Facades\Config;
 use IEXBase\TronAPI\Exception\TronException;
-use GuzzleHttp\Client;
+use App\Model\Bonus;
 use App\Http\Controllers\Controller;
 use App\Jobs\eIDRrebalanceJob;
 use Telegram\Bot\Laravel\Facades\Telegram;
@@ -57,13 +57,15 @@ class ForwardShoppingPaymentJob implements ShouldQueue
             $royalti = 0;
             $sellerTron = null;
             if ($this->sellerType == 1) {
-                $royalti = $totalPrice * 4 / 100;
+                $royalti = $totalPrice * 2 / 100; //reduction from proposal #04
                 $seller = User::find($shoppingData->stockist_id);
                 $sellerTron = $seller->tron;
+                $lmbDiv = $royalti / 2; // 1% from sales
             } elseif ($this->sellerType == 2) {
                 $royalti = $totalPrice * 2 / 100;
                 $seller = User::find($shoppingData->vendor_id);
                 $sellerTron = $seller->tron;
+                $lmbDiv = $royalti; // 2% of sales
             }
             if ($sellerTron == null) {
                 Telegram::sendMessage([
@@ -110,6 +112,15 @@ class ForwardShoppingPaymentJob implements ShouldQueue
                 if ($eIDRbalance < 1500000) {
                     eIDRrebalanceJob::dispatch()->onQueue('tron');
                 }
+
+                $modelBonus = new Bonus;
+                $modelBonus->insertLMBDividend([
+                    'amount' => $lmbDiv,
+                    'type' => $this->sellerType,
+                    'status' => 1,
+                    'source_id' => $this->masterSalesID,
+                    'created_at' => date('Y-m-d H:i:s')
+                ]);
 
                 return;
             } else {

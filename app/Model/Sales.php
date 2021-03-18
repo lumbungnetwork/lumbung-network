@@ -363,7 +363,7 @@ class Sales extends Model
     {
         try {
             $query = DB::table('master_sales')->where('id', '=', $masterSalesID)->first();
-            $result = $query->total_price * 4 / 100;
+            $result = $query->total_price * 2 / 100; // 2% reduction from proposal #04
         } catch (Throwable $ex) {
             $result = 0;
         }
