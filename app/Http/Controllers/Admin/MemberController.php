@@ -355,6 +355,14 @@ class MemberController extends Controller
             'expired_at' => date('Y-m-d H:i:s', strtotime('+ 365 days', strtotime('now'))),
             'member_type' => $getData->package_id
         );
+        // insert LMB dividend
+        $modelBonus->insertLMBDividend([
+            'amount' => 20000,
+            'type' => 4,
+            'status' => 1,
+            'source_id' => $getData->request_user_id,
+            'created_at' => date('Y-m-d H:i:s')
+        ]);
         $modelMember = new Member;
         $modelMember->getUpdateUsers('id', $getData->request_user_id, $dataUpdateIsActive);
         $total_sponsor = $dataUser->total_sponsor + 1;
