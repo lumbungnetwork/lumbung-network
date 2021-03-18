@@ -5411,13 +5411,47 @@ class MemberController extends Controller
                 );
                 $modelPin->getInsertMemberDeposit($memberDeposit);
             }
-            if ($arrayData['data']['buyer_last_saldo'] < 1000000) {
+            //fill dividend pool
+            $lmbDiv = 0;
+            $divProportion = 0.7; // 70% from Profit Sharing Pool
+            if ($getDataMaster->type <= 2) {
+                $lmbDiv = (1.4 / 100) * $getDataMaster->ppob_price;
+            } elseif ($getDataMaster->type = 3) {
+                $lmbDiv = $divProportion * 955; //PLN Prepaid
+            } elseif ($getDataMaster->type = 4) {
+                $lmbDiv = $divProportion * 800; //Telkom
+            } elseif ($getDataMaster->type = 5) {
+                $lmbDiv = $divProportion * 1000; //PLN Postpaid
+            } elseif ($getDataMaster->type = 6) {
+                $lmbDiv = $divProportion * 800; //HP Postpaid
+            } elseif ($getDataMaster->type = 7) {
+                $lmbDiv = $divProportion * 450; //BPJS
+            } elseif ($getDataMaster->type = 8) {
+                $lmbDiv = $divProportion * 450; //PDAM
+            } elseif ($getDataMaster->type = 9) {
+                $lmbDiv = $divProportion * 600; //PGN
+            } elseif ($getDataMaster->type = 10) {
+                $lmbDiv = $divProportion * 2000; //Multifinance
+            } elseif ($getDataMaster->type >= 21) {
+                $lmbDiv = $divProportion * 400; //e-Money
+            }
+            $modelBonus = new Bonus;
+            $modelBonus->insertLMBDividend([
+                'amount' => $lmbDiv,
+                'type' => 3,
+                'status' => 1,
+                'source_id' => $getDataMaster->id,
+                'created_at' => date('Y-m-d H:i:s')
+            ]);
+
+            //low balance notif
+            if ($arrayData['data']['buyer_last_saldo'] < 1500000) {
                 $tgAk = Config::get('services.telegram.eidr');
                 $client = new Client;
                 $client->request('GET', 'https://api.telegram.org/bot' . $tgAk . '/sendMessage', [
                     'query' => [
                         'chat_id' => '365874331',
-                        'text' => 'Saldo Digiflazz tinggal' . $arrayData['data']['buyer_last_saldo'],
+                        'text' => 'Saldo Digiflazz tinggal ' . $arrayData['data']['buyer_last_saldo'],
                         'parse_mode' => 'markdown'
                     ]
                 ]);
