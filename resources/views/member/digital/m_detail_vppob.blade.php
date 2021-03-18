@@ -231,7 +231,7 @@
         countdown('countdown');
         });
         function countdown(id) {
-        var start = new Date('{{strtotime($getDataMaster->created_at)}}');
+        var start = new Date('{{$getDataMaster->created_at}}'.replace(/\s/, 'T'));
         var end = new Date(start.getTime() + (70 * 60000));
         var _second = 1000;
         var _minute = _second * 60;
