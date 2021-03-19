@@ -83,7 +83,7 @@
                     </div>
                     <div class="row mt-3">
                         <div class="col-12">
-                            <dd class="text-warning">Untuk mengajukan permohonan Stockist ini anda perlu membakar
+                            <dd class="text-warning">Untuk mengajukan permohonan Vendor ini anda perlu membakar
                                 <strong>100
                                     LMB</strong>
                             </dd>
@@ -308,7 +308,7 @@ let _token = '{{ csrf_token() }}';
             var signedTx = await tronWeb.trx.sign(tx);
             var broastTx = await tronWeb.trx.sendRawTransaction(signedTx);
             if (broastTx.result) {
-                postApplyStockist(broastTx.txid);
+                postApplyVendor(broastTx.txid);
             } else {
                 eAlert('Transaksi Gagal, periksa koneksi dan ulangi kembali');
             }
@@ -329,7 +329,7 @@ let _token = '{{ csrf_token() }}';
         
     });
 
-    function postApplyStockist(hash) {
+    function postApplyVendor(hash) {
         Swal.fire('Sedang Memproses...');
         Swal.showLoading();
 
