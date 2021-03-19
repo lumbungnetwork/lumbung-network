@@ -1239,36 +1239,15 @@ class AjaxmemberController extends Controller
 
     public function getCekRequestMemberStockist(Request $request)
     {
-        $dataUser = Auth::user();
-        $modelMember = new Member;
+
         $modelValidasi = new Validation;
 
-        $cekHU2 = null;
-        if ($request->hu2 != null) {
-            $getHU2 = $modelMember->getCekMemberExist($request->hu2);
-            if ($getHU2 != null) {
-                $cekHU2 = $getHU2->id;
-            }
-        }
-        $cekHU3 = null;
-        if ($request->hu3 != null) {
-            $getHU3 = $modelMember->getCekMemberExist($request->hu3);
-            if ($getHU3 != null) {
-                $cekHU3 = $getHU3->id;
-            }
-        }
         $dataAll = (object) array(
             'syarat1' => $request->syarat1,
+            'syarat2' => $request->syarat2,
             'syarat3' => $request->syarat3,
             'syarat4' => $request->syarat4,
-            'hu1' => $dataUser->id,
-            'hu2' => $cekHU2,
-            'hu3' => $cekHU3,
-            'username2' => $request->hu2,
-            'username3' => $request->hu3,
             'delegate' => $request->delegate,
-            'total_sp' => $dataUser->total_sponsor,
-            'alamat' => $dataUser
         );
         $canInsert = $modelValidasi->getCheckRequestStockist($dataAll);
         return view('member.ajax.confirm_request_stockistr')

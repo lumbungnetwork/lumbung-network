@@ -31,7 +31,7 @@
                     </div>
                     @endif
                     <div class="row">
-                        <div class="col-xl-12 col-xs-12">
+                        <div class="col-12">
                             <fieldset class="form-group">
                                 <label for="user_name">Masukkan Nama Toko Tujuan Belanja Anda:</label>
                                 <small><em>Ketikkan 3-4 huruf awal, lalu pilih dari opsi yang tampil</em></small>
@@ -44,8 +44,8 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-xl-6">
-                            <a href="#" class="btn btn-success float-right" id="check-shop-btn">Cek Toko</a>
+                        <div class="col-12">
+                            <button class="btn btn-success float-right" id="check-shop-btn">Cek Toko</button>
                         </div>
                     </div>
                 </div>
@@ -55,7 +55,7 @@
                         <div class="col-sm-12 col-xs-12">
                             <small>
                                 Ingin menjadi Stokis di Area Anda? <br>
-                                Dapatkan <b>2 LMB</b> setiap kelipatan
+                                Dapatkan <b>1 LMB</b> setiap kelipatan
                                 Rp100.000,00 pembelanjaan Member
                                 di Stokis Anda!
                             </small><br>

@@ -175,11 +175,7 @@ class TelegramBotController extends Controller
     public function sendStockistApplyRequest($data)
     {
         $nama1 = $data['nama1'];
-        $nama2 = $data['nama2'];
-        $nama3 = $data['nama3'];
         $username1 = $data['username1'];
-        $username2 = $data['username2'];
-        $username3 = $data['username3'];
         $delegate = $data['delegate'];
         $request_id = $data['request_id'];
 
@@ -200,9 +196,6 @@ class TelegramBotController extends Controller
 
         $message_text = '*Permohonan Pengajuan Stockist*' . chr(10) . chr(10);
         $message_text .= 'Username: ' . $username1 . ' (' . $nama1 . ')' . chr(10) . chr(10);
-        $message_text .= 'Username pendamping: ' . chr(10);
-        $message_text .= $username2 . ' (' . $nama2 . ')' . chr(10);
-        $message_text .= $username3 . ' (' . $nama3 . ')' . chr(10) . chr(10);
         $message_text .= 'Delegasi: ' . $delegate . chr(10);
 
         $response = Telegram::sendMessage([
@@ -216,20 +209,12 @@ class TelegramBotController extends Controller
     public function sendVendorApplyRequest($data)
     {
         $nama1 = $data['nama1'];
-        $nama2 = $data['nama2'];
-        $nama3 = $data['nama3'];
-        $nama4 = $data['nama4'];
-        $nama5 = $data['nama5'];
         $username1 = $data['username1'];
-        $username2 = $data['username2'];
-        $username3 = $data['username3'];
-        $username4 = $data['username4'];
-        $username5 = $data['username5'];
         $delegate = $data['delegate'];
         $request_id = $data['request_id'];
 
-        $acceptKey = 'accept ' . $request_id . ' vendor ' . $username2;
-        $rejectKey = 'reject ' . $request_id . ' vendor ' . $username2;
+        $acceptKey = 'accept ' . $request_id . ' vendor ' . $username1;
+        $rejectKey = 'reject ' . $request_id . ' vendor ' . $username1;
 
         Cache::put($acceptKey, 0, 172800);
         Cache::put($rejectKey, 0, 172800);
@@ -244,12 +229,7 @@ class TelegramBotController extends Controller
             );
 
         $message_text = '*Permohonan Pengajuan Vendor*' . chr(10) . chr(10);
-        $message_text .= 'Username Vendor: ' . $username2 . ' (' . $nama2 . ')' . chr(10) . chr(10);
-        $message_text .= 'Username pendamping: ' . chr(10);
-        $message_text .= $username1 . ' (' . $nama1 . ')' . chr(10);
-        $message_text .= $username3 . ' (' . $nama3 . ')' . chr(10);
-        $message_text .= $username4 . ' (' . $nama4 . ')' . chr(10);
-        $message_text .= $username5 . ' (' . $nama5 . ')' . chr(10) . chr(10);
+        $message_text .= 'Username Vendor: ' . $username1 . ' (' . $nama1 . ')' . chr(10) . chr(10);
         $message_text .= 'Delegasi: ' . $delegate . chr(10);
 
         $response = Telegram::sendMessage([

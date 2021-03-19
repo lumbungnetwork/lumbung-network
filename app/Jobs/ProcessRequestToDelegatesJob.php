@@ -44,56 +44,28 @@ class ProcessRequestToDelegatesJob implements ShouldQueue
 
         if ($this->type == 1) {
             $reqData = $modelMember->getRequestStockist($this->request_id);
-            $usernames = explode(' ', $reqData->usernames);
-            $username1 = $usernames[0];
-            $username2 = $usernames[1];
-            $username3 = $usernames[2];
+            $username1 = $reqData->usernames;
             $nama1 = User::where('user_code', $username1)->first()->full_name;
-            $nama2 = User::where('user_code', $username2)->first()->full_name;
-            $nama3 = User::where('user_code', $username3)->first()->full_name;
-            $data = [
+
+            $telegramBotController->sendStockistApplyRequest([
                 'nama1' => $nama1,
-                'nama2' => $nama2,
-                'nama3' => $nama3,
                 'username1' => $username1,
-                'username2' => $username2,
-                'username3' => $username3,
                 'delegate' => $reqData->delegate,
                 'request_id' => $reqData->id,
-            ];
-
-            $telegramBotController->sendStockistApplyRequest($data);
+            ]);
 
             return;
         } elseif ($this->type == 2) {
             $reqData = $modelMember->getRequestVendor($this->request_id);
-            $usernames = explode(' ', $reqData->usernames);
-            $username1 = $usernames[0];
-            $username2 = $usernames[1];
-            $username3 = $usernames[2];
-            $username4 = $usernames[3];
-            $username5 = $usernames[4];
+            $username1 = $reqData->usernames;
             $nama1 = User::where('user_code', $username1)->first()->full_name;
-            $nama2 = User::where('user_code', $username2)->first()->full_name;
-            $nama3 = User::where('user_code', $username3)->first()->full_name;
-            $nama4 = User::where('user_code', $username4)->first()->full_name;
-            $nama5 = User::where('user_code', $username5)->first()->full_name;
-            $data = [
+
+            $telegramBotController->sendVendorApplyRequest([
                 'nama1' => $nama1,
-                'nama2' => $nama2,
-                'nama3' => $nama3,
-                'nama4' => $nama4,
-                'nama5' => $nama5,
                 'username1' => $username1,
-                'username2' => $username2,
-                'username3' => $username3,
-                'username4' => $username4,
-                'username5' => $username5,
                 'delegate' => $reqData->delegate,
                 'request_id' => $reqData->id,
-            ];
-
-            $telegramBotController->sendVendorApplyRequest($data);
+            ]);
 
             return;
         } elseif ($this->type == 3) {

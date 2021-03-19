@@ -19,60 +19,32 @@
             <div class="container">
                 <div class="rounded-lg bg-white p-3 mb-3">
                     <h6 class="mb-3">Request Vendor Baru</h6>
-                    @if ( Session::has('message') )
-                    <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible" role="alert">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                        {{  Session::get('message')    }}
-                    </div>
-                    @endif
 
-                    <div class="row">
+                    <small><i>Silakan baca dan centang poin-poin di bawah ini:</i></small>
+
+                    <div class="row mt-2">
                         <div class="col-12">
                             <div class="checkbox checkbox-success">
                                 <input id="checkbox1" type="checkbox">
                                 <label for="checkbox1">
-                                    Saya telah memiliki 5 (lima) Hak Usaha atas nama saya sendiri.
+                                    Saya mengajukan diri untuk menjadi Vendor di Lumbung Network, saya menjunjung
+                                    tujuan utama Lumbung Network untuk mensejahterakan masyarakat di atas keuntungan
+                                    pribadi.
                                 </label>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+
+                    <div class="row mt-2">
                         <div class="col-12">
-                            <label for="input_email">Berikut adalah username dari 5 akun tersebut:</label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <fieldset class="form-group">
-                                <input type="text" class="form-control" id="hu1" name="hu1"
-                                    placeholder="username01 (Stockist)" autocomplete="off" required>
-                            </fieldset>
-                        </div>
-                        <div class="col-12">
-                            <fieldset class="form-group">
-                                <input type="text" class="form-control" id="hu2" name="hu2"
-                                    value={{$dataUser->user_code}} autocomplete="off" readonly>
-                            </fieldset>
-                        </div>
-                        <div class="col-12">
-                            <fieldset class="form-group">
-                                <input type="text" class="form-control" id="hu3" name="hu3" placeholder="username03"
-                                    autocomplete="off" required="">
-                            </fieldset>
-                        </div>
-                        <div class="col-12">
-                            <fieldset class="form-group">
-                                <input type="text" class="form-control" id="hu4" name="hu4" placeholder="username04"
-                                    autocomplete="off" required="">
-                            </fieldset>
-                        </div>
-                        <div class="col-12">
-                            <fieldset class="form-group">
-                                <input type="text" class="form-control" id="hu5" name="hu5" placeholder="username05"
-                                    autocomplete="off" required="">
-                            </fieldset>
+                            <div class="checkbox checkbox-success">
+                                <input id="checkbox2" type="checkbox">
+                                <label for="checkbox2">
+                                    Saya bersedia memberikan <i>Kontribusi Bagi Hasil</i> sebesar 2% dari setiap
+                                    penjualan saya
+                                    (Otomatis).
+                                </label>
+                            </div>
                         </div>
                     </div>
 
@@ -81,15 +53,15 @@
                             <div class="checkbox checkbox-success">
                                 <input id="checkbox3" type="checkbox">
                                 <label for="checkbox3">
-                                    Saya siap untuk mengikuti pelatihan dan arahan dari Tim Delegasi Lumbung Network di
-                                    daerah saya.
+                                    Saya siap mengikuti pelatihan dan arahan dari Delegates di daerah tempat
+                                    tinggal/usaha saya.
                                 </label>
                             </div>
                         </div>
                         <div class="col-12">
                             <fieldset class="form-group">
-                                <select class="form-control" name="delegate" id="delegate">
-                                    <option value="">--Pilih Delegasi--</option>
+                                <select class="form-control" name="delegate" id="delegate" onchange="pickDelegate()">
+                                    <option value="0">--Pilih Delegasi--</option>
                                     @foreach ($delegates as $delegate)
                                     <option value="{{$delegate->name}}">{{$delegate->name}}</option>
                                     @endforeach
@@ -102,59 +74,69 @@
                             <div class="checkbox checkbox-success">
                                 <input id="checkbox4" type="checkbox">
                                 <label for="checkbox4">
-                                    Saya telah membaca dan menyetujui <a href="https://lumbung.network/about">Peraturan
-                                        dan Kode Etik</a> Lumbung Network.
+                                    Saya telah membaca dan menyetujui <a href="https://lumbung.network/about/">Peraturan
+                                        dan Kode Etik Komunitas</a>
+                                    Lumbung Network.
                                 </label>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row mt-3">
                         <div class="col-12">
-                            <div class="checkbox checkbox-success">
-                                <input id="checkbox5" type="checkbox">
-                                <label for="checkbox5">
-                                    Saya bersedia untuk menjaminkan 100 LMB sebagai kontribusi saya kepada komunitas
-                                    Lumbung Network selama saya aktif sebagai seorang Vendor.
-                                </label>
-                            </div>
+                            <dd class="text-warning">Untuk mengajukan permohonan Stockist ini anda perlu membakar
+                                <strong>100
+                                    LMB</strong>
+                            </dd>
+                            <button type="submit" class="btn btn-lg btn-block btn-success" id="submitBtn"
+                                onClick="inputSubmit()">Apply</button>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="rounded-lg shadow bg-white p-3">
-                                <h6 class="text-muted mt-2">Silakan transfer 100 LMB ke alamat TRON di bawah ini:</h6>
-                                <small id="eidr-addr">TPu2RaFyEkujmC6K1MtP3LwcunNEmRhxgf</small>
-                                <button type="button" class="btn btn-sm btn-outline-primary mt-2"
-                                    onclick="copy('eidr-addr')">Copy</button>
-                                <br>
-                                <dd class="text-muted mt-4">Lalu Copy dan Paste (tempel) Hash dari transaksi tersebut ke
-                                    kolom di bawah ini:</dd>
-                                <div class="form-group">
-                                    <textarea onchange="cleanHash()" class="form-control" style="font-size: 11px;"
-                                        id="hash" rows="2" name="tron_transfer" placeholder="Transaction Hash #"
-                                        \></textarea>
-                                </div>
-                            </div>
 
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-block btn-success mt-3" id="submitBtn"
-                                data-toggle="modal" data-target="#confirmSubmit" onClick="inputSubmit()">Apply</button>
-                        </div>
-                    </div>
-                    <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
-                        aria-hidden="true" data-backdrop="false">
-                        <div class="modal-dialog" role="document" id="confirmDetail">
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>
         @include('layout.member.nav')
     </div>
     <div class="overlay"></div>
+    <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
+        aria-hidden="true" data-backdrop="true">
+        <div class="modal-dialog" role="document" id="confirmDetail">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel">Apply Vendor</h5>
+                </div>
+                <div class="modal-body" style="overflow-y: auto;max-height: 330px;">
+                    <form id="form-add" method="POST" action="/m/req/vendor">
+                        {{ csrf_field() }}
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <input type="hidden" name="hash" id="hash" value="0">
+                                    <input type="hidden" name="delegate" id="_delegate" value="0">
+                                    <dd class="text-success" style="text-align: center;"> Untuk mengajukan permohonan
+                                        Vendor ini
+                                        anda perlu membakar
+                                        <strong>100
+                                            LMB</strong></dd>
+                                </div>
+                                <div class="mt-3 float-right card rounded-lg bg-light p-4">
+                                    <div id="showAddress"></div>
+                                    <h6 class="text-success availableLMB">0 LMB</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <small class="mt-2 text-danger d-block" id="tronweb-warning">Use Tronlink or Dapp enabled
+                        browser</small>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-success" id="tronwebPay" disabled>Ajukan</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @stop
@@ -174,39 +156,33 @@
 <script src="{{ asset('asset_new/js/sidebar.js') }}"></script>
 <script>
     function inputSubmit(){
-           var syarat1 = 0;
-           if($("#checkbox1").prop('checked') == true){
-                var syarat1 = 1;
+           if($("#checkbox1").prop('checked') == false){
+                errorToast('Anda belum menyetujui syarat pertama');
+                return false;
+            }
+           if($("#checkbox2").prop('checked') == false){
+                errorToast('Anda belum menyetujui syarat kedua (Kontribusi Bagi Hasil)');
+                return false;
+            }
+           if($("#checkbox3").prop('checked') == false){
+                errorToast('Anda belum menyatakan bersedia untuk dibimbing Tim Delegasi');
+                return false;
+            }
+           if($("#checkbox4").prop('checked') == false){
+                errorToast('Anda belum menyetujui Ketentuan dan Kode Etik');
+                return false;
+            }
+            if ($('#delegate').val() == 0) {
+                errorToast('Anda belum memilih Delegasi');
+                return false;
             }
 
-            var syarat3 = 0;
-           if($("#checkbox3").prop('checked') == true){
-                var syarat3 = 1;
-            }
-            var syarat4 = 0;
-           if($("#checkbox4").prop('checked') == true){
-                var syarat4 = 1;
-            }
-            var syarat5 = 0;
-           if($("#checkbox5").prop('checked') == true){
-                var syarat5 = 1;
-            }
-            var hash = $("#hash").val();
+            $('#confirmSubmit').modal('show');
+            
+        }
 
-            var hu1 = $("#hu1").val();
-            var hu2 = $("#hu2").val();
-            var hu3 = $("#hu3").val();
-            var hu4 = $("#hu4").val();
-            var hu5 = $("#hu5").val();
-            var delegate = $("#delegate").val();
-            $.ajax({
-                type: "GET",
-                url: "{{ URL::to('/') }}/m/cek/req-vendor?syarat1="+syarat1+"&syarat3="+syarat3+"&syarat4="+syarat4+"&syarat5="+syarat5+"&hu1="+hu1+"&hu2="+hu2+"&hu3="+hu3+"&hu4="+hu4+"&hu5="+hu5+"&hash="+hash+"&delegate="+delegate,
-                success: function(url){
-                    $("#confirmDetail" ).empty();
-                    $("#confirmDetail").html(url);
-                }
-            });
+        function pickDelegate() {
+            $('#_delegate').val($('#delegate').val());
         }
 
         function confirmSubmit(){
@@ -214,24 +190,26 @@
             $('#form-add').submit();
         }
 
-        $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {
-           $(this).val($(this).val().replace(/[^\d].+/, ""));
-            if ((event.which < 48 || event.which > 57)) {
-                event.preventDefault();
-            }
-        });
+let _token = '{{ csrf_token() }}';
 
-        function copy(id) {
-            var copyText = document.getElementById(id);
-            var textArea = document.createElement("textarea");
-            textArea.value = copyText.textContent;
-            document.body.appendChild(textArea);
-            textArea.select();
-            document.execCommand("Copy");
-            textArea.remove();
-            successToast("Berhasil di-Copy");
-        }
-        const Toast = Swal.mixin({
+    //TronWeb Validation by Swal
+    function eAlert(message) {
+        Swal.fire({
+            title: 'Gagal!',
+            text: message,
+            icon: 'error',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK',
+            allowOutsideClick: false
+        }).then((result) => {
+                if (result.isConfirmed) {
+                window.location.reload(true);
+            }
+        })
+    }
+
+    // Toast
+    const Toast = Swal.mixin({
             toast: true,
             position: 'top',
             showConfirmButton: false,
@@ -243,19 +221,122 @@
                 toast.addEventListener('mouseleave', Swal.resumeTimer)
             }
         })
-        function successToast (message) {
+
+        function errorToast (message) {
             Toast.fire({
-                icon: 'success',
+                icon: 'error',
                 title: message
             })
         }
+    
+    //TronWeb
+    var toAddress = 'TLsV52sRDL79HXGGm9yzwKibb6BeruhUzy';
+    var userAddress, tronWeb;
+    const sendAmount = 50 * 1000000;
+    
+    $(document).ready(function () {
+        setTimeout(function () {
+            main()
+        }, 200)
+        console.log('ready');
 
-        function cleanHash() {
-            if ($("#hash").val().includes("tronscan")) {
-                let hashOnly = $("#hash").val().split("/")[5];
-                $("#hash").val(hashOnly);
+    });
+    
+    
+    var waiting = 0;
+    
+    async function main() {
+        if (!(window.tronWeb && window.tronWeb.ready)) return (waiting += 1, 50 == waiting) ? void console.log('Failed to connect to TronWeb') : (console.warn("main retries", "Could not connect to TronLink.", waiting), void setTimeout(main,
+        500));
+        tronWeb = window.tronWeb;
+        try {
+            await showTronBalance();
+        } catch (a) {
+            console.log(a);
+        }
+    
+    }
+    
+    function shortId(a, b) { return a.substr(0, b) + "..." + a.substr(a.length - b, a.length) }
+    
+    //show LMB balance
+    async function showTronBalance() {
+        userAddress = tronWeb.defaultAddress.base58;
+        let tokenBalancesArray;
+        let balanceCheck = await tronWeb.trx
+        .getAccount(userAddress)
+        .then((result) => (tokenBalancesArray = result.assetV2));
+        balanceCheck;
+
+        let LMBexist = await tokenBalancesArray.some(function (tokenID) {
+        return tokenID.key == "1002640";
+        });
+        if (LMBexist) {
+        let LMBarray = await tokenBalancesArray.find(function (tokenID) {
+        return tokenID.key == "1002640";
+        });
+        let LMBbalance = LMBarray.value / 1000000;
+
+        
+        
+        if (LMBbalance >= 100) {
+            $('#tronwebPay').attr("disabled", false);
+            
+            $('#tronweb-warning').remove();
+        } else {
+            $('#tronweb-warning').html('Not enough LMB Available');
+        }
+        
+        $("#showAddress").html(`<dd class='text-secondary'>Active Wallet: <mark>${shortId(userAddress, 5)}</mark></dd> `);
+        $(".availableLMB").html(`<h6 class='text-success'>Available: ${LMBbalance.toLocaleString("en-US")} LMB`);
+        
+        } else {
+        $("#LMBbalance").html(`Alamat TRON ini tidak memiliki LMB`);
+        }
+    }
+    
+    //Pay using TronWeb service
+    $("#tronwebPay").click(async function () {
+        try {
+            var tx = await tronWeb.transactionBuilder.sendAsset(
+                toAddress,
+                sendAmount,
+                "1002640",
+                userAddress,
+            );
+            
+            var signedTx = await tronWeb.trx.sign(tx);
+            var broastTx = await tronWeb.trx.sendRawTransaction(signedTx);
+            if (broastTx.result) {
+                postApplyStockist(broastTx.txid);
+            } else {
+                eAlert('Transaksi Gagal, periksa koneksi dan ulangi kembali');
             }
-        };
+        } catch (e) {
+            if (e.includes("assetBalance is not sufficient")) {
+                eAlert("Saldo LMB tidak mencukupi");
+            } else if (e.includes("assetBalance must be greater than")) {
+                eAlert("Alamat TRON ini tidak memiliki LMB");
+            } else if (e.includes("declined by user")) {
+                eAlert("Anda membatalkan Transaksi");
+            } else if (e.includes("cancle")) {
+                eAlert("Anda membatalkan Transaksi");
+            } else {
+                eAlert("Ada yang salah, restart aplikasi wallet ini.")
+            }
+        }
+        
+        
+    });
+
+    function postApplyStockist(hash) {
+        Swal.fire('Sedang Memproses...');
+        Swal.showLoading();
+
+        $('#hash').val(hash);
+        var dataInput = $("#form-add").serializeArray();
+        $('#form-add').submit();
+    }
 
 </script>
 @stop

@@ -222,12 +222,13 @@ class Validation extends Model
     public function getCheckRequestStockist($data)
     {
         $canInsert = (object) array('can' => true, 'pesan' => '');
-        if ($data->alamat->provinsi == null || $data->alamat->kota == null || $data->alamat->kecamatan == null || $data->alamat->kelurahan == null) {
-            $canInsert = (object) array('can' => false, 'pesan' => 'Data Alamat Profil belum lengkap.');
+
+        if ($data->syarat1 == 0) {
+            $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum menyetujui syarat pertama');
             return $canInsert;
         }
-        if ($data->syarat1 == 0) {
-            $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum menyetujui telah memiliki 3 Hak Usaha');
+        if ($data->syarat2 == 0) {
+            $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum menyetujui syarat kedua (Kontribusi Bagi Hasil)');
             return $canInsert;
         }
         if ($data->syarat3 == 0) {
@@ -236,23 +237,6 @@ class Validation extends Model
         }
         if ($data->syarat4 == 0) {
             $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum menyatakan telah membaca dan menyetujui Peraturan dan Kode Etik Lumbung Network.');
-            return $canInsert;
-        }
-        //        if($data->total_sp < 3){
-        //            $canInsert = (object) array('can' => false, 'pesan' => 'Anda belum memenuhi jumlah Hak Usaha sebanyak 3, atas nama sendiri');
-        //            return $canInsert;
-        //        }
-
-        if ($data->hu2 == null) {
-            $canInsert = (object) array('can' => false, 'pesan' => 'Username pada Hak Usaha ke-2 Anda tidak ada');
-            return $canInsert;
-        }
-        if ($data->hu3 == null) {
-            $canInsert = (object) array('can' => false, 'pesan' => 'Username pada Hak Usaha ke-3 Anda tidak ada');
-            return $canInsert;
-        }
-        if ($data->hu1 == $data->hu2 || $data->hu1 == $data->hu3 || $data->hu2 == $data->hu3) {
-            $canInsert = (object) array('can' => false, 'pesan' => 'Username pada Hak Usaha tidak boleh ada yang sama');
             return $canInsert;
         }
         if ($data->delegate == null) {

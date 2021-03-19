@@ -1255,21 +1255,18 @@ class MemberController extends Controller
             return redirect()->route('m_newPackage');
         }
         if ($dataUser->is_profile == 0) {
-            return redirect()->route('m_myProfile')
-                ->with('message', 'Silakan mengisi data profile anda terlebih dahulu')
-                ->with('messageclass', 'warning');
+            Alert::warning('Oops', 'Silakan mengisi data profile anda terlebih dahulu');
+            return redirect()->route('m_myProfile');
         }
         if ($dataUser->is_stockist == 1 || $dataUser->is_vendor == 1) {
-            return redirect()->route('mainDashboard')
-                ->with('message', 'Anda sudah menjadi stockist atau vendor')
-                ->with('messageclass', 'danger');
+            Alert::error('Oops', 'Anda sudah menjadi stockist atau vendor');
+            return redirect()->route('mainDashboard');
         }
         $modelMember = new Member;
         $cekRequestStockist = $modelMember->getCekRequestSotckist($dataUser->id);
         if ($cekRequestStockist != null) {
-            return redirect()->route('m_SearchStockist')
-                ->with('message', 'Anda sudah pernah mengajukan menjadi stockist')
-                ->with('messageclass', 'danger');
+            Alert::error('Oops', 'Anda sudah pernah mengajukan menjadi stockist');
+            return redirect()->route('m_SearchStockist');
         }
         $delegates = $modelMember->getDelegates();
         return view('member.profile.add-stockist')
@@ -1288,21 +1285,68 @@ class MemberController extends Controller
         if ($dataUser->package_id == null) {
             return redirect()->route('m_newPackage');
         }
-        if ($dataUser->is_profile == 0) {
-            return redirect()->route('m_myProfile')
-                ->with('message', 'Silakan mengisi data profile anda terlebih dahulu')
-                ->with('messageclass', 'warning');
+
+        $modelPin = new Pin;
+
+        $hash = $request->hash;
+        $check = $modelPin->checkUsedHashExist($hash, 'stockist_request', 'hash');
+        if ($check) {
+            Alert::error('Oops', 'Hash ini sudah terpakai');
+            return redirect()->back();
         }
-        $modelMember = new Member;
-        $dataInsert = array(
-            'user_id' => $dataUser->id,
-            'usernames' => $dataUser->user_code . ' ' . $request->username2 . ' ' . $request->username3,
-            'delegate' => $request->delegate
-        );
-        $sendRequest = $modelMember->getInsertStockist($dataInsert);
-        ProcessRequestToDelegatesJob::dispatch(1, $sendRequest->lastID)->onQueue('tron');
-        Alert::success('Berhasil', 'Aplikasi Pengajuan Stockist telah diajukan ke Tim Delegasi');
-        return redirect()->route('m_SearchStockist');
+        $receiver = 'TLsV52sRDL79HXGGm9yzwKibb6BeruhUzy';
+        $amount = 50;
+
+        $tron = $this->getTron();
+        $i = 1;
+        do {
+            try {
+                sleep(3);
+                $response = $tron->getTransaction($hash);
+            } catch (Throwable $e) {
+                $i++;
+                continue;
+            }
+            break;
+        } while ($i < 23);
+
+        if ($i == 23) {
+            Alert::error('Oops', 'Hash transaksi bermasalah');
+            return redirect()->back();
+        };
+
+        $hashTime = $response['raw_data']['timestamp'];
+        $hashSender = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['owner_address']);
+        $hashReceiver = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['to_address']);
+        $hashAsset = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['asset_name']);
+        $hashAmount = $response['raw_data']['contract'][0]['parameter']['value']['amount'];
+
+        if ($hashAmount == $amount * 1000000) {
+            if ($hashAsset == '1002640') {
+                if ($hashReceiver == $receiver) {
+
+                    $modelMember = new Member;
+                    $sendRequest = $modelMember->getInsertStockist([
+                        'user_id' => $dataUser->id,
+                        'usernames' => $dataUser->user_code,
+                        'delegate' => $request->delegate,
+                        'hash' => $hash
+                    ]);
+                    ProcessRequestToDelegatesJob::dispatch(1, $sendRequest->lastID)->onQueue('tron');
+                    Alert::success('Berhasil', 'Aplikasi Pengajuan Stockist telah diajukan ke Tim Delegasi, hubungi Delegasi anda untuk mendapatkan dukungan.');
+                    return redirect()->route('mainDashboard');
+                } else {
+                    Alert::error('Oops', 'Alamat Tujuan Transfer Salah!');
+                    return redirect()->back();
+                }
+            } else {
+                Alert::error('Oops', 'Bukan token LMB yang benar!');
+                return redirect()->back();
+            }
+        } else {
+            Alert::error('Oops', 'Nominal Transfer Salah!');
+            return redirect()->back();
+        }
     }
 
     public function getSearchStockist()
@@ -3036,14 +3080,12 @@ class MemberController extends Controller
             return redirect()->route('m_newPackage');
         }
         if ($dataUser->is_profile == 0) {
-            return redirect()->route('m_myProfile')
-                ->with('message', 'Silakan isi data profile anda terlebih dahulu')
-                ->with('messageclass', 'warning');
+            Alert::warning('Oops', 'Silakan isi data profile anda terlebih dahulu');
+            return redirect()->route('m_myProfile');
         }
         if ($dataUser->is_stockist == 1 || $dataUser->is_vendor == 1) {
-            return redirect()->route('m_SearchVendor')
-                ->with('message', 'Anda sudah menjadi member salah satu stockist atau vendor')
-                ->with('messageclass', 'danger');
+            Alert::warning('Oops', 'Anda sudah menjadi member salah satu stockist atau vendor');
+            return redirect()->route('m_SearchVendor');
         }
         $timestamp = strtotime('now');
         $modelMember = new Member;
@@ -3076,18 +3118,76 @@ class MemberController extends Controller
                 ->with('message', 'Data profil anda belum lengkap')
                 ->with('messageclass', 'danger');
         }
-        $modelMember = new Member;
-        $dataInsert = array(
-            'user_id' => $dataUser->id,
-            'usernames' => $request->username1 . ' ' . $request->username2 . ' ' . $request->username3 . ' ' . $request->username4 . ' ' . $request->username5,
-            'delegate' => $request->delegate,
-            'hash' => $request->hash
-        );
-        $sendRequest = $modelMember->getInsertVendor($dataInsert);
-        ProcessRequestToDelegatesJob::dispatch(2, $sendRequest->lastID)->onQueue('tron');
 
-        Alert::success('Berhasil!', 'Pengajuan Vendor anda telah diteruskan ke Tim Delegasi');
-        return redirect()->route('m_SearchVendor');
+        $modelPin = new Pin;
+
+        $hash = $request->hash;
+        $check = $modelPin->checkUsedHashExist($hash, 'vendor_request', 'hash');
+        if ($check) {
+            Alert::error('Oops', 'Hash ini sudah terpakai');
+            return redirect()->back();
+        }
+        $check = $modelPin->checkUsedHashExist($hash, 'resubscribe', 'hash');
+        if ($check) {
+            Alert::error('Oops', 'Hash ini sudah terpakai');
+            return redirect()->back();
+        }
+
+        $receiver = 'TLsV52sRDL79HXGGm9yzwKibb6BeruhUzy';
+        $amount = 100;
+
+        $tron = $this->getTron();
+        $i = 1;
+        do {
+            try {
+                sleep(3);
+                $response = $tron->getTransaction($hash);
+            } catch (Throwable $e) {
+                $i++;
+                continue;
+            }
+            break;
+        } while ($i < 23);
+
+        if ($i == 23) {
+            Alert::error('Oops', 'Hash transaksi bermasalah');
+            return redirect()->back();
+        };
+
+        $hashTime = $response['raw_data']['timestamp'];
+        $hashSender = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['owner_address']);
+        $hashReceiver = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['to_address']);
+        $hashAsset = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['asset_name']);
+        $hashAmount = $response['raw_data']['contract'][0]['parameter']['value']['amount'];
+
+        if ($hashAmount == $amount * 1000000) {
+            if ($hashAsset == '1002640') {
+                if ($hashReceiver == $receiver) {
+
+                    $modelMember = new Member;
+
+                    $sendRequest = $modelMember->getInsertVendor([
+                        'user_id' => $dataUser->id,
+                        'usernames' => $request->username1,
+                        'delegate' => $request->delegate,
+                        'hash' => $request->hash
+                    ]);
+                    ProcessRequestToDelegatesJob::dispatch(2, $sendRequest->lastID)->onQueue('tron');
+
+                    Alert::success('Berhasil!', 'Pengajuan Vendor anda telah diteruskan ke Tim Delegasi, silakan hubungi Delegasi anda untuk mendapatkan dukungan');
+                    return redirect()->route('m_SearchVendor');
+                } else {
+                    Alert::error('Oops', 'Alamat Tujuan Transfer Salah!');
+                    return redirect()->back();
+                }
+            } else {
+                Alert::error('Oops', 'Bukan token LMB yang benar!');
+                return redirect()->back();
+            }
+        } else {
+            Alert::error('Oops', 'Nominal Transfer Salah!');
+            return redirect()->back();
+        }
     }
 
     public function getSearchVendor()
