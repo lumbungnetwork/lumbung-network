@@ -66,6 +66,7 @@
                         <p>Dividend</p>
                         <p class="text-warning d-inline">{{$userDividend->net}} eIDR</p>
                         <button class="ml-3 btn btn-sm btn-success" id="claim-btn">Claim</button>
+                        <a href="/m/dividend-history" class="text-info d-block mt-0">History</a>
                     </div>
 
                     <div class="mb-3 rounded-lg shadow-lg bg-white p-3">

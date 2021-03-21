@@ -94,6 +94,14 @@ class Bonus extends Model
             ->get();
     }
 
+    public function getUserDividendHistory($id)
+    {
+        return DB::table('users_dividend')
+            ->select('date', 'amount', 'type')
+            ->where('user_id', $id)
+            ->get();
+    }
+
     public function insertUserStake($data)
     {
         try {

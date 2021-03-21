@@ -382,6 +382,25 @@ class DashboardController extends Controller
             ->with(compact('data'));
     }
 
+    public function getDividendHistory()
+    {
+        $dataUser = Auth::user();
+        $onlyUser  = array(10);
+        if (!in_array($dataUser->user_type, $onlyUser)) {
+            return redirect()->route('mainDashboard');
+        }
+        if ($dataUser->package_id == null) {
+            return redirect()->route('m_newPackage');
+        }
+
+        $modelBonus = new Bonus;
+        $data = $modelBonus->getUserDividendHistory($dataUser->id);
+
+        return view('member.home.dividend-history')
+            ->with('headerTitle', 'Dividend History')
+            ->with(compact('data'));
+    }
+
     public function getStakingHistory()
     {
         $dataUser = Auth::user();
