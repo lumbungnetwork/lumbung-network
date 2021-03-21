@@ -45,7 +45,7 @@
                     </div>
                     <div class="row">
                         <div class="col-12">
-                            <button class="btn btn-success float-right" id="check-shop-btn">Cek Toko</button>
+                            <a href="#" class="btn btn-success float-right" id="check-shop-btn">Cek Toko</a>
                         </div>
                     </div>
                 </div>
