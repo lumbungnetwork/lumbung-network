@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Config;
 use App\Http\Controllers\Controller;
 use App\Jobs\eIDRrebalanceJob;
 use App\Notifications\eIDRNotification;
+use Telegram\Bot\Laravel\Facades\Telegram;
 
 class ManualTopUpeIDRjob implements ShouldQueue
 {
@@ -77,17 +78,27 @@ class ManualTopUpeIDRjob implements ShouldQueue
             }
 
             if (!isset($response['result'])) {
-                $this->fail();
+                $response = Telegram::sendMessage([
+                    'chat_id' => Config::get('services.telegram.overlord'),
+                    'text' => 'ManualTopUpeIDR Fail, UserID: ' . $user->id . ' topup_id: ' . $this->topup_id,
+                    'parse_mode' => 'markdown'
+                ]);
+                return;
             }
 
             if ($response['result'] == true) {
                 $txHash = $response['txid'];
                 //fail check
-                sleep(6);
+                sleep(10);
                 try {
                     $tron->getTransaction($txHash);
                 } catch (TronException $e) {
-                    $this->fail();
+                    $response = Telegram::sendMessage([
+                        'chat_id' => Config::get('services.telegram.overlord'),
+                        'text' => 'ManualTopUpeIDR Fail, UserID: ' . $user->id . ' topup_id: ' . $this->topup_id,
+                        'parse_mode' => 'markdown'
+                    ]);
+                    return;
                 }
 
                 $dataUpdate = array(

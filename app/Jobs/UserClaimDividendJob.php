@@ -10,6 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use App\Model\Bonus;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Config;
+use Telegram\Bot\Laravel\Facades\Telegram;
 use App\User;
 use Illuminate\Support\Facades\DB;
 
@@ -60,7 +61,11 @@ class UserClaimDividendJob implements ShouldQueue
             }
 
             if (!isset($response['result'])) {
-                $this->fail();
+                $response = Telegram::sendMessage([
+                    'chat_id' => Config::get('services.telegram.overlord'),
+                    'text' => 'UserClaimDividend Fail, UserID: ' . $this->user_id . ' div_id: ' . $this->div_id,
+                    'parse_mode' => 'markdown'
+                ]);
             }
 
             $txHash = $response['txid'];
@@ -69,7 +74,11 @@ class UserClaimDividendJob implements ShouldQueue
             try {
                 $tron->getTransaction($txHash);
             } catch (TronException $e) {
-                $this->fail();
+                $response = Telegram::sendMessage([
+                    'chat_id' => Config::get('services.telegram.overlord'),
+                    'text' => 'UserClaimDividend Fail, UserID: ' . $this->user_id . ' div_id: ' . $this->div_id,
+                    'parse_mode' => 'markdown'
+                ]);
             }
 
             $modelBonus->updateUserDividend('id', $this->div_id, [

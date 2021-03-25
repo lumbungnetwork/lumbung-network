@@ -8,6 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\User;
+use Telegram\Bot\Laravel\Facades\Telegram;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Config;
 use App\Model\Bonus;
@@ -59,7 +60,12 @@ class SendUnstakedLMBJob implements ShouldQueue
         }
 
         if (!isset($response['result'])) {
-            $this->fail();
+            $response = Telegram::sendMessage([
+                'chat_id' => Config::get('services.telegram.overlord'),
+                'text' => 'SendUnstakedLMB Fail, UserID: ' . $this->user_id . ' staking_id: ' . $this->staking_id,
+                'parse_mode' => 'markdown'
+            ]);
+            return;
         }
 
 
@@ -70,7 +76,12 @@ class SendUnstakedLMBJob implements ShouldQueue
             try {
                 $tron->getTransaction($txHash);
             } catch (TronException $e) {
-                $this->fail();
+                $response = Telegram::sendMessage([
+                    'chat_id' => Config::get('services.telegram.overlord'),
+                    'text' => 'SendUnstakedLMB Fail, UserID: ' . $this->user_id . ' staking_id: ' . $this->staking_id,
+                    'parse_mode' => 'markdown'
+                ]);
+                return;
             }
 
             //log to app history

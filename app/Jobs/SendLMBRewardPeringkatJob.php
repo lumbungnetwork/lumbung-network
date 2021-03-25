@@ -17,6 +17,7 @@ use GuzzleHttp\Client;
 use App\Http\Controllers\Controller;
 use App\User;
 use App\Notifications\LMBNotification;
+use Telegram\Bot\Laravel\Facades\Telegram;
 
 class SendLMBRewardPeringkatJob implements ShouldQueue
 {
@@ -103,18 +104,28 @@ class SendLMBRewardPeringkatJob implements ShouldQueue
         }
 
         if (!isset($response['result'])) {
-            $this->fail();
+            $response = Telegram::sendMessage([
+                'chat_id' => Config::get('services.telegram.overlord'),
+                'text' => 'SendLMBRewardPeringkat Fail, UserID: ' . $user->id . ' reward_id: ' . $this->reward_id,
+                'parse_mode' => 'markdown'
+            ]);
+            return;
         }
 
 
         if ($response['result'] == true) {
             $txHash = $response['txid'];
             //fail check
-            sleep(5);
+            sleep(10);
             try {
                 $tron->getTransaction($txHash);
             } catch (TronException $e) {
-                $this->fail();
+                $response = Telegram::sendMessage([
+                    'chat_id' => Config::get('services.telegram.overlord'),
+                    'text' => 'SendLMBRewardPeringkat Fail, UserID: ' . $user->id . ' reward_id: ' . $this->reward_id,
+                    'parse_mode' => 'markdown'
+                ]);
+                return;
             }
             //log to app history
             $dataUpdate = array(

@@ -93,7 +93,12 @@ class ForwardShoppingPaymentJob implements ShouldQueue
             }
 
             if (!isset($response['result'])) {
-                $this->fail();
+                $response = Telegram::sendMessage([
+                    'chat_id' => Config::get('services.telegram.overlord'),
+                    'text' => 'ForwardShoppingPayment Fail, UserID: ' . $seller->id . ' sales_id: ' . $this->masterSalesID,
+                    'parse_mode' => 'markdown'
+                ]);
+                return;
             }
 
             //cleanup
@@ -104,7 +109,12 @@ class ForwardShoppingPaymentJob implements ShouldQueue
                 try {
                     $tron->getTransaction($response['txid']);
                 } catch (TronException $e) {
-                    $this->fail();
+                    $response = Telegram::sendMessage([
+                        'chat_id' => Config::get('services.telegram.overlord'),
+                        'text' => 'ForwardShoppingPayment Fail, UserID: ' . $seller->id . ' sales_id: ' . $this->masterSalesID,
+                        'parse_mode' => 'markdown'
+                    ]);
+                    return;
                 }
 
                 $eIDRbalance = $tron->getTokenBalance($tokenID, $from, $fromTron = false) / 100;

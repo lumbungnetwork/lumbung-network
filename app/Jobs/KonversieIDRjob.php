@@ -16,6 +16,7 @@ use App\User;
 use App\Notifications\eIDRNotification;
 use App\Jobs\eIDRrebalanceJob;
 use App\KbbBonus;
+use Telegram\Bot\Laravel\Facades\Telegram;
 
 class KonversieIDRjob implements ShouldQueue
 {
@@ -67,7 +68,12 @@ class KonversieIDRjob implements ShouldQueue
         }
 
         if (!isset($response['result'])) {
-            $this->fail();
+            $response = Telegram::sendMessage([
+                'chat_id' => Config::get('services.telegram.overlord'),
+                'text' => 'KonversieIDRJob Fail, UserID: ' . $user->id . ' reward_id: ' . $this->id,
+                'parse_mode' => 'markdown'
+            ]);
+            return;
         }
 
         //log to app history
@@ -78,7 +84,12 @@ class KonversieIDRjob implements ShouldQueue
             try {
                 $tron->getTransaction($txHash);
             } catch (TronException $e) {
-                $this->fail();
+                $response = Telegram::sendMessage([
+                    'chat_id' => Config::get('services.telegram.overlord'),
+                    'text' => 'KonversieIDRJob Fail, UserID: ' . $user->id . ' reward_id: ' . $this->id,
+                    'parse_mode' => 'markdown'
+                ]);
+                return;
             }
             $dataUpdate = array(
                 'status' => 1,

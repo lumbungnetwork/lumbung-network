@@ -141,7 +141,12 @@ class PPOBexecuteJob implements ShouldQueue
                 $signedTransaction = $tron->signTransaction($transaction);
                 $response = $tron->sendRawTransaction($signedTransaction);
             } catch (TronException $e) {
-                die($e->getMessage());
+                $response = Telegram::sendMessage([
+                    'chat_id' => Config::get('services.telegram.overlord'),
+                    'text' => 'RefuneIDRtoBuyerDigital Fail, UserID: ' . $getDataMaster->user_id . ' sales_id: ' . $this->masterSalesID,
+                    'parse_mode' => 'markdown'
+                ]);
+                return;
             }
 
             if ($response['result'] == true) {
@@ -207,7 +212,12 @@ class PPOBexecuteJob implements ShouldQueue
                 $signedTransaction = $tron->signTransaction($transaction);
                 $response = $tron->sendRawTransaction($signedTransaction);
             } catch (TronException $e) {
-                die($e->getMessage());
+                $response = Telegram::sendMessage([
+                    'chat_id' => Config::get('services.telegram.overlord'),
+                    'text' => 'ForwardIDRtoSellerDigital Fail, VendorID: ' . $getDataMaster->vendor_id . ' sales_id: ' . $this->masterSalesID,
+                    'parse_mode' => 'markdown'
+                ]);
+                return;
             }
 
             if ($response['result'] == true) {
