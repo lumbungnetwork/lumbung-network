@@ -24,10 +24,18 @@ class AppController extends Controller
         $user = Auth::user();
         $modelYield = new _Yield;
         $modelContract = new Contract;
+        $contracts = null;
+        $userContracts = Contract::where('user_id', $user->id)->get();
+        $referrals = Finance::where('sponsor_id', $user->id)->select('id')->count();
+        if (count($userContracts) > 0) {
+            $contracts = $userContracts;
+        }
         $yields = $modelYield->getUserTotalYields($user->id);
         $totalLiquidity = $modelContract->getUserTotalLiquidity($user->id);
         return view('finance.dashboard')
             ->with('title', 'Dashboard')
+            ->with(compact('contracts'))
+            ->with(compact('referrals'))
             ->with(compact('yields'))
             ->with(compact('totalLiquidity'))
             ->with(compact('user'));

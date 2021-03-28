@@ -20,6 +20,7 @@ class ContractController extends Controller
         $user = Auth::user();
         $contracts = null;
         $userContracts = Contract::where('user_id', $user->id)->get();
+        $referrals = Finance::where('sponsor_id', $user->id)->select('id')->count();
         if (count($userContracts) > 0) {
             $contracts = $userContracts;
         }
@@ -29,6 +30,7 @@ class ContractController extends Controller
         return view('finance.contracts')
             ->with('title', 'Contracts')
             ->with(compact('contracts'))
+            ->with(compact('referrals'))
             ->with(compact('yields'))
             ->with(compact('user'));
     }

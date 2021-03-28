@@ -53,10 +53,16 @@
                 <div class="mt-5 nm-inset-gray-50 rounded-xl p-3">
                     <p class="font-extralight">Account Info</p>
                     <div class="my-2 nm-inset-gray-50 rounded-full w-full h-1"></div>
-                    <p class="mt-2 font-extralight text-sm">Active contracts: </p><span>0</span>
-                    <p class="mt-2 font-extralight text-sm">Lending contracts: </p><span>0</span>
+                    @php
+                    $activeContracts = 0;
+                    if ($activeContracts != null) {
+                    $activeContracts = count($contracts);
+                    }
+                    @endphp
+                    <p class="mt-2 font-extralight text-sm">Active contracts: </p><span>{{$activeContracts}}</span>
+                    <p class="mt-2 font-extralight text-sm">Lending contracts: </p><span>{{$activeContracts}}</span>
                     <p class="mt-2 font-extralight text-sm">Loan contracts: </p><span>0</span>
-                    <p class="mt-2 font-extralight text-sm">Referrals: </p><span>0</span>
+                    <p class="mt-2 font-extralight text-sm">Referrals: </p><span>{{$referrals}}</span>
                 </div>
 
 
