@@ -3092,16 +3092,6 @@ class AjaxmemberController extends Controller
                         'expired_at' => date('Y-m-d H:i:s', strtotime('Next year'))
                     ]);
 
-                    $modelBonus->getInsertBonusMember([
-                        'user_id' => $dataUser->sponsor_id,
-                        'from_user_id' => $dataUser->id,
-                        'type' => 1,
-                        'bonus_price' => 20000,
-                        'bonus_date' => date('Y-m-d'),
-                        'poin_type' => 1,
-                        'total_pin' => 1
-                    ]);
-
                     $modelMember->insertResubscribe([
                         'user_id' => $dataUser->id,
                         'hash' => $hash
