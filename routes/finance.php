@@ -25,6 +25,7 @@ Route::get('/dashboard', 'Finance\AppController@getFinanceDashboard')->name('das
 Route::get('/account', 'Finance\AppController@getAccountPage')->name('account')->middleware('auth');
 Route::get('/account/credentials', 'Finance\AppController@getAccountCredentialsPage')->name('account.credentials')->middleware(['auth', '2fa']);
 Route::get('/account/addresses', 'Finance\AppController@getAccountAddressesPage')->name('account.addresses')->middleware(['auth', '2fa']);
+Route::get('/account/referrals-list', 'Finance\AppController@getAccountReferralsList')->name('account.refferals')->middleware(['auth', '2fa']);
 Route::post('/account/set-tron', 'Finance\AppController@postAccountSetTron')->name('account.set-tron')->middleware('auth');
 Route::post('/account/reset-tron', 'Finance\AppController@postAccountResetTron')->name('account.reset-tron')->middleware('auth');
 

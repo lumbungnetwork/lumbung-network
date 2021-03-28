@@ -39,7 +39,7 @@
                     <p>USDT (Tether USD)</p>
                     <h2 class="mt-3 text-black text-6xl font-extralight">{{number_format($USDTbalance, 2)}}</h2>
                     <div class="flex justify-center">
-                        <a href="/wallet/deposit-usdt" type="button"
+                        <a href="/wallet/deposit-usdt"
                             class="mt-3 p-3 bg-gray-500 rounded-2xl w-24 text-white text-xs focus:outline-none focus:bg-gray-600">Deposit</a>
                         <button type="button" id="withdraw-btn"
                             class="ml-2 mt-3 p-3 bg-gray-500 rounded-2xl w-24 text-white text-xs focus:outline-none focus:bg-gray-600">Withdraw</button>
@@ -52,7 +52,7 @@
                 <div class="mt-4 nm-convex-gray-50 rounded-xl p-6 text-center">
                     <p>Credits (USD)</p>
                     <h2 class="mt-3 text-black text-6xl font-extralight">{{number_format($creditBalance, 2)}}</h2>
-                    <div class="flex justify-between">
+                    <div class="flex flex-wrap py-2 justify-center">
                         <button type="button" id="convert-from-usdt-btn" disabled
                             class="mt-3 py-3 px-1 bg-gray-500 rounded-2xl w-32 text-white text-xs focus:outline-none focus:bg-gray-600">Convert
                             from USDT</button>
@@ -61,7 +61,7 @@
                             to USDT</button>
                     </div>
 
-                    <div class="flex justify-between">
+                    <div class="flex flex-wrap py-2 justify-center">
                         <button type="button" id="transfer-btn"
                             class="mt-3 p-3 bg-gray-500 rounded-2xl w-32 text-white text-xs focus:outline-none focus:bg-gray-600">Transfer</button>
                         <button type="button" id="receive-btn"

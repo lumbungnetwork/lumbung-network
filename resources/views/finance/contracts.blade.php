@@ -102,8 +102,8 @@
 
             </div>
 
-            <div class="mt-2 flex items-center justify-end py-2">
-                <a href="/new-contract" type="button"
+            <div class="my-2 flex items-center justify-end py-2">
+                <a href="/new-contract"
                     class="mt-3 p-3 bg-gray-500 rounded-2xl text-white text-xs focus:outline-none focus:bg-gray-600">New
                     Contract</a>
 
@@ -118,8 +118,8 @@
                 <p>Total Available Yields</p>
                 <h2 class="mt-3 text-black text-6xl font-extralight">${{number_format($yields->available, 2)}}</h2>
                 <p class="mt-6">Total Earned Yields</p>
-                <h2 class="mt-3 text-black text-6xl font-extralight">${{number_format($yields->earned, 2)}}</h2>
-                <a href="{{ route('finance.wallet') }}" type="button"
+                <h2 class="my-3 text-black text-6xl font-extralight">${{number_format($yields->earned, 2)}}</h2>
+                <a href="{{ route('finance.wallet') }}"
                     class="mt-3 p-3 bg-gray-500 rounded-2xl text-white text-xs focus:outline-none focus:bg-gray-600">Manage
                     Balances</a>
             </div>

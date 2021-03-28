@@ -118,6 +118,29 @@ class AppController extends Controller
             ->with(compact('user'));
     }
 
+    public function getAccountReferralsList()
+    {
+        $user = Auth::user();
+        $referrals = null;
+
+        $_referrals = Finance::where('sponsor_id', $user->id)->where('is_active', 1)->get();
+        if (count($_referrals) > 0) {
+
+            $modelContract = new Contract;
+            $refs = [];
+            foreach ($_referrals as $referral) {
+                $liquidity = $modelContract->getUserTotalLiquidity($referral->id);
+                $refs[] = ['username' => $referral->username, 'liquidity' => $liquidity];
+            }
+            $referrals = $refs;
+        }
+
+        return view('finance.account.referrals-list')
+            ->with('title', 'Referrals List')
+            ->with(compact('referrals'))
+            ->with(compact('user'));
+    }
+
     public function postAccountSetTron(Request $request)
     {
 

@@ -84,7 +84,7 @@
                     <button type="button"
                         class="mt-3 p-3 bg-gray-500 rounded-2xl text-white text-xs focus:outline-none focus:bg-gray-600">Copy
                         Link</button>
-                    <a href="/wallet" type="button"
+                    <a href="{{ route('finance.account.refferals') }}"
                         class="mt-3 p-3 bg-gray-500 rounded-2xl text-white text-xs focus:outline-none focus:bg-gray-600">Referrals
                         List</a>
                 </div>

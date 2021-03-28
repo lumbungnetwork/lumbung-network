@@ -35,8 +35,8 @@
 
                 <div class="mt-4 nm-convex-gray-50 rounded-xl p-6 text-center">
                     <p>Your Liquidity</p>
-                    <h2 class="mt-3 text-black text-5xl font-extralight">${{number_format($totalLiquidity, 2)}}</h2>
-                    <a href="/contracts" type="button"
+                    <h2 class="my-3 text-black text-5xl font-extralight">${{number_format($totalLiquidity, 2)}}</h2>
+                    <a href="/contracts"
                         class="mt-3 p-3 bg-gray-500 rounded-2xl text-white text-xs focus:outline-none focus:bg-gray-600">Manage
                         Contracts</a>
 
@@ -44,8 +44,8 @@
 
                 <div class="mt-5 nm-concave-gray-50 rounded-xl p-6 text-center">
                     <p>Total Yield Earned</p>
-                    <h2 class="mt-3 text-black text-5xl font-extralight">${{number_format($yields->earned, 2)}}</h2>
-                    <a href="{{ route('finance.wallet') }}" type="button"
+                    <h2 class="my-3 text-black text-5xl font-extralight">${{number_format($yields->earned, 2)}}</h2>
+                    <a href="{{ route('finance.wallet') }}"
                         class="mt-3 p-3 bg-gray-500 rounded-2xl text-white text-xs focus:outline-none focus:bg-gray-600">Manage
                         Balances</a>
                 </div>
