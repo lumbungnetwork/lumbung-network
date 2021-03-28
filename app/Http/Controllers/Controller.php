@@ -6,6 +6,8 @@ use App\Model\Pin;
 use App\Model\Transaction;
 use App\Model\Bonus;
 use App\Model\Transferwd;
+use App\Model\Finance\Credit;
+use App\Model\Finance\Contract;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -114,5 +116,42 @@ class Controller extends BaseController
             'royalti_bonus' => $totalAvailableRoyaltiBonus,
             'royalti_withdrawn' => $royaltiWithdrawn
         );
+    }
+
+    public function createCreditTxId($amount, $type, $source, $source_id)
+    {
+        $count = Credit::where('created_at', '>', date('Y-m-d 00:00:00'))->count();
+        $string = $amount . ' ' . $type . ' ' . $source . ' ' . $source_id . ' ' . floor($count + 1);
+        $hex = bin2hex($string);
+        $tx_id = sprintf("0x%034s", $hex);
+        return $tx_id;
+    }
+
+    public function creditReferralBonus($user_id, $sponsor_id, $amount)
+    {
+        // Check if sponsor have at least $100 active Liquidity
+        $modelContract = new Contract;
+        $check = $modelContract->getUserTotalLiquidity($sponsor_id);
+        if ($check < 100) {
+            return true; // Deny the Referral Bonus
+        }
+
+        try {
+            // Create tx_id
+            $tx_id = $this->createCreditTxId($amount, 1, 1, $user_id);
+
+            // Credit the Referrer
+            $credit = new Credit;
+            $credit->user_id = $sponsor_id;
+            $credit->amount = $amount;
+            $credit->type = 1;
+            $credit->source = 1;
+            $credit->tx_id = $tx_id;
+            $credit->save();
+
+            return true;
+        } catch (\Throwable $th) {
+            return false;
+        }
     }
 }

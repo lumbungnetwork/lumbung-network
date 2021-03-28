@@ -53,6 +53,9 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
+        '2fa' => \App\Http\Middleware\LoginSecurityMiddleware::class,
+        'finance' => \App\Http\Middleware\RedirectIfNotFinance::class,
+        'finance.guest' => \App\Http\Middleware\RedirectIfFinance::class,
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,

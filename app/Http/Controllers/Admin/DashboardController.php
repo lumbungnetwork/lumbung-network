@@ -47,6 +47,9 @@ class DashboardController extends Controller
     public function getMemberDashboard()
     {
         $dataUser = Auth::user();
+        if (in_array($dataUser->user_type, array(1, 2, 3))) {
+            return redirect()->route('admDashboard');
+        }
         if ($dataUser->package_id == null) {
             return redirect()->route('m_newPackage');
         }

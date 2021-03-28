@@ -9,9 +9,9 @@
     <div class="container mx-auto px-4">
         <div class="flex flex-wrap">
             <div class="w-full lg:w-6/12 px-4">
-                <h4 class="text-3xl font-semibold">Jadilah bagian dari revolusi ini!</h4>
+                <h4 class="text-3xl font-semibold">Be a part of this revolution!</h4>
                 <h5 class="text-lg mt-2 mb-2 text-gray-700">
-                    Temukan kami di media-media berikut ini:
+                    Find and follow us here:
                 </h5>
                 <div class="mt-3 mb-3 lg:mt-6">
                     <a class="bg-white text-blue-300 shadow-lg font-normal h-10 w-10 items-center justify-center align-center rounded-full outline-none focus:outline-none mr-2 p-3"

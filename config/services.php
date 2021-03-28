@@ -62,7 +62,9 @@ return [
     ],
 
     'app' => [
-        'url' => env('BASE_URL')
+        'url' => env('BASE_URL'),
+        'domain' => env('APP_DOMAIN'),
+        'protocol_url' => env('APP_URL')
     ],
 
     'stripe' => [

@@ -36,6 +36,11 @@ return [
     */
 
     'guards' => [
+        'finance' => [
+            'driver' => 'session',
+            'provider' => 'finances',
+        ],
+
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
@@ -66,6 +71,11 @@ return [
     */
 
     'providers' => [
+        'finances' => [
+            'driver' => 'eloquent',
+            'model' => App\Finance::class,
+        ],
+
         'users' => [
             'driver' => 'eloquent',
             'model' => App\User::class,
@@ -93,6 +103,12 @@ return [
     */
 
     'passwords' => [
+        'finances' => [
+            'provider' => 'finances',
+            'table' => 'finance_password_resets',
+            'expire' => 60,
+        ],
+
         'users' => [
             'provider' => 'users',
             'table' => 'password_resets',
