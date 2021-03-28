@@ -16,8 +16,9 @@
 
             <div class="px-10 lg:px-20 py-6">
 
-                <div class="flex justify-center">
-                    <img class="w-32 opacity-90" src="/image/lumbung-finance_3.png" alt="lumbung finance">
+                <div class="mt-8">
+                    <img class="object-contain w-full max-h-32" src="/image/lumbung-finance_3.png"
+                        alt="lumbung finance">
                 </div>
 
                 <!-- Layout  -->
