@@ -17,8 +17,7 @@
             <div class="px-10 lg:px-20 py-6">
 
                 <div class="flex justify-center">
-                    <img class="object-contain w-32 opacity-90" src="/image/lumbung-finance_2.png"
-                        alt="lumbung finance">
+                    <img class="w-32 opacity-90" src="/image/lumbung-finance_2.png" alt="lumbung finance">
                 </div>
 
                 <!-- Layout  -->
