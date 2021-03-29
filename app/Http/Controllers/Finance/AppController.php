@@ -17,6 +17,7 @@ use App\Model\Finance\_Yield;
 use Telegram\Bot\Laravel\Facades\Telegram;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use IEXBase\TronAPI\Exception\TronException;
 
 class AppController extends Controller
 {
@@ -169,6 +170,7 @@ class AppController extends Controller
 
         $tron = $this->getTron();
         $i = 1;
+        sleep(2); // add 2 seconds wait before cheching tx_id
         do {
             try {
                 sleep(1);
