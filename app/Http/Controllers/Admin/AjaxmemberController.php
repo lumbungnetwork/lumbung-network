@@ -2997,7 +2997,7 @@ class AjaxmemberController extends Controller
         if ($newStakedLMB < 0) {
             return response()->json(['success' => false, 'message' => 'Amount exceeds staked balance!']);
         } else {
-            $due_date = date('Y-m-d', strtotime('Next week'));
+            $due_date = date('Y-m-d', strtotime('+7 days'));
             $unstake = $modelBonus->insertUserStake([
                 'user_id' => $dataUser->id,
                 'type' => 2,
@@ -3089,7 +3089,7 @@ class AjaxmemberController extends Controller
                     $modelMember->getUpdateUsers('id', $dataUser->id, [
                         'pin_activate' => $newTotalPin,
                         'pin_activate_at' => date('Y-m-d H:i:s'),
-                        'expired_at' => date('Y-m-d H:i:s', strtotime('Next year'))
+                        'expired_at' => date('Y-m-d H:i:s', strtotime('+365 days'))
                     ]);
 
                     $modelMember->insertResubscribe([
