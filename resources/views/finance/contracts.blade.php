@@ -38,7 +38,7 @@
                 </div>
 
                 <div id="active-contracts">
-                    @if ($contracts == null)
+                    @if (count($contracts) == 0)
                     <div class="mt-4 nm-convex-gray-50 rounded-xl p-6 ">
                         <small class="float-right font-extralight">#000000</small>
                         <div class="flex items-center py-2">
@@ -127,12 +127,7 @@
             <div class="mt-5 nm-inset-gray-50 rounded-xl p-3">
                 <p class="font-extralight">Account Info</p>
                 <div class="my-2 nm-inset-gray-50 rounded-full w-full h-1"></div>
-                @php
-                $activeContracts = 0;
-                if ($activeContracts != null) {
-                $activeContracts = count($contracts);
-                }
-                @endphp
+
                 <p class="mt-2 font-extralight text-sm">Active contracts: </p><span>{{$activeContracts}}</span>
                 <p class="mt-2 font-extralight text-sm">Lending contracts: </p><span>{{$activeContracts}}</span>
                 <p class="mt-2 font-extralight text-sm">Loan contracts: </p><span>0</span>

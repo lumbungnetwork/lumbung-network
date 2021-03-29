@@ -16,6 +16,7 @@ use App\Model\Finance\Credit;
 use App\Model\Finance\_Yield;
 use Telegram\Bot\Laravel\Facades\Telegram;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 
 class AppController extends Controller
 {
@@ -24,17 +25,16 @@ class AppController extends Controller
         $user = Auth::user();
         $modelYield = new _Yield;
         $modelContract = new Contract;
-        $contracts = null;
-        $userContracts = Contract::where('user_id', $user->id)->get();
+        // Count Active contracts
+        $activeContracts = Contract::where('user_id', $user->id)->where('status', '<', 2)->select('id')->count();
+        // Count Referrals
         $referrals = Finance::where('sponsor_id', $user->id)->select('id')->count();
-        if (count($userContracts) > 0) {
-            $contracts = $userContracts;
-        }
+        // Get Yields and Total Liquidity
         $yields = $modelYield->getUserTotalYields($user->id);
         $totalLiquidity = $modelContract->getUserTotalLiquidity($user->id);
         return view('finance.dashboard')
             ->with('title', 'Dashboard')
-            ->with(compact('contracts'))
+            ->with(compact('activeContracts'))
             ->with(compact('referrals'))
             ->with(compact('yields'))
             ->with(compact('totalLiquidity'))
@@ -139,6 +139,86 @@ class AppController extends Controller
             ->with('title', 'Referrals List')
             ->with(compact('referrals'))
             ->with(compact('user'));
+    }
+
+    public function getAccountActivate()
+    {
+        $user = Auth::user();
+
+
+        return view('finance.account.activate')
+            ->with('title', 'Account Activation')
+            ->with(compact('user'));
+    }
+
+    public function postAccountActivateTRC10(Request $request)
+    {
+        $user = Auth::user();
+        $validator = Validator::make($request->all(), [
+            'hash' => 'required|string|size:64|unique:finance_activations,hash'
+        ]);
+
+        if ($validator->fails()) {
+            Alert::error('Failed', $validator->errors()->first());
+            return redirect()->back();
+        }
+
+        $hash = $request->hash;
+        $amount = 10000000; //10 LMB
+        $burnAddress = 'TLsV52sRDL79HXGGm9yzwKibb6BeruhUzy';
+
+        $tron = $this->getTron();
+        $i = 1;
+        do {
+            try {
+                sleep(1);
+                $response = $tron->getTransaction($hash);
+            } catch (TronException $e) {
+                $i++;
+                continue;
+            }
+            break;
+        } while ($i < 23);
+
+        if ($i == 23) {
+            Alert::error('Failed', 'Something is wrong, please try again!');
+            return redirect()->back();
+        };
+
+        $hashReceiver = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['to_address']);
+        $hashAsset = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['asset_name']);
+        $hashAmount = $response['raw_data']['contract'][0]['parameter']['value']['amount'];
+
+        if ($hashReceiver != $burnAddress) {
+            Alert::error('Failed', 'Wrong destination address!');
+            return redirect()->back();
+        }
+
+        if ($hashAsset != '1002640') {
+            Alert::error('Failed', 'Wrong Token!');
+            return redirect()->back();
+        }
+
+        if ($hashAmount != $amount) {
+            Alert::error('Failed', 'Wrong Amount!');
+            return redirect()->back();
+        }
+
+        // Log the activation tx
+        DB::table('finance_activations')->insert([
+            'user_id' => $user->id,
+            'lmb' => $amount / 10000000,
+            'hash' => $hash,
+            'created_at' => date('Y-m-d H:i:s')
+        ]);
+
+        // Update the user is_active
+        $user = Finance::find($user->id);
+        $user->is_active = 1;
+        $user->active_at = date('Y-m-d H:i:s');
+        $user->save();
+
+        return redirect()->back();
     }
 
     public function postAccountSetTron(Request $request)

@@ -18,18 +18,23 @@ class ContractController extends Controller
     public function getContractsPage()
     {
         $user = Auth::user();
-        $contracts = null;
-        $userContracts = Contract::where('user_id', $user->id)->get();
-        $referrals = Finance::where('sponsor_id', $user->id)->select('id')->count();
-        if (count($userContracts) > 0) {
-            $contracts = $userContracts;
+        if ($user->is_active == 0) {
+            Alert::warning('Inactive Account', 'You need to activate your account first');
+            return redirect()->route('finance.account.activate');
         }
+        // $contracts = null;
+        $contracts = Contract::where('user_id', $user->id)->get();
+        // Count Active contracts
+        $activeContracts = Contract::where('user_id', $user->id)->where('status', '<', 2)->select('id')->count();
+        // Count Referrals
+        $referrals = Finance::where('sponsor_id', $user->id)->select('id')->count();
         $modelYield = new _Yield;
         $yields = $modelYield->getUserTotalYields($user->id);
 
         return view('finance.contracts')
             ->with('title', 'Contracts')
             ->with(compact('contracts'))
+            ->with(compact('activeContracts'))
             ->with(compact('referrals'))
             ->with(compact('yields'))
             ->with(compact('user'));
