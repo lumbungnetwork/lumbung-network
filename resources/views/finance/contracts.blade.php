@@ -1,13 +1,13 @@
 @extends('finance.layout.app')
 @section('content')
 
-<div class="mt-10 flex flex-col justify-center px-6">
+<div class="mt-10 flex flex-col justify-center px-3 sm:px-6">
 
     <div class="relative w-full max-w-md mx-auto">
         <div
-            class="absolute inset-0 -mr-2 bg-gradient-to-r from-green-100 to-green-200 shadow-lg transform skew-y-0 rotate-3 rounded-3xl">
+            class="hidden sm:absolute inset-0 -mr-2 bg-gradient-to-r from-green-100 to-green-200 shadow-lg transform skew-y-0 rotate-3 rounded-3xl">
         </div>
-        <div class="relative bg-gray-100 shadow-lg rounded-3xl">
+        <div class="relative nm-flat-gray-200 rounded-3xl">
 
             <div class="flex items-center justify-start pt-6 pl-6">
                 <span class="w-3 h-3 bg-red-400 rounded-full mr-2"></span>
@@ -31,7 +31,7 @@
 
             </div>
 
-            <div class="px-6 py-6">
+            <div class="p-3 sm:p-6">
                 <div class="text-center">
                     <h2 class="font-extralight text-4xl text-gray-600">Contracts</h2>
 
@@ -110,29 +110,87 @@
 
             </div>
 
-
-
-
-
             <div class="mt-4 nm-concave-gray-50 rounded-xl p-6 text-center">
-                <p>Total Available Yields</p>
-                <h2 class="mt-3 text-black text-6xl font-extralight">${{number_format($yields->available, 2)}}</h2>
-                <p class="mt-6">Total Earned Yields</p>
-                <h2 class="my-3 text-black text-6xl font-extralight">${{number_format($yields->earned, 2)}}</h2>
+                <p class="font-light text-md text-gray-600">Total Available Yields</p>
+                <h2 class="mt-3 text-black text-3xl sm:text-5xl font-extralight">
+                    ${{number_format($yields->available, 2)}}</h2>
+                <p class="mt-6 font-light text-md text-gray-600">Total Earned Yields</p>
+                <h2 class="my-3 text-black text-3xl sm:text-5xl font-extralight">${{number_format($yields->earned, 2)}}
+                </h2>
                 <a href="{{ route('finance.wallet') }}"
                     class="mt-3 p-3 bg-gray-500 rounded-2xl text-white text-xs focus:outline-none focus:bg-gray-600">Manage
                     Balances</a>
             </div>
 
-            <div class="mt-5 nm-inset-gray-50 rounded-xl p-3">
-                <p class="font-extralight">Account Info</p>
+            <div class="mt-4 nm-inset-gray-50 rounded-2xl p-3">
+                <h4 class="my-3 font-extralight text-xl sm:text-2xl text-center">Performance Index</h4>
+                <canvas id="leveraged-stable-chartjs" class="chartjs" width="undefined" height="undefined"></canvas>
+                <script>
+                    new Chart(document.getElementById("leveraged-stable-chartjs"), {
+                            "type": "line",
+                            "data": {
+                                "labels": ["11", "15", "21", "25", "29"],
+                                "datasets": [{
+                                    "label": "Leveraged Stable",
+                                    "data": [89, 90, 89, 89, 90],
+                                    "type": "line",
+                                    "fill": true,
+                                    "borderColor": "rgb(54, 162, 255)"
+                                }]
+                            },
+                            "options": {
+                                "scales": {
+                                    "yAxes": [{
+                                        "ticks": {
+                                            "beginAtZero": true
+                                        }
+                                    }]
+                                }
+                            }
+                    });
+                </script>
+
+                <canvas id="liquidity-farming-chartjs" class="chartjs" width="undefined" height="undefined"></canvas>
+                <script>
+                    new Chart(document.getElementById("liquidity-farming-chartjs"), {
+                            "type": "line",
+                            "data": {
+                                "labels": ["11", "15", "21", "25", "29"],
+                                "datasets": [{
+                                    "label": "Liquidity Farming",
+                                    "data": [71, 80, 73, 72, 77],
+                                    "type": "line",
+                                    "fill": true,
+                                    "borderColor": "rgb(54, 162, 205)"
+                                }]
+                            },
+                            "options": {
+                                "scales": {
+                                    "yAxes": [{
+                                        "ticks": {
+                                            "beginAtZero": true
+                                        }
+                                    }]
+                                }
+                            }
+                    });
+                </script>
+
+                <hr class="my-3">
+
+                {{-- Account Info --}}
+                <h4 class="my-3 font-extralight text-xl sm:text-2xl text-center">Account Info</h4>
                 <div class="my-2 nm-inset-gray-50 rounded-full w-full h-1"></div>
 
-                <p class="mt-2 font-extralight text-sm">Active contracts: </p><span>{{$activeContracts}}</span>
-                <p class="mt-2 font-extralight text-sm">Lending contracts: </p><span>{{$activeContracts}}</span>
-                <p class="mt-2 font-extralight text-sm">Loan contracts: </p><span>0</span>
-                <p class="mt-2 font-extralight text-sm">Referrals: </p><span>{{$referrals}}</span>
+                <p class="mt-2 font-extralight text-sm">Active contracts: <span
+                        class="font-medium">{{$activeContracts}}</span></p>
+                <p class="mt-2 font-extralight text-sm">Lending contracts: <span
+                        class="font-medium">{{$activeContracts}}</span></p>
+                <p class="mt-2 font-extralight text-sm">Loan contracts: <span>0</span></p>
+                <p class="mt-2 font-extralight text-sm">Referrals: <span class="font-medium">{{$referrals}}</span>
+                </p>
             </div>
+
 
 
         </div>
@@ -144,4 +202,10 @@
 </div>
 
 
+@endsection
+
+@section('style')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.bundle.min.js"
+    integrity="sha512-SuxO9djzjML6b9w9/I07IWnLnQhgyYVSpHZx0JV97kGBfTIsUYlWflyuW4ypnvhBrslz1yJ3R+S14fdCWmSmSA=="
+    crossorigin="anonymous"></script>
 @endsection
