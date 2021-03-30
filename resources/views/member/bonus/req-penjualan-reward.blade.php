@@ -59,23 +59,20 @@
                                     @if($getData != null)
                                     @foreach($getData as $row)
                                     <?php
-                                                        $rewardFactor = 2;
-                                                        if($dataUser->pin_activate == 2) {$rewardFactor = 1;}
-                                                        if($dataUser->pin_activate == 3) {$rewardFactor = 0.5;}
-                                                        if($dataUser->pin_activate >= 4) {$rewardFactor = 0.1;}
+                                                        $rewardFactor = 1;
                                                         $kelipatan = floor(($row->month_sale_price/10000)/10) * $rewardFactor;
                                                         $reward = '--';
                                                         if($kelipatan > 0){
                                                             $reward = $kelipatan.' LMB';
-                                                            if($kelipatan > 100){
-                                                                $kelipatan = 100;
+                                                            if($kelipatan > 200){
+                                                                $kelipatan = 200;
                                                                 $reward = $kelipatan.' LMB';
                                                             }
                                                         }
                                                     ?>
                                     <tr>
                                         <td>{{$row->monthly}}</td>
-                                        <td>{{number_format($row->month_sale_price, 0, ',', '.')}}</td>
+                                        <td>Rp{{number_format($row->month_sale_price, 0, ',', '.')}}</td>
                                         <td>{{$reward}}</td>
                                         <td>
                                             @if($row->canClaim == 1)

@@ -60,22 +60,20 @@
                                             ?>
                                     @if($getData != null)
                                     @foreach($getData as $row)
-                                    <?php
-                                                $rewardFactor = 10;
-                                                if($dataUser->pin_activate == 2) {$rewardFactor = 5;}
-                                                if($dataUser->pin_activate == 3) {$rewardFactor = 2.5;}
-                                                if($dataUser->pin_activate >= 4) {$rewardFactor = 1;}
-                                                        $kelipatan = floor(($row->month_sale_price/10000)/10) * $rewardFactor;
-                                                        $reward = '--';
-                                                        if($kelipatan > 0){
-                                                            $reward = $kelipatan.' LMB';
-                                                            if($kelipatan > 50){
-                                                                $kelipatan = 50;
-                                                                $reward = $kelipatan.' LMB';
-                                                            }
-                                                        }
+                                    @php
+                                    $rewardFactor = 5;
 
-                                                    ?>
+                                    $kelipatan = floor(($row->month_sale_price/10000)/10) * $rewardFactor;
+                                    $reward = '--';
+
+                                    if($kelipatan > 0){
+                                    $reward = $kelipatan.' LMB';
+                                    if($kelipatan > 25){
+                                    $kelipatan = 25;
+                                    $reward = $kelipatan.' LMB';
+                                    }
+                                    }
+                                    @endphp
                                     <tr>
                                         @if(date('Y-m', strtotime($row->year.'-'.$row->month)) >= date('Y-m',
                                         strtotime($dataUser->pin_activate_at)))

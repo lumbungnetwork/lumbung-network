@@ -7,16 +7,14 @@
         <form id="form-add" method="POST" action="/m/request/belanja-reward">
             {{ csrf_field() }}
             <?php
-                $rewardFactor = 10;
-                if($dataUser->pin_activate == 2) {$rewardFactor = 5;}
-                if($dataUser->pin_activate == 3) {$rewardFactor = 2.5;}
-                if($dataUser->pin_activate >= 4) {$rewardFactor = 1;}
+                $rewardFactor = 5;
+                
                     $kelipatan = floor(($data->month_sale_price/10000)/10) * $rewardFactor;
                     $reward = '--';
                     if($kelipatan > 0){
                         $reward = $kelipatan;
-                        if($kelipatan > 50){
-                            $kelipatan = 50;
+                        if($kelipatan > 25){
+                            $kelipatan = 25;
                             $reward = $kelipatan;
                         }
                     }

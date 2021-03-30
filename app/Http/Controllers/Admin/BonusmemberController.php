@@ -532,19 +532,12 @@ class BonusmemberController extends Controller
         if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $active_at = $dataUser->active_at;
-        if ($dataUser->pin_activate_at != null) {
-            $active_at = $dataUser->pin_activate_at;
+        // Check if expired
+        if ($dataUser->expired_at < date('Y-m-d', strtotime('Today +1 minute'))) {
+            Alert::error('Oops!', 'Keanggotaan anda sudah EXPIRED!');
+            return redirect()->route('mainDashboard');
         }
-        $future =  strtotime('+1 years', strtotime($active_at));
-        $timefromdb = time();
-        $timeleft = $future - $timefromdb;
-        $daysleft = round((($timeleft / 24) / 60) / 60);
-        if ($daysleft <= 0) {
-            return redirect()->route('m_newPin')
-                ->with('message', 'Keanggotaan anda telah EXPIRED, silakan beli pin untuk Resubscribe')
-                ->with('messageclass', 'danger');
-        }
+
         $modelSales = new Sales;
         $modelBonus = new Bonus;
         //        $getData = $modelSales->getMemberMasterSalesMonthlyTerbaru($dataUser->id);
@@ -589,25 +582,31 @@ class BonusmemberController extends Controller
         if (!in_array($dataUser->user_type, $onlyUser)) {
             return redirect()->route('mainDashboard');
         }
-        $active_at = $dataUser->active_at;
-        if ($dataUser->pin_activate_at != null) {
-            $active_at = $dataUser->pin_activate_at;
+        if ($dataUser->expired_at < date('Y-m-d', strtotime('Today +1 minute'))) {
+            Alert::error('Oops!', 'Keanggotaan anda sudah EXPIRED!');
+            return redirect()->route('mainDashboard');
         }
-        $future =  strtotime('+1 years', strtotime($active_at));
-        $timefromdb = time();
-        $timeleft = $future - $timefromdb;
-        $daysleft = round((($timeleft / 24) / 60) / 60);
-        if ($daysleft <= 0) {
-            return redirect()->route('m_newPin')
-                ->with('message', 'Keanggotaan anda telah EXPIRED, silakan beli pin untuk Resubscribe')
-                ->with('messageclass', 'danger');
-        }
+
         $modelSales = new Sales;
         $modelBonus = new Bonus;
         $getData = $modelSales->getMemberMasterSalesMonthYear($dataUser->id, $request->month, $request->year);
+        $rewardFactor = 5;
+
+        $kelipatan = floor(($getData->month_sale_price / 10000) / 10) * $rewardFactor;
+        $reward = 0;
+        if ($kelipatan > 0) {
+            $reward = $kelipatan;
+            if ($kelipatan > 25) {
+                $kelipatan = 25;
+                $reward = $kelipatan;
+            }
+        } else {
+            Alert::error('Failed!', 'Insuficient Reward');
+            return redirect()->back();
+        }
         $dataInsert = array(
             'user_id' => $dataUser->id,
-            'reward' => $request->reward,
+            'reward' => $reward,
             'month' => $request->month,
             'year' => $request->year,
             'belanja_date' => $request->year . '-' . $request->month . '-01',
@@ -615,9 +614,8 @@ class BonusmemberController extends Controller
         );
         $getRewardId = $modelBonus->getInsertBelanjaReward($dataInsert);
         SendLMBRewardJualBeliJob::dispatch($getRewardId->lastID)->onQueue('tron');
-        return redirect()->route('m_BelanjaReward')
-            ->with('message', 'Claim Reward Belanja berhasil')
-            ->with('messageclass', 'success');
+        Alert::success('Berhasi!', 'Claim Reward Belanja Berhasil');
+        return redirect()->back();
     }
 
     public function getPenjualanReward()
@@ -683,9 +681,22 @@ class BonusmemberController extends Controller
         $modelSales = new Sales;
         $modelBonus = new Bonus;
         $getData = $modelSales->getStockistPenjualanMonthYear($dataUser->id, $request->month, $request->year);
+        $rewardFactor = 1;
+        $kelipatan = floor(($getData->month_sale_price / 10000) / 10) * $rewardFactor;
+        $reward = 0;
+        if ($kelipatan > 0) {
+            $reward = $kelipatan;
+            if ($kelipatan > 200) {
+                $kelipatan = 200;
+                $reward = $kelipatan;
+            }
+        } else {
+            Alert::error('Failed', 'Insuficient Reward');
+            return redirect()->back();
+        }
         $dataInsert = array(
             'user_id' => $dataUser->id,
-            'reward' => $request->reward,
+            'reward' => $reward,
             'month' => $request->month,
             'year' => $request->year,
             'belanja_date' => $request->year . '-' . $request->month . '-01',
@@ -694,9 +705,8 @@ class BonusmemberController extends Controller
         );
         $getRewardId = $modelBonus->getInsertBelanjaReward($dataInsert);
         SendLMBRewardJualBeliJob::dispatch($getRewardId->lastID)->onQueue('tron');
-        return redirect()->route('m_PenjualanReward')
-            ->with('message', 'Claim Reward Penjualan berhasil')
-            ->with('messageclass', 'success');
+        Alert::success('Berhasil!', 'Claim Reward Penjualan Berhasil');
+        return redirect()->back();
     }
 
     public function postRequestTopupSaldo(Request $request)
