@@ -271,8 +271,7 @@ class DashboardController extends Controller
         $totalBonus = $modelBonus->getTotalBonus($dataUser);
         $totalWD = $modelWD->getTotalDiTransfer($dataUser);
         $totalWDeIDR = $modelWD->getTotalDiTransfereIDR($dataUser);
-        $totalBonusRoyalti = $modelBonus->getTotalBonusRoyalti($dataUser);
-        $totalWDRoyalti = $modelWD->getTotalDiTransferRoyalti($dataUser);
+        $totalBonusRoyalty = $modelBonus->getTotalBonusRoyalti($dataUser->id);
         $dataAll = (object) array(
             'local_wallet' => $localWallet,
             'trx_balance' => $trxBalance,
@@ -288,14 +287,11 @@ class DashboardController extends Controller
             'total_tunda_eidr' => $totalWDeIDR->total_tunda,
             'total_fee_admin_eidr' => $totalWDeIDR->total_fee_admin,
             'fee_tuntas_eidr' => $totalWDeIDR->fee_tuntas,
-            'fee_tunda_eidr' => $totalWDeIDR->fee_tunda,
-            'total_bonus_ro' => floor($totalBonusRoyalti->total_bonus),
-            'total_wd_ro' => $totalWDRoyalti->total_wd,
-            'total_tunda_ro' => $totalWDRoyalti->total_tunda,
-            'total_fee_admin_ro' => $totalWDRoyalti->total_fee_admin,
+            'fee_tunda_eidr' => $totalWDeIDR->fee_tunda
         );
         return view('member.home.wallet')
             ->with('dataAll', $dataAll)
+            ->with(compact('totalBonusRoyalty'))
             ->with('dataUser', $dataUser);
     }
 

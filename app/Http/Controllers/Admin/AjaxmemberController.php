@@ -18,6 +18,7 @@ use App\Model\Bonus;
 use App\Model\Transaction;
 use App\Model\Sales;
 use App\Model\Bonussetting;
+use App\BonusRoyalty;
 use App\Product;
 use App\Category;
 use App\User;
@@ -36,6 +37,7 @@ use NotificationChannels\Telegram\TelegramChannel;
 use App\Notifications\StockistNotification;
 use App\Notifications\VendorNotification;
 use App\Jobs\UserClaimDividendJob;
+use App\Jobs\SendLMBClaimRoyaltyJob;
 use Throwable;
 
 class AjaxmemberController extends Controller
@@ -3106,6 +3108,30 @@ class AjaxmemberController extends Controller
             }
         } else {
             return response()->json(['success' => false, 'message' => 'Nominal Transfer Salah!']);
+        }
+    }
+
+    public function postClaimRoyalty()
+    {
+        $user = Auth::user();
+        $modelBonus = new Bonus;
+        $bonusRoyalty = $modelBonus->getTotalBonusRoyalti($user->id);
+        if ($bonusRoyalty->net > 0) {
+            // Substract bonus balance
+            $bonus = BonusRoyalty::create([
+                'user_id' => $user->id,
+                'amount' => $bonusRoyalty->net,
+                'bonus_date' => date('Y-m-d'),
+                'status' => 1,
+                'hash' => 'Processing'
+            ]);
+            // Dispatch
+            SendLMBClaimRoyaltyJob::dispatch($user->id, $bonus->id)->onQueue('tron');
+            sleep(3);
+
+            return response()->json(['success' => true, 'message' => 'Berhasil Claim Bonus Royalty!']);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Tidak cukup saldo bonus!']);
         }
     }
 }

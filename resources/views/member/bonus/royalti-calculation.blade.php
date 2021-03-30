@@ -96,7 +96,7 @@
                                 <div class="col-6">
                                     <div class="rounded-lg shadow bg-white p-2">
                                         <dd>Total Bonus</dd>
-                                        <h6 class="text-warning">Rp{{number_format(count($getData) * 500)}}</h6>
+                                        <h6 class="text-warning">{{number_format(count($getData) * 2)}} LMB</h6>
                                     </div>
                                 </div>
                             </div>

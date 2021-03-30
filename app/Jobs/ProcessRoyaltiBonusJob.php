@@ -10,6 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use App\Model\Member;
 use App\Model\Bonus;
 use App\Model\Sales;
+use App\BonusRoyalty;
 
 class ProcessRoyaltiBonusJob implements ShouldQueue
 {
@@ -48,8 +49,8 @@ class ProcessRoyaltiBonusJob implements ShouldQueue
         );
 
         $min_belanja = 100000;
-        $bonus_royalti = 500;
-        $maxGetBonus = 4;
+        $bonus_royalti = 2; // 2 LMB per node
+        $maxGetBonus = 4; // matrix pow(4, n) n = level, max 7 level
         $getLevelSp = $modelMember->getLevelSponsoring($this->user_id);
 
         if ($getLevelSp->id_lvl1 != null) {
@@ -57,16 +58,13 @@ class ProcessRoyaltiBonusJob implements ShouldQueue
             if ($getCekBelanja1 == true) {
                 $cekMax1 = $modelBonus->getCekNewBonusRoyaltiMax($getLevelSp->id_lvl1, 1, $maxGetBonus, $getBonusMonth);
                 if ($cekMax1 == true) {
-                    $dataInsertBonusLvl1 = array(
+                    BonusRoyalty::create([
                         'user_id' => $getLevelSp->id_lvl1,
                         'from_user_id' => $this->user_id,
-                        'type' => 3,
-                        'bonus_price' => $bonus_royalti,
+                        'amount' => $bonus_royalti,
                         'bonus_date' => date('Y-m-01'),
-                        'poin_type' => 1,
-                        'level_id' => 1,
-                    );
-                    $modelBonus->getInsertBonusMember($dataInsertBonusLvl1);
+                        'level_id' => 1
+                    ]);
                 }
             }
         }
@@ -76,16 +74,13 @@ class ProcessRoyaltiBonusJob implements ShouldQueue
             if ($getCekBelanja2 == true) {
                 $cekMax2 = $modelBonus->getCekNewBonusRoyaltiMax($getLevelSp->id_lvl2, 2, $maxGetBonus, $getBonusMonth);
                 if ($cekMax2 == true) {
-                    $dataInsertBonusLvl2 = array(
-                        'user_id' => $getLevelSp->id_lvl2,
+                    BonusRoyalty::create([
+                        'user_id' => $getLevelSp->id_lvl1,
                         'from_user_id' => $this->user_id,
-                        'type' => 3,
-                        'bonus_price' => $bonus_royalti,
+                        'amount' => $bonus_royalti,
                         'bonus_date' => date('Y-m-01'),
-                        'poin_type' => 1,
-                        'level_id' => 2,
-                    );
-                    $modelBonus->getInsertBonusMember($dataInsertBonusLvl2);
+                        'level_id' => 2
+                    ]);
                 }
             }
         }
@@ -95,16 +90,13 @@ class ProcessRoyaltiBonusJob implements ShouldQueue
             if ($getCekBelanja3 == true) {
                 $cekMax3 = $modelBonus->getCekNewBonusRoyaltiMax($getLevelSp->id_lvl3, 3, $maxGetBonus, $getBonusMonth);
                 if ($cekMax3 == true) {
-                    $dataInsertBonusLvl3 = array(
-                        'user_id' => $getLevelSp->id_lvl3,
+                    BonusRoyalty::create([
+                        'user_id' => $getLevelSp->id_lvl1,
                         'from_user_id' => $this->user_id,
-                        'type' => 3,
-                        'bonus_price' => $bonus_royalti,
+                        'amount' => $bonus_royalti,
                         'bonus_date' => date('Y-m-01'),
-                        'poin_type' => 1,
-                        'level_id' => 3,
-                    );
-                    $modelBonus->getInsertBonusMember($dataInsertBonusLvl3);
+                        'level_id' => 3
+                    ]);
                 }
             }
         }
@@ -114,16 +106,13 @@ class ProcessRoyaltiBonusJob implements ShouldQueue
             if ($getCekBelanja4 == true) {
                 $cekMax4 = $modelBonus->getCekNewBonusRoyaltiMax($getLevelSp->id_lvl4, 4, $maxGetBonus, $getBonusMonth);
                 if ($cekMax4 == true) {
-                    $dataInsertBonusLvl4 = array(
-                        'user_id' => $getLevelSp->id_lvl4,
+                    BonusRoyalty::create([
+                        'user_id' => $getLevelSp->id_lvl1,
                         'from_user_id' => $this->user_id,
-                        'type' => 3,
-                        'bonus_price' => $bonus_royalti,
+                        'amount' => $bonus_royalti,
                         'bonus_date' => date('Y-m-01'),
-                        'poin_type' => 1,
-                        'level_id' => 4,
-                    );
-                    $modelBonus->getInsertBonusMember($dataInsertBonusLvl4);
+                        'level_id' => 4
+                    ]);
                 }
             }
         }
@@ -133,16 +122,13 @@ class ProcessRoyaltiBonusJob implements ShouldQueue
             if ($getCekBelanja5 == true) {
                 $cekMax5 = $modelBonus->getCekNewBonusRoyaltiMax($getLevelSp->id_lvl5, 5, $maxGetBonus, $getBonusMonth);
                 if ($cekMax5 == true) {
-                    $dataInsertBonusLvl5 = array(
-                        'user_id' => $getLevelSp->id_lvl5,
+                    BonusRoyalty::create([
+                        'user_id' => $getLevelSp->id_lvl1,
                         'from_user_id' => $this->user_id,
-                        'type' => 3,
-                        'bonus_price' => $bonus_royalti,
+                        'amount' => $bonus_royalti,
                         'bonus_date' => date('Y-m-01'),
-                        'poin_type' => 1,
-                        'level_id' => 5,
-                    );
-                    $modelBonus->getInsertBonusMember($dataInsertBonusLvl5);
+                        'level_id' => 5
+                    ]);
                 }
             }
         }
@@ -152,16 +138,13 @@ class ProcessRoyaltiBonusJob implements ShouldQueue
             if ($getCekBelanja6 == true) {
                 $cekMax6 = $modelBonus->getCekNewBonusRoyaltiMax($getLevelSp->id_lvl6, 6, $maxGetBonus, $getBonusMonth);
                 if ($cekMax6 == true) {
-                    $dataInsertBonusLvl6 = array(
-                        'user_id' => $getLevelSp->id_lvl6,
+                    BonusRoyalty::create([
+                        'user_id' => $getLevelSp->id_lvl1,
                         'from_user_id' => $this->user_id,
-                        'type' => 3,
-                        'bonus_price' => $bonus_royalti,
+                        'amount' => $bonus_royalti,
                         'bonus_date' => date('Y-m-01'),
-                        'poin_type' => 1,
-                        'level_id' => 6,
-                    );
-                    $modelBonus->getInsertBonusMember($dataInsertBonusLvl6);
+                        'level_id' => 6
+                    ]);
                 }
             }
         }
@@ -171,16 +154,13 @@ class ProcessRoyaltiBonusJob implements ShouldQueue
             if ($getCekBelanja7 == true) {
                 $cekMax7 = $modelBonus->getCekNewBonusRoyaltiMax($getLevelSp->id_lvl7, 7, $maxGetBonus, $getBonusMonth);
                 if ($cekMax7 == true) {
-                    $dataInsertBonusLvl7 = array(
-                        'user_id' => $getLevelSp->id_lvl7,
+                    BonusRoyalty::create([
+                        'user_id' => $getLevelSp->id_lvl1,
                         'from_user_id' => $this->user_id,
-                        'type' => 3,
-                        'bonus_price' => $bonus_royalti,
+                        'amount' => $bonus_royalti,
                         'bonus_date' => date('Y-m-01'),
-                        'poin_type' => 1,
-                        'level_id' => 7,
-                    );
-                    $modelBonus->getInsertBonusMember($dataInsertBonusLvl7);
+                        'level_id' => 7
+                    ]);
                 }
             }
         }

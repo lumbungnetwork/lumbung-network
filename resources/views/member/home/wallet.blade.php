@@ -203,22 +203,19 @@
                         <div class="col-6 mb-3">
                             <div class="rounded-lg shadow p-2">
                                 <p>
-                                    Saldo Bonus Royalti:
+                                    Saldo Bonus Royalty:
                                 </p>
-                                @php
-                                $saldoRO = $dataAll->total_bonus_ro - $dataAll->total_wd_ro - $dataAll->total_tunda_ro -
-                                $dataAll->total_fee_admin_ro;
-                                if($saldo < 0){ $saldo=0; } @endphp <h6 class="text-warning">Rp
-                                    {{number_format($saldoRO, 0, ',', '.')}}</h6>
+                                <h6 class="text-warning">
+                                    {{number_format($totalBonusRoyalty->net)}} LMB</h6>
                             </div>
                         </div>
                         <div class="col-3 mb-3">
-                            <a href="{{ URL::to('/') }}/m/req/wd-royalti" class="text-decoration-none">
+                            <a onclick="withdrawRoyalty()" class="text-decoration-none">
                                 <div class="rounded icon-ppob text-center">
                                     <div class="box-icon bg-green text-center">
                                         <i class="mdi mdi-console-network-outline icon-menu"></i>
                                     </div>
-                                    <dd>Withdraw Royalti</dd>
+                                    <dd>Claim Royalty</dd>
                                 </div>
                             </a>
                         </div>
@@ -228,7 +225,7 @@
                                     <div class="box-icon bg-green text-center">
                                         <i class="mdi mdi-axis-arrow icon-menu"></i>
                                     </div>
-                                    <dd>Kalkulasi Royalti</dd>
+                                    <dd>Kalkulasi Royalty</dd>
                                 </div>
                             </a>
                         </div>
@@ -347,6 +344,50 @@
 <script src="{{ asset('asset_new/js/sidebar.js') }}"></script>
 <script>
     let _token = '{{ csrf_token() }}';
+
+    function withdrawRoyalty() {
+        Swal.fire({
+            title: 'Withdraw Royalti',
+            text: "LMB akan ditarik ke alamat TRON anda",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: 'Tunda',
+            confirmButtonText: 'Ya!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire('Processing...');
+                swal.showLoading();
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('ajax.postClaimRoyalty') }}",
+                    data: {
+                        _token:_token
+                    },
+                    success: function(response){
+                        if(response.success) {
+                            Swal.fire(
+                            'Berhasil',
+                            response.message,
+                            'success'
+                            )
+                            setTimeout(function() {
+                            window.location.reload(true);
+                            }, 2000)
+                        } else {
+                            Swal.fire(
+                            'Gagal',
+                            response.message,
+                            'error'
+                            )
+                        }
+
+                    }
+                })
+            }
+        })
+    }
 
         $('#is_active_switch').click(function(){
             if($(this).is(':checked')){

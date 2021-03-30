@@ -262,40 +262,29 @@ class Bonus extends Model
         return $return;
     }
 
-    public function getTotalBonusRoyalti($data)
+    public function getTotalBonusRoyalti($user_id)
     {
-        $sql = DB::table('bonus_member')
-            ->selectRaw('sum(bonus_price) as total_bonus')
-            ->where('user_id', '=', $data->id)
-            ->where('type', '=', 3)
-            ->where('poin_type', '=', 1)
-            ->first();
-        $total_bonus = 0;
-        if ($sql->total_bonus != null) {
-            $total_bonus = $sql->total_bonus;
-        }
-        $return = (object) array(
-            'total_bonus' => $total_bonus
-        );
-        return $return;
-    }
-
-    public function getCekBonusRoyaltiMax($id, $level, $maxBonus)
-    {
-        $return = true;
-        if ($id > 11) {
-            $sql = DB::table('bonus_member')
-                ->selectRaw('count(id) as total_max')
-                ->where('user_id', '=', $id)
-                ->where('type', '=', 3)
-                ->where('level_id', '=', $level)
+        try {
+            $sql = DB::table('bonus_royalties')
+                ->selectRaw('
+                sum(case when status = 0 then amount else 0 end) as credited,
+                sum(case when status = 1 then amount else 0 end) as claimed
+            ')
+                ->where('user_id', '=', $user_id)
                 ->first();
-            if ($sql->total_max != null) {
-                if ($sql->total_max >= pow($maxBonus, $level)) {
-                    $return = false;
-                }
-            }
+            $return = (object) [
+                'credited' => $sql->credited,
+                'claimed' => $sql->claimed,
+                'net' => $sql->credited - $sql->claimed
+            ];
+        } catch (\Throwable $th) {
+            $return = (object) [
+                'credited' => 0,
+                'claimed' => 0,
+                'net' => 0
+            ];
         }
+
         return $return;
     }
 
@@ -303,10 +292,9 @@ class Bonus extends Model
     {
         $return = true;
         if ($id > 11) {
-            $sql = DB::table('bonus_member')
+            $sql = DB::table('bonus_royalties')
                 ->selectRaw('count(id) as total_max')
                 ->where('user_id', '=', $id)
-                ->where('type', '=', 3)
                 ->whereDate('bonus_date', '>=', $date->startDay)
                 ->whereDate('bonus_date', '<=', $date->endDay)
                 ->where('level_id', '=', $level)
@@ -343,7 +331,7 @@ class Bonus extends Model
             ->join('users', 'bonus_member.from_user_id', '=', 'users.id')
             ->selectRaw('bonus_member.bonus_price, bonus_member.bonus_date, users.name, users.user_code, bonus_member.level_id')
             ->where('bonus_member.user_id', '=', $data->id)
-            ->where('bonus_member.type', '=', 3)
+            ->where('bonus_member.type', '=', 4)
             ->where('bonus_member.poin_type', '=', 1)
             ->orderBy('bonus_member.id', 'DESC')
             ->get();
@@ -356,15 +344,13 @@ class Bonus extends Model
 
     public function getBonusRoyaltiCalculation($user_id, $date)
     {
-        $sql = DB::table('bonus_member')
-            ->join('users', 'bonus_member.from_user_id', '=', 'users.id')
-            ->selectRaw('users.user_code, bonus_member.level_id')
-            ->where('bonus_member.user_id', '=', $user_id)
-            ->where('bonus_member.type', '=', 3)
-            ->where('bonus_member.bonus_date', '=', $date . '-01')
-            ->where('bonus_member.poin_type', '=', 1)
-            ->orderBy('bonus_member.level_id', 'ASC')
-            ->groupBy('bonus_member.id')
+        $sql = DB::table('bonus_royalties')
+            ->join('users', 'bonus_royalties.from_user_id', '=', 'users.id')
+            ->selectRaw('users.user_code, bonus_royalties.level_id')
+            ->where('bonus_royalties.user_id', '=', $user_id)
+            ->where('bonus_royalties.bonus_date', '=', $date . '-01')
+            ->orderBy('bonus_royalties.level_id', 'ASC')
+            ->groupBy('bonus_royalties.id')
             ->get();
         $return = null;
         if (count($sql) > 0) {

@@ -607,6 +607,9 @@ Route::domain('member.' . Config::get('services.app.url'))->group(function () {
 
         //Resubscribe
         Route::post('/m/ajax/confirm-resubscribe', 'Admin\AjaxmemberController@postResubscribe')->middleware('auth');
+
+        // Claim Bonus Royalty
+        Route::post('/m/ajax/claim-royalty', 'Admin\AjaxmemberController@postClaimRoyalty')->name('ajax.postClaimRoyalty')->middleware('auth');
     });
 });
 
