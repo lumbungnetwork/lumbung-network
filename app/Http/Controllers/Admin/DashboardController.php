@@ -355,10 +355,12 @@ class DashboardController extends Controller
         }
 
         $modelBonus = new Bonus;
+        $totalStakedLMB = $modelBonus->getStakedLMB();
         $stakers = $modelBonus->getAllStakersLeaderboard();
 
         return view('member.home.staking-leaderboard')
             ->with('headerTitle', 'Staking Leaderboard')
+            ->with(compact('totalStakedLMB'))
             ->with(compact('stakers'));
     }
 

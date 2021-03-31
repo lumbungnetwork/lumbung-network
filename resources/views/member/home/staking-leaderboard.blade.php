@@ -24,6 +24,19 @@
                 <div class="rounded-lg bg-white p-3 mb-3">
                     <h5 class="mb-3">{{$headerTitle}}</h5>
 
+                    <div class="mt-2 mb-4 card shadow-lg bg-white p-3">
+                        <p>Total Staked LMB</p>
+
+                        <h4 class="mt-2 mb-4 text-right">
+                            {{number_format(round($totalStakedLMB, 2, PHP_ROUND_HALF_DOWN), 2)}}
+                            LMB</h4>
+                        <p class="mt-2" style="font-size: 16px">Staking Address: <a class="text-warning"
+                                style="font-size: 12px;"
+                                href="https://tronscan.org/#/address/TY8JfoCbsJ4qTh1r9HBtmZ88xQLsb6MKuZ">TY8JfoCbsJ4qTh1r9HBtmZ88xQLsb6MKuZ</a>
+                        </p>
+
+                    </div>
+
                     <div class="table-responsive">
                         <table id="datatable" class="table table-striped" style="width:100%;">
                             <thead>
