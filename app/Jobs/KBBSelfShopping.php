@@ -10,6 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use App\Product;
 use App\Model\Sales;
+use App\Model\Bonus;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Config;
 
@@ -60,7 +61,7 @@ class KBBSelfShopping implements ShouldQueue
         }
 
         $total_price = $this->quantity * $product->price;
-        $royalti = 4 / 100 * $total_price;
+        $royalti = 2 / 100 * $total_price;
 
         $tron = $controller->getTron();
         $tron->setPrivateKey(Config::get('services.eidr.kbbmaster'));
@@ -87,7 +88,7 @@ class KBBSelfShopping implements ShouldQueue
         //cleanup
         if ($response['result'] == true) {
             //fail check
-            sleep(5);
+            sleep(10);
             try {
                 $tron->getTransaction($response['txid']);
             } catch (TronException $e) {
@@ -117,6 +118,15 @@ class KBBSelfShopping implements ShouldQueue
                 'master_sales_id' => $insertMasterSales->lastID
             );
             $insertSales = $modelSales->getInsertSales($dataInsert);
+
+            $modelBonus = new Bonus;
+            $modelBonus->insertLMBDividend([
+                'amount' => $royalti / 2,
+                'type' => 1,
+                'status' => 1,
+                'source_id' => $insertMasterSales->lastID,
+                'created_at' => date('Y-m-d H:i:s')
+            ]);
 
             sleep(3);
 

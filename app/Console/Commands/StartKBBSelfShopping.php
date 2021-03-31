@@ -48,14 +48,7 @@ class StartKBBSelfShopping extends Command
             ->where('products.type', '=', 1)
             ->get();
 
-        $stockists = DB::table('users')->select('users.id')
-            ->where('users.affiliate', 1)->take(20)->get();
-
-        $stockistIDs = [];
-
-        foreach ($stockists as $stockist) {
-            $stockistIDs[] = $stockist->id;
-        }
+        $stockistIDs = [4088, 4092, 4094, 4095, 4098];
 
         $id = 0; //for stockist iteration
 
@@ -64,7 +57,7 @@ class StartKBBSelfShopping extends Command
         $i = 0; //for accounts iteration
 
         foreach ($accounts as $account) {
-            if ($i == 50) {
+            if ($i == 200) {
                 $id++;
                 $i = 0;
             }
