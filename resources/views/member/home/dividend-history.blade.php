@@ -86,7 +86,7 @@
     $(document).ready(function() {
         $('#datatable').DataTable({
             lengthChange: false,
-            
+            order: [0, 'desc']
         });
 
     } );

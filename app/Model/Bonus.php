@@ -99,6 +99,7 @@ class Bonus extends Model
         return DB::table('users_dividend')
             ->select('date', 'amount', 'type')
             ->where('user_id', $id)
+            ->orderByDesc('date')
             ->get();
     }
 
