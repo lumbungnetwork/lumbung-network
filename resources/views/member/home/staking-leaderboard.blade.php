@@ -42,7 +42,11 @@
                                 @endphp
                                 <tr>
                                     <td>{{$no}}</td>
-                                    <td>{{$staker->user_code}}</td>
+                                    <td> @if ($staker->user_code == 'lumbung001')
+                                        LumbungCustody
+                                        @else
+                                        {{$staker->user_code}}
+                                        @endif </td>
                                     <td>{{number_format($staker->net, 2)}}</td>
 
                                 </tr>
