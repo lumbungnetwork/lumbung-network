@@ -262,6 +262,20 @@ class Bonus extends Model
         );
         return $return;
     }
+    public function getOldTotalBonusRoyalti($user_id)
+    {
+        $sql = DB::table('bonus_member')
+            ->selectRaw('sum(bonus_price) as total_bonus')
+            ->where('user_id', '=', $user_id)
+            ->where('type', '=', 3)
+            ->where('poin_type', '=', 1)
+            ->first();
+        $total_bonus = 0;
+        if ($sql->total_bonus != null) {
+            $total_bonus = $sql->total_bonus;
+        }
+        return $total_bonus;
+    }
 
     public function getTotalBonusRoyalti($user_id)
     {

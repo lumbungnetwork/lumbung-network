@@ -27,6 +27,9 @@
                         </div>
                     </div>
                     <br>
+                    <a class="float-right text-info" href="{{ route('m_requestWDRoyalti') }}">Legacy
+                        Royalty</a>
+                    <div class="mt-3 clearfix"></div>
                     <div class="row">
                         <div class="col-12">
                             <div class="card">

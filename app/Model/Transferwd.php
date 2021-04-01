@@ -187,7 +187,7 @@ class Transferwd extends Model
                 . 'sum(case when status = 1 then admin_fee else 0 end) as fee_tuntas,'
                 . 'sum(case when status = 0 then admin_fee else 0 end) as fee_tunda')
             ->where('user_id', '=', $data->id)
-            ->where('type', '=', 4)
+            ->where('type', '=', 3)
             ->first();
         $total_wd = 0;
         if ($sql->total_wd != null) {

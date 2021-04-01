@@ -295,10 +295,10 @@ class BonusmemberController extends Controller
         }
         $modelBonus = new Bonus;
         $modelWD = new Transferwd;
-        $totalBonus = $modelBonus->getTotalBonusRoyalti($dataUser);
+        $totalBonus = $modelBonus->getOldTotalBonusRoyalti($dataUser->id);
         $totalWD = $modelWD->getTotalDiTransferRoyalti($dataUser);
         $dataAll = (object) array(
-            'total_bonus' => floor($totalBonus->total_bonus),
+            'total_bonus' => floor($totalBonus),
             'total_wd' => $totalWD->total_wd,
             'total_tunda' => $totalWD->total_tunda,
             'admin_fee' => 6500,
