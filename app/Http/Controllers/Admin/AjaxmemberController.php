@@ -1136,7 +1136,7 @@ class AjaxmemberController extends Controller
         $modelBonus = new Bonus;
         $modelWD = new Transferwd;
         $totalBonus = $request->input_jml_wd; //$modelBonus->getTotalBonus($dataUser);
-        $totalBonusAll = $modelBonus->getTotalBonusRoyalti($dataUser);
+        $totalBonusAll = $modelBonus->getOldTotalBonusRoyalti($dataUser->id);
         $totalWD = $modelWD->getTotalDiTransferRoyalti($dataUser);
         $totalWDeIDR = $modelWD->getTotalDiTransferRoyaltieIDR($dataUser);
         $dataAll = (object) array(
@@ -1146,7 +1146,7 @@ class AjaxmemberController extends Controller
             'total_tunda' => $totalWD->total_tunda,
             'total_wd_eidr' => $totalWDeIDR->total_wd,
             'total_tunda_eidr' => $totalWDeIDR->total_tunda,
-            'saldo' => (int) ($totalBonusAll->total_bonus - ($totalWD->total_wd + $totalWD->total_tunda + $totalWD->total_fee_admin + $totalWDeIDR->total_wd + $totalWDeIDR->total_tunda + $totalWDeIDR->total_fee_admin)),
+            'saldo' => (int) ($totalBonusAll - ($totalWD->total_wd + $totalWD->total_tunda + $totalWD->total_fee_admin + $totalWDeIDR->total_wd + $totalWDeIDR->total_tunda + $totalWDeIDR->total_fee_admin)),
             'admin_fee' => 3000,
             'affiliate' => $dataUser->affiliate,
             'tron' => $dataUser->tron

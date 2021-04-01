@@ -356,9 +356,8 @@ class BonusmemberController extends Controller
         );
         $result = $modelWD->getInsertWD($dataInsert);
         WDRoyaltiByeIDRjob::dispatch($result->lastID)->onQueue('tron');
-        return redirect()->route('mainWallet')
-            ->with('message', 'Request Withdraw Royalti via eIDR Berhasil')
-            ->with('messageclass', 'success');
+        Alert::success('Berhasil!', 'Withdraw Bonus Royalti Telah Berhasil');
+        return redirect()->route('mainWallet');
     }
 
     public function getRequestWithdrawaleIDR()
