@@ -74,7 +74,7 @@
                             if ($contract->strategy == 2) {
                             $strategy = 'Liquidity Yield Farming (365 days staging)';
 
-                            $progress = round($days * (365 / 100),2);
+                            $progress = round(($days / 365) * 100 , 2);
 
                             if ($progress < 3) { $progress=3; } } @endphp <div
                                 class="flex items-end justify-between py-2">
@@ -84,11 +84,13 @@
                                 </p>
                         </div>
 
-
+                        @if ($contract->strategy == 2)
                         <div class="h-3 relative max-w-xl rounded-full overflow-hidden">
                             <div class="w-full h-full nm-inset-gray-50 absolute"></div>
                             <div class="h-full bg-green-500 absolute" style="width:{{$progress}}%"></div>
                         </div>
+                        @endif
+
 
                         <div class="py-2">
                             <p class=" text-gray-600 text-md font-light">Strategy: </p>

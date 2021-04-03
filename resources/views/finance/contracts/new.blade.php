@@ -48,7 +48,7 @@
                     <div class="mt-4 nm-convex-gray-50 rounded-xl p-6 w-full">
                         <h4 class="mt-6 font-light text-xl text-gray-700">Pick your strategy:</h4>
                         <div class="mt-2 nm-inset-gray-50 rounded-xl p-2">
-                            <select class="w-full focus:outline-none" name="strategy" id="strategy">
+                            <select class="w-full focus:outline-none bg-transparent" name="strategy" id="strategy">
                                 <option value="0" id="strategy-placeholder" selected>
                                     Pick Strategy</option>
                                 <option value="1">Leveraged Stable (Perpetual)</option>
