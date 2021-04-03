@@ -51,9 +51,7 @@
                     <div class="flex items-center justify-center">
                         <a href="/login"
                             class="mr-5 text-lg font-medium text-true-gray-800 hover:text-cool-gray-700 transition duration-150 ease-in-out">Login</a>
-                        <a href="{{ route('finance.register') }}"
-                            class="px-6 py-3 rounded-3xl font-medium bg-gradient-to-b from-gray-900 to-black text-white outline-none focus:outline-none hover:shadow-md hover:from-true-gray-900 transition duration-200 ease-in-out">Sign
-                            Up</a>
+
                     </div>
                 </div>
                 <!-- /nav -->
