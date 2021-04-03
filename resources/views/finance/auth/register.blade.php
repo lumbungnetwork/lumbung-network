@@ -29,7 +29,7 @@
                     <label for="username" class="text-gray-500">Username</label>
                     <div class="mt-2 nm-inset-gray-50 rounded-xl p-2 ">
                         <input type="text" class="w-full focus:outline-none bg-transparent" name="username"
-                            id="username" required>
+                            placeholder="no" id="username" required>
                     </div>
                     @error('username')
                     <div class="text-red-600">{{ $message }}</div>

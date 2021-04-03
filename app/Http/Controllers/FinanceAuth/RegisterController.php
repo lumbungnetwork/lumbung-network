@@ -79,7 +79,7 @@ class RegisterController extends Controller
     public function postRegister(Request $request)
     {
         $validated = $request->validate([
-            'username' => 'required|unique:finances|max:32',
+            'username' => 'required|unique:finances|max:32|alpha_dash',
             'email' => 'required|email:filter',
             'password' => 'required|confirmed|max:125',
             'g-recaptcha-response' => 'required|captcha'
