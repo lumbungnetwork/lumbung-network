@@ -5433,14 +5433,12 @@ class MemberController extends Controller
 
         $url = $getDataAPI->master_url . '/v1/transaction';
         $json = json_encode($array);
-        $cek = $modelMember->getAPIurlCheck($url, $json);
-        $arrayData = json_decode($cek, true);
 
-        if ($arrayData == null) {
-            return redirect()->back()
-                ->with('message', 'Ada gangguan koneksi, periksa jaringan internet anda, lalu ulangi kembali.')
-                ->with('messageclass', 'warning');
-        }
+        do {
+            $cek = $modelMember->getAPIurlCheck($url, $json);
+            sleep(1);
+            $arrayData = json_decode($cek, true);
+        } while ($arrayData == null);
 
         if ($arrayData['data']['status'] == 'Pending') {
             if ($getDataMaster->type >= 4 && $getDataMaster->type < 11) {
@@ -5468,17 +5466,12 @@ class MemberController extends Controller
             do {
                 $i = 0;
                 if ($i > 16) goto end;
-                sleep(3); //give it a break, brotha ;D
+                sleep(2); //give it a break, brotha ;D
                 $cek = $modelMember->getAPIurlCheck($url, $json);
+                sleep(1);
                 $arrayData = json_decode($cek, true);
                 $i++;
-
-                if ($arrayData == null) {
-                    return redirect()->back()
-                        ->with('message', 'Ada gangguan koneksi, periksa jaringan internet anda, lalu ulangi kembali.')
-                        ->with('messageclass', 'warning');
-                }
-            } while ($arrayData['data']['status'] == 'Pending');
+            } while ($arrayData['data']['status'] == 'Pending' || $arrayData == null);
         }
 
         //deliver the bad news first
