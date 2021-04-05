@@ -42,6 +42,15 @@ class AppController extends Controller
             ->with(compact('user'));
     }
 
+    public function getPlatformLiquidityDetails()
+    {
+        $user = Auth::user();
+
+        return view('finance.platform_liquidity_details')
+            ->with('title', 'Platform Liquidity Details')
+            ->with(compact('user'));
+    }
+
     // Wallet
     public function getWallet()
     {

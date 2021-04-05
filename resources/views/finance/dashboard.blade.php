@@ -34,10 +34,23 @@
                 </div>
 
                 <div class="mt-4 nm-convex-gray-50 rounded-xl p-6 text-center">
+                    <p class="text-gray-600 text-lg sm:text-2xl font-light">Total Platform Liquidity</p>
+                    <h2 class="my-4 text-black text-3xl sm:text-5xl font-extralight" id="platform_liquidity">
+
+                    </h2>
+                    <svg class="animate-spin h-12 w-12 mr-3 ..." viewBox="0 0 24 24" id="liquidity_loading">
+                        <!-- ... -->
+                    </svg>
+                    <a href="{{ route('finance.platformLiquidityDetails') }}"
+                        class="p-3 bg-gray-500 rounded-2xl text-white text-xs focus:outline-none focus:bg-gray-600">Explore
+                        Details</a>
+
+                </div>
+                <div class="mt-4 nm-convex-gray-50 rounded-xl p-6 text-center">
                     <p class="text-gray-600 text-lg sm:text-2xl font-light">Your Liquidity</p>
                     <h2 class="my-4 text-black text-3xl sm:text-5xl font-extralight">
                         ${{number_format($totalLiquidity, 2)}}</h2>
-                    <a href="/contracts"
+                    <a href="{{ route('finance.contracts') }}"
                         class="p-3 bg-gray-500 rounded-2xl text-white text-xs focus:outline-none focus:bg-gray-600">Manage
                         Contracts</a>
 
@@ -77,8 +90,25 @@
 
 @endsection
 
-@section('style')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.bundle.min.js"
-    integrity="sha512-SuxO9djzjML6b9w9/I07IWnLnQhgyYVSpHZx0JV97kGBfTIsUYlWflyuW4ypnvhBrslz1yJ3R+S14fdCWmSmSA=="
-    crossorigin="anonymous"></script>
+@section('scripts')
+<script>
+    $( function () {
+        setTimeout(function () {
+            main()
+        }, 200)
+    })
+
+    async function main() {
+        $.ajax({
+            type: "GET",
+            url: "{{ route('finance.ajax.getPlatformLiquidity') }}",
+            success: function(response){
+                if(response.success) {
+                    $('#liquidity_loading').remove();
+                    $('#platform_liquidity').html(`$` + response.data.total_value.toLocaleString("en-US"));
+                }
+            }
+        });
+    }
+</script>
 @endsection

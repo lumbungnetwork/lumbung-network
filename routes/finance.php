@@ -17,7 +17,9 @@ Route::get('/test_middleware', function () {
     return "2FA middleware work!";
 })->middleware(['auth', '2fa']);
 
+// Dashboard
 Route::get('/dashboard', 'Finance\AppController@getFinanceDashboard')->name('dashboard')->middleware('auth');
+Route::get('/platform-liquidity', 'Finance\AppController@getPlatformLiquidityDetails')->name('platformLiquidityDetails')->middleware('auth');
 
 
 
@@ -61,4 +63,5 @@ Route::group(['prefix' => 'ajax'], function () {
 
     Route::get('/wallet/history/{type}', 'Finance\AjaxController@getWalletHistory')->name('ajax.getWalletHistory')->middleware('auth');
     Route::get('/account/telegram', 'Finance\AjaxController@getAccountTelegram')->name('ajax.getAccountTelegram')->middleware('auth');
+    Route::get('/dashboard/platform-liquidity', 'Finance\AjaxController@getPlatformLiquidity')->name('ajax.getPlatformLiquidity')->middleware('auth');
 });

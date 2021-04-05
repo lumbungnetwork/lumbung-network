@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Finance;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\TronController;
 use Illuminate\Http\Request;
 use App\Model\Finance\USDTbalance;
 use App\Model\Finance\Credit;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class AjaxController extends Controller
 {
@@ -142,4 +144,51 @@ class AjaxController extends Controller
 
     //     return 
     // }
+
+    public function getPlatformLiquidity()
+    {
+        $platformLiquidity = Cache::remember('platformLiquidity', 900, function () {
+            $tronController = new TronController;
+            $ownerAddress = 'TCeqDdaXxvQr25TUjmA1rk3aZLj53DAqN5';
+            $jBTCaddress = 'TLeEu311Cbw63BcmMHDgDLu7fnk9fqGcqT';
+            $jTRXaddress = 'TE2RzoSV3wFK99w6J9UnnZ4vLfXYoxvRwP';
+            $jETHaddress = 'TR7BUFRQeq1w5jAZf1FKx85SHuX6PfMqsV';
+            $jUSDJaddress = 'TL5x9MtSnDy537FXKx53yAaHRRNdg9TkkA';
+
+            // Get USD Prices
+            $prices = $tronController->getPriceFeeds();
+
+            $BTCprice = $prices['bitcoin']['usd'];
+            $TRXprice = $prices['tron']['usd'];
+            $ETHprice = $prices['ethereum']['usd'];
+            $USDJprice = $prices['just-stablecoin']['usd'];
+
+            // Get supplied balance from jTokens balances (divide by 100)
+            $BTCbalance = $tronController->getTRC20Balance($ownerAddress, $jBTCaddress, 8) / 100;
+            $TRXbalance = $tronController->getTRC20Balance($ownerAddress, $jTRXaddress, 8) / 100;
+            $ETHbalance = $tronController->getTRC20Balance($ownerAddress, $jETHaddress, 8) / 100;
+            $USDJbalance = $tronController->getTRC20Balance($ownerAddress, $jUSDJaddress, 8) / 100;
+
+            $BTCvalue = round($BTCbalance * $BTCprice, 2);
+            $TRXvalue = round($TRXbalance * $TRXprice, 2);
+            $ETHvalue = round($ETHbalance * $ETHprice, 2);
+            $USDJvalue = round($USDJbalance * $USDJprice, 2);
+
+            $totalValue = $BTCvalue + $TRXvalue + $ETHvalue + $USDJvalue;
+
+            return [
+                'btc_balance' => $BTCbalance,
+                'trx_balance' => $TRXbalance,
+                'eth_balance' => $ETHbalance,
+                'usdj_balance' => $USDJbalance,
+                'btc_value' => $BTCvalue,
+                'trx_value' => $TRXvalue,
+                'eth_value' => $ETHvalue,
+                'usdj_value' => $USDJvalue,
+                'total_value' => $totalValue
+            ];
+        });
+
+        return response()->json(['success' => true, 'data' => $platformLiquidity]);
+    }
 }
