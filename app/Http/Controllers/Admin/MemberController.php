@@ -41,6 +41,7 @@ use App\Jobs\ProcessRequestToDelegatesJob;
 use Throwable;
 use IEXBase\TronAPI\Exception\TronException;
 use Illuminate\Support\Facades\Http;
+use Telegram\Bot\Laravel\Facades\Telegram;
 
 
 class MemberController extends Controller
@@ -549,11 +550,16 @@ class MemberController extends Controller
             'metode' => $metodePembayaran,
             'alamat' => $alamat
         );
-        $emailSend = 'noreply@lumbung.network';
-        Mail::send('member.email.pin_confirm', $dataEmail, function ($message) use ($emailSend) {
-            $message->to($emailSend, 'Konfirmasi Data Pembelian PIN Member Lumbung Network')
-                ->subject('Konfirmasi Data Pembelian PIN Member Lumbung Network');
-        });
+        $message_text = 'LN Pin Purchase by Bank Transfer' . chr(10);
+        $message_text .= 'User: ' . $dataUser->user_code . chr(10);
+        $message_text .= 'Bank: ' . $getTrans->to_name . chr(10);
+        $message_text .= 'Amount: Rp' . number_format($getTrans->price + $getTrans->unique_digit) . chr(10);
+
+        Telegram::sendMessage([
+            'chat_id' => Config::get('services.telegram.overlord'),
+            'text' => $message_text,
+            'parse_mode' => 'markdown'
+        ]);
         return redirect()->route('m_listTransactions')
             ->with('message', 'Konfirmasi transfer berhasil')
             ->with('messageclass', 'success');

@@ -19,6 +19,7 @@ use App\Model\Sales;
 use App\Model\Bank;
 use App\Jobs\SendLMBRewardPeringkatJob;
 use App\Http\Controllers\TelegramBotController;
+use Telegram\Bot\Laravel\Facades\Telegram;
 use RealRashid\SweetAlert\Facades\Alert;
 
 
@@ -210,6 +211,16 @@ class BonusmemberController extends Controller
             'admin_fee' => $request->admin_fee
         );
         $modelWD->getInsertWD($dataInsert);
+
+        $message_text = 'LN Bank WD Request' . chr(10);
+        $message_text .= 'User: ' . $dataUser->user_code . chr(10);
+        $message_text .= 'Amount: Rp' . number_format($request->saldo_wd) . chr(10);
+
+        Telegram::sendMessage([
+            'chat_id' => Config::get('services.telegram.overlord'),
+            'text' => $message_text,
+            'parse_mode' => 'markdown'
+        ]);
         return redirect()->route('mainWallet')
             ->with('message', 'request Withdraw berhasil')
             ->with('messageclass', 'success');

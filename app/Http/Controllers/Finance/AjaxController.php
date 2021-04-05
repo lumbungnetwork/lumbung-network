@@ -9,6 +9,8 @@ use App\Model\Finance\USDTbalance;
 use App\Model\Finance\Credit;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Telegram\Bot\Laravel\Facades\Telegram;
+use Illuminate\Support\Facades\Config;
 
 class AjaxController extends Controller
 {
@@ -69,6 +71,16 @@ class AjaxController extends Controller
                 $deposit->amount = $amount;
                 $deposit->status = 1;
                 $deposit->save();
+
+                $message_text = 'USDT Deposit (LF)' . chr(10);
+                $message_text .= 'Username: ' . $user->username . chr(10);
+                $message_text .= 'Amount: $' . number_format($amount) . chr(10);
+
+                Telegram::sendMessage([
+                    'chat_id' => Config::get('services.telegram.overlord'),
+                    'text' => $message_text,
+                    'parse_mode' => 'markdown'
+                ]);
                 return response()->json(['success' => true, 'message' => 'success']);
             } else {
                 return response()->json(['success' => false, 'message' => 'Wrong recipient address!']);
