@@ -146,6 +146,28 @@ class AjaxController extends Controller
             ->with('balance', $USDTbalance);
     }
 
+    // Wallet history
+    public function getWalletHistory(Request $request)
+    {
+        $user = Auth::user();
+
+        if ($request->type == 'usdt') {
+            $data = USDTbalance::where('user_id', $user->id)
+                ->where('status', 1)
+                ->orderBy('created_at', 'desc')
+                ->take(30)
+                ->get();
+            $view = 'finance.ajax.getWalletHistoryUSDT';
+        } elseif ($request->type == 'credit') {
+            $modelCredit = new Credit;
+            $data = $modelCredit->getUserCreditHistory($user->id);
+            $view = 'finance.ajax.getWalletHistoryCredit';
+        }
+
+        return view($view)
+            ->with(compact('data'));
+    }
+
     // public function getAccountTelegram()
     // {
     //     $user = Auth::user();

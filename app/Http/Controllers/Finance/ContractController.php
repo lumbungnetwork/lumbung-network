@@ -137,12 +137,17 @@ class ContractController extends Controller
         $contract->next_yield_at = $next_yield_at;
         $contract->save();
 
+        // Add contract id referece to USDT balance record
+        $balance->hash = sprintf('%07s', $contract->id);
+        $balance->save();
+
         // Dispatch a 48hrs delayed job to Activate the Contract
         ActivateContractJob::dispatch($contract->id)->onQueue('mail')->delay(now()->addHours(48));
 
         // Credit the Referrer
         $this->creditReferralBonus($user->id, $user->sponsor_id, $referralBonus);
 
+        Alert::success('Contract Created', 'New Contract Successfully Created.');
         return redirect()->route('finance.contracts');
     }
 

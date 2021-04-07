@@ -121,6 +121,7 @@ class CreditController extends Controller
         $balance->amount = $amount - $fee;
         $balance->type = 1;
         $balance->status = 1;
+        $balance->hash = 'Converted from USDT';
         $balance->save();
 
         // Send half of fee to referrer

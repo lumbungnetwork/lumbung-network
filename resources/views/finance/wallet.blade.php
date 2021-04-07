@@ -5,7 +5,7 @@
 
     <div class="relative w-full max-w-md mx-auto">
 
-        <div class="relative nm-flat-gray-50 rounded-3xl">
+        <div class="relative nm-flat-gray-200 rounded-3xl">
 
             <div class="flex items-center justify-start pt-6 pl-6">
                 <span class="w-3 h-3 bg-red-400 rounded-full mr-2"></span>
@@ -44,7 +44,7 @@
                         <button type="button" id="withdraw-btn"
                             class="ml-2 mt-3 p-3 bg-gray-500 rounded-2xl w-24 text-white text-xs focus:outline-none focus:bg-gray-600">Withdraw</button>
                     </div>
-                    <a onclick="history(usdt)" class="underline mt-5 text-md font-light block">History</a>
+                    <a onclick="history('usdt')" class="underline mt-5 text-md font-light block">History</a>
 
 
                 </div>
@@ -68,7 +68,7 @@
                             class="mt-3 p-3 bg-gray-500 rounded-2xl w-32 text-white text-xs focus:outline-none focus:bg-gray-600">Receive</button>
 
                     </div>
-                    <a onclick="history(credit)" class="underline mt-5 text-md font-light block">History</a>
+                    <a onclick="history('credit')" class="underline mt-5 text-md font-light block">History</a>
 
 
                 </div>
@@ -215,7 +215,19 @@
     })
 
     function history(type) {
-        console.log('OK'); 
+        $.ajax({
+            type: "GET",
+            url:
+            "{{ route('finance.ajax.getWalletHistory') }}",
+            data: {type:type},
+            success: function(url){
+                Swal.fire({
+                    html: url,
+                    showCancelButton: false,
+                    showConfirmButton: false
+                })
+            }
+        }); 
     }
 </script>
 @endsection

@@ -27,4 +27,17 @@ class Credit extends Model
         }
         return $net;
     }
+
+    public function getUserCreditHistory($user_id)
+    {
+        $sql = DB::table('credits')
+            ->leftJoin('finances', 'credits.source_id', '=', 'finances.id')
+            ->selectRaw('credits.amount, credits.type, credits.source, credits.source_id, credits.created_at, finances.username as username')
+            ->where('user_id', $user_id)
+            ->orderBy('credits.created_at', 'desc')
+            ->take(30)
+            ->get();
+
+        return $sql;
+    }
 }

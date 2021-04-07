@@ -155,6 +155,7 @@ class Controller extends BaseController
                 $credit->amount = $amount1;
                 $credit->type = 1;
                 $credit->source = 1;
+                $credit->source_id = $user_id;
                 $credit->tx_id = $tx_id;
                 $credit->save();
             } catch (\Throwable $th) {
@@ -174,6 +175,7 @@ class Controller extends BaseController
                 $credit->amount = $amount2;
                 $credit->type = 1;
                 $credit->source = 1;
+                $credit->source_id = $user_id;
                 $credit->tx_id = $tx_id;
                 $credit->save();
             } catch (\Throwable $th) {
@@ -193,6 +195,7 @@ class Controller extends BaseController
                 $credit->amount = $amount3;
                 $credit->type = 1;
                 $credit->source = 1;
+                $credit->source_id = $user_id;
                 $credit->tx_id = $tx_id;
                 $credit->save();
             } catch (\Throwable $th) {
@@ -212,6 +215,7 @@ class Controller extends BaseController
                 $credit->amount = $amount4;
                 $credit->type = 1;
                 $credit->source = 1;
+                $credit->source_id = $user_id;
                 $credit->tx_id = $tx_id;
                 $credit->save();
             } catch (\Throwable $th) {
