@@ -132,35 +132,68 @@
 
                         @endif
 
-                        {{-- BPJS --}}
-                        @if ($getDataMaster->type == 4)
-                        <br>
-                        Alamat: {{$return_buy['data']['desc']['alamat']}}
-                        <br>
-                        Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan']}}
-                        <br>
-                        Jumlah Peserta: {{$return_buy['data']['desc']['jumlah_peserta']}}
-                        @endif
-
-                        {{-- Telkom --}}
+                        {{-- Telkom (was BPJS  <2021) --}}
                         @if ($getDataMaster->type == 7)
-                        <br>
-                        Detail:
-                        <br>
-                        Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan']}}
-                        <br>
-                        @foreach ($return_buy['data']['desc']['detail'] as $detail)
-                        <br>
-                        Periode Tagihan: {{$detail['periode']}}
-                        <br>
-                        Nilai Tagihan: Rp{{number_format($detail['nilai_tagihan'] + 1000)}}
-                        <br>
-                        Admin: Rp{{number_format($detail['admin'])}}
-                        <br>
+                        @if ($getDataMaster->created_at < '2021-01-01 00:00:00' ) {{-- was BPJS --}} <br>
+                            Alamat: {{$return_buy['data']['desc']['alamat']}}
+                            <br>
+                            Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan']}}
+                            <br>
+                            Jumlah Peserta: {{$return_buy['data']['desc']['jumlah_peserta']}}
 
-                        @endforeach
-                        @endif
-                        <br>
+                            {{-- Change to Telkom --}}
+                            @else
+                            <br>
+                            Detail:
+                            <br>
+                            Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan']}}
+                            <br>
+                            @foreach ($return_buy['data']['desc']['detail'] as $detail)
+                            <br>
+                            Periode Tagihan: {{$detail['periode']}}
+                            <br>
+                            Nilai Tagihan: Rp{{number_format($detail['nilai_tagihan'] + 1000)}}
+                            <br>
+                            Admin: Rp{{number_format($detail['admin'])}}
+                            <br>
+                            @endforeach
+                            @endif
+
+                            @endif
+
+                            {{-- BPJS (was Telkom <2021) --}}
+                            @if ($getDataMaster->type == 4)
+
+                            @if ($getDataMaster->created_at < '2021-01-01 00:00:00' ) {{-- was Telkom --}} <br>
+
+                                <br>
+                                Detail:
+                                <br>
+                                Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan']}}
+                                <br>
+                                @foreach ($return_buy['data']['desc']['detail'] as $detail)
+                                <br>
+                                Periode Tagihan: {{$detail['periode']}}
+                                <br>
+                                Nilai Tagihan: Rp{{number_format($detail['nilai_tagihan'] + 1000)}}
+                                <br>
+                                Admin: Rp{{number_format($detail['admin'])}}
+                                <br>
+                                @endforeach
+
+                                {{-- Change to BPJS --}}
+                                @else
+                                <br>
+                                Alamat: {{$return_buy['data']['desc']['alamat']}}
+                                <br>
+                                Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan']}}
+                                <br>
+                                Jumlah Peserta: {{$return_buy['data']['desc']['jumlah_peserta']}}
+
+                                @endif
+
+                                @endif
+                                <br>
                     </td>
                 </tr>
             </tbody>
