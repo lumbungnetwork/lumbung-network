@@ -52,6 +52,17 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        if ($exception instanceof \Illuminate\Session\TokenMismatchException) {
+            $currentURL = url()->current();
+            if (strpos($currentURL, 'member.lumbung') !== false) {
+                return redirect()->route('areaLogin');
+            }
+            if (strpos($currentURL, 'finance.lumbung') !== false) {
+                return redirect()->route('finance.login');
+            }
+            return redirect()->route('login');
+        }
+
         return parent::render($request, $exception);
     }
 
