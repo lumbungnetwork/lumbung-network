@@ -73,16 +73,6 @@
 
                 </div>
 
-                <div class="mt-5 nm-inset-gray-50 rounded-xl p-3">
-                    <p class="font-extralight">Latest Transactions</p>
-                    <div class="my-2 nm-inset-gray-50 rounded-full w-full h-1"></div>
-                    <p class="mt-2 font-extralight text-sm">Deposit x USDT </p>
-                    <p class="mt-2 font-extralight text-sm">Withdraw x USDT </p>
-                    <p class="mt-2 font-extralight text-sm">Buy Contract </p>
-                    <p class="mt-2 font-extralight text-sm">Referral Commission </p>
-                </div>
-
-
             </div>
 
         </div>
