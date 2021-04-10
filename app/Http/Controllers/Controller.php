@@ -102,20 +102,9 @@ class Controller extends BaseController
         $dailyWithdrawn = $totalWD->total_wd + $totalWD->total_tunda + $totalWD->total_fee_admin + $totalWDeIDR->total_wd + $totalWDeIDR->total_tunda + $totalWDeIDR->total_fee_admin;
         $totalAvailable = $getTotalBonus->total_bonus - $dailyWithdrawn;
 
-
-        //royalti bonus
-        $totalBonusRoyalti = $bonus->getTotalBonusRoyalti($dataUser);
-        $totalWDroyalti = $transfered->getTotalDiTransferRoyalti($dataUser);
-        $totalWDroyaltieIDR = $transfered->getTotalDiTransferRoyaltieIDR($dataUser);
-
-        $royaltiWithdrawn = $totalWDroyalti->total_wd + $totalWDroyalti->total_tunda + $totalWDroyalti->total_fee_admin + $totalWDroyaltieIDR->total_wd + $totalWDroyaltieIDR->total_tunda + $totalWDroyaltieIDR->total_fee_admin;
-        $totalAvailableRoyaltiBonus = $totalBonusRoyalti->total_bonus - $royaltiWithdrawn;
-
         return (object) array(
             'daily_bonus' => $totalAvailable,
-            'daily_withdrawn' => $dailyWithdrawn,
-            'royalti_bonus' => $totalAvailableRoyaltiBonus,
-            'royalti_withdrawn' => $royaltiWithdrawn
+            'daily_withdrawn' => $dailyWithdrawn
         );
     }
 

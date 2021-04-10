@@ -123,8 +123,8 @@ class KBBCommand extends Command
             $bonuses = $controller->getMemberAvailableBonus($dataUser->id);
             $modelBonus = new Bonus;
             $totalClaimedLMBfromMarketplace = $modelBonus->getTotalClaimedLMBfromMarketplace($dataUser->id);
-            $bonusTuntas = $bonuses->daily_withdrawn + $bonuses->royalti_withdrawn;
-            $bonusTersedia = $bonuses->daily_bonus + $bonuses->royalti_bonus;
+            $bonusTuntas = $bonuses->daily_withdrawn;
+            $bonusTersedia = $bonuses->daily_bonus;
 
             $text = 'Username: ' . $dataUser->user_code . chr(10);
             $text .= 'Bonus tersedia: Rp' . number_format($bonusTersedia) . chr(10);
