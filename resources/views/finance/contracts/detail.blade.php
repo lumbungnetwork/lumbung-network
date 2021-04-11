@@ -1,7 +1,7 @@
 @extends('finance.layout.app')
 @section('content')
 
-<div class="mt-10 flex flex-col justify-center px-6">
+<div class="mt-10 flex flex-col justify-center px-3 sm:px-6">
 
     <div class="relative w-full max-w-md mx-auto">
 
@@ -29,9 +29,9 @@
 
             </div>
 
-            <div class="px-6 py-6">
+            <div class="px-4 sm:px-6 py-6">
                 <div class="text-center">
-                    <h2 class="font-extralight text-4xl text-gray-600">{{$title}}</h2>
+                    <h2 class="font-extralight text-3xl sm:text-4xl text-gray-600">{{$title}}</h2>
 
                 </div>
 
@@ -57,7 +57,7 @@
                     if ($contract->strategy == 2) {
                     $strategy = 'Liquidity Yield Farming (365 days staging)';
 
-                    $progress = round($days * (365 / 100),2);
+                    $progress = round(($days / 365) * 100, 2);
 
                     if ($progress < 3) { $progress=3; } } @endphp <div class="flex items-end justify-between py-2">
                         <p class="text-gray-600">Day {{$days}}</p>
@@ -76,6 +76,29 @@
                     <p class=" text-gray-600 text-md font-light">Strategy: </p>
                     <span class="font-extralight text-sm text-gray-800">{{$strategy}}</span>
                 </div>
+                @if ($contract->strategy == 2 && $contract->grade > 0)
+                @php
+                switch($contract->grade) {
+                case 1:
+                $grade = "Grade C";
+                break;
+                case 2:
+                $grade = "Grade B";
+                break;
+                case 3:
+                $grade = "Grade A";
+                break;
+                case 4:
+                $grade = "Grade S";
+                break;
+
+                }
+
+                @endphp
+                <div class="py-2">
+                    <p class=" text-gray-600 text-md font-light">{{$grade}}</p>
+                </div>
+                @endif
                 <div class="py-2">
                     <div class="space-x-0">
                         <p class=" text-gray-600 text-md font-light inline-block">Principal: </p>

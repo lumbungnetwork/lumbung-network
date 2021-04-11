@@ -24,7 +24,7 @@
                 <!-- Layout  -->
                 <h1 class="text-3xl font-medium mb-2">Login</h1>
                 <p class="text-sm">Use your username and password to log into your account.</p>
-                <form class="space-y-5 mt-5" method="POST" action="/login">
+                <form class="space-y-5 mt-5" method="POST" action="/login" autocomplete="off">
                     @csrf
                     <div class="mt-2 nm-inset-gray-50 rounded-xl p-2 ">
 

@@ -1,7 +1,7 @@
 @extends('finance.layout.app')
 @section('content')
 
-<div class="mt-10 flex flex-col justify-center px-6">
+<div class="mt-10 flex flex-col justify-center px-3 sm:px-6">
 
     <div class="relative w-full max-w-md mx-auto">
 
@@ -29,14 +29,15 @@
 
             </div>
 
-            <div class="px-6 py-6">
+            <div class="px-3 sm:px-6 py-6">
                 <div class="text-center">
                     <h2 class="font-extralight text-4xl text-gray-600">{{$title}}</h2>
 
                 </div>
 
                 <div class="mt-4 nm-convex-gray-50 rounded-xl p-6 ">
-                    <img class="w-20 float-right" src="/image/tron-logo.png" alt="tron logo">
+                    <img class="mb-4 w-20 float-right" src="/image/tron-logo.png" alt="tron logo">
+                    <div class="clear-right"></div>
                     <div class="hidden" id="active-info">
                         <div class="flex items-center py-2">
                             <span class="w-3 h-3 bg-green-400 rounded-full mr-2"></span>
@@ -71,18 +72,9 @@
                     <p>USDT (Tether USD)</p>
                     <h2 class="mt-3 text-black text-6xl font-extralight">{{number_format($USDTbalance, 2)}}</h2>
 
-                    <a href="/history-usdt" class="underline mt-5 text-md font-light block">History</a>
+                    <a onclick="history('usdt')" class="underline mt-5 text-md font-light block">History</a>
 
 
-                </div>
-
-                <div class="mt-5 nm-inset-gray-50 rounded-xl p-3">
-                    <p class="font-extralight">Latest Transactions</p>
-                    <div class="my-2 nm-inset-gray-50 rounded-full w-full h-1"></div>
-                    <p class="mt-2 font-extralight text-sm">Deposit x USDT </p>
-                    <p class="mt-2 font-extralight text-sm">Withdraw x USDT </p>
-                    <p class="mt-2 font-extralight text-sm">Buy Contract </p>
-                    <p class="mt-2 font-extralight text-sm">Referral Commission </p>
                 </div>
 
 
@@ -289,6 +281,22 @@
             
             
         });
+
+        function history(type) {
+        $.ajax({
+            type: "GET",
+            url:
+            "{{ route('finance.ajax.getWalletHistory') }}",
+            data: {type:type},
+            success: function(url){
+                Swal.fire({
+                    html: url,
+                    showCancelButton: false,
+                    showConfirmButton: false
+                })
+            }
+        }); 
+    }
 
         
 

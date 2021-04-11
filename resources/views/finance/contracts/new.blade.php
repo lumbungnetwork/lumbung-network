@@ -143,7 +143,8 @@
 
                 <div class="hidden mt-4 nm-convex-gray-50 rounded-xl p-4" id="open-contract">
                     <h4 class="mt-6 font-light text-xl text-gray-700">Open Contract</h4>
-                    <form action="{{ route('finance.contracts.post.new') }}" method="POST" id="new-contract-form">
+                    <form action="{{ route('finance.contracts.post.new') }}" method="POST" id="new-contract-form"
+                        autocomplete="off" onkeydown="return event.key != 'Enter';">
                         @csrf
                         <input type="hidden" value="0" id="contract_strategy" name="contract_strategy">
                         <p class="mt-3 text-sm font-light">Initial Deposit (USDT)</p>

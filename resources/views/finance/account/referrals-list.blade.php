@@ -1,11 +1,11 @@
 @extends('finance.layout.app')
 @section('content')
 
-<div class="mt-10 flex flex-col justify-center px-6">
+<div class="mt-10 flex flex-col justify-center px-3 sm:px-5">
 
     <div class="relative w-full max-w-md mx-auto">
 
-        <div class="relative nm-flat-gray-50 rounded-3xl">
+        <div class="relative nm-flat-gray-200 rounded-3xl">
 
             <div class="flex items-center justify-start pt-6 pl-6">
                 <span class="w-3 h-3 bg-red-400 rounded-full mr-2"></span>
@@ -29,15 +29,15 @@
 
             </div>
 
-            <div class="px-6 py-6">
+            <div class="px-3 sm:px-6 py-6">
                 <div class="text-center">
-                    <h2 class="font-extralight text-4xl text-gray-600">{{$title}}</h2>
+                    <h2 class="font-extralight text-3xl sm:text-4xl text-gray-600">{{$title}}</h2>
 
                 </div>
 
 
 
-                <div class="mt-5 nm-inset-gray-50 rounded-xl p-3">
+                <div class="mt-5 nm-inset-gray-50 rounded-xl p-2">
 
                     @if ($referrals == null)
                     <p class="text-xl font-light text-center">You don't have referral, yet.</p>
@@ -50,11 +50,11 @@
                                         <thead class="bg-gray-50">
                                             <tr>
                                                 <th scope="col"
-                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    class="px-6 py-3 text-left text-xs font-light text-gray-500 uppercase">
                                                     Username
                                                 </th>
                                                 <th scope="col"
-                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    class="px-6 py-3 text-left text-xs font-light text-gray-500 uppercase">
                                                     Liquidity
                                                 </th>
                                             </tr>
@@ -62,8 +62,9 @@
                                         <tbody class="bg-white divide-y divide-gray-200">
                                             @foreach ($referrals as $referral)
                                             <tr>
-                                                <td class="px-6 py-4 whitespace-nowrap">{{$referral['username']}}</td>
-                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                <td class="px-6 py-4 whitespace-nowrap text-xs font-light">
+                                                    {{$referral['username']}}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-xs font-light">
                                                     ${{number_format($referral['liquidity'])}}</td>
                                             </tr>
                                             @endforeach

@@ -1,7 +1,7 @@
 @extends('finance.layout.app')
 @section('content')
 
-<div class="mt-10 flex flex-col justify-center px-6">
+<div class="mt-10 flex flex-col justify-center px-3 sm:px-6">
 
     <div class="relative w-full max-w-md mx-auto">
 
@@ -29,15 +29,16 @@
 
             </div>
 
-            <div class="px-6 py-6">
+            <div class="px-4 sm:px-6 py-6">
                 <div class="text-center">
-                    <h2 class="font-extralight text-4xl text-gray-600">Wallet Balances</h2>
+                    <h2 class="font-extralight text-3xl sm:text-4xl text-gray-600">Wallet Balances</h2>
 
                 </div>
 
                 <div class="mt-4 nm-concave-gray-50 rounded-xl p-6 text-center">
                     <p>USDT (Tether USD)</p>
-                    <h2 class="mt-3 text-black text-6xl font-extralight">{{number_format($USDTbalance, 2)}}</h2>
+                    <h2 class="mt-3 text-black text-3xl sm:text-6xl font-extralight">{{number_format($USDTbalance, 2)}}
+                    </h2>
                     <div class="flex justify-center">
                         <a href="/wallet/deposit-usdt"
                             class="mt-3 p-3 bg-gray-500 rounded-2xl w-24 text-white text-xs focus:outline-none focus:bg-gray-600">Deposit</a>
@@ -51,7 +52,8 @@
 
                 <div class="mt-4 nm-convex-gray-50 rounded-xl p-6 text-center">
                     <p>Credits (USD)</p>
-                    <h2 class="mt-3 text-black text-6xl font-extralight">{{number_format($creditBalance, 2)}}</h2>
+                    <h2 class="mt-3 text-black text-3xl sm:text-6xl font-extralight">
+                        {{number_format($creditBalance, 2)}}</h2>
                     <div class="flex flex-wrap py-2 justify-center">
                         <button type="button" id="convert-from-usdt-btn" disabled
                             class="mt-3 py-3 px-1 bg-gray-500 rounded-2xl w-32 text-white text-xs focus:outline-none focus:bg-gray-600">Convert
