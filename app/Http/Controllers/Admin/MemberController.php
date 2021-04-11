@@ -2688,7 +2688,7 @@ class MemberController extends Controller
                 ProductImages::create([
                     'name' => $name . "." . $extension
                 ]);
-                Alert::image('Berhasil!', 'nama: ' . $name . "." . $extension, asset('/storage/products/') . "/" . $name . "." . $extension, '150', '150')->persistent(true);
+                Alert::success('Berhasil', 'Gambar berhasil di-upload!');
 
                 return redirect()->route('m_SellerInventory');
             }

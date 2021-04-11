@@ -101,6 +101,8 @@
         }else if($.trim($('#image').val()) == ''){
             errorToast('File Gambar harus dipilih');
         }else {
+            Swal.fire('Proses Upload...');
+            swal.showLoading();
             $("#form-upload").submit();
         }
     }
