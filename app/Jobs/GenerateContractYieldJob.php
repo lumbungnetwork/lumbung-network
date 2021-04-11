@@ -38,6 +38,23 @@ class GenerateContractYieldJob implements ShouldQueue
         // Get the contract
         $contract = Contract::find($this->contract_id);
 
+        // Handle Break Contract here
+        if ($contract->status == 2) {
+            // Change contract properties to Ended
+            $contract->status = 3;
+            $contract->next_yield_at = null;
+            $contract->save();
+
+            // Generate yield from principal
+            $yield = new _Yield;
+            $yield->contract_id = $contract->id;
+            $yield->amount = $contract->principal;
+            $yield->type = 1;
+            $yield->save();
+
+            return;
+        }
+
         // Get contract payout cycle 
         $cycle = date('Y-m-d 00:00:00', strtotime('28 days ago')); // securing 1 month (Monthly payout)
 

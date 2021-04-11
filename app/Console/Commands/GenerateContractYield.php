@@ -39,9 +39,16 @@ class GenerateContractYield extends Command
      */
     public function handle()
     {
-        GenerateContractYieldJob::dispatch(1)->onQueue('mail');
-        GenerateContractYieldJob::dispatch(2)->onQueue('mail');
-        GenerateContractYieldJob::dispatch(3)->onQueue('mail');
-        return 'done';
+        $today = date('Y-m-d 00:00:00', strtotime('today'));
+
+        $eligibleContracts = Contract::where('next_yield_at', '<=', $today)->where('status', '<=', 2)->select('id')->get();
+        if (count($eligibleContracts) > 0) {
+            foreach ($eligibleContracts as $contract) {
+                GenerateContractYieldJob::dispatch($contract->id)->onQueue('mail');
+            }
+        }
+
+
+        return;
     }
 }

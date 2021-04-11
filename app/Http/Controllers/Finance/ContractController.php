@@ -11,6 +11,7 @@ use App\Model\Finance\USDTbalance;
 use App\Model\Finance\Contract;
 use App\Jobs\ActivateContractJob;
 use App\Model\Finance\Credit;
+use Telegram\Bot\Laravel\Facades\Telegram;
 use App\Model\Finance\_Yield;
 
 class ContractController extends Controller
@@ -22,7 +23,7 @@ class ContractController extends Controller
             Alert::warning('Inactive Account', 'You need to activate your account first');
             return redirect()->route('finance.account.activate');
         }
-        // $contracts = null;
+
         $contracts = Contract::where('user_id', $user->id)->get();
         // Count Active contracts
         $activeContracts = Contract::where('user_id', $user->id)->where('status', '<', 2)->select('id')->count();
@@ -218,7 +219,7 @@ class ContractController extends Controller
         $amount = round($yield->net - $fee, 2, PHP_ROUND_HALF_DOWN);
         $referralBonus = round($fee / 2, 2, PHP_ROUND_HALF_DOWN);
 
-        // Deduct the Yield and increment Compounded column on Contract
+        // Deduct the Yield and send credit
         $withdraw = $modelYield->withdraw($contract_id, $amount, $fee);
 
         if ($withdraw) {
@@ -233,6 +234,29 @@ class ContractController extends Controller
         }
     }
 
+    public function postContractUpgrade($contract_id)
+    {
+        $user = Auth::user();
+        $contract = Contract::find($contract_id);
+        // Get contract age
+        $diff = time() - strtotime($contract->created_at);
+        $days = floor($diff / (60 * 60 * 24));
+
+        // Check if the caller is the rightful owner of this contract
+        if ($contract->user_id != $user->id) {
+            Alert::error('DANGER!', 'You\'re not the rightful owner of this contract!');
+            return redirect()->back();
+        }
+
+        if ($contract->grade == 1 && $days >= 16) {
+            $contract->grade = 2;
+            $contract->save();
+        }
+
+        Alert::success('Done!', 'Contract successfully upgraded');
+        return redirect()->back();
+    }
+
     public function postContractBreak($contract_id) // (TO DO LIST!)
     {
         $user = Auth::user();
@@ -244,27 +268,58 @@ class ContractController extends Controller
             return redirect()->back();
         }
 
-        // Get current available yield from Yield object
-        $modelYield = new _Yield;
-        $yield = $modelYield->getContractYield($contract_id);
+        // Check breakable traits
+        $diff = time() - strtotime($contract->created_at);
+        $days = floor($diff / (60 * 60 * 24));
 
-        // Deduct the fee from Withdraw Amount
-        $fee = $yield->net * 4 / 100;
-        $amount = round($yield->net - $fee, 2, PHP_ROUND_HALF_DOWN);
-        $referralBonus = round($fee / 2, 2, PHP_ROUND_HALF_DOWN);
-
-        // Deduct the Yield and increment Compounded column on Contract
-        $withdraw = $modelYield->withdraw($contract_id, $amount, $fee);
-
-        if ($withdraw) {
-            // Send half the fee as referrer bonus
-            $this->creditReferralBonus($user->id, $user->sponsor_id, $referralBonus);
-
-            Alert::success('Success!', 'Yield just withdrawed successfully!');
-            return redirect()->back();
-        } else {
-            Alert::error('Oops!', 'Something is wrong, withdraw Failed!');
+        if ($contract->strategy == 1 && $days < 365) {
+            Alert::error('Failed!', 'Contract have not matured, yet!');
             return redirect()->back();
         }
+
+        $capital = $contract->principal + $contract->compounded;
+
+        // Deduct the fee from Capital Amount
+        $fee = $capital * 4 / 100;
+        $amount = round($capital - $fee, 2, PHP_ROUND_HALF_DOWN);
+        $referralBonus = round($fee / 2, 2, PHP_ROUND_HALF_DOWN);
+
+        // Change contract properties (0 = Inactive, 1 = Active, 2 = Breaking, 3 = Ended)
+        // Set next_yield_at for Crontab to pick, Strategy 1 = 48hrs, Strategy 2 = 7 days
+
+        $release = '48 hours';
+        $releaseDate = date('Y-m-d 00:00:00', strtotime('+2 days'));
+        if ($contract->strategy == 2) {
+            $release = '7 days';
+            $releaseDate = date('Y-m-d 00:00:00', strtotime('+6 days'));
+        }
+
+        try {
+            $contract->status = 2;
+            $contract->principal = $amount;
+            $contract->next_yield_at = $releaseDate;
+            $contract->save();
+        } catch (\Throwable $th) {
+            Alert::error('Failed!', 'Fail to break contract, please try again!');
+            return redirect()->back();
+        }
+
+        // Send notification to overlord
+        $text = 'Break Contract emitted' . chr(10);
+        $text .= 'User: ' . $user->username . chr(10);
+        $text .= 'Contract ID: ' . $contract->id . chr(10);
+        $text .= 'Amount: ' . $amount . chr(10);
+
+        Telegram::sendMessage([
+            'chat_id' => config('services.telegram.overlord'),
+            'text' => $text,
+            'parse_mode' => 'markdown'
+        ]);
+
+        // Send half the fee as referrer bonus
+        $this->creditReferralBonus($user->id, $user->sponsor_id, $referralBonus);
+
+        Alert::info('Contract breaked!', 'Contract\'s capital will be delivered to Yield within ' . $release)->persistent(true);
+        return redirect()->back();
     }
 }

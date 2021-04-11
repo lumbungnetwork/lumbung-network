@@ -115,6 +115,7 @@ class _Yield extends Model
             $credit->amount = $amount;
             $credit->type = 1;
             $credit->source = 2;
+            $credit->source_id = $contract->id;
             $credit->tx_id = $tx_id;
             $credit->save();
 

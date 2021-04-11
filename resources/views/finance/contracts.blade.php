@@ -61,6 +61,12 @@
                                 @elseif ($contract->status == 1)
                                 <span class="w-3 h-3 bg-green-400 rounded-full mr-2"></span>
                                 <p class="text-sm font-light ">Active</p>
+                                @elseif ($contract->status == 2)
+                                <span class="w-3 h-3 bg-yellow-600 rounded-full mr-2"></span>
+                                <p class="text-sm font-light ">Breaking Process</p>
+                                @elseif ($contract->status == 3)
+                                <span class="w-3 h-3 bg-red-600 rounded-full mr-2"></span>
+                                <p class="text-sm font-light ">Ended</p>
                                 @endif
 
                             </div>

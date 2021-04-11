@@ -15,20 +15,22 @@
                 <span class="w-3 h-3 bg-green-400 rounded-full mr-2"></span>
             </div>
 
-            <div class="flex float-right mr-6 text-xl text-red-500">
-                <form id="logout-form" action="{{ url('/logout') }}" method="POST">
-                    {{ csrf_field() }}
-                    <button type="submit" class="mt-5"><i class="fa fa-power-off" aria-hidden="true"></i></button>
-                </form>
+            <form id="logout-form" action="{{ url('/logout') }}" method="POST">
+                @csrf
+                <div class="flex float-right mr-6 text-xl text-red-500 nm-convex-gray-50 rounded-full px-3 py-2">
 
-            </div>
+                    <button type="submit"><i class="fa fa-power-off" aria-hidden="true"></i></button>
+                </div>
+            </form>
+
+
+
 
             <div class="p-4 sm:p-6">
                 <div class="nm-inset-gray-100 w-1/2 px-3 py-2 text-center rounded-2xl flex flex-wrap overflow-hidden">
-                    <a href="/account">
+                    <a href="{{ route('finance.account') }}">
                         <i class="fa fa-user-circle" aria-hidden="true"></i>
-                        <span class="font-light">{{$user->username}} </span>
-                        <span class="font-bold text-xl "></span>
+                        <span class="font-light text-xs sm:text-sm">{{$user->username}} </span>
                     </a>
 
                 </div>

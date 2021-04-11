@@ -39,6 +39,8 @@ Route::get('/new-contract', 'Finance\ContractController@getNewContractPage')->na
 Route::get('/contracts/{contract_id}', 'Finance\ContractController@getContractDetailPage')->name('contracts.detail')->middleware('auth');
 Route::post('/contracts/{contract_id}/compound', 'Finance\ContractController@postContractCompound')->name('contracts.post.compound')->middleware('auth');
 Route::post('/contracts/{contract_id}/withdraw', 'Finance\ContractController@postContractWithdraw')->name('contracts.post.withdraw')->middleware('auth');
+Route::post('/contracts/{contract_id}/upgrade', 'Finance\ContractController@postContractUpgrade')->name('contracts.post.upgrade')->middleware('auth');
+Route::post('/contracts/{contract_id}/break', 'Finance\ContractController@postContractBreak')->name('contracts.post.break')->middleware('auth');
 Route::post('/new-contract', 'Finance\ContractController@postNewContract')->name('contracts.post.new')->middleware('auth');
 
 //wallet
