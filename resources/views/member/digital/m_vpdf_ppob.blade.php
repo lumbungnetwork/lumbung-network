@@ -96,18 +96,24 @@
                         <br>
                         Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan']}}
                         <br>
+                        @if (isset($return_buy['data']['desc']['detail']))
                         @foreach ($return_buy['data']['desc']['detail'] as $detail)
                         <br>
                         Periode Tagihan: {{$detail['periode']}}
+                        @if (isset($detail['meter_awal'] && $detail['meter_akhir']))
                         <br>
                         Meter Awal: {{$detail['meter_awal']}}
                         <br>
                         Meter Akhir: {{$detail['meter_akhir']}}
+                        @endif
+                        @if (isset($detail['denda']))
                         <br>
                         Denda: {{$detail['denda']}}
+                        @endif
                         <br>
 
                         @endforeach
+                        @endif
                         @endif
 
                         {{-- PLN Prepaid --}}
