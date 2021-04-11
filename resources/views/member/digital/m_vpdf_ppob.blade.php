@@ -100,13 +100,13 @@
                         @foreach ($return_buy['data']['desc']['detail'] as $detail)
                         <br>
                         Periode Tagihan: {{$detail['periode']}}
-                        @if (isset($detail['meter_awal'] && $detail['meter_akhir']))
+                        @if ( !empty($detail['meter_awal']) && !empty($detail['meter_akhir']))
                         <br>
                         Meter Awal: {{$detail['meter_awal']}}
                         <br>
                         Meter Akhir: {{$detail['meter_akhir']}}
                         @endif
-                        @if (isset($detail['denda']))
+                        @if (!empty($detail['denda']))
                         <br>
                         Denda: {{$detail['denda']}}
                         @endif
