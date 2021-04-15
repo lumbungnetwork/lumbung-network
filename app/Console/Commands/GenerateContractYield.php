@@ -50,7 +50,7 @@ class GenerateContractYield extends Command
         }
 
         // Checking for near due contract (Strategy 2)
-        $maturedContracts = Contract::where('expired_at', '>=', $today)
+        $maturedContracts = Contract::where('expired_at', '<=', $today)
             ->where('status', 1)
             ->where('strategy', 2)
             ->select('id')
