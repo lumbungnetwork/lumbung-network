@@ -39,6 +39,10 @@ class ManualTopUpeIDRjob implements ShouldQueue
         //prepare data
         $modelBonus = new Bonus;
         $dataUser = $modelBonus->getUserIdfromTopUpId($this->topup_id);
+        if ($dataUser == null) {
+            $this->delete();
+        }
+
         $getData = $modelBonus->getJobTopUpSaldoIDUserId($this->topup_id, $dataUser->user_id);
         if ($getData == null) {
             $this->delete();
@@ -88,6 +92,17 @@ class ManualTopUpeIDRjob implements ShouldQueue
 
             if ($response['result'] == true) {
                 $txHash = $response['txid'];
+
+                // log to database
+                $dataUpdate = array(
+                    'status' => 2,
+                    'reason' => $txHash,
+                    'tuntas_at' => date('Y-m-d H:i:s'),
+                    'submit_by' => $getData->user_id,
+                    'submit_at' => date('Y-m-d H:i:s'),
+                );
+                $modelBonus->getUpdateTopUp('id', $getData->id, $dataUpdate);
+
                 //fail check
                 sleep(10);
                 try {
@@ -100,15 +115,6 @@ class ManualTopUpeIDRjob implements ShouldQueue
                     ]);
                     return;
                 }
-
-                $dataUpdate = array(
-                    'status' => 2,
-                    'reason' => $txHash,
-                    'tuntas_at' => date('Y-m-d H:i:s'),
-                    'submit_by' => $getData->user_id,
-                    'submit_at' => date('Y-m-d H:i:s'),
-                );
-                $modelBonus->getUpdateTopUp('id', $getData->id, $dataUpdate);
 
                 $notification = [
                     'amount' => $getData->nominal,

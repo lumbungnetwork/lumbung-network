@@ -36,7 +36,6 @@ class TelegramBotController extends Controller
                 if ($type == 'topup') {
                     if ($chat_id == Config::get('services.telegram.overlord')) {
                         if ($command == 'accept') {
-                            ManualTopUpeIDRjob::dispatch(1, $request_id)->onQueue('tron');
 
                             Telegram::answerCallbackQuery([
                                 'callback_query_id' => $callback_id,
@@ -50,6 +49,11 @@ class TelegramBotController extends Controller
                                 'text' => $message_text,
                                 'parse_mode' => 'markdown'
                             ]);
+
+                            // prevent double call
+                            sleep(15);
+
+                            ManualTopUpeIDRjob::dispatch(1, $request_id)->onQueue('tron');
 
                             return;
                         } elseif ($command == 'reject') {
