@@ -169,7 +169,7 @@ class ContractController extends Controller
 
         // Check if yield net enough for action
         if ($yield->net < 1) {
-            Alert::error('Oops!', 'Insuffiecient Yield amount for this action!');
+            Alert::error('Oops!', 'Insuficient Yield amount for this action!');
             return redirect()->back();
         }
 
@@ -179,7 +179,7 @@ class ContractController extends Controller
         $referralBonus = round($fee / 2, 2, PHP_ROUND_HALF_DOWN);
 
         // Deduct the Yield and increment Compounded column on Contract
-        $compounding = $modelYield->compound($contract_id, $amount);
+        $compounding = $modelYield->compound($contract_id, $yield->net, $amount);
 
         if ($compounding) {
             // Send half the fee as referrer bonus

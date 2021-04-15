@@ -73,13 +73,13 @@ class _Yield extends Model
         return $yields;
     }
 
-    public function compound($contract_id, $amount)
+    public function compound($contract_id, $yield, $amount)
     {
         try {
             // Create new negative Yield
             $compounded = new _Yield;
             $compounded->contract_id = $contract_id;
-            $compounded->amount = $amount;
+            $compounded->amount = $yield;
             $compounded->type = 0;
             $compounded->action = 1; // 0 = withdraw, 1 = compound
             $compounded->save();
