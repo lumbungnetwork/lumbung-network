@@ -53,6 +53,7 @@ class GenerateContractYieldJob implements ShouldQueue
             $yield = new _Yield;
             $yield->contract_id = $contract->id;
             $yield->amount = $amount;
+            $yield->action = 2;
             $yield->type = 1;
             $yield->save();
 

@@ -189,7 +189,7 @@
                         </form>
                 </div>
 
-                <a href="#" class="underline mt-5 text-md font-light block">History</a>
+                <a onclick="history({{$contract->id}})" class="underline mt-5 text-md font-light block">History</a>
 
 
             </div>
@@ -348,5 +348,21 @@
                     }
                 })
         }
+
+        function history(contract_id) {
+        $.ajax({
+            type: "GET",
+            url:
+            "{{ route('finance.ajax.getYieldHistory') }}",
+            data: {contract_id:contract_id},
+            success: function(url){
+                Swal.fire({
+                    html: url,
+                    showCancelButton: false,
+                    showConfirmButton: false
+                })
+            }
+        }); 
+    }
 </script>
 @endsection

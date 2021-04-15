@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Finance;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\TronController;
+use App\Model\Finance\_Yield;
 use Illuminate\Http\Request;
 use App\Model\Finance\USDTbalance;
 use App\Model\Finance\Credit;
@@ -165,6 +166,17 @@ class AjaxController extends Controller
         }
 
         return view($view)
+            ->with(compact('data'));
+    }
+
+    public function getYieldHistory(Request $request)
+    {
+        $user = Auth::user();
+
+        $data = _Yield::where('contract_id', $request->contract_id)
+            ->take(30)
+            ->get();
+        return view('finance.ajax.getYieldHistory')
             ->with(compact('data'));
     }
 
