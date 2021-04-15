@@ -103,7 +103,7 @@ class ContractController extends Controller
 
         $expired_at = null;
         if ($strategy == 2) {
-            $expired_at = date('Y-m-d 00:00:00', strtotime('+365 days'));
+            $expired_at = date('Y-m-d 00:00:00', strtotime('+364 days'));
         }
 
         $next_yield_at = date('Y-m-d 00:00:00', strtotime('+32 days'));
@@ -297,6 +297,7 @@ class ContractController extends Controller
         try {
             $contract->status = 2;
             $contract->principal = $amount;
+            $contract->compounded = 0;
             $contract->next_yield_at = $releaseDate;
             $contract->save();
         } catch (\Throwable $th) {

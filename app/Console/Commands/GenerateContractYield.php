@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Jobs\GenerateContractYieldJob;
+use App\Jobs\EndMatureContractJob;
 use App\Model\Finance\Contract;
 
 class GenerateContractYield extends Command
@@ -48,6 +49,17 @@ class GenerateContractYield extends Command
             }
         }
 
+        // Checking for near due contract (Strategy 2)
+        $maturedContracts = Contract::where('expired_at', '>=', $today)
+            ->where('status', 1)
+            ->where('strategy', 2)
+            ->select('id')
+            ->get();
+        if (count($maturedContracts) > 0) {
+            foreach ($maturedContracts as $contract) {
+                EndMatureContractJob::dispatch($contract->id)->onQueue('mail');
+            }
+        }
 
         return;
     }

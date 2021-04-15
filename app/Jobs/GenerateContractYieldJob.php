@@ -40,15 +40,19 @@ class GenerateContractYieldJob implements ShouldQueue
 
         // Handle Break Contract here
         if ($contract->status == 2) {
+            // Take amount from contract principal
+            $amount = $contract->principal;
+
             // Change contract properties to Ended
             $contract->status = 3;
+            $contract->principal = 0;
             $contract->next_yield_at = null;
             $contract->save();
 
             // Generate yield from principal
             $yield = new _Yield;
             $yield->contract_id = $contract->id;
-            $yield->amount = $contract->principal;
+            $yield->amount = $amount;
             $yield->type = 1;
             $yield->save();
 
