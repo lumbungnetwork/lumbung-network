@@ -4074,7 +4074,7 @@ class MemberController extends Controller
                         $price = $priceRound + (500 + $cek);
                     }
 
-                    $real_price = $row['price'] + ($price * 2 / 100);
+                    $real_price = $row['price'] + ($price * 2 / 100) + 50;
                 }
 
                 //PLN Prepaid
@@ -4095,7 +4095,7 @@ class MemberController extends Controller
                     if ($cek < 0) {
                         $price = $price3000 + (500 + $cek);
                     }
-                    $real_price = $price - 1445;
+                    $real_price = $price - 1345;
                 }
 
                 //Emoneys
@@ -4116,7 +4116,7 @@ class MemberController extends Controller
                     if ($cek < 0) {
                         $price = $price3000 + (500 + $cek);
                     }
-                    $real_price = $price - 600;
+                    $real_price = $price - 500;
                 }
 
                 $product = (object) array(
@@ -4171,7 +4171,7 @@ class MemberController extends Controller
         //PLN
         if ($type == 5) {
             $price = $data_price + 500;
-            $real_price = $data_price - 1000;
+            $real_price = $data_price - 800;
         }
 
         //HP & Telkom
@@ -4195,7 +4195,7 @@ class MemberController extends Controller
         //Multifinance
         if ($type == 10) {
             $price = $data_price + 5000;
-            $real_price = $data_price - 2600;
+            $real_price = $data_price - 1600;
         }
 
         $product = (object) array(
