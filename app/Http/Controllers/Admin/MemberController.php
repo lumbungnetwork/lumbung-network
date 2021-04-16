@@ -356,9 +356,9 @@ class MemberController extends Controller
             'expired_at' => date('Y-m-d H:i:s', strtotime('+ 365 days', strtotime('now'))),
             'member_type' => $getData->package_id
         );
-        // insert LMB dividend
+        // insert LMB dividend (Rp20,000 * 90%)
         $modelBonus->insertLMBDividend([
-            'amount' => 20000,
+            'amount' => 18000,
             'type' => 4,
             'status' => 1,
             'source_id' => $getData->request_user_id,
@@ -5522,25 +5522,25 @@ class MemberController extends Controller
             $lmbDiv = 0;
             $divProportion = 0.7; // 70% from Profit Sharing Pool
             if ($getDataMaster->type <= 2) {
-                $lmbDiv = (1.4 / 100) * $getDataMaster->ppob_price;
+                $lmbDiv = (1.1 / 100) * $getDataMaster->ppob_price;
             } elseif ($getDataMaster->type = 3) {
-                $lmbDiv = $divProportion * 955; //PLN Prepaid
+                $lmbDiv = $divProportion * 755; //PLN Prepaid
             } elseif ($getDataMaster->type = 4) {
-                $lmbDiv = $divProportion * 800; //Telkom
+                $lmbDiv = $divProportion * 600; //Telkom
             } elseif ($getDataMaster->type = 5) {
-                $lmbDiv = $divProportion * 1000; //PLN Postpaid
+                $lmbDiv = $divProportion * 800; //PLN Postpaid
             } elseif ($getDataMaster->type = 6) {
-                $lmbDiv = $divProportion * 800; //HP Postpaid
+                $lmbDiv = $divProportion * 600; //HP Postpaid
             } elseif ($getDataMaster->type = 7) {
-                $lmbDiv = $divProportion * 450; //BPJS
+                $lmbDiv = $divProportion * 300; //BPJS
             } elseif ($getDataMaster->type = 8) {
-                $lmbDiv = $divProportion * 450; //PDAM
+                $lmbDiv = $divProportion * 300; //PDAM
             } elseif ($getDataMaster->type = 9) {
-                $lmbDiv = $divProportion * 600; //PGN
+                $lmbDiv = $divProportion * 400; //PGN
             } elseif ($getDataMaster->type = 10) {
-                $lmbDiv = $divProportion * 2000; //Multifinance
+                $lmbDiv = $divProportion * 1000; //Multifinance
             } elseif ($getDataMaster->type >= 21) {
-                $lmbDiv = $divProportion * 400; //e-Money
+                $lmbDiv = $divProportion * 200; //e-Money
             }
             $modelBonus = new Bonus;
             $modelBonus->insertLMBDividend([
