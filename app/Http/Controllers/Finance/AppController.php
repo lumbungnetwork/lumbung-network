@@ -165,7 +165,7 @@ class AppController extends Controller
     {
         $user = Auth::user();
         $validator = Validator::make($request->all(), [
-            'hash' => 'required|string|size:64|unique:finance_activations,hash'
+            'hash' => 'required|string|size:64|unique:finance_activations,hash|unique:contract_upgrades,hash'
         ]);
 
         if ($validator->fails()) {

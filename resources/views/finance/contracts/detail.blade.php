@@ -154,14 +154,28 @@
                 <form action="{{ route('finance.contracts.post.upgrade', ['contract_id' => $contract->id]) }}"
                     method="POST">
                     @csrf
+                    <input type="hidden" id="hash" name="hash" value="0">
                     <div class="flex justify-center">
                         <button type="submit"
                             class="mt-3 py-3 px-1 bg-gray-500 rounded-2xl w-32 text-white text-xs focus:outline-none focus:bg-gray-600">Upgrade
-                            to Grade B</button>
+                            Contract</button>
                     </div>
 
                 </form>
 
+                @endif
+
+                @if ($upgrade > 1)
+                <div class="flex justify-center">
+                    <button type="button" onclick="upgrade({{$contract->id}})"
+                        class="mt-3 py-3 px-1 bg-gray-500 rounded-2xl w-32 text-white text-xs focus:outline-none focus:bg-gray-600">Upgrade
+                        Contract</button>
+                </div>
+                <form action="{{ route('finance.contracts.post.upgrade', ['contract_id' => $contract->id]) }}"
+                    method="POST" id="trc10-confirm-form">
+                    @csrf
+                    <input type="hidden" id="hash" name="hash" value="0">
+                </form>
                 @endif
 
             </div>
@@ -349,6 +363,24 @@
                 })
         }
 
+        function upgrade(contract_id) {
+           $.ajax({
+            type: "GET",
+            url: "{{ route('finance.ajax.getContractUpgrade') }}",
+            data: {contract_id:contract_id},
+            success: function(url){
+                Swal.fire({
+                    html: url,
+                    showCancelButton: false,
+                    showConfirmButton: false
+                })
+                setTimeout(function () {
+                    main()
+                }, 200)
+            }
+        });  
+        }
+
         function history(contract_id) {
         $.ajax({
             type: "GET",
@@ -365,4 +397,227 @@
         }); 
     }
 </script>
+
+@if ($upgrade > 1)
+<script>
+    let lmbtrc10balance = 0;
+                    let lmbtrc20balance = 0;
+                    let _token = '{{ csrf_token() }}';
+                    
+                        
+                        //TronWeb Validation by Swal
+                        function eAlert(message) {
+                            Swal.fire({
+                                title: 'Gagal!',
+                                text: message,
+                                icon: 'error',
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'OK',
+                                allowOutsideClick: false
+                            }).then((result) => {
+                                    if (result.isConfirmed) {
+                                    window.location.reload(true);
+                                }
+                            })
+                        }
+                        
+                        //TronWeb
+                        const toAddress = 'TLsV52sRDL79HXGGm9yzwKibb6BeruhUzy';
+                        var userAddress, tronWeb;
+                        let sendAmount = 0;
+                        
+                        var waiting = 0;
+                        
+                        async function main() {
+                            if (!(window.tronWeb && window.tronWeb.ready)) return (waiting += 1, 50 == waiting) ? void console.log('Failed to connect to TronWeb') : (console.warn("main retries", "Could not connect to TronLink.", waiting), void setTimeout(main,
+                            500));
+                            tronWeb = window.tronWeb;
+                            try {
+                                await showTronBalance();
+                                if (window.tronWeb && window.tronWeb.ready) {
+                                    $('#inactive-info').remove();
+                                    $('#active-info').show();
+                                }
+                            } catch (a) {
+                                console.log(a);
+                            }
+                        
+                        }
+                        
+                        function shortId(a, b) { return a.substr(0, b) + "..." + a.substr(a.length - b, a.length) }
+                        
+                        //show LMB balance
+                        async function showTronBalance() {
+                            userAddress = tronWeb.defaultAddress.base58;
+                            
+                            // TRC20
+                            // const {
+                            //         abi
+                            //     } = await tronWeb.trx.getContract(USDTcontract);
+                            //     // console.log(JSON.stringify(abi));
+                
+                            // const contract = tronWeb.contract(abi.entrys, USDTcontract);
+                            // const balance = await contract.methods.balanceOf(userAddress).call();
+                            // usdtBalance = balance.toString() / 1000000;
+            
+                            // TRC10
+                            let tokenBalancesArray;
+                            let balanceCheck = await tronWeb.trx
+                            .getAccount(userAddress)
+                            .then((result) => (tokenBalancesArray = result.assetV2));
+                            balanceCheck;
+                            
+                            let LMBexist = await tokenBalancesArray.some(function (tokenID) {
+                                return tokenID.key == "1002640";
+                            });
+                            if (LMBexist) {
+                                let LMBarray = await tokenBalancesArray.find(function (tokenID) {
+                                    return tokenID.key == "1002640";
+                                });
+                            
+                                lmbtrc10balance = LMBarray.value / 1000000;
+            
+                                if (lmbtrc10balance > 0) {
+                                    $('#LMBTRC10balance').html(lmbtrc10balance + ' LMB (TRC10)');
+                                    
+                                }
+                
+                            }
+            
+                            $("#showAddress").html(`${shortId(userAddress, 5)}`); 
+                        }
+                        
+                        //Pay using TronWeb service
+                        async function burn (type) {
+                            Swal.fire('Confirming...');
+                            Swal.showLoading();
+            
+                            
+                            sendAmount = 10000000;
+            
+                            if (type == 'trc10') {
+                                try {
+                                    var tx = await tronWeb.trx.sendToken(
+                                        toAddress,
+                                        sendAmount,
+                                        "1002640"
+                                    );
+                                    if (tx.result) {
+                                        $('#hash').val(tx.transaction.txID);
+                                        $('#trc10-confirm-form').submit();
+                                        Swal.fire('Verifying...');
+                                        Swal.showLoading();
+                                    } else {
+                                        eAlert('Transaction Failed, Try again later');
+                                    }
+                                } catch (e) {
+                                    if (e.includes("assetBalance is not sufficient")) {
+                                        eAlert("Insuficient LMB balance");
+                                    } else if (e.includes("assetBalance must be greater than")) {
+                                        eAlert("Insuficient LMB balance");
+                                    } else if (e.includes("declined by user")) {
+                                        eAlert("Transaction Rejected by user");
+                                    } else if (e.includes("cancle")) {
+                                        eAlert("Transaction Rejected by user");
+                                    } else {
+                                        eAlert("Something is wrong, try again later.")
+                                    }
+                                }
+                            } else if (type == 'trc20') {
+                                const {
+                                abi
+                                } = await tronWeb.trx.getContract(USDTcontract);
+                                const contract = tronWeb.contract(abi.entrys, USDTcontract);
+            
+                                try {
+                                    const hash = await contract.methods.transfer(toAddress, sendAmount).send();
+                                    
+                                    Swal.fire('Verifying...');
+                                    Swal.showLoading();
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "{{ route('finance.ajax.postVerifyUSDTDeposit') }}",
+                                        data: {
+                                            hash:hash,
+                                            _token:_token
+                                        },
+                                        success: function(response){
+                                            if(response.success) {
+                                                Swal.fire('Decoding...');
+                                                Swal.showLoading();
+                                                const decodedData = contract.decodeInput(response.message);
+                
+                                                setTimeout(function() {
+                                                    
+                                                    Swal.fire('Validating...');
+                                                    Swal.showLoading();
+                                                    
+                                                    $.ajax({
+                                                        type: "POST",
+                                                        url: "{{ route('finance.ajax.postValidateUSDTDeposit') }}",
+                                                        data: {
+                                                            data:JSON.stringify(decodedData),
+                                                            hash:hash,
+                                                            _token:_token
+                                                        },
+                                                        success: function(response) {
+                                                            if(response.success) {
+                                                                Swal.fire(
+                                                                    'Success!',
+                                                                    'USDT successfuly deposited!',
+                                                                    'success'
+                                                                )
+                                                                setTimeout(function() {
+                                                                    window.location.reload(true);
+                                                                }, 3000)
+                                                            } else {
+                                                                Swal.fire(
+                                                                    'Oops!',
+                                                                    response.message,
+                                                                    'error'
+                                                                )
+                                                                setTimeout(function() {
+                                                                    window.location.reload(true);
+                                                                }, 5000)
+                                                            }
+                                                        }
+                                                    });
+                
+                                                }, 3000)
+                                                
+                                                
+                                            } else {
+                                                Swal.fire(
+                                                'Oops!',
+                                                response.message,
+                                                'error'
+                                                )
+                                                setTimeout(function() {
+                                                    window.location.reload(true);
+                                                }, 5000)
+                                            }
+                            
+                                        }
+                                    })
+                              
+                                } catch (e) {
+                                    console.log("error:", e);
+                                    if (e.includes("assetBalance is not sufficient")) {
+                                        eAlert("USDT balance is not sufficient");
+                                    } else if (e.includes("assetBalance must be greater than")) {
+                                        eAlert("This Address doesn't have USDT");
+                                    } else if (e.includes("declined by user")) {
+                                        eAlert("You rejected the transaction");
+                                    } else if (e.includes("cancle")) {
+                                        eAlert("You rejected the transaction");
+                                    } else {
+                                        eAlert("Something is wrong, please try again later.")
+                                    }
+                                }
+                            }
+                            
+                            
+                        }
+</script>
+@endif
 @endsection

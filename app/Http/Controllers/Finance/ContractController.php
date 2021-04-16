@@ -13,6 +13,8 @@ use App\Jobs\ActivateContractJob;
 use App\Model\Finance\Credit;
 use Telegram\Bot\Laravel\Facades\Telegram;
 use App\Model\Finance\_Yield;
+use Illuminate\Support\Facades\DB;
+use IEXBase\TronAPI\Exception\TronException;
 
 class ContractController extends Controller
 {
@@ -234,7 +236,7 @@ class ContractController extends Controller
         }
     }
 
-    public function postContractUpgrade($contract_id)
+    public function postContractUpgrade($contract_id, Request $request)
     {
         $user = Auth::user();
         $contract = Contract::find($contract_id);
@@ -251,13 +253,93 @@ class ContractController extends Controller
         if ($contract->grade == 1 && $days >= 16) {
             $contract->grade = 2;
             $contract->save();
+
+            Alert::success('Done!', 'Contract successfully upgraded');
+            return redirect()->back();
         }
 
-        Alert::success('Done!', 'Contract successfully upgraded');
+        if ($request->hash != 0) {
+            $hash = $request->hash;
+        }
+
+        if ($contract->grade == 2 && $days >= 106 || $contract->grade == 3 && $days >= 196) {
+            $upgrade_to = $contract->grade + 1;
+            // Check burn transaction hash
+            $check = $this->checkContractUpgradeLMBBurns($hash, $contract->id);
+            if ($check) {
+                $contract->grade = $upgrade_to;
+                $contract->save();
+
+                // Log the upgrade tx
+                DB::table('contract_upgrades')->insert([
+                    'contract_id' => $contract->id,
+                    'upgrade_to' => $upgrade_to,
+                    'hash' => $hash,
+                    'created_at' => date('Y-m-d H:i:s')
+                ]);
+
+                Alert::success('Done!', 'Contract successfully upgraded');
+                return redirect()->back();
+            }
+        }
+
+        Alert::error('Ouch!', 'Failed to Upgrade Contract');
         return redirect()->back();
     }
 
-    public function postContractBreak($contract_id) // (TO DO LIST!)
+    public function checkContractUpgradeLMBBurns($hash, $contract_id)
+    {
+        // Check hash uniqueness
+        $check1 = DB::table('finance_activations')->where('hash', $hash)->exists();
+        $check2 = DB::table('contract_upgrades')->where('hash', $hash)->exists();
+
+        if ($check1 || $check2) {
+            return false;
+        }
+
+        $amount = 10000000; //10 LMB
+        $burnAddress = 'TLsV52sRDL79HXGGm9yzwKibb6BeruhUzy';
+
+        $tron = $this->getTron();
+        $i = 1;
+        sleep(2); // add 2 seconds wait before checking tx_id
+        do {
+            try {
+                sleep(1);
+                $response = $tron->getTransaction($hash);
+            } catch (TronException $e) {
+                $i++;
+                continue;
+            }
+            break;
+        } while ($i < 23);
+
+        if ($i == 23) {
+            $text = 'Failed to verify Contract Upgrade' . chr(10);
+            $text .= 'Contract ID: ' . $contract_id . chr(10);
+            $text .= 'Hash: ' . $hash . chr(10);
+
+            Telegram::sendMessage([
+                'chat_id' => config('services.telegram.overlord'),
+                'text' => $text,
+                'parse_mode' => 'markdown'
+            ]);
+
+            return false;
+        };
+
+        $hashReceiver = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['to_address']);
+        $hashAsset = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['asset_name']);
+        $hashAmount = $response['raw_data']['contract'][0]['parameter']['value']['amount'];
+
+        if ($hashReceiver != $burnAddress || $hashAsset != '1002640' || $hashAmount != $amount) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function postContractBreak($contract_id)
     {
         $user = Auth::user();
         $contract = Contract::find($contract_id);

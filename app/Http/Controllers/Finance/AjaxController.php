@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Finance;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\TronController;
 use App\Model\Finance\_Yield;
+use App\Model\Finance\Contract;
 use Illuminate\Http\Request;
 use App\Model\Finance\USDTbalance;
 use App\Model\Finance\Credit;
@@ -178,6 +179,25 @@ class AjaxController extends Controller
             ->get();
         return view('finance.ajax.getYieldHistory')
             ->with(compact('data'));
+    }
+
+    public function getContractUpgrade(Request $request)
+    {
+        $user = Auth::user();
+
+        // Base response
+        $response = false;
+
+        // Check if the caller is the right owner of this contract
+        $contract = Contract::find($request->contract_id);
+
+        if ($contract->user_id == $user->id && $contract->grade < 4) {
+            $response = true;
+        }
+
+        return view('finance.ajax.getContractUpgrade')
+            ->with(compact('response'))
+            ->with(compact('contract'));
     }
 
     // public function getAccountTelegram()

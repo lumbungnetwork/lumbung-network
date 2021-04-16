@@ -65,6 +65,7 @@ Route::group(['prefix' => 'ajax'], function () {
 
     Route::get('/wallet/history', 'Finance\AjaxController@getWalletHistory')->name('ajax.getWalletHistory')->middleware('auth');
     Route::get('/contracts/yield-history', 'Finance\AjaxController@getYieldHistory')->name('ajax.getYieldHistory')->middleware('auth');
+    Route::get('/contracts/upgrade', 'Finance\AjaxController@getContractUpgrade')->name('ajax.getContractUpgrade')->middleware('auth');
     Route::get('/account/telegram', 'Finance\AjaxController@getAccountTelegram')->name('ajax.getAccountTelegram')->middleware('auth');
     Route::get('/dashboard/platform-liquidity', 'Finance\AjaxController@getPlatformLiquidity')->name('ajax.getPlatformLiquidity')->middleware('auth');
 });
