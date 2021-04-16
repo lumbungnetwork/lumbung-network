@@ -32,7 +32,7 @@
                 <!-- Layout  -->
                 <h1 class="text-3xl font-medium mb-2">Reset Password</h1>
                 <p class="text-sm">Enter your email, a link to reset password will be sent.</p>
-                <form class="space-y-5 mt-5" method="POST" action="{{ url('/password/email') }}">
+                <form class="space-y-5 mt-5" method="POST" action="{{ url('/password/email') }}" autocomplete="off">
                     @csrf
                     <div class="mt-2 nm-inset-gray-50 rounded-xl p-2 ">
 

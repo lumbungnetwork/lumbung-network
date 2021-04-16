@@ -38,7 +38,8 @@ class ForgotPasswordController extends Controller
      */
     public function showLinkRequestForm()
     {
-        return view('finance.auth.passwords.email');
+        return view('finance.auth.passwords.email')
+            ->with('title', 'Request Reset Password');
     }
 
     /**

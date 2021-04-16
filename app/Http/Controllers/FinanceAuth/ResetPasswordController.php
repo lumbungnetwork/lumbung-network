@@ -28,7 +28,7 @@ class ResetPasswordController extends Controller
      *
      * @var string
      */
-    public $redirectTo = '/home';
+    public $redirectTo = '/login';
 
 
     /**
@@ -52,9 +52,12 @@ class ResetPasswordController extends Controller
      */
     public function showResetForm(Request $request, $token = null)
     {
-        return view('finance.auth.passwords.reset')->with(
-            ['token' => $token, 'email' => $request->email]
-        );
+        return view('finance.auth.passwords.reset')
+            ->with([
+                'token' => $token,
+                'email' => $request->email
+            ])
+            ->with('title', 'Reset Password');
     }
 
     /**
