@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use App\Model\Sales;
 use App\User;
 use Illuminate\Support\Facades\Config;
@@ -31,6 +32,12 @@ class ForwardShoppingPaymentJob implements ShouldQueue
     {
         $this->masterSalesID = $masterSalesID;
         $this->sellerType = $sellerType;
+    }
+
+    // Prevent Overlap
+    public function middleware()
+    {
+        return [(new WithoutOverlapping($this->masterSalesID))->dontRelease()];
     }
 
     /**
@@ -89,7 +96,12 @@ class ForwardShoppingPaymentJob implements ShouldQueue
                 $signedTransaction = $tron->signTransaction($transaction);
                 $response = $tron->sendRawTransaction($signedTransaction);
             } catch (TronException $e) {
-                die($e->getMessage());
+                Telegram::sendMessage([
+                    'chat_id' => Config::get('services.telegram.overlord'),
+                    'text' => 'ForwardShoppingPayment Fail, UserID: ' . $seller->id . ' sales_id: ' . $this->masterSalesID,
+                    'parse_mode' => 'markdown'
+                ]);
+                return;
             }
 
             if (!isset($response['result'])) {

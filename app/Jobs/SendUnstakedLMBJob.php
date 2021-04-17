@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use App\User;
 use Telegram\Bot\Laravel\Facades\Telegram;
 use App\Http\Controllers\Controller;
@@ -30,6 +31,12 @@ class SendUnstakedLMBJob implements ShouldQueue
         $this->user_id = $user_id;
         $this->staking_id = $staking_id;
         $this->amount = $amount;
+    }
+
+    // Prevent Overlap
+    public function middleware()
+    {
+        return [(new WithoutOverlapping($this->staking_id))->dontRelease()];
     }
 
     /**

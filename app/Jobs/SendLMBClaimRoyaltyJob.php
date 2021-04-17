@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use App\User;
 use App\Model\Bonus;
 use App\BonusRoyalty;
@@ -30,6 +31,12 @@ class SendLMBClaimRoyaltyJob implements ShouldQueue
     {
         $this->user_id = $user_id;
         $this->bonus_id = $bonus_id;
+    }
+
+    // Prevent Overlap
+    public function middleware()
+    {
+        return [(new WithoutOverlapping($this->bonus_id))->dontRelease()];
     }
 
     /**

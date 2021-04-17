@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
 use App\Model\Bonus;
 use App\User;
@@ -27,6 +28,12 @@ class ManualTopUpeIDRjob implements ShouldQueue
     {
         $this->topup_id = $topup_id;
         $this->approval = $approval;
+    }
+
+    // Prevent Overlap
+    public function middleware()
+    {
+        return [(new WithoutOverlapping($this->topup_id))->dontRelease()];
     }
 
     /**
@@ -78,7 +85,12 @@ class ManualTopUpeIDRjob implements ShouldQueue
                 $signedTransaction = $tron->signTransaction($transaction);
                 $response = $tron->sendRawTransaction($signedTransaction);
             } catch (TronException $e) {
-                die($e->getMessage());
+                Telegram::sendMessage([
+                    'chat_id' => Config::get('services.telegram.overlord'),
+                    'text' => 'ManualTopUpeIDR Fail, UserID: ' . $user->id . ' topup_id: ' . $this->topup_id . chr(10) . $e->getMessage(),
+                    'parse_mode' => 'markdown'
+                ]);
+                return;
             }
 
             if (!isset($response['result'])) {
@@ -115,6 +127,17 @@ class ManualTopUpeIDRjob implements ShouldQueue
                     ]);
                     return;
                 }
+
+                // record to eIDR log
+                DB::table('eidr_logs')->insert([
+                    'amount' => $getData->nominal,
+                    'from' => $from,
+                    'to' => $to,
+                    'hash' => $txHash,
+                    'type' => 3,
+                    'detail' => 'Topup eIDR by: ' . $user->user_code,
+                    'created_at' => date('Y-m-d H:i:s')
+                ]);
 
                 $notification = [
                     'amount' => $getData->nominal,

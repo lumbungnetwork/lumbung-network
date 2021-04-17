@@ -2,15 +2,13 @@
 
 namespace App\Jobs;
 
-use App\Http\Middleware\Cors;
 use App\Model\Bonus;
-use IEXBase\TronAPI\Provider\HttpProvider;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use IEXBase\TronAPI\Exception\TronException;
 use Illuminate\Support\Facades\Config;
 use GuzzleHttp\Client;
@@ -34,6 +32,12 @@ class SendLMBRewardPeringkatJob implements ShouldQueue
     public function __construct($reward_id)
     {
         $this->reward_id = $reward_id;
+    }
+
+    // Prevent Overlap
+    public function middleware()
+    {
+        return [(new WithoutOverlapping($this->reward_id))->dontRelease()];
     }
 
     /**

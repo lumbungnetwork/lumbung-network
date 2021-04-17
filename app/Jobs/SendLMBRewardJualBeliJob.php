@@ -10,6 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use IEXBase\TronAPI\Exception\TronException;
 use Illuminate\Support\Facades\Config;
 use GuzzleHttp\Client;
@@ -33,6 +34,12 @@ class SendLMBRewardJualBeliJob implements ShouldQueue
     public function __construct($reward_id)
     {
         $this->reward_id = $reward_id;
+    }
+
+    // Prevent Overlap
+    public function middleware()
+    {
+        return [(new WithoutOverlapping($this->reward_id))->dontRelease()];
     }
 
     /**

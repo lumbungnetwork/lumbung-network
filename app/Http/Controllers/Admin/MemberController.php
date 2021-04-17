@@ -6,9 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Storage;
 use App\Model\Member;
 use App\Model\Pinsetting;
 use App\Model\Masterpin;
@@ -20,7 +18,6 @@ use App\Model\Bonussetting;
 use App\Model\Bonus;
 use App\Model\Bank;
 use App\Model\Pengiriman;
-use App\Model\Membership;
 use App\Model\Sales;
 use App\Model\Transferwd;
 use App\Product;
@@ -30,18 +27,17 @@ use App\ProductImages;
 use App\SellerProfile;
 use App\LocalWallet;
 use App\Ppob;
-use App\Services\AbstractService;
-use App\ValueObjects\Cart\ItemObject;
 use Intervention\Image\ImageManager;
 use GuzzleHttp\Client;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Jobs\SendRegistrationEmailJob;
 use App\Jobs\PPOBAutoCancelJob;
 use App\Jobs\ProcessRequestToDelegatesJob;
+use App\Jobs\ProcessWithdrawVendorDepositeIDRJob;
 use Throwable;
 use IEXBase\TronAPI\Exception\TronException;
-use Illuminate\Support\Facades\Http;
 use Telegram\Bot\Laravel\Facades\Telegram;
+use Illuminate\Support\Facades\DB;
 
 
 class MemberController extends Controller
@@ -3760,6 +3756,7 @@ class MemberController extends Controller
         $hashReceiver = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['to_address']);
         $hashAsset = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['asset_name']);
         $hashAmount = $response['raw_data']['contract'][0]['parameter']['value']['amount'];
+        $sender = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['owner_address']);
 
         if ($hashTime > $timestamp) {
             if ($hashAmount / 100 == $amount) {
@@ -3780,6 +3777,18 @@ class MemberController extends Controller
                             'transaction_code' => $getTrans->transaction_code,
                         );
                         $modelPin->getInsertMemberDeposit($memberDeposit);
+
+                        // record to eidr logs
+                        DB::table('eidr_logs')->insert([
+                            'amount' => $amount,
+                            'from' => $sender,
+                            'to' => $hashReceiver,
+                            'hash' => $hash,
+                            'type' => 5,
+                            'detail' => 'Add Vendor Deposit by: ' . $dataUser->user_code,
+                            'created_at' => date('Y-m-d H:i:s')
+                        ]);
+
                         Alert::success('Berhasil', 'Proses Isi Deposit Vendor Berhasil!');
                         return redirect()->route('mainMyAccount');
                     } else {
@@ -3930,62 +3939,46 @@ class MemberController extends Controller
             $sum_on_the_fly;
 
         $amount = $request->amount;
-        $to = $dataUser->tron;
 
         if ($amount > $totalDeposit) {
             Alert::error('Gagal!', 'Saldo Deposit tidak cukup!');
             return redirect()->back();
         }
         if ($amount > 0 && $amount <= $totalDeposit) {
-            $fuse = Config::get('services.telegram.test');
-            $tron = $this->getTron();
-            $tron->setPrivateKey($fuse);
 
-            $from = 'TWJtGQHBS8PfZTXvWAYhQEMrx36eX2F9Pc';
-            $tokenID = '1002652';
+            //logging the transaction
+            $code = $modelTrans->getCodeDepositTransaction();
+            $transaction_code = 'TTR' . date('Ymd') . $dataUser->id . $code;
+            $dataInsert = array(
+                'type' => 2,
+                'user_id' => $dataUser->id,
+                'transaction_code' => $transaction_code,
+                'price' => $amount,
+                'unique_digit' => 0,
+                'user_bank' => null,
+                'is_tron' => 1,
+                'status' => 2,
+                'tuntas_at' => date('Y-m-d H:i:s'),
+                'tron_transfer' => $dataUser->tron
+            );
+            $txData = $modelTrans->getInsertDepositTransaction($dataInsert);
 
-            //send eIDR
-            try {
-                $transaction = $tron->getTransactionBuilder()->sendToken($to, $amount * 100, $tokenID, $from);
-                $signedTransaction = $tron->signTransaction($transaction);
-                $response = $tron->sendRawTransaction($signedTransaction);
-            } catch (TronException $e) {
-                die($e->getMessage());
-            }
+            //deducting vendor's deposit
+            $vendorDeposit = array(
+                'user_id' => $dataUser->id,
+                'total_deposito' => $amount,
+                'transaction_code' => $transaction_code,
+                'deposito_status' => 1
+            );
+            $modelPin->getInsertMemberDeposit($vendorDeposit);
 
-            if ($response['result'] == true) {
-                //logging the transaction
-                $code = $modelTrans->getCodeDepositTransaction();
-                $transaction_code = 'TTR' . date('Ymd') . $dataUser->id . $code;
-                $dataInsert = array(
-                    'type' => 2,
-                    'user_id' => $dataUser->id,
-                    'transaction_code' => $transaction_code,
-                    'price' => $amount,
-                    'unique_digit' => 0,
-                    'user_bank' => null,
-                    'is_tron' => 1,
-                    'status' => 2,
-                    'tuntas_at' => date('Y-m-d H:i:s'),
-                    'tron_transfer' => $response['txid']
-                );
-                $modelTrans->getInsertDepositTransaction($dataInsert);
+            ProcessWithdrawVendorDepositeIDRJob::dispatch($txData->lastID)->onQueue('tron');
 
-                //deducting vendor's deposit
-                $vendorDeposit = array(
-                    'user_id' => $dataUser->id,
-                    'total_deposito' => $amount,
-                    'transaction_code' => $transaction_code,
-                    'deposito_status' => 1
-                );
-                $modelPin->getInsertMemberDeposit($vendorDeposit);
-
-                Alert::success('Berhasil!', number_format($amount) . ' eIDR telah berhasil ditarik!');
-                return redirect()->route('mainMyAccount');
-            } else {
-                Alert::error('Gagal!', 'Ada masalah pada proses transfer, silakan diulangi kembali');
-                return redirect()->back();
-            }
+            Alert::success('Berhasil!', number_format($amount) . ' eIDR berhasil ditarik, akan segera masuk beberapa menit ke depan!');
+            return redirect()->route('mainMyAccount');
+        } else {
+            Alert::error('Gagal!', 'Withdraw Gagal');
+            return redirect()->back();
         }
     }
 

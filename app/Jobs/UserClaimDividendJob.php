@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Config;
 use Telegram\Bot\Laravel\Facades\Telegram;
 use App\User;
 use Illuminate\Support\Facades\DB;
+use IEXBase\TronAPI\Exception\TronException;
 
 class UserClaimDividendJob implements ShouldQueue
 {
@@ -31,6 +33,11 @@ class UserClaimDividendJob implements ShouldQueue
         $this->div_id = $div_id;
     }
 
+    public function middleware()
+    {
+        return [(new WithoutOverlapping($this->div_id))->dontRelease()];
+    }
+
     /**
      * Execute the job.
      *
@@ -42,7 +49,7 @@ class UserClaimDividendJob implements ShouldQueue
         $controller = new Controller;
         $tron = $controller->getTron();
         $tron->setPrivateKey(Config::get('services.telegram.test'));
-        $user = User::where('id', $this->user_id)->select('id', 'tron')->first();
+        $user = User::where('id', $this->user_id)->select('id', 'tron', 'user_code')->first();
 
         $claim = DB::table('users_dividend')->select('hash', 'amount')->where('id', $this->div_id)->first();
 
@@ -57,7 +64,13 @@ class UserClaimDividendJob implements ShouldQueue
                 $signedTransaction = $tron->signTransaction($transaction);
                 $response = $tron->sendRawTransaction($signedTransaction);
             } catch (TronException $e) {
-                die($e->getMessage());
+                $response = Telegram::sendMessage([
+                    'chat_id' => Config::get('services.telegram.overlord'),
+                    'text' => 'UserClaimDividend Fail, UserID: ' . $this->user_id . ' div_id: ' . $this->div_id,
+                    'parse_mode' => 'markdown'
+                ]);
+
+                return;
             }
 
             if (!isset($response['result'])) {
@@ -66,24 +79,40 @@ class UserClaimDividendJob implements ShouldQueue
                     'text' => 'UserClaimDividend Fail, UserID: ' . $this->user_id . ' div_id: ' . $this->div_id,
                     'parse_mode' => 'markdown'
                 ]);
+
+                return;
             }
 
             $txHash = $response['txid'];
+
+            // update claim record with hash
+            $modelBonus->updateUserDividend('id', $this->div_id, [
+                'hash' => $txHash
+            ]);
+
             //fail check
             sleep(10);
             try {
-                $tron->getTransaction($txHash);
+                $response = $tron->getTransaction($txHash);
             } catch (TronException $e) {
-                $response = Telegram::sendMessage([
+                Telegram::sendMessage([
                     'chat_id' => Config::get('services.telegram.overlord'),
                     'text' => 'UserClaimDividend Fail, UserID: ' . $this->user_id . ' div_id: ' . $this->div_id,
                     'parse_mode' => 'markdown'
                 ]);
             }
 
-            $modelBonus->updateUserDividend('id', $this->div_id, [
-                'hash' => $txHash
+            // record to eIDR log
+            DB::table('eidr_logs')->insert([
+                'amount' => $claim->amount,
+                'from' => $from,
+                'to' => $to,
+                'hash' => $txHash,
+                'type' => 2,
+                'detail' => 'Claim Staking LMB Dividend by: ' . $user->user_code,
+                'created_at' => date('Y-m-d H:i:s')
             ]);
+
 
             return;
         }

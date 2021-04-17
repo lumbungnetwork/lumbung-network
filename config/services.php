@@ -58,7 +58,8 @@ return [
     ],
 
     'tron' => [
-        'lmb_staking' => env('LMBSTAKING')
+        'lmb_staking' => env('LMBSTAKING'),
+        'eidr_hot' => env('CEIDR') . env('AEIDR')
     ],
 
     'app' => [
