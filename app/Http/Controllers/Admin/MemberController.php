@@ -3170,7 +3170,7 @@ class MemberController extends Controller
 
                     $sendRequest = $modelMember->getInsertVendor([
                         'user_id' => $dataUser->id,
-                        'usernames' => $request->username1,
+                        'usernames' => $dataUser->user_code,
                         'delegate' => $request->delegate,
                         'hash' => $request->hash
                     ]);
