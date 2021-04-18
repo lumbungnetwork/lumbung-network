@@ -232,7 +232,7 @@ let _token = '{{ csrf_token() }}';
     //TronWeb
     var toAddress = 'TLsV52sRDL79HXGGm9yzwKibb6BeruhUzy';
     var userAddress, tronWeb;
-    const sendAmount = 50 * 1000000;
+    const sendAmount = 100 * 1000000;
     
     $(document).ready(function () {
         setTimeout(function () {
