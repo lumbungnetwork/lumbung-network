@@ -151,7 +151,7 @@ class ManualTopUpeIDRjob implements ShouldQueue
 
                 $eIDRbalance = $tron->getTokenBalance($tokenID, $from, $fromTron = false) / 100;
 
-                if ($eIDRbalance < 1500000) {
+                if ($eIDRbalance < 2500000) {
                     eIDRrebalanceJob::dispatch()->onQueue('tron');
                 }
 

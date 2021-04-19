@@ -113,6 +113,13 @@ class UserClaimDividendJob implements ShouldQueue
                 'created_at' => date('Y-m-d H:i:s')
             ]);
 
+            // Check remaining balance and rebalance if needed
+            $eIDRbalance = $tron->getTokenBalance($tokenID, $from, $fromTron = false) / 100;
+
+            if ($eIDRbalance < 2500000) {
+                eIDRrebalanceJob::dispatch()->onQueue('tron');
+            }
+
 
             return;
         }
