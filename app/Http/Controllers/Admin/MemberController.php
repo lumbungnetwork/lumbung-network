@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Cache;
 use App\Model\Member;
 use App\Model\Pinsetting;
 use App\Model\Masterpin;
@@ -4127,31 +4128,11 @@ class MemberController extends Controller
         }
     }
 
-    public function getProductBySKUPostpaid($type, $buyer_sku_code, $customer_no)
+    public function getProductBySKUPostpaid($type, $customer_no)
     {
-        $modelMember = new Member;
-        $modelPin = new Pin;
-        $getDataAPI = $modelMember->getDataAPIMobilePulsa();
-        $username   = $getDataAPI->username;
-        $apiKey   = $getDataAPI->api_key;
-        $ref_id = $modelPin->getCodePPOBRef($type);
-        $sign = md5($username . $apiKey . $ref_id);
-        $array = array(
-            'commands' => 'inq-pasca',
-            'username' => $username,
-            'buyer_sku_code' => $buyer_sku_code,
-            'customer_no' => $customer_no,
-            'ref_id' => $ref_id,
-            'sign' => $sign,
-        );
-        $url = $getDataAPI->master_url . '/v1/transaction';
-        $json = json_encode($array);
-        $cek = $modelMember->getAPIurlCheck($url, $json);
-        $getData = json_decode($cek, true);
-        if ($getData == null) {
-            Alert::warning('Oops!', 'Periksa kembali nomor yang anda masukkan')->persistent(true);
-            return redirect()->back();
-        }
+        // Get data from cache
+        $getData = Cache::get($customer_no);
+
 
         $data_price = $getData['data']['selling_price'];
 
@@ -4196,7 +4177,7 @@ class MemberController extends Controller
             'desc' => $getData['data']['buyer_sku_code'],
             'real_price' => $real_price,
             'price' => $price,
-            'ref_id' => $ref_id
+            'ref_id' => $getData['data']['ref_id']
         );
 
         return $product;
@@ -4981,7 +4962,12 @@ class MemberController extends Controller
         if ($type >= 1 && $type < 4 || $type >= 21 && $type < 29) {
             $productData = $this->getProductBySKUPrepaid($type, $buyer_sku_code);
         } elseif ($type >= 4 && $type < 11) {
-            $productData = $this->getProductBySKUPostpaid($type, $buyer_sku_code, $request->no_hp);
+            if (Cache::has($request->no_hp)) {
+                $productData = $this->getProductBySKUPostpaid($type, $request->no_hp);
+            } else {
+                Alert::error('Gagal!', 'Order sudah Expired, silakan order ulang');
+                return redirect()->back();
+            }
         }
 
 
@@ -4999,6 +4985,7 @@ class MemberController extends Controller
         );
 
         $newPPOB = $modelPin->getInsertPPOB($dataInsert);
+        Cache::forget($request->no_hp);
         PPOBAutoCancelJob::dispatch($newPPOB->lastID)->delay(now()->addMinutes(70))->onQueue('tron');
         Alert::success('Berhasil!', 'Silakan Pilih Metode Pembayaran dan Konfirmasi');
         return redirect()->route('m_detailPPOBMemberTransaction', [$newPPOB->lastID]);
@@ -5034,7 +5021,12 @@ class MemberController extends Controller
         if ($type >= 1 && $type < 4 || $type >= 21 && $type < 29) {
             $productData = $this->getProductBySKUPrepaid($type, $buyer_sku_code);
         } elseif ($type >= 4 && $type < 11) {
-            $productData = $this->getProductBySKUPostpaid($type, $buyer_sku_code, $request->no_hp);
+            if (Cache::has($request->no_hp)) {
+                $productData = $this->getProductBySKUPostpaid($type, $request->no_hp);
+            } else {
+                Alert::error('Gagal!', 'Order sudah Expired, silakan order ulang');
+                return redirect()->back();
+            }
         }
 
         $dataInsert = array(
@@ -5054,6 +5046,7 @@ class MemberController extends Controller
         );
 
         $newPPOB = $modelPin->getInsertPPOB($dataInsert);
+        Cache::forget($request->no_hp);
         PPOBAutoCancelJob::dispatch($newPPOB->lastID)->delay(now()->addMinutes(70))->onQueue('tron');
         Alert::success('Berhasil!', 'Periksa kembali lalu Konfirmasi Pembelian ini');
         return redirect()->route('m_vendorDetailPPOB', [$newPPOB->lastID]);
@@ -5602,178 +5595,6 @@ class MemberController extends Controller
         return redirect()->route('m_listVendotPPOBTransactions');
     }
 
-    public function getCekStatusTransaksiApi($id)
-    {
-        $dataUser = Auth::user();
-        $onlyUser  = array(10);
-        if (!in_array($dataUser->user_type, $onlyUser)) {
-            return redirect()->route('mainDashboard');
-        }
-        if ($dataUser->package_id == null) {
-            return redirect()->route('m_newPackage');
-        }
-        if ($dataUser->is_active == 0) {
-            return redirect()->route('mainDashboard');
-        }
-        $modelPin = new Pin;
-        $modelTrans = new Transaction;
-        $modelMember = new Member;
-        $getDataMaster = $modelPin->getVendorPPOBDetail($id, $dataUser);
-        if ($getDataMaster == null) {
-            return redirect()->route('m_listVendotPPOBTransactions')
-                ->with('message', 'Tidak ada data')
-                ->with('messageclass', 'danger');
-        }
-        if ($getDataMaster->status != 2) {
-            return redirect()->route('m_listVendotPPOBTransactions')
-                ->with('message', 'transaksi vendor belum tuntas')
-                ->with('messageclass', 'danger');
-        }
-        if ($getDataMaster->vendor_approve != 0) {
-            return redirect()->route('m_listVendotPPOBTransactions')
-                ->with('message', 'Tidak ada data')
-                ->with('messageclass', 'danger');
-        }
-        $getDataAPI = $modelMember->getDataAPIMobilePulsa();
-        $username   = $getDataAPI->username;
-        $apiKey   = $getDataAPI->api_key;
-        $sign = md5($username . $apiKey . $getDataMaster->ppob_code);
-
-        if ($getDataMaster->type == 1) {
-            $array = array(
-                'username' => $username,
-                'buyer_sku_code' => $getDataMaster->buyer_code,
-                'customer_no' => $getDataMaster->product_name,
-                'ref_id' => $getDataMaster->ppob_code,
-                'sign' => $sign,
-            );
-        }
-        if ($getDataMaster->type == 2) {
-            $array = array(
-                'username' => $username,
-                'buyer_sku_code' => $getDataMaster->buyer_code,
-                'customer_no' => $getDataMaster->product_name,
-                'ref_id' => $getDataMaster->ppob_code,
-                'sign' => $sign,
-            );
-        }
-        if ($getDataMaster->type == 3) {
-            $array = array(
-                'username' => $username,
-                'buyer_sku_code' => $getDataMaster->buyer_code,
-                'customer_no' => $getDataMaster->product_name,
-                'ref_id' => $getDataMaster->ppob_code,
-                'sign' => $sign,
-            );
-        }
-        if ($getDataMaster->type == 4) {
-            $array = array(
-                'commands' => 'status-pasca',
-                'username' => $username,
-                'buyer_sku_code' => $getDataMaster->buyer_code,
-                'customer_no' => $getDataMaster->product_name,
-                'ref_id' => $getDataMaster->ppob_code,
-                'sign' => $sign,
-            );
-        }
-        if ($getDataMaster->type == 5) {
-            $array = array(
-                'commands' => 'status-pasca',
-                'username' => $username,
-                'buyer_sku_code' => $getDataMaster->buyer_code,
-                'customer_no' => $getDataMaster->product_name,
-                'ref_id' => $getDataMaster->ppob_code,
-                'sign' => $sign,
-            );
-        }
-        if ($getDataMaster->type == 6) {
-            $array = array(
-                'commands' => 'status-pasca',
-                'username' => $username,
-                'buyer_sku_code' => $getDataMaster->buyer_code,
-                'customer_no' => $getDataMaster->product_name,
-                'ref_id' => $getDataMaster->ppob_code,
-                'sign' => $sign,
-            );
-        }
-        if ($getDataMaster->type == 7) {
-            $array = array(
-                'commands' => 'status-pasca',
-                'username' => $username,
-                'buyer_sku_code' => $getDataMaster->buyer_code,
-                'customer_no' => $getDataMaster->product_name,
-                'ref_id' => $getDataMaster->ppob_code,
-                'sign' => $sign,
-            );
-        }
-        if ($getDataMaster->type == 8) {
-            $array = array(
-                'username' => $username,
-                'buyer_sku_code' => $getDataMaster->buyer_code,
-                'customer_no' => $getDataMaster->product_name,
-                'ref_id' => $getDataMaster->ppob_code,
-                'sign' => $sign,
-            );
-        }
-
-        $url = $getDataAPI->master_url . '/v1/transaction';
-        $json = json_encode($array);
-        $cek = $modelMember->getAPIurlCheck($url, $json);
-        $arrayData = json_decode($cek, true);
-
-        if ($arrayData != null) {
-            if ($arrayData['data']['status'] == 'Sukses') {
-                $dataUpdate = array(
-                    'status' => 2,
-                    'tuntas_at' => date('Y-m-d H:i:s'),
-                    'return_buy' => $cek,
-                    'vendor_approve' => 2
-                );
-                $modelPin->getUpdatePPOB('id', $getDataMaster->id, $dataUpdate);
-                $cekDuaKali = $modelPin->getJagaGaBolehDuaKali($getDataMaster->buyer_code . '-' . $getDataMaster->ppob_code);
-                if ($cekDuaKali == null) {
-                    $memberDeposit = array(
-                        'user_id' => $dataUser->id,
-                        'total_deposito' => $getDataMaster->harga_modal,
-                        'transaction_code' => $getDataMaster->buyer_code . '-' . $getDataMaster->ppob_code,
-                        'deposito_status' => 1
-                    );
-                    $modelPin->getInsertMemberDeposit($memberDeposit);
-                }
-                return redirect()->route('m_listVendotPPOBTransactions')
-                    ->with('message', 'transaksi berhasil')
-                    ->with('messageclass', 'success');
-            }
-
-            if ($arrayData['data']['status'] == 'Pending') {
-                return redirect()->route('m_listVendotPPOBTransactions')
-                    ->with('message', 'transaksi sedang pending, tunggu beberapa saat. Kemudian cek status di halaman transaksi digital')
-                    ->with('messageclass', 'warning');
-            }
-
-            if ($arrayData['data']['status'] == 'Gagal') {
-                $dataUpdate = array(
-                    'status' => 3,
-                    'deleted_at' => date('Y-m-d H:i:s'),
-                    'return_buy' => $cek,
-                    'vendor_approve' => 3,
-                    'vendor_cek' => $cek
-                );
-                $modelPin->getUpdatePPOB('id', $getDataMaster->id, $dataUpdate);
-                $cekDepositGagal = $modelPin->getJagaGaBolehDuaKali($getDataMaster->buyer_code . '-' . $getDataMaster->ppob_code);
-                if ($cekDepositGagal != null) {
-                    $modelPin->getDeleteMemberDeposit($cekDepositGagal->id);
-                }
-                return redirect()->route('m_listVendotPPOBTransactions')
-                    ->with('message', 'terjadi kesalahan pada transaksi, saldo dikembalikan')
-                    ->with('messageclass', 'success');
-            }
-        }
-        return redirect()->route('m_listVendotPPOBTransactions')
-            ->with('message', 'tidak ada data transaksi, kesalahan pada api')
-            ->with('messageclass', 'danger');
-    }
-
     public function getPPOBPascabayar($type)
     {
         $dataUser = Auth::user();
@@ -5873,6 +5694,7 @@ class MemberController extends Controller
             Alert::warning('Oops!', $getData['data']['message'])->persistent(true);
             return redirect()->back();
         }
+        Cache::put($request->customer_no, $getData, now()->addMinutes(80));
         return view('member.digital.pasca-cek_tagihan')
             ->with('getData', $getData['data'])
             ->with('buyer_sku_code', $buyer_sku_code)
