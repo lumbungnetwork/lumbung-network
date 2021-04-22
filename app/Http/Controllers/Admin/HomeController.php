@@ -31,6 +31,7 @@ class HomeController extends Controller
         $password = $request->admin_password;
         $userdata = array('user_code' => $email, 'password'  => $password, 'is_login' => 1);
         if ($this->guard()->attempt($userdata)) {
+            Auth::logoutOtherDevices($password);
             $request->session()->regenerate();
             return redirect()->route('admDashboard');
         }

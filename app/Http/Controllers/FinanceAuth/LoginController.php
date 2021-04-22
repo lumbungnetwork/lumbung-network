@@ -68,7 +68,7 @@ class LoginController extends Controller
     {
         $credentials = $request->only('username', 'password');
         if ($this->guard()->attempt($credentials)) {
-
+            auth('finance')->logoutOtherDevices($request->password);
             return redirect()->intended('/dashboard');
         }
         Alert::error('Oops!', 'Login failed, wrong username or password!');
