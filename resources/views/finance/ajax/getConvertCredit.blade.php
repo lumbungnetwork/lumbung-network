@@ -10,6 +10,7 @@
         </div>
         @if ($type == 2)
         <small class="text-sm font-extralight">Conversion Fee: 1% or minimum $1;</small><br>
+        <small id="converted" class="text-sm font-light text-green-500">Converted amount: $0</small><br>
         @endif
         <small class="text-sm font-extralight">Available: ${{number_format($balance)}}</small><br>
         <div class="flex space-x-2 justify-end">

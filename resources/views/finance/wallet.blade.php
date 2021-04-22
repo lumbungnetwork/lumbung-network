@@ -153,6 +153,25 @@
                     showCancelButton: false,
                     showConfirmButton: false
                 })
+
+                // Check amount
+                const max = creditBalance;
+                var amount = $('input[name="amount"]');
+                amount.on('keyup', function () {
+                    if(amount.val() > max) {
+                        amount.val(max.toFixed(2));
+                    }
+                    if(amount.val() >= 2 && amount.val() <= 100) {
+                        var converted = parseFloat(amount.val() - 1);
+                        $('#converted').html('Converted amount: $' + converted.toFixed(2) );
+                    } else if (amount.val() > 100) {
+                        var fee = amount.val() * (1 / 100);
+                        var converted = parseFloat(amount.val() - parseFloat(fee));
+                        $('#converted').html('Converted amount: $' + converted.toFixed(2) );
+                    } else {
+                        $('#converted').html('Converted amount: $0');
+                    }
+                })
             }
         });
     })
