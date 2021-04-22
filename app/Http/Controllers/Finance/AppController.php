@@ -66,9 +66,6 @@ class AppController extends Controller
         $modelCredit = new Credit;
         $USDTbalance = $modelUSDTbalance->getUserNetUSDTbalance($user->id);
         $creditBalance = $modelCredit->getUserNetCreditBalance($user->id);
-        if ($user->loginSecurity == null) {
-            Alert::info('About Security', "It's strongly recommended to activate 2FA to protect your account and fund!");
-        }
         return view('finance.wallet')
             ->with('title', 'Wallet')
             ->with(compact('USDTbalance'))

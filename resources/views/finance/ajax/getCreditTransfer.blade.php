@@ -2,25 +2,27 @@
     <h4 class="text-xl font-light text-center">{{$modalTitle}}</h4>
     <form action="{{route($route)}}" method="POST" autocomplete="off" id="transfer-form">
         @csrf
-        <p class="mt-4 text-md font-light">Enter reveiver's username:</p>
+        <p class="mt-4 text-md font-light">Enter receiver's username:</p>
 
         <div class="my-2 nm-inset-gray-50 rounded-xl">
             <input type="text" class="p-2 focus:outline-none bg-transparent w-full" name="receiver">
         </div>
+
         <p class="mt-4 text-md font-light">Enter amount:</p>
 
         <div class="my-2 nm-inset-gray-50 rounded-xl">
-            <input type="text" inputmode="numeric" pattern="[0-9]*" placeholder="minimum 2 USD"
-                class="p-2 focus:outline-none bg-transparent w-full" name="amount">
+            <input type="text" inputmode="numeric" pattern="[0-9]*" class="p-2 focus:outline-none bg-transparent w-full"
+                name="amount">
         </div>
+        <small id="totalDebit" class="text-sm font-extralight" hidden>Total Debit: $0</small><br>
         <p class="mt-4 text-md font-light">Confirm your password:</p>
 
         <div class="my-2 nm-inset-gray-50 rounded-xl">
             <input type="password" placeholder="your password" class="p-2 focus:outline-none bg-transparent w-full"
                 name="password">
         </div>
-        <small class="text-sm font-extralight">Transfer Fee: $1 (flat)</small><br>
-        <small class="text-sm font-extralight">Available: ${{number_format($balance)}}</small><br>
+        <small class="text-sm font-extralight">Transfer Fee: $0.3 (flat)</small><br>
+        <small class="text-sm font-extralight">Available for transfer: ${{number_format($balance - 0.3, 2)}}</small><br>
         <div class="flex space-x-2 justify-end">
             <button type="button" onclick="swal.close()"
                 class=" mt-3 p-3 bg-gray-400 rounded-2xl text-gray-700 text-xs focus:outline-none focus:bg-gray-600">Cancel</button>

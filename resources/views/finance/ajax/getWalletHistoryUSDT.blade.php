@@ -1,7 +1,9 @@
 <div class="p-0 text-left ">
+    <div class="float-right text-2xl font-bold" onclick="swal.close()">&#10005;</div>
+    <div class="clear-right"></div>
     <h4 class="text-xl font-light text-center">History</h4>
     @if (count($data) > 0)
-    <div class="mt-3 p-0">
+    <div class="mt-7 p-0">
         <table>
             <thead>
                 <tr>

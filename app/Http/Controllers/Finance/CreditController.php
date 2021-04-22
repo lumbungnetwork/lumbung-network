@@ -14,6 +14,7 @@ use App\Model\Finance\Credit;
 use App\Model\Finance\_Yield;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Cache;
 
 class CreditController extends Controller
 {
@@ -137,10 +138,15 @@ class CreditController extends Controller
         $modelCredit = new Credit;
         $creditBalance = $modelCredit->getUserNetCreditBalance($user->id);
 
+        // Transfer Fee (flat $0.3)
+        $fee = 0.3;
+        $referralBonus = $fee / 2;
+        $maxTransfer = $creditBalance - $fee;
+
         // Validate input
         $validator = Validator::make($request->all(), [
             'receiver' => 'required|string|exists:finances,username',
-            'amount' => "required|numeric|min:2|max:$creditBalance",
+            'amount' => "required|numeric|min:0.7|max:$maxTransfer",
             'password' => 'required|string'
         ]);
 
@@ -157,48 +163,59 @@ class CreditController extends Controller
         }
 
         $amount = $request->amount;
+        $debit = $amount + $fee;
         $receiver = Finance::where('username', $request->receiver)->select('id')->first();
 
-        // Assess to prevent overflow
-        $newCreditBalance = $creditBalance - $amount;
-        if ($newCreditBalance < 0) {
-            Alert::error('FAILED!', 'Insufficient Credit Balance!');
+        // Prevent transfer to same username
+        if ($receiver->id == $user->id) {
+            Alert::error('Failed', 'Can not transfer to same username!');
             return redirect()->back();
         }
 
-        // Transfer Fee (flat $1)
-        $fee = 1;
-        $referralBonus = 0.5;
+        // Use Atomic Lock to prevent race conditions
+        $lock = Cache::lock('credit' . $user->id, 20);
 
-        // Substract Credit Balance
-        try {
-            $credit = new Credit;
-            $credit->user_id = $user->id;
-            $credit->amount = $amount;
-            $credit->type = 0;
-            $credit->source = 3;
-            $credit->source_id = $receiver->id;
-            $credit->tx_id = $this->createCreditTxId($amount, 0, 3, $receiver->id);
-            $credit->save();
-        } catch (\Throwable $th) {
-            Alert::error('FAILED!', 'Fail to transfer!');
-            return redirect()->back();
+        if ($lock->get()) {
+
+            // Assert to prevent overflow
+            $newCreditBalance = $creditBalance - $debit;
+            if ($newCreditBalance < 0) {
+                Alert::error('FAILED!', 'Insufficient Credit Balance!');
+                return redirect()->back();
+            }
+
+            // Substract Credit Balance
+            try {
+                $credit = new Credit;
+                $credit->user_id = $user->id;
+                $credit->amount = $debit;
+                $credit->type = 0;
+                $credit->source = 3;
+                $credit->source_id = $receiver->id;
+                $credit->tx_id = $this->createCreditTxId($debit, 0, 3, $receiver->id);
+                $credit->save();
+            } catch (\Throwable $th) {
+                Alert::error('FAILED!', 'Fail to transfer!');
+                return redirect()->back();
+            }
+
+            // Add Credit Balance ($amount) to receiver
+            $balance = new Credit;
+            $balance->user_id = $receiver->id;
+            $balance->amount = $amount;
+            $balance->type = 1;
+            $balance->source = 3;
+            $balance->source_id = $user->id;
+            $balance->tx_id = $this->createCreditTxId($amount, 1, 3, $user->id);
+            $balance->save();
+
+            // Send half of fee to referrer
+            $this->creditReferralBonus($user->id, $user->sponsor_id, $referralBonus);
+
+            $lock->release();
         }
 
-        // Add Credit Balance minus fee to receiver
-        $balance = new Credit;
-        $balance->user_id = $receiver->id;
-        $balance->amount = $amount - $fee;
-        $balance->type = 1;
-        $balance->source = 3;
-        $balance->source_id = $user->id;
-        $balance->tx_id = $this->createCreditTxId($amount, 1, 3, $user->id);
-        $balance->save();
-
-        // Send half of fee to referrer
-        $this->creditReferralBonus($user->id, $user->sponsor_id, $referralBonus);
-
-        Alert::success('Done!', 'Transfered ' . ($amount - $fee) . ' Credit to ' . $request->receiver);
+        Alert::success('Done!', 'Transfered ' . $amount . ' Credit to ' . $request->receiver)->persistent(true);
         return redirect()->route('finance.wallet');
     }
 }

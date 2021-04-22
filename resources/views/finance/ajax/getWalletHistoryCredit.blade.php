@@ -1,7 +1,10 @@
 <div class="p-0 text-left ">
-    <h4 class="text-xl font-light text-center">History</h4>
+    <div class="float-right text-2xl font-bold" onclick="swal.close()">&#10005;</div>
+    <div class="clear-right"></div>
+    <h4 class="mt-3 text-xl font-light text-center">History</h4>
+
     @if (count($data) > 0)
-    <div class="mt-3 p-0">
+    <div class="mt-7 p-0">
         <table class="my-2">
             <thead>
                 <tr>
@@ -40,8 +43,9 @@
 
                         @else
                         @if ($item->source == 3)
-                        <strong class="text-red-500">-${{number_format($item->amount, 2)}}</strong> Transfer to
-                        {{$item->username}}
+                        <strong class="text-red-500">-${{number_format($item->amount, 2)}}</strong> Transfer
+                        ${{number_format($item->amount - 0.3, 2)}} to
+                        {{$item->username}} (<small><em>$0.3 fee</em></small>)
                         @endif
                         @if ($item->source == 4)
                         <strong class="text-red-500">-${{number_format($item->amount, 2)}}</strong> Convert to USDT

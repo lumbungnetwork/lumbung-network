@@ -1,7 +1,14 @@
 @extends('finance.layout.app')
 @section('content')
+@if ($user->loginSecurity == null)
+<div class="p-2 bg-yellow-300">
+    <p class="text-center font-light">It's strongly recommended to activate 2FA to protect your account and fund!. <a
+            class="underline" href="{{ route('finance.2fa') }}">Set 2FA now!</a></p>
+</div>
+@endif
 
-<div class="mt-10 flex flex-col justify-center px-3 sm:px-6">
+
+<div class="mt-8 flex flex-col justify-center px-3 sm:px-6">
 
     <div class="relative w-full max-w-md mx-auto">
 
@@ -50,7 +57,7 @@
 
                 </div>
 
-                <div class="mt-4 nm-convex-gray-50 rounded-xl p-6 text-center">
+                <div class="mt-4 nm-convex-gray-50 rounded-xl p-4 text-center">
                     <p>Credits (USD)</p>
                     <h2 class="mt-3 text-black text-3xl sm:text-6xl font-extralight">
                         {{number_format($creditBalance, 2)}}</h2>
@@ -159,12 +166,12 @@
     })
 
     $('#transfer-btn').click( function() {
-        // Check minimum $2 credit balance to convert
-        if (creditBalance < 2) {
+        // Check minimum $1 credit balance to transfer
+        if (creditBalance < 1) {
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: 'Minimum $2 available balance for transfer!'
+                text: 'Minimum $1 available balance for transfer!'
             });
             return false;
         }
@@ -177,6 +184,22 @@
                     html: url,
                     showCancelButton: false,
                     showConfirmButton: false
+                })
+                
+                // Check amount
+                const max = creditBalance - 0.3;
+                var amount = $('input[name="amount"]');
+                amount.on('keyup', function () {
+                    if(amount.val() > max) {
+                        amount.val(max.toFixed(2));
+                    }
+                    if(amount.val() >= 0.7) {
+                        var totalDebit = parseFloat(amount.val()) + 0.3;
+                        $('#totalDebit').html('Total Debit: $' + totalDebit.toFixed(2) );
+                        $('#totalDebit').show();
+                    }else {
+                        $('#totalDebit').hide();
+                    }
                 })
             }
         });

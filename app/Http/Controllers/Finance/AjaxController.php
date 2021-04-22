@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Finance;
 
+use App\Finance;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\TronController;
 use App\Model\Finance\_Yield;
@@ -256,5 +257,15 @@ class AjaxController extends Controller
         });
 
         return response()->json(['success' => true, 'data' => $platformLiquidity]);
+    }
+
+    public function getCheckUsername(Request $request)
+    {
+        $check = Finance::where('username', $request->username)->where('is_active', 1)->exists();
+        if ($check) {
+            return response()->json(['success' => true]);
+        } else {
+            return response()->json(['success' => false]);
+        }
     }
 }
