@@ -8,6 +8,7 @@ use App\Model\Transferwd;
 use App\Model\Sales;
 use App\Model\Bonus;
 use App\API;
+use App\Http\Controllers\Finance\AjaxController;
 
 class APIController extends Controller
 {
@@ -151,5 +152,11 @@ class APIController extends Controller
                 ], 200);
             }
         }
+    }
+
+    public function getFinancePlatformLiquidity()
+    {
+        $ajaxController = new AjaxController;
+        return $ajaxController->getPlatformLiquidity();
     }
 }

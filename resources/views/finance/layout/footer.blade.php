@@ -46,10 +46,6 @@
                                 <a class="text-gray-700 hover:text-gray-900 font-semibold block pb-2 text-sm"
                                     href="#">Github</a>
                             </li>
-                            <li>
-                                <a class="text-gray-700 hover:text-gray-900 font-semibold block pb-2 text-sm"
-                                    href="#">Free Products</a>
-                            </li>
                         </ul>
                     </div>
                     <div class="w-full lg:w-4/12 px-4">
@@ -66,7 +62,7 @@
                             </li>
                             <li>
                                 <a class="text-gray-700 hover:text-gray-900 font-semibold block pb-2 text-sm"
-                                    href="#">Contact Us</a>
+                                    href="mailto:contact@lumbung.network">Contact Us</a>
                             </li>
                         </ul>
                     </div>

@@ -22,4 +22,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::prefix('/v1')->group(function () {
     Route::get('/statistic/overview', 'APIController@getStatisticOverview');
     Route::get('/statistic/{time}/{name}', 'APIController@getStatisticDetail');
+    Route::get('/finance/platform-liquidity', 'APIController@getFinancePlatformLiquidity')->name('finance.platform-liquidity');
 });
