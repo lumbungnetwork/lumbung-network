@@ -3,8 +3,30 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>{{$title ?? ''}}</title>
-    <link rel="shortcut icon" href="{{Config::get('services.app.protocol_url')}}/image/icon2.png">
+    <meta name="description"
+        content="Lumbung Finance is a service, providing easier way to generate gains from Decentralized Finance (DeFi) protocols." />
+    <meta name="robots" content="index, follow" />
+    <meta name="referrer" content="always" />
+
+    <!-- Social & Open Graph -->
+    <meta property="og:title" content="Lumbung Finance" />
+    <meta property="og:description"
+        content="Lumbung Finance is a service, providing easier way to generate gains from Decentralized Finance (DeFi) protocols." />
+    <meta property="og:image" content="https://lumbung.network/image/lumbung-finance-social.png">
+
+    <meta property="og:url" content="https://finance.lumbung.network" />
+    <meta name="twitter:title" content="Lumbung Finance">
+    <meta name="twitter:description"
+        content="Lumbung Finance is a service, providing easier way to generate gains from Decentralized Finance (DeFi) protocols." />
+    <meta name="twitter:image" content="https://lumbung.network/image/lumbung-finance-social.png" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@lumbungnetwork" />
+    <meta name="twitter:creator" content="@evanstinger" />
+
+    <link rel="shortcut icon" type="image/png" href="{{Config::get('services.app.protocol_url')}}/image/icon2.png">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     @yield('style')
     <style>
