@@ -44,7 +44,7 @@ class StartCommand extends Command
         if (strlen($textContent) < 17) {
             $text .= 'Untuk menautkan akun anda dengan fitur notifikasi dari Bot ini, silakan login ke akun anda dari browser, dan tekan tombol Tautkan Telegram dari menu Akun. ';
         } elseif (substr($textContent, 7, 7) == 'finance') {
-            $key = substr($textContent, 14);
+            $key = substr($textContent, 7);
             if (Cache::has($key)) {
                 $user_id = Cache::pull($key);
 
