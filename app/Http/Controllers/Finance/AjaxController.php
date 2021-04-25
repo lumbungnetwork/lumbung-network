@@ -205,8 +205,8 @@ class AjaxController extends Controller
     {
         $user = Auth::user();
         $length = 10;
-        $linkCode = substr(str_shuffle('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'), 1, $length);
-        Cache::put('finance' . $linkCode, $user->id, 600);
+        $linkCode = 'finance' . substr(str_shuffle('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'), 1, $length);
+        Cache::put($linkCode, $user->id, 600);
         return response()->json(['success' => true, 'message' => $linkCode], 201);
     }
 
