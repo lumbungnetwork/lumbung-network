@@ -60,13 +60,24 @@
 
                         </div>
                     </a>
+                    @if ($user->chat_id == null)
                     <a onclick="telegram()">
                         <div class="mt-4 w-20 h-20 nm-convex-gray-50 rounded-xl p-2 text-center items-baseline">
                             <i class="fab fa-telegram text-2xl"></i>
-                            <p class="text-sm font-extralight">Telegram</p>
+                            <p class="text-sm font-extralight">Link Telegram</p>
 
                         </div>
                     </a>
+                    @else
+                    <a onclick="unlinkTelegram()">
+                        <div class="mt-4 w-20 h-20 nm-convex-gray-50 rounded-xl p-2 text-center items-baseline">
+                            <i class="fab fa-telegram text-2xl"></i>
+                            <p class="text-sm font-extralight">Unlink Telegram</p>
+
+                        </div>
+                    </a>
+                    @endif
+
                     <a href="{{ route('finance.account.activate') }}">
                         <div class="mt-4 w-20 h-20 nm-convex-gray-50 rounded-xl p-2 text-center items-baseline">
                             <i class="fas fa-fire text-2xl"></i>
@@ -121,8 +132,59 @@
 @section('scripts')
 <script>
     function telegram() {
-        Swal.fire('Coming Soon!');
-    }
+            Swal.fire({
+                title: 'Link Telegram?',
+                text: "Make sure already have Telegram App installed and activated, you'll be redirected to Telegram App, please click START button there.",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire('Continue on your Telegram App, Click START');
+                    Swal.showLoading();
+                    $.ajax({
+                        type: "GET",
+                        url: "{{ route('finance.ajax.getAccountTelegram') }}",
+                        success: function(response){
+                        location.assign("https://t.me/LumbungNetworkBot?start=" + response.message);
+                        }
+                    });
+
+                }
+            })
+        }
+
+        function unlinkTelegram() {
+            Swal.fire({
+                title: 'Unlink Telegram?',
+                text: "Are you sure to unlink this account from your Telegram?",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes!',
+                cancelButtonText: 'Don\'t!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire('Unlink Telegram...');
+                    Swal.showLoading();
+                    $.ajax({
+                        type: "GET",
+                        url: "{{ route('finance.ajax.getAccountUnlinkTelegram') }}",
+                        success: function(response){
+                            if (response.success) {
+                                location.reload();
+                            }
+
+                        }
+                    });
+
+                }
+            })
+        }
     
 </script>
 @include('finance.layout.copy')

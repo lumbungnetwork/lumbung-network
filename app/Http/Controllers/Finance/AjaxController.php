@@ -201,16 +201,22 @@ class AjaxController extends Controller
             ->with(compact('contract'));
     }
 
-    // public function getAccountTelegram()
-    // {
-    //     $user = Auth::user();
-    //     $chat_id = null;
-    //     if ($user->chat_id != null) {
-    //         $chat_id = $user->chat_id;
-    //     }
+    public function getAccountTelegram()
+    {
+        $user = Auth::user();
+        $length = 10;
+        $linkCode = substr(str_shuffle('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'), 1, $length);
+        Cache::put('finance' . $linkCode, $user->id, 600);
+        return response()->json(['success' => true, 'message' => $linkCode], 201);
+    }
 
-    //     return 
-    // }
+    public function getAccountUnlinkTelegram()
+    {
+        $user = Finance::find(auth('finance')->id());
+        $user->chat_id = null;
+        $user->save();
+        return response()->json(['success' => true, 'message' => 'Telegram successfully Unlinked'], 201);
+    }
 
     public function getPlatformLiquidity()
     {
