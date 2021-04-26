@@ -1007,37 +1007,45 @@ class MemberController extends Controller
     public function postAddTransferPin(Request $request)
     {
         $dataUser = Auth::user();
-        if (Hash::check($request->confirm_password, $dataUser->password)) {
-            $to_id = $request->to_id;
-            $total_pin = $request->total_pin;
-            $modelPin = new Pin;
-            $modelMember = new Member;
-            $cekMember = $modelMember->getUsers('id', $to_id);
-            $myLastPin = $modelPin->getMyLastPin($dataUser);
-            $code = 'PT' . date('Ymd') . sprintf("%03s", $total_pin);
-            $my_memberPin = array(
-                'user_id' => $dataUser->id,
-                'total_pin' => $total_pin,
-                'setting_pin' => $myLastPin->setting_pin,
-                'pin_code' => $code,
-                'is_used' => 1,
-                'used_at' => date('Y-m-d H:i:s'),
-                'pin_status' => 2,
-                'transfer_user_id' => $to_id
-            );
-            $modelPin->getInsertMemberPin($my_memberPin);
-            $to_memberPin = array(
-                'user_id' => $to_id,
-                'total_pin' => $total_pin,
-                'setting_pin' => $myLastPin->setting_pin,
-                'pin_code' => $code,
-                'transfer_from_user_id' => $dataUser->id
-            );
-            $modelPin->getInsertMemberPin($to_memberPin);
-            return redirect()->route('m_addTransferPin')
-                ->with('message', 'Pin berhasil di-transfer ke ' . $cekMember->name . ' (' . $cekMember->user_code . ') sejumlah ' . $total_pin)
-                ->with('messageclass', 'success');
+
+        // Use Atomic Lock to prevent race conditions
+        $lock = Cache::lock('pin' . $dataUser->id, 20);
+
+        if ($lock->get()) {
+            if (Hash::check($request->confirm_password, $dataUser->password)) {
+                $to_id = $request->to_id;
+                $total_pin = $request->total_pin;
+                $modelPin = new Pin;
+                $modelMember = new Member;
+                $cekMember = $modelMember->getUsers('id', $to_id);
+                $myLastPin = $modelPin->getMyLastPin($dataUser);
+                $code = 'PT' . date('Ymd') . sprintf("%03s", $total_pin);
+                $my_memberPin = array(
+                    'user_id' => $dataUser->id,
+                    'total_pin' => $total_pin,
+                    'setting_pin' => $myLastPin->setting_pin,
+                    'pin_code' => $code,
+                    'is_used' => 1,
+                    'used_at' => date('Y-m-d H:i:s'),
+                    'pin_status' => 2,
+                    'transfer_user_id' => $to_id
+                );
+                $modelPin->getInsertMemberPin($my_memberPin);
+                $to_memberPin = array(
+                    'user_id' => $to_id,
+                    'total_pin' => $total_pin,
+                    'setting_pin' => $myLastPin->setting_pin,
+                    'pin_code' => $code,
+                    'transfer_from_user_id' => $dataUser->id
+                );
+                $modelPin->getInsertMemberPin($to_memberPin);
+                $lock->release();
+                Alert::success('Berhasil!', $total_pin . ' Pin telah ditransfer ke ' . $cekMember->name . ' (' . $cekMember->user_code . ') ');
+                return redirect()->route('m_addTransferPin');
+            }
         }
+
+
         return redirect()->route('m_addTransferPin')
             ->with('message', 'Password salah, pastikan password adalah yang anda pakai untuk login aplikasi')
             ->with('messageclass', 'danger');
