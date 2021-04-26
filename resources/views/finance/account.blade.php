@@ -152,7 +152,7 @@
                         location.assign("https://t.me/LumbungNetworkBot?start=" + response.message);
                         }
                     });
-
+                    swal.close();
                 }
             })
         }
@@ -176,11 +176,16 @@
                         url: "{{ route('finance.ajax.getAccountUnlinkTelegram') }}",
                         success: function(response){
                             if (response.success) {
-                                location.reload();
+                                Swal.fire('Telegram Unlinked.');
+                                setTimeout(function(){
+                                    swal.close();
+                                    location.reload();
+                                }, 1000);
                             }
 
                         }
                     });
+                    
 
                 }
             })

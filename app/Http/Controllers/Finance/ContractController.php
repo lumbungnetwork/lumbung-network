@@ -14,6 +14,7 @@ use App\Model\Finance\Credit;
 use Telegram\Bot\Laravel\Facades\Telegram;
 use App\Model\Finance\_Yield;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use IEXBase\TronAPI\Exception\TronException;
 
 class ContractController extends Controller
@@ -58,7 +59,19 @@ class ContractController extends Controller
     public function getContractDetailPage($contract_id)
     {
         $user = Auth::user();
+        // Check the contract
         $contract = Contract::find($contract_id);
+        if ($contract == null) {
+            Alert::error('Error', 'Contract not found!');
+            return redirect()->route('finance.contracts');
+        }
+
+        // Check if the caller is the right owner of the called contract
+        if ($contract->user_id !== $user->id) {
+            Alert::error('Error', 'Access Denied!');
+            return redirect()->route('finance.contracts');
+        }
+
         $modelYield = new _Yield;
         $yield = $modelYield->getContractYield($contract_id);
 
@@ -73,82 +86,101 @@ class ContractController extends Controller
     {
         $user = Auth::user();
         $modelUSDTbalance = new USDTbalance;
-        sleep(2);
-        $USDTbalance = $modelUSDTbalance->getUserNetUSDTbalance($user->id);
 
-        $validated = $request->validate([
-            'contract_strategy' => 'required|numeric|digits:1|not_in:0',
-            'deposit' => 'required|numeric'
-        ]);
+        // Use Atomic Lock to prevent race condition
+        $lock = Cache::lock('contract' . $user->id, 20);
 
+        if ($lock->get()) {
+            $USDTbalance = $modelUSDTbalance->getUserNetUSDTbalance($user->id);
 
-        $strategy = $validated['contract_strategy'];
-        $deposit = $validated['deposit'];
-        $newUSDTbalance = $USDTbalance - $deposit;
+            // Validate input
+            $validator = Validator::make($request->all(), [
+                'contract_strategy' => 'required|integer|between:1,2',
+                'deposit' => "required|numeric|min:10|max:$USDTbalance"
+            ]);
 
-        if ($newUSDTbalance < 0) {
-            Alert::error('Failed!', 'Insufficient USDT Balance!');
-            return redirect()->back();
-        }
+            if ($validator->fails()) {
+                Alert::error('Failed', $validator->errors()->first());
+                $lock->release();
+                return redirect()->back();
+            }
 
-        if ($strategy == 1 && $deposit < 100) {
+            $strategy = $request->contract_strategy;
+            $deposit = $request->deposit;
+            $newUSDTbalance = $USDTbalance - $deposit;
 
-            Alert::error('Failed!', 'Minimum 100 USDT needed for this strategy!');
-            return redirect()->back();
-        }
+            if ($newUSDTbalance < 0) {
+                Alert::error('Failed!', 'Insufficient USDT Balance!');
+                $lock->release();
+                return redirect()->back();
+            }
 
-        if ($strategy == 2 && $deposit < 10) {
+            if ($strategy == 1 && $deposit < 100) {
 
-            Alert::error('Failed!', 'Minimum 10 USDT needed for this strategy!');
-            return redirect()->back();
-        }
+                Alert::error('Failed!', 'Minimum 100 USDT needed for this strategy!');
+                $lock->release();
+                return redirect()->back();
+            }
 
-        $expired_at = null;
-        if ($strategy == 2) {
-            $expired_at = date('Y-m-d 00:00:00', strtotime('+364 days'));
-        }
+            if ($strategy == 2 && $deposit < 10) {
 
-        $next_yield_at = date('Y-m-d 00:00:00', strtotime('+32 days'));
-        if ($strategy == 2) {
-            $next_yield_at = date('Y-m-d 00:00:00', strtotime('+16 days'));
-        }
+                Alert::error('Failed!', 'Minimum 10 USDT needed for this strategy!');
+                $lock->release();
+                return redirect()->back();
+            }
 
-        // Principal = Deposit - 4% Fee (50% fo fee goes to Referrer)
-        $fee = $deposit * 4 / 100;
-        $principal = round($deposit - $fee, 2, PHP_ROUND_HALF_DOWN);
-        $referralBonus = round($fee / 2, 2, PHP_ROUND_HALF_DOWN);
+            $expired_at = null;
+            if ($strategy == 2) {
+                $expired_at = date('Y-m-d 00:00:00', strtotime('+364 days'));
+            }
 
-        try {
-            // Deduct User's USDTbalance
-            $balance = new USDTbalance;
-            $balance->user_id = $user->id;
-            $balance->amount = $deposit;
-            $balance->type = 0;
-            $balance->status = 1;
+            $next_yield_at = date('Y-m-d 00:00:00', strtotime('+32 days'));
+            if ($strategy == 2) {
+                $next_yield_at = date('Y-m-d 00:00:00', strtotime('+16 days'));
+            }
+
+            // Principal = Deposit - 4% Fee (50% fo fee goes to Referrer)
+            $fee = $deposit * 4 / 100;
+            $principal = round($deposit - $fee, 2, PHP_ROUND_HALF_DOWN);
+            $referralBonus = round($fee / 2, 2, PHP_ROUND_HALF_DOWN);
+
+            try {
+                // Deduct User's USDTbalance
+                $balance = new USDTbalance;
+                $balance->user_id = $user->id;
+                $balance->amount = $deposit;
+                $balance->type = 0;
+                $balance->status = 1;
+                $balance->save();
+            } catch (\Throwable $th) {
+                Alert::error('Failed!', 'Something is wrong, please try again later!');
+                $lock->release();
+                return redirect()->back();
+            }
+
+            // Create the contract 
+            $contract = new Contract;
+            $contract->user_id = $user->id;
+            $contract->strategy = $strategy;
+            $contract->principal = $principal;
+            $contract->expired_at = $expired_at;
+            $contract->next_yield_at = $next_yield_at;
+            $contract->save();
+
+            // Add contract id reference to USDT balance record
+            $balance->hash = sprintf('%07s', $contract->id);
             $balance->save();
-        } catch (\Throwable $th) {
-            Alert::error('Failed!', 'Something is wrong, please try again later!');
-            return redirect()->back();
+
+            // Dispatch a 48hrs delayed job to Activate the Contract
+            ActivateContractJob::dispatch($contract->id)->onQueue('mail')->delay(now()->addHours(48));
+
+            // Credit the Referrer
+            $this->creditReferralBonus($user->id, $user->sponsor_id, $referralBonus);
+
+            // Release atomic lock
+            $lock->release();
         }
 
-        // Create the contract 
-        $contract = new Contract;
-        $contract->user_id = $user->id;
-        $contract->strategy = $strategy;
-        $contract->principal = $principal;
-        $contract->expired_at = $expired_at;
-        $contract->next_yield_at = $next_yield_at;
-        $contract->save();
-
-        // Add contract id referece to USDT balance record
-        $balance->hash = sprintf('%07s', $contract->id);
-        $balance->save();
-
-        // Dispatch a 48hrs delayed job to Activate the Contract
-        ActivateContractJob::dispatch($contract->id)->onQueue('mail')->delay(now()->addHours(48));
-
-        // Credit the Referrer
-        $this->creditReferralBonus($user->id, $user->sponsor_id, $referralBonus);
 
         Alert::success('Contract Created', 'New Contract Successfully Created.');
         return redirect()->route('finance.contracts');
@@ -157,7 +189,12 @@ class ContractController extends Controller
     public function postContractCompound($contract_id)
     {
         $user = Auth::user();
+        // Check the contract
         $contract = Contract::find($contract_id);
+        if ($contract == null) {
+            Alert::error('Error', 'Contract not found!');
+            return redirect()->route('finance.contracts');
+        }
 
         // Check if the caller is the rightful owner of this contract
         if ($contract->user_id != $user->id) {
@@ -165,40 +202,53 @@ class ContractController extends Controller
             return redirect()->back();
         }
 
-        // Get current available yield from Yield object
-        $modelYield = new _Yield;
-        $yield = $modelYield->getContractYield($contract_id);
+        // Use Atomic Lock to prevent race condition
+        $lock = Cache::lock('contract' . $user->id, 60);
 
-        // Check if yield net enough for action
-        if ($yield->net < 1) {
-            Alert::error('Oops!', 'Insuficient Yield amount for this action!');
-            return redirect()->back();
-        }
+        if ($lock->get()) {
+            // Get current available yield from Yield object
+            $modelYield = new _Yield;
+            $yield = $modelYield->getContractYield($contract_id);
 
-        // Deduct the fee from Compounding Amount
-        $fee = $yield->net * 4 / 100;
-        $amount = round($yield->net - $fee, 2, PHP_ROUND_HALF_DOWN);
-        $referralBonus = round($fee / 2, 2, PHP_ROUND_HALF_DOWN);
+            // Check if yield net enough for action
+            if ($yield->net < 1) {
+                Alert::error('Oops!', 'Insuficient Yield amount for this action!');
+                $lock->release();
+                return redirect()->back();
+            }
 
-        // Deduct the Yield and increment Compounded column on Contract
-        $compounding = $modelYield->compound($contract_id, $yield->net, $amount);
+            // Deduct the fee from Compounding Amount
+            $fee = $yield->net * 4 / 100;
+            $amount = round($yield->net - $fee, 2, PHP_ROUND_HALF_DOWN);
+            $referralBonus = round($fee / 2, 2, PHP_ROUND_HALF_DOWN);
 
-        if ($compounding) {
-            // Send half the fee as referrer bonus
-            $this->creditReferralBonus($user->id, $user->sponsor_id, $referralBonus);
+            // Deduct the Yield and increment Compounded column on Contract
+            $compounding = $modelYield->compound($contract_id, $yield->net, $amount);
 
-            Alert::success('Success!', 'Yield just compounded successfully!');
-            return redirect()->back();
-        } else {
-            Alert::error('Oops!', 'Something is wrong, Compounding Failed!');
-            return redirect()->back();
+            if ($compounding) {
+                // Send half the fee as referrer bonus
+                $this->creditReferralBonus($user->id, $user->sponsor_id, $referralBonus);
+
+                $lock->release();
+                Alert::success('Success!', 'Yield just compounded successfully!');
+                return redirect()->back();
+            } else {
+                $lock->release();
+                Alert::error('Oops!', 'Something is wrong, Compounding Failed!');
+                return redirect()->back();
+            }
         }
     }
 
     public function postContractWithdraw($contract_id)
     {
         $user = Auth::user();
+        // Check the contract
         $contract = Contract::find($contract_id);
+        if ($contract == null) {
+            Alert::error('Error', 'Contract not found!');
+            return redirect()->route('finance.contracts');
+        }
 
         // Check if the caller is the rightful owner of this contract
         if ($contract->user_id != $user->id) {
@@ -206,40 +256,54 @@ class ContractController extends Controller
             return redirect()->back();
         }
 
-        // Get current available yield from Yield object
-        $modelYield = new _Yield;
-        $yield = $modelYield->getContractYield($contract_id);
+        // Use Atomic Lock to prevent race condition
+        $lock = Cache::lock('contract' . $user->id, 60);
 
-        // Check if yield net enough for action
-        if ($yield->net < 1) {
-            Alert::error('Oops!', 'Insuffiecient Yield amount for this action!');
-            return redirect()->back();
-        }
+        if ($lock->get()) {
+            // Get current available yield from Yield object
+            $modelYield = new _Yield;
+            $yield = $modelYield->getContractYield($contract_id);
 
-        // Deduct the fee from Withdraw Amount
-        $fee = $yield->net * 4 / 100;
-        $amount = round($yield->net - $fee, 2, PHP_ROUND_HALF_DOWN);
-        $referralBonus = round($fee / 2, 2, PHP_ROUND_HALF_DOWN);
+            // Check if yield net enough for action
+            if ($yield->net < 1) {
+                $lock->release();
+                Alert::error('Oops!', 'Insuffiecient Yield amount for this action!');
+                return redirect()->back();
+            }
 
-        // Deduct the Yield and send credit
-        $withdraw = $modelYield->withdraw($contract_id, $amount, $fee);
+            // Deduct the fee from Withdraw Amount
+            $fee = $yield->net * 4 / 100;
+            $amount = round($yield->net - $fee, 2, PHP_ROUND_HALF_DOWN);
+            $referralBonus = round($fee / 2, 2, PHP_ROUND_HALF_DOWN);
 
-        if ($withdraw) {
-            // Send half the fee as referrer bonus
-            $this->creditReferralBonus($user->id, $user->sponsor_id, $referralBonus);
+            // Deduct the Yield and send credit
+            $withdraw = $modelYield->withdraw($contract_id, $amount, $fee);
 
-            Alert::success('Success!', 'Yield just withdrawed successfully!');
-            return redirect()->back();
-        } else {
-            Alert::error('Oops!', 'Something is wrong, Withdraw Failed!');
-            return redirect()->back();
+            if ($withdraw) {
+                // Send half the fee as referrer bonus
+                $this->creditReferralBonus($user->id, $user->sponsor_id, $referralBonus);
+
+                $lock->release();
+                Alert::success('Success!', 'Yield just withdrawed successfully!');
+                return redirect()->back();
+            } else {
+                $lock->release();
+                Alert::error('Oops!', 'Something is wrong, Withdraw Failed!');
+                return redirect()->back();
+            }
         }
     }
 
     public function postContractUpgrade($contract_id, Request $request)
     {
         $user = Auth::user();
+
+        // Check the contract
         $contract = Contract::find($contract_id);
+        if ($contract == null) {
+            Alert::error('Error', 'Contract not found!');
+            return redirect()->route('finance.contracts');
+        }
         // Get contract age
         $diff = time() - strtotime($contract->created_at);
         $days = floor($diff / (60 * 60 * 24));
@@ -342,7 +406,12 @@ class ContractController extends Controller
     public function postContractBreak($contract_id)
     {
         $user = Auth::user();
+        // Check the contract
         $contract = Contract::find($contract_id);
+        if ($contract == null) {
+            Alert::error('Error', 'Contract not found!');
+            return redirect()->route('finance.contracts');
+        }
 
         // Check if the caller is the rightful owner of this contract
         if ($contract->user_id != $user->id) {
@@ -350,59 +419,70 @@ class ContractController extends Controller
             return redirect()->back();
         }
 
-        // Check breakable traits
-        $diff = time() - strtotime($contract->created_at);
-        $days = floor($diff / (60 * 60 * 24));
+        // Use Atomic Lock to prevent race condition
+        $lock = Cache::lock('contract' . $user->id, 60);
 
-        if ($contract->strategy == 1 && $days < 365) {
-            Alert::error('Failed!', 'Contract have not matured, yet!');
+        if ($lock->get()) {
+            // Check breakable traits
+            $diff = time() - strtotime($contract->created_at);
+            $days = floor($diff / (60 * 60 * 24));
+
+            if ($contract->strategy == 1 && $days < 365) {
+                $lock->release();
+                Alert::error('Failed!', 'Contract have not matured, yet!');
+                return redirect()->back();
+            }
+
+            $capital = $contract->principal + $contract->compounded;
+
+            // Deduct the fee from Capital Amount
+            $fee = $capital * 4 / 100;
+            $amount = round($capital - $fee, 2, PHP_ROUND_HALF_DOWN);
+            $referralBonus = round($fee / 2, 2, PHP_ROUND_HALF_DOWN);
+
+            // Change contract properties (0 = Inactive, 1 = Active, 2 = Breaking, 3 = Ended)
+            // Set next_yield_at for Crontab to pick, Strategy 1 = 48hrs, Strategy 2 = 7 days
+
+            $release = '48 hours';
+            $releaseDate = date('Y-m-d 00:00:00', strtotime('+2 days'));
+            if ($contract->strategy == 2) {
+                $release = '7 days';
+                $releaseDate = date('Y-m-d 00:00:00', strtotime('+6 days'));
+            }
+
+            try {
+                $contract->status = 2;
+                $contract->principal = $amount;
+                $contract->compounded = 0;
+                $contract->next_yield_at = $releaseDate;
+                $contract->save();
+            } catch (\Throwable $th) {
+                $lock->release();
+                Alert::error('Failed!', 'Fail to break contract, please try again!');
+                return redirect()->back();
+            }
+
+            // Send notification to overlord
+            $text = 'Break Contract emitted' . chr(10);
+            $text .= 'User: ' . $user->username . chr(10);
+            $text .= 'Contract ID: ' . $contract->id . chr(10);
+            $text .= 'Amount: ' . $amount . chr(10);
+
+            Telegram::sendMessage([
+                'chat_id' => config('services.telegram.overlord'),
+                'text' => $text,
+                'parse_mode' => 'markdown'
+            ]);
+
+            // Send half the fee as referrer bonus
+            $this->creditReferralBonus($user->id, $user->sponsor_id, $referralBonus);
+
+            $lock->release();
+            Alert::info('Contract breaked!', 'Contract\'s capital will be delivered to Yield within ' . $release)->persistent(true);
+            return redirect()->back();
+        } else {
+            Alert::error('Error', 'Something is wrong, try again later.');
             return redirect()->back();
         }
-
-        $capital = $contract->principal + $contract->compounded;
-
-        // Deduct the fee from Capital Amount
-        $fee = $capital * 4 / 100;
-        $amount = round($capital - $fee, 2, PHP_ROUND_HALF_DOWN);
-        $referralBonus = round($fee / 2, 2, PHP_ROUND_HALF_DOWN);
-
-        // Change contract properties (0 = Inactive, 1 = Active, 2 = Breaking, 3 = Ended)
-        // Set next_yield_at for Crontab to pick, Strategy 1 = 48hrs, Strategy 2 = 7 days
-
-        $release = '48 hours';
-        $releaseDate = date('Y-m-d 00:00:00', strtotime('+2 days'));
-        if ($contract->strategy == 2) {
-            $release = '7 days';
-            $releaseDate = date('Y-m-d 00:00:00', strtotime('+6 days'));
-        }
-
-        try {
-            $contract->status = 2;
-            $contract->principal = $amount;
-            $contract->compounded = 0;
-            $contract->next_yield_at = $releaseDate;
-            $contract->save();
-        } catch (\Throwable $th) {
-            Alert::error('Failed!', 'Fail to break contract, please try again!');
-            return redirect()->back();
-        }
-
-        // Send notification to overlord
-        $text = 'Break Contract emitted' . chr(10);
-        $text .= 'User: ' . $user->username . chr(10);
-        $text .= 'Contract ID: ' . $contract->id . chr(10);
-        $text .= 'Amount: ' . $amount . chr(10);
-
-        Telegram::sendMessage([
-            'chat_id' => config('services.telegram.overlord'),
-            'text' => $text,
-            'parse_mode' => 'markdown'
-        ]);
-
-        // Send half the fee as referrer bonus
-        $this->creditReferralBonus($user->id, $user->sponsor_id, $referralBonus);
-
-        Alert::info('Contract breaked!', 'Contract\'s capital will be delivered to Yield within ' . $release)->persistent(true);
-        return redirect()->back();
     }
 }

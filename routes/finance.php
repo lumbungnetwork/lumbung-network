@@ -36,11 +36,11 @@ Route::post('/account/reset-tron', 'Finance\AppController@postAccountResetTron')
 //contract
 Route::get('/contracts', 'Finance\ContractController@getContractsPage')->name('contracts')->middleware('auth');
 Route::get('/new-contract', 'Finance\ContractController@getNewContractPage')->name('contracts.new')->middleware('auth');
-Route::get('/contracts/{contract_id}', 'Finance\ContractController@getContractDetailPage')->name('contracts.detail')->middleware('auth');
-Route::post('/contracts/{contract_id}/compound', 'Finance\ContractController@postContractCompound')->name('contracts.post.compound')->middleware('auth');
-Route::post('/contracts/{contract_id}/withdraw', 'Finance\ContractController@postContractWithdraw')->name('contracts.post.withdraw')->middleware('auth');
-Route::post('/contracts/{contract_id}/upgrade', 'Finance\ContractController@postContractUpgrade')->name('contracts.post.upgrade')->middleware('auth');
-Route::post('/contracts/{contract_id}/break', 'Finance\ContractController@postContractBreak')->name('contracts.post.break')->middleware('auth');
+Route::get('/contracts/{contract_id}', 'Finance\ContractController@getContractDetailPage')->whereNumber('contract_id')->name('contracts.detail')->middleware('auth');
+Route::post('/contracts/{contract_id}/compound', 'Finance\ContractController@postContractCompound')->whereNumber('contract_id')->name('contracts.post.compound')->middleware('auth');
+Route::post('/contracts/{contract_id}/withdraw', 'Finance\ContractController@postContractWithdraw')->whereNumber('contract_id')->name('contracts.post.withdraw')->middleware('auth');
+Route::post('/contracts/{contract_id}/upgrade', 'Finance\ContractController@postContractUpgrade')->whereNumber('contract_id')->name('contracts.post.upgrade')->middleware('auth');
+Route::post('/contracts/{contract_id}/break', 'Finance\ContractController@postContractBreak')->whereNumber('contract_id')->name('contracts.post.break')->middleware('auth');
 Route::post('/new-contract', 'Finance\ContractController@postNewContract')->name('contracts.post.new')->middleware('auth');
 
 //wallet

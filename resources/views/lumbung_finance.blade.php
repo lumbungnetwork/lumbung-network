@@ -62,10 +62,14 @@
                     </p>
 
                 </div>
-                <a type="button" href="#learn"
-                    class="lg:ml-16 mt-6 px-4 py-2 sm:px-8 sm:py-4 rounded-full font-light tracking-wide bg-gradient-to-r from-yellow-100 to-yellow-400 text-gray-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">
-                    Learn More
-                </a>
+
+                <div class="mt-12">
+                    <a href="#learn"
+                        class="lg:ml-16 mt-6 px-4 py-2 sm:px-8 sm:py-4 rounded-full font-light tracking-wide bg-gradient-to-r from-yellow-100 to-yellow-400 text-gray-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">
+                        Learn More
+                    </a>
+                </div>
+
                 <div class="mt-6 lg:mt-32 lg:ml-20 text-left">
                     <bottom type="button"
                         class="flex items-center justify-center w-12 h-12 rounded-full bg-cool-gray-100 text-gray-800 animate-bounce hover:text-gray-900 hover:bg-cool-gray-50 transition duration-300 ease-in-out cursor-pointer">
@@ -365,10 +369,13 @@
             We are actively supporting and help each other, not only because we incentivized to do that, but because we
             understand: in order to make our dream works, we need teamwork!
         </p>
-        <a type="button" href="https://t.me/lumbungnetwork"
-            class="mt-6 px-8 py-4 lg:px-12 lg:py-6 rounded-full font-bold tracking-wide bg-gradient-to-r from-yellow-100 to-yellow-400 text-gray-600 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">
-            Join Us!
-        </a>
+        <div class="my-10">
+            <a href="https://t.me/lumbungnetwork"
+                class="mt-6 px-8 py-4 lg:px-12 lg:py-6 rounded-full font-bold tracking-wide bg-gradient-to-r from-yellow-100 to-yellow-400 text-gray-600 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">
+                Join Us!
+            </a>
+        </div>
+
     </div>
 </div>
 
