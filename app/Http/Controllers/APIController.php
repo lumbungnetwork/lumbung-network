@@ -3,15 +3,20 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Model\Member;
-use App\Model\Transferwd;
-use App\Model\Sales;
-use App\Model\Bonus;
 use App\API;
 use App\Http\Controllers\Finance\AjaxController;
+use Illuminate\Support\Facades\Cache;
 
 class APIController extends Controller
 {
+    public function getStatisticOverviewCached()
+    {
+        $stats = Cache::remember('overview_statistic', 3600, function () {
+            return $this->getStatisticOverview();
+        });
+
+        return $stats;
+    }
     public function getStatisticOverview()
     {
         $modelAPI = new API;

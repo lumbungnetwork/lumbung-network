@@ -1,20 +1,20 @@
 @extends('finance.layout.app')
 @section('content')
 
-<div class="mt-8 min-w-full flex flex-col justify-center px-4">
+<div class="mt-8 min-w-full flex flex-col justify-center px-3 sm:px-4">
     <div class="relative w-full max-w-2xl lg:max-w-6xl xl:max-w-screen-2xl mx-auto">
         <div
             class="absolute inset-0 -mr-3.5 bg-gradient-to-r from-green-100 to-yellow-300 shadow-lg transform skew-y-0 rotate-3 rounded-3xl">
         </div>
-        <div class="relative bg-white shadow-lg rounded-lg sm:rounded-3xl">
+        <div class="relative bg-white shadow-lg rounded-3xl">
 
-            <div class="hidden md:flex items-center justify-start pt-6 pl-6">
+            <div class="flex items-center justify-start pt-6 pl-6">
                 <span class="w-3 h-3 bg-red-400 rounded-full mr-2"></span>
                 <span class="w-3 h-3 bg-yellow-400 rounded-full mr-2"></span>
                 <span class="w-3 h-3 bg-green-400 rounded-full mr-2"></span>
             </div>
 
-            <div class="px-10 lg:px-20 py-6">
+            <div class="px-4 lg:px-20 py-6">
 
                 <!-- nav -->
                 <div class="flex items-center justify-between">
@@ -59,24 +59,28 @@
                 <!-- /nav -->
 
                 <!-- hero section -->
-                <div class="lg:float-right lg:2/6 xl:w-2/4">
+                <div class="py-3 lg:float-right lg:2/6 xl:w-2/4">
                     <img class="object-contain w-full lg:max-h-96" src="/image/LumbungNetwork_hero.png"
                         alt="jual beli lumbung network">
                 </div>
                 <div class="lg:2/6 xl:w-2/4 mt-18 lg:mt-40 lg:ml-16 text-left">
-                    <div class="text-4xl lg:text-6xl font-semibold text-gray-900 leading-none">Memberdayakan
+                    <h2 class="text-2xl lg:text-6xl font-light text-gray-700 leading-none">Memberdayakan
                         Pengeluaran Menjadi
                         Penghasilan
+                    </h2>
+                    <p class="mt-6 text-sm sm:text-lg lg:text-xl font-light text-gray-500 antialiased">Lumbung Network
+                        adalah
+                        sebuah protokol terdesentralisasi untuk mengembalikan ekonomi ke tangan rakyat melalui berbagai
+                        sistem retail dan finansial yang aktif memberi kontribusi bagi hasil ke masyarakatnya.</p>
+                    <div class="mt-6">
+                        <a href="https://member.{{ config('services.app.url') }}"
+                            class="mt-6 px-4 py-2 sm:px-8 sm:py-4 rounded-full font-light text-sm sm:text-lg lg:text-xl tracking-wide bg-gradient-to-r from-yellow-100 to-yellow-400 text-grey-800 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">
+                            Buka WebApp
+                        </a>
                     </div>
-                    <div class="mt-6 text-xl font-light text-true-gray-500 antialiased">Lumbung Network adalah
-                        sebuah protokol terdesentralisasi untuk mengembalikan ekonomi ke tangan rakyat.</div>
-                    <button
-                        class="mt-6 px-8 py-4 rounded-full font-light tracking-wide bg-gradient-to-r from-yellow-100 to-yellow-400 text-grey-800 outline-none focus:outline-none hover:shadow-lg hover:from-blue-700 transition duration-200 ease-in-out">
-                        Pelajari Lebih Lanjut
-                    </button>
                 </div>
                 <div class="mt-12 lg:mt-32 lg:ml-20 text-left">
-                    <bottom type="button"
+                    <bottom
                         class="flex items-center justify-center w-12 h-12 rounded-full bg-cool-gray-100 text-gray-800 animate-bounce hover:text-gray-900 hover:bg-cool-gray-50 transition duration-300 ease-in-out cursor-pointer">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg">
@@ -90,6 +94,62 @@
 
             </div>
         </div>
+    </div>
+</div>
+
+<div class="mt-8 lg:mt-20 px-4 lg:px-24">
+    <h3
+        class="my-2 lg:my-0 text-yellow-400 text-opacity-75 font-extrabold text-center lg:float-right lg:w-1/2 text-3xl sm:text-4xl lg:text-6xl ">
+        Kesadaran Kolektif.</h3>
+    <p class="mt-6 sm:text-lg text-sm font-light lg:w-1/2 text-gray-700 antialiased">Lumbung
+        Network adalah
+        perwujudan dari
+        kesadaran kolektif masyarakat untuk menciptakan ekosistem ekonomi yang sehat dan berpihak kepada masyarakat.
+        <br><br>
+        Lumbung Network dibentuk oleh komunitas konsumen, pedagang dan pemasar bahan pokok dan kebutuhan sehari-hari
+        sebagai sebuah protokol terdesentralisasi yang mendistribusikan seluruh keuntungan kembali kepada masyarakatnya.
+    </p>
+</div>
+
+<div class="mt-8 px-4 lg:px-10 lg:flex">
+    <h3 class="my-2 text-yellow-400 text-opacity-75 font-extrabold text-center text-3xl sm:text-4xl lg:text-6xl ">
+        Non-profit, tapi Menguntungkan.</h3>
+    <p class="mt-6 sm:text-lg text-sm font-light lg:items-end lg:w-1/2 text-gray-700 antialiased">Di era
+        teknologi
+        informasi dan internet ini,
+        ada banyak platform marketplace yang bertumbuh besar. Semuanya mengambil poros tengah, mempertemukan pembeli
+        dengan penjual, penyedia layanan dengan pengguna layanan, lalu mengambil keuntungan dari semua pihak.
+        <br><br>
+        Lumbung Network berdiri melawan arus, platform ini didirikan secara kolektif TANPA PEMILIK, TANPA PROFIT,
+        seluruh keuntungan yang dihasilkannya didistribusikan kembali sebagai bagi hasil kepada para penggunanya secara
+        adil dan transparan.
+    </p>
+</div>
+
+<div class="mt-8 px-4 lg:px-10 lg:flex lg:flex-wrap lg:justify-center">
+    <div class="p-3 rounded-2xl nm-flat-gray-50 lg:w-2/5">
+        <div class="my-2">
+            <p class="font-extralight text-gray-600 text-center text-2xl lg:text-4xl animate-pulse" id="dividends">
+                Rp103,892,928.21
+            </p>
+            <p class="text-sm lg:text-xl font-light text-center text-gray-600">Bagi Hasil</p>
+        </div>
+        <div class="my-2">
+            <p class="font-extralight text-gray-600 text-center text-2xl lg:text-4xl animate-pulse" id="bonuses">
+                Rp103,892,928.21</p>
+            <p class="text-sm lg:text-xl font-light text-center text-gray-600">Network Bonus</p>
+        </div>
+        <p class="text-sm lg:text-xl font-light text-center text-gray-600">...telah didistribusikan dari total:</p>
+        <div class="my-2">
+            <p class="font-extralight text-gray-600 text-center text-2xl lg:text-4xl animate-pulse" id="sales">
+                Rp3,103,892,928.21</p>
+            <p class="text-sm lg:text-xl font-light text-center text-gray-600">Nilai Transaksi</p>
+        </div>
+
+    </div>
+    <div class="mt-4 lg:w-3/5">
+        <h3 class="my-2 text-yellow-400 text-opacity-75 font-extrabold text-center text-3xl sm:text-4xl lg:text-8xl ">
+            Bertumbuh. Bersama.</h3>
     </div>
 </div>
 
@@ -254,4 +314,32 @@
 
 @section('footer')
 @include('finance.layout.footer')
+@endsection
+
+@section('scripts')
+<script>
+    $( function () {
+            setTimeout(function () {
+                main()
+            }, 200)
+        })
+
+        function main() {
+            $.ajax({
+                type: "GET",
+                url: "{{ route('api.statisticOverview') }}",
+                success: function(response) {
+                    var data = response.data.alltime;
+                    $('#dividends').html('Rp.' + data.lmb_dividend.toLocaleString('EN-us'));
+                    $('#dividends').removeClass('animate-pulse');
+                    $('#bonuses').html('Rp.' + data.network_bonus.toLocaleString('EN-us'));
+                    $('#bonuses').removeClass('animate-pulse');
+                    var sales = parseFloat(data.stockist_sales) + parseFloat(data.vendor_sales);
+                    $('#sales').html('Rp.' + sales.toLocaleString('EN-us'));
+                    $('#sales').removeClass('animate-pulse');
+                    
+                }
+            });
+        }
+</script>
 @endsection
