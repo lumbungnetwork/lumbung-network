@@ -22,5 +22,8 @@ module.exports = {
     neumorphismInset: ['focus', 'active'],
     extend: {},
   },
-  plugins: [require('tailwindcss-neumorphism')],
+  plugins: [
+    require('tailwindcss-neumorphism'),
+    require('@tailwindcss/aspect-ratio')
+  ],
 }

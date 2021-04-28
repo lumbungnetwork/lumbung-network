@@ -641,3 +641,6 @@ Route::group(['domain' => 'finance.' . Config::get('services.app.domain')], func
 Route::get('/', function () {
     return view('home')->with('title', 'Lumbung Network');
 });
+Route::get('/about-core', function () {
+    return view('about-core')->with('title', 'Tentang Lumbung Network');
+});

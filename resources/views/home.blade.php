@@ -144,6 +144,7 @@
             <p class="font-extralight text-gray-600 text-center text-2xl lg:text-4xl animate-pulse" id="sales">
                 Rp3,103,892,928.21</p>
             <p class="text-sm lg:text-xl font-light text-center text-gray-600">Nilai Transaksi</p>
+            <p class="text-sm lg:text-xl font-light text-center text-gray-600">Sejak November 2019</p>
         </div>
 
     </div>
@@ -151,6 +152,40 @@
         <h3 class="my-2 text-yellow-400 text-opacity-75 font-extrabold text-center text-3xl sm:text-4xl lg:text-8xl ">
             Bertumbuh. Bersama.</h3>
     </div>
+</div>
+
+<div class="mt-8 lg:mt-20 px-4 lg:px-24 lg:flex lg:flex-wrap">
+    <div class="lg:w-1/2">
+        <img class="object-contain" src="/image/blockchain-verify.png" alt="blockchain-verify">
+    </div>
+    <div class="mt-6 lg:w-1/2">
+        <h3 class="my-2 text-yellow-400 text-opacity-75 font-extrabold text-center text-3xl sm:text-4xl lg:text-6xl ">
+            Teknologi Masa Depan.</h3>
+        <p class="mt-6 sm:text-lg text-sm font-light  text-gray-700 antialiased">Seluruh ekosistem
+            Lumbung Network dikembangkan dengan upaya menuju desentralisasi finansial, menggunakan teknologi blockchain
+            untuk menangkap Network Value dari setiap aktivitasnya dan mendistribusikan bagi hasil secara adil,
+            transparan
+            dan tanpa intervensi manusia.
+        </p>
+    </div>
+</div>
+
+<div class="mt-8 px-4 lg:mt-20">
+    <div class="mt-6 text-center">
+        <a href="/about-core"
+            class="mt-6 px-4 py-2 sm:px-8 sm:py-4 rounded-full font-light text-sm sm:text-lg lg:text-xl tracking-wide bg-gradient-to-r from-yellow-100 to-yellow-400 text-grey-800 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">
+            Pelajari Lebih Lanjut
+        </a>
+
+    </div>
+    <div class="lg:flex lg:justify-center lg:px-20 lg:text-center">
+        <p class="mt-6 lg:w-1/2 sm:text-lg lg:text-2xl text-sm font-light  text-gray-700 antialiased">Pahami lebih
+            detail, bagaimana
+            Lumbung
+            Network mewujudkan solusi untuk memberdayakan Pengeluaran Sehari-hari menjadi Sumber Pemasukan.
+        </p>
+    </div>
+
 </div>
 
 <!-- Destination Cards -->
