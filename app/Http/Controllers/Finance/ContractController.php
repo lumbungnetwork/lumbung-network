@@ -15,6 +15,7 @@ use Telegram\Bot\Laravel\Facades\Telegram;
 use App\Model\Finance\_Yield;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Cache;
 use IEXBase\TronAPI\Exception\TronException;
 
 class ContractController extends Controller
