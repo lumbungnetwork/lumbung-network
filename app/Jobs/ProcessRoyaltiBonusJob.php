@@ -49,7 +49,7 @@ class ProcessRoyaltiBonusJob implements ShouldQueue
         );
 
         $min_belanja = 100000;
-        $bonus_royalti = 2; // 2 LMB per node
+        $bonus_royalti = 1; // 1 LMB per node
         $maxGetBonus = 4; // matrix pow(4, n) n = level, max 7 level
         $getLevelSp = $modelMember->getLevelSponsoring($this->user_id);
 
