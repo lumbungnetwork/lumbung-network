@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Auth;
 use Telegram\Bot\Laravel\Facades\Telegram;
 use Illuminate\Support\Facades\Config;
 
+use App\Http\Controllers\Member\AppController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,7 +19,12 @@ use Illuminate\Support\Facades\Config;
 */
 
 Route::domain('member.' . Config::get('services.app.url'))->group(function () {
-    Route::get('/', 'Admin\HomeController@getFront')->name('frontLogin');
+    Route::get('/', function () {
+        return view('member')->with('title', 'Join Lumbung Network');
+    });
+    Route::get('/login', 'Auth\LoginController@showLoginForm')->name('member.login');
+    Route::post('/login', 'Auth\LoginController@postLogin')->name('member.postLogin');
+    Route::post('/logout', 'Auth\LoginController@logout')->name('member.postLogout');
     Route::get('/area/login', 'Admin\HomeController@getAreaLogin')->name('areaLogin');
     Route::post('/area/login', 'Admin\HomeController@postAreaLogin');
     //referal link
@@ -32,6 +39,9 @@ Route::domain('member.' . Config::get('services.app.url'))->group(function () {
     Route::post('/zMbH9dshaPZqdGIJtgvQNfsj38MfPRizcDuNeGu5xyvOWJaswzhkhFJaoeHddWaW/webhook', 'TelegramBotController@handleRequest');
 
     Auth::routes();
+
+    // New Member Routes
+    Route::get('/dashboard', 'Member\AppController@getDashboard')->name('member.dashboard')->middleware('auth');
 
     Route::prefix('/')->group(function () {
 
