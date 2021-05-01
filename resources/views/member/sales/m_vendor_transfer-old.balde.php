@@ -9,22 +9,22 @@
             <div class="row">
                 <div class="col-xs-12">
                     <?php
-                        $confirm = 'Konfirmasi Pembayaran';
-                        $text = 'Konfirmasi';
-                        $status = 'proses pembeli';
-                        $label = 'info';
-                        if($getDataSales->status == 1){
-                            $status = 'proses vendor';
-                            $label = 'warning';
-                        }
-                        if($getDataSales->status == 2){
-                            $status = 'TUNTAS';
-                            $label = 'success';
-                        }
-                        if($getDataSales->status == 10){
-                            $status = 'BATAL';
-                            $label = 'danger';
-                        }
+                    $confirm = 'Konfirmasi Pembayaran';
+                    $text = 'Konfirmasi';
+                    $status = 'proses pembeli';
+                    $label = 'info';
+                    if ($getDataSales->status == 1) {
+                        $status = 'proses vendor';
+                        $label = 'warning';
+                    }
+                    if ($getDataSales->status == 2) {
+                        $status = 'TUNTAS';
+                        $label = 'success';
+                    }
+                    if ($getDataSales->status == 10) {
+                        $status = 'BATAL';
+                        $label = 'danger';
+                    }
                     ?>
                     <div class="page-title-box">
                         <h4 class="page-title">Konfirmasi</h4>
@@ -36,12 +36,12 @@
                 <div class="col-sm-12">
                     <div class="card-box">
                         @if ( Session::has('message') )
-                            <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible fade in" role="alert">
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">×</span>
-                                </button>
-                                {{  Session::get('message')    }} 
-                            </div>
+                        <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible fade in" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                            {{ Session::get('message')    }}
+                        </div>
                         @endif
                         <div class="panel-body">
                             <div class="clearfix">
@@ -53,27 +53,27 @@
                             <div class="row">
                                 <div class="col-xs-12">
                                     <div class="pull-xs-left m-t-30">
-                                        Pembeli: <strong>{{$getDataSales->user_code}}</strong>
+                                        Pembeli: <strong>{{$getDataSales->username}}</strong>
                                         <address>
                                             @if($getDataSales->status == 1 || $getDataSales->status == 2)
-                                                @if($getDataSales->buy_metode == 1)
-                                                    <br>
-                                                    COD
-                                                @endif
-                                                @if($getDataSales->buy_metode == 2)
-                                                    <br>
-                                                    Nama Rekening: <strong>{{$getDataSales->account_name}}</strong>
-                                                    <br>
-                                                    Nama Bank: <strong>{{$getDataSales->bank_name}}</strong>
-                                                    <br>
-                                                    No. Rekening: <strong>{{$getDataSales->account_no}}</strong>
-                                                @endif
-                                                @if($getDataSales->buy_metode == 3)
-                                                    <br>
-                                                    Nama: <strong>{{$getDataSales->tron}}</strong>
-                                                    <br>
-                                                    Alamat Tron: <strong>{{$getDataSales->tron_transfer}}</strong>
-                                                @endif
+                                            @if($getDataSales->buy_metode == 1)
+                                            <br>
+                                            COD
+                                            @endif
+                                            @if($getDataSales->buy_metode == 2)
+                                            <br>
+                                            Nama Rekening: <strong>{{$getDataSales->account_name}}</strong>
+                                            <br>
+                                            Nama Bank: <strong>{{$getDataSales->bank_name}}</strong>
+                                            <br>
+                                            No. Rekening: <strong>{{$getDataSales->account_no}}</strong>
+                                            @endif
+                                            @if($getDataSales->buy_metode == 3)
+                                            <br>
+                                            Nama: <strong>{{$getDataSales->tron}}</strong>
+                                            <br>
+                                            Alamat Tron: <strong>{{$getDataSales->tron_transfer}}</strong>
+                                            @endif
                                             @endif
                                         </address>
                                     </div>
@@ -101,18 +101,18 @@
                                             </thead>
                                             <tbody>
                                                 @if($getDataItem != null)
-                                                    <?php $no = 0; ?>
-                                                    @foreach($getDataItem as $row)
-                                                        <?php 
-                                                            $no++; 
-                                                        ?>
-                                                        <tr>
-                                                            <td>{{$no}}</td>
-                                                            <td>{{$row->ukuran}} {{$row->name}}</td>
-                                                            <td>{{number_format($row->amount, 0, ',', '')}}</td>
-                                                            <td>{{number_format($row->sale_price, 0, ',', '.')}}</td>
-                                                        </tr>
-                                                    @endforeach
+                                                <?php $no = 0; ?>
+                                                @foreach($getDataItem as $row)
+                                                <?php
+                                                $no++;
+                                                ?>
+                                                <tr>
+                                                    <td>{{$no}}</td>
+                                                    <td>{{$row->ukuran}} {{$row->name}}</td>
+                                                    <td>{{number_format($row->amount, 0, ',', '')}}</td>
+                                                    <td>{{number_format($row->sale_price, 0, ',', '.')}}</td>
+                                                </tr>
+                                                @endforeach
                                                 @endif
                                             </tbody>
                                         </table>
@@ -131,15 +131,15 @@
                             <div class="hidden-print">
                                 <div class="pull-xs-right">
                                     @if($getDataSales->status == 1)
-                                        <input type="hidden" value="{{$getDataSales->id}}" name="id_master" id="id_master">
-                                        <button type="submit" class="btn btn-danger"  id="submitBtn" data-toggle="modal" data-target="#rejectSubmit" onClick="rejectSubmit()">Batal</button>
-                                        <button type="submit" class="btn btn-success"  id="submitBtn" data-toggle="modal" data-target="#confirmSubmit" onClick="inputSubmit()">Confirm</button>
-                                    @else 
-                                        @if($getDataSales->status == 0)
-                                            <input type="hidden" value="{{$getDataSales->id}}" name="id_master" id="id_master">
-                                            <button type="submit" class="btn btn-danger"  id="submitBtn" data-toggle="modal" data-target="#rejectSubmit" onClick="rejectSubmit()">Batal</button>
-                                        @endif
-                                        <a  class="btn btn-info" href="{{ URL::to('/') }}/m/vendor-report">Kembali</a>
+                                    <input type="hidden" value="{{$getDataSales->id}}" name="id_master" id="id_master">
+                                    <button type="submit" class="btn btn-danger" id="submitBtn" data-toggle="modal" data-target="#rejectSubmit" onClick="rejectSubmit()">Batal</button>
+                                    <button type="submit" class="btn btn-success" id="submitBtn" data-toggle="modal" data-target="#confirmSubmit" onClick="inputSubmit()">Confirm</button>
+                                    @else
+                                    @if($getDataSales->status == 0)
+                                    <input type="hidden" value="{{$getDataSales->id}}" name="id_master" id="id_master">
+                                    <button type="submit" class="btn btn-danger" id="submitBtn" data-toggle="modal" data-target="#rejectSubmit" onClick="rejectSubmit()">Batal</button>
+                                    @endif
+                                    <a class="btn btn-info" href="{{ URL::to('/') }}/m/vendor-report">Kembali</a>
                                     @endif
                                 </div>
                                 <div class="clearfix"></div>
@@ -156,10 +156,10 @@
                         </div>
                         @endif
                         @if($getDataSales->status == 0)
-                            <div class="modal fade" id="rejectSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document" id="rejectDetail">
-                                </div>
+                        <div class="modal fade" id="rejectSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document" id="rejectDetail">
                             </div>
+                        </div>
                         @endif
                     </div>
                 </div>
@@ -173,63 +173,62 @@
 
 @if($getDataSales->status == 1)
 @section('javascript')
-    <script>
-           function inputSubmit(){
-                var id_master = $("#id_master").val();
-                 $.ajax({
-                     type: "GET",
-                     url: "{{ URL::to('/') }}/m/cek/confirm-vpembelian?id_master="+id_master,
-                     success: function(url){
-                         $("#confirmDetail" ).empty();
-                         $("#confirmDetail").html(url);
-                     }
-                 });
-           }
-           
-           function rejectSubmit(){
-                var id_master = $("#id_master").val();
-                 $.ajax({
-                     type: "GET",
-                     url: "{{ URL::to('/') }}/m/cek/reject-vpembelian?id_master="+id_master,
-                     success: function(url){
-                         $("#rejectDetail" ).empty();
-                         $("#rejectDetail").html(url);
-                     }
-                 });
-           }
-
-            function confirmSubmit(){
-                var dataInput = $("#form-add").serializeArray();
-                $('#form-add').submit();
-                $('#tutupModal').remove();
-                $('#submit').remove();
+<script>
+    function inputSubmit() {
+        var id_master = $("#id_master").val();
+        $.ajax({
+            type: "GET",
+            url: "{{ URL::to('/') }}/m/cek/confirm-vpembelian?id_master=" + id_master,
+            success: function(url) {
+                $("#confirmDetail").empty();
+                $("#confirmDetail").html(url);
             }
-    </script>
+        });
+    }
+
+    function rejectSubmit() {
+        var id_master = $("#id_master").val();
+        $.ajax({
+            type: "GET",
+            url: "{{ URL::to('/') }}/m/cek/reject-vpembelian?id_master=" + id_master,
+            success: function(url) {
+                $("#rejectDetail").empty();
+                $("#rejectDetail").html(url);
+            }
+        });
+    }
+
+    function confirmSubmit() {
+        var dataInput = $("#form-add").serializeArray();
+        $('#form-add').submit();
+        $('#tutupModal').remove();
+        $('#submit').remove();
+    }
+</script>
 @stop
 @endif
 
 @if($getDataSales->status == 0)
 @section('javascript')
-    <script>
-          
-           function rejectSubmit(){
-                var id_master = $("#id_master").val();
-                 $.ajax({
-                     type: "GET",
-                     url: "{{ URL::to('/') }}/m/cek/reject-pembelian?id_master="+id_master,
-                     success: function(url){
-                         $("#rejectDetail" ).empty();
-                         $("#rejectDetail").html(url);
-                     }
-                 });
-           }
-
-            function confirmSubmit(){
-                var dataInput = $("#form-add").serializeArray();
-                $('#form-add').submit();
-                $('#tutupModal').remove();
-                $('#submit').remove();
+<script>
+    function rejectSubmit() {
+        var id_master = $("#id_master").val();
+        $.ajax({
+            type: "GET",
+            url: "{{ URL::to('/') }}/m/cek/reject-pembelian?id_master=" + id_master,
+            success: function(url) {
+                $("#rejectDetail").empty();
+                $("#rejectDetail").html(url);
             }
-    </script>
+        });
+    }
+
+    function confirmSubmit() {
+        var dataInput = $("#form-add").serializeArray();
+        $('#form-add').submit();
+        $('#tutupModal').remove();
+        $('#submit').remove();
+    }
+</script>
 @stop
 @endif

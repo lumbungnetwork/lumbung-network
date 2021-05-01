@@ -42,7 +42,7 @@
                                     @endif
                                 </div>
                                 <div class="text-xs-right">
-                                    <h6 class="text-success text-uppercase m-b-15 m-t-10">{{$dataSponsor->user_code}}
+                                    <h6 class="text-success text-uppercase m-b-15 m-t-10">{{$dataSponsor->username}}
                                     </h6>
                                     <h6 class="text-muted m-b-15 m-t-10">{{$dataSponsor->hp}}</h6>
                                     <h2 class="text-warning m-b-10"><span>Sponsor</span></h2>
@@ -75,7 +75,7 @@
                                     <i class="fa fa-user"></i>
                                 </div>
                                 <div class="text-xs-right">
-                                    <h6 class="text-success text-uppercase m-b-15 m-t-10">{{$dataSponsor->user_code}}
+                                    <h6 class="text-success text-uppercase m-b-15 m-t-10">{{$dataSponsor->username}}
                                     </h6>
                                     <h6 class="text-muted m-b-15 m-t-10">{{$dataSponsor->hp}}</h6>
                                     <h2 class="text-warning m-b-10"><span>Sponsor</span></h2>
@@ -152,7 +152,7 @@
                         @endif
                         <small>{{$dataMy->name}}</small>
                         <div>
-                            <dd id="username">{{$dataUser->user_code}}</dd>
+                            <dd id="username">{{$dataUser->username}}</dd>
                         </div>
 
                         @if($dataUser->is_stockist == 1)

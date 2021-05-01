@@ -45,7 +45,7 @@ class ProcessRequestToDelegatesJob implements ShouldQueue
         if ($this->type == 1) {
             $reqData = $modelMember->getRequestStockist($this->request_id);
             $username1 = $reqData->usernames;
-            $nama1 = User::where('user_code', $username1)->first()->full_name;
+            $nama1 = User::where('username', $username1)->first()->full_name;
 
             $telegramBotController->sendStockistApplyRequest([
                 'nama1' => $nama1,
@@ -58,7 +58,7 @@ class ProcessRequestToDelegatesJob implements ShouldQueue
         } elseif ($this->type == 2) {
             $reqData = $modelMember->getRequestVendor($this->request_id);
             $username1 = $reqData->usernames;
-            $nama1 = User::where('user_code', $username1)->first()->full_name;
+            $nama1 = User::where('username', $username1)->first()->full_name;
 
             $telegramBotController->sendVendorApplyRequest([
                 'nama1' => $nama1,
@@ -75,7 +75,7 @@ class ProcessRequestToDelegatesJob implements ShouldQueue
             $data = [
 
                 'name' => $user->full_name,
-                'username' => $user->user_code,
+                'username' => $user->username,
                 'delegate' => $reqData->delegate,
                 'request_id' => $reqData->id,
             ];

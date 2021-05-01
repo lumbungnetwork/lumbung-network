@@ -312,7 +312,7 @@
                                                             <tr>
                                                                 <td>
                                                                     <span>
-                                                                        {{$user_code}}
+                                                                        {{$username}}
                                                                     </span>
                                                                 </td>
                                                             </tr>

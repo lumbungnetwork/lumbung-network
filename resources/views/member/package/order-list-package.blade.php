@@ -40,7 +40,7 @@
                                     <tr>
                                         <td>
                                             <div class="rounded-lg shadow p-3">
-                                                <h6>{{$row->user_code}}</h6>
+                                                <h6>{{$row->username}}</h6>
                                                 <small>{{$row->hp}}</small><br><br>
                                                 <button class="btn btn-success float-right"
                                                     onclick="inputSubmit({{$row->id}})">Aktivasi</button>

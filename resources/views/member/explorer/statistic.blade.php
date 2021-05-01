@@ -322,13 +322,13 @@
                     var content = '<div style="text-align: left; font-size: 10px;"><dd>Member Baru: ' + res.new_member +'</dd><dd>Resubscribe: ' + res.resubscribe + '</dd><br>'
                     content += '<h6>Member Baru</h6><table class="table"><thead><tr><th>Username</th><th>Sponsor</th></tr></thead><tbody>'
                     for (var i = 0; i < res.detail_new_member.length; i++) {
-                        content += '<tr><td>' + res.detail_new_member[i].user_code + '</td><td>' + res.detail_new_member[i].sp_name + '</td></tr>'
+                        content += '<tr><td>' + res.detail_new_member[i].username + '</td><td>' + res.detail_new_member[i].sp_name + '</td></tr>'
                     }
 
                     content +='</tbody></table><h6>Resubscribe</h6><table class="table"><thead><tr><th>Username</th><th>Sponsor</th></tr></thead><tbody>';
 
                     for (var i = 0; i < res.detail_resubscribe.length; i++) {
-                        content += '<tr><td>' + res.detail_resubscribe[i].user_code + '</td><td>' + res.detail_resubscribe[i].sp_name + '</td></tr>'
+                        content += '<tr><td>' + res.detail_resubscribe[i].username + '</td><td>' + res.detail_resubscribe[i].sp_name + '</td></tr>'
                     }
 
                     content +='</tbody></table></div>'

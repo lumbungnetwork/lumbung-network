@@ -62,7 +62,7 @@
                                         ?>
                                     <tr>
                                         <td>{{$no}}</td>
-                                        <td>{{$row->user_code}}</td>
+                                        <td>{{$row->username}}</td>
                                         <td>{{date('d F Y', strtotime($row->sale_date))}}</td>
                                         <td>{{number_format($royalti, 0, ',', ',')}}</td>
                                         <td>

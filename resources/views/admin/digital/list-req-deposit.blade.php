@@ -139,7 +139,7 @@
                                         ?>
                                     <tr>
                                         <td>{{$no}}</td>
-                                        <td>{{$row->user_code}}</td>
+                                        <td>{{$row->username}}</td>
                                         <td>{{$row->hp}}</td>
                                         <td>{{$row->transaction_code}}</td>
                                         <td>{{date('d M Y', strtotime($row->created_at))}}</td>

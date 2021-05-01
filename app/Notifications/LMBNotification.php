@@ -45,7 +45,7 @@ class LMBNotification extends Notification
             ->to($notifiable->chat_id)
             // Markdown supported.
             ->content("*Selamat!*\nAnda baru saja menerima LMB!
-            \nAkun: " . $notifiable->user_code .
+            \nAkun: " . $notifiable->username .
                 "\nJumlah: *" . $this->notification['amount'] . ' LMB*' .
                 "\nSumber: " . $this->notification['type'] .
                 "\nHash: " . $this->notification['hash'])

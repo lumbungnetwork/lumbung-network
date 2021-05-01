@@ -103,7 +103,7 @@ class KBBCommand extends Command
                 $rank = 'Royal Diamond';
             }
 
-            $text = 'Username: ' . $dataUser->user_code . chr(10);
+            $text = 'Username: ' . $dataUser->username . chr(10);
             $text .= 'Type KBB: ' . $kbbStatus . chr(10);
             if ($daysleft > 0) {
                 $text .= 'Masa aktif akun: ' . $daysleft . ' hari sebelum expired (' . date('d-m-Y', $expired) . ')' . chr(10);
@@ -115,7 +115,7 @@ class KBBCommand extends Command
 
             if ($dataUser->invited_by != null) {
                 $host = User::find($dataUser->invited_by);
-                $text .= 'Diajak oleh: ' . $host->user_code . chr(10);
+                $text .= 'Diajak oleh: ' . $host->username . chr(10);
             }
             $this->replyWithMessage(compact('text'));
             return;
@@ -126,7 +126,7 @@ class KBBCommand extends Command
             $bonusTuntas = $bonuses->daily_withdrawn;
             $bonusTersedia = $bonuses->daily_bonus;
 
-            $text = 'Username: ' . $dataUser->user_code . chr(10);
+            $text = 'Username: ' . $dataUser->username . chr(10);
             $text .= 'Bonus tersedia: Rp' . number_format($bonusTersedia) . chr(10);
             $text .= 'Bonus tuntas: Rp' . number_format($bonusTuntas) .  chr(10);
             $bonusRights = 100;
@@ -142,25 +142,25 @@ class KBBCommand extends Command
             $getSponsoring = $modelMember->getSponsorPeringkat($dataUser);
             $text = '';
             if ($getSponsoring == null && count($getInvite) == 0) {
-                $text .= 'Akun ' . $dataUser->user_code . ' belum ada mensponsori/mengajak akun lain.';
+                $text .= 'Akun ' . $dataUser->username . ' belum ada mensponsori/mengajak akun lain.';
                 $this->replyWithMessage(compact('text'));
                 return;
             } else {
                 if (count($getInvite) > 0) {
                     $text .=
-                        'Daftar member KBB yang diajak oleh akun ' . $dataUser->user_code . ':' . chr(10) . chr(10);
+                        'Daftar member KBB yang diajak oleh akun ' . $dataUser->username . ':' . chr(10) . chr(10);
                     $no = 1;
                     foreach ($getInvite as $row) {
-                        $text .= $no . '. ' . $row->user_code . chr(10);
+                        $text .= $no . '. ' . $row->username . chr(10);
                         $no++;
                     }
                     $text .= chr(10) . '============' . chr(10);
                 }
                 if ($getSponsoring != null) {
-                    $text .= 'Daftar akun yang disponsori oleh akun ' . $dataUser->user_code . ':' . chr(10) . chr(10);
+                    $text .= 'Daftar akun yang disponsori oleh akun ' . $dataUser->username . ':' . chr(10) . chr(10);
                     $no = 1;
                     foreach ($getSponsoring as $row) {
-                        $text .= $no . '. ' . $row->user_code . ' - ' . $row->name . ' (' . $row->total_sponsor . ')' . chr(10);
+                        $text .= $no . '. ' . $row->username . ' - ' . $row->name . ' (' . $row->total_sponsor . ')' . chr(10);
                         $no++;
                     }
                 }

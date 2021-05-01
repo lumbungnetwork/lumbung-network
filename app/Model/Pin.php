@@ -330,7 +330,7 @@ class Pin extends Model
     {
         $sql = DB::table('ppob')
             ->join('users', 'ppob.vendor_id', '=', 'users.id')
-            ->selectRaw('ppob.ppob_date, users.user_code, ppob.ppob_price as sale_price, ppob.type, '
+            ->selectRaw('ppob.ppob_date, users.username, ppob.ppob_price as sale_price, ppob.type, '
                 . 'ppob.id, ppob.status, ppob.buy_metode, ppob.message, ppob.vendor_id')
             ->where('ppob.user_id', '=', $id)
             ->whereDate('ppob.ppob_date', '>=', $date->startDay)
@@ -349,7 +349,7 @@ class Pin extends Model
     {
         $sql = DB::table('ppob')
             ->join('users', 'ppob.user_id', '=', 'users.id')
-            ->selectRaw('ppob.*, users.user_code, users.email')
+            ->selectRaw('ppob.*, users.username, users.email')
             ->where('ppob.vendor_id', '=', $id)
             //                    ->where('ppob.status', '=', 1)
             ->orderBy('ppob.id', 'DESC')
@@ -366,7 +366,7 @@ class Pin extends Model
         $sql = DB::table('ppob')
             ->join('users as a', 'ppob.user_id', '=', 'a.id')
             ->join('users as b', 'ppob.vendor_id', '=', 'b.id')
-            ->selectRaw('ppob.*, a.user_code as user_code_pembeli, b.user_code user_code_vendor')
+            ->selectRaw('ppob.*, a.username as username_pembeli, b.username username_vendor')
             ->where('ppob.status', '=', 1)
             ->where('ppob.buy_metode', '=', 3)
             ->orderBy('ppob.id', 'DESC')
@@ -383,7 +383,7 @@ class Pin extends Model
         $sql = DB::table('ppob')
             ->join('users as a', 'ppob.user_id', '=', 'a.id')
             ->join('users as b', 'ppob.vendor_id', '=', 'b.id')
-            ->selectRaw('ppob.*, a.user_code as user_code_pembeli, b.user_code user_code_vendor')
+            ->selectRaw('ppob.*, a.username as username_pembeli, b.username username_vendor')
             ->where('ppob.id', '=', $id)
             ->where('ppob.status', '=', 1)
             ->where('ppob.buy_metode', '=', 3)

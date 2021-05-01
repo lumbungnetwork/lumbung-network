@@ -51,7 +51,7 @@ class SendLMBClaimRoyaltyJob implements ShouldQueue
         $bonus = BonusRoyalty::find($this->bonus_id);
 
         // Get User's
-        $user = User::select('id', 'tron', 'user_code')->where('id', $this->user_id)->first();
+        $user = User::select('id', 'tron', 'username')->where('id', $this->user_id)->first();
 
         // Verify bonus balance
         $bonusRoyalty = $modelBonus->getTotalBonusRoyalti($user->id);
@@ -112,7 +112,7 @@ class SendLMBClaimRoyaltyJob implements ShouldQueue
 
             $tgMessage = '
             Selamat!
-*' . $user->user_code . '* baru saja Claim ' . $bonus->amount . ' LMB dari Bonus Royalty 
+*' . $user->username . '* baru saja Claim ' . $bonus->amount . ' LMB dari Bonus Royalty 
     *Hash: *[' . $shortenHash . '](https://tronscan.org/#/transaction/' . $txHash . ')
             ';
 

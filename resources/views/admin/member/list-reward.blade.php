@@ -66,7 +66,7 @@
                                         <tr>
                                             <td><input type="checkbox" name="id[]" value="{{$row->id}}"></td>
                                             <td>{{$no}}</td>
-                                            <td>{{$row->user_code}}</td>
+                                            <td>{{$row->username}}</td>
                                             <td>{{$row->tron}}</td>
                                             <td>{{date('d M Y', strtotime($row->claim_date))}}</td>
                                             <td>{{$row->reward_detail}}</td>

@@ -16,7 +16,7 @@
             <div class="col-md-6 pr-1">
                 <div class="form-group">
                     <label>Username</label>
-                    <input type="text" class="form-control" name="user_code" value="{{$getData->user_code}}">
+                    <input type="text" class="form-control" name="username" value="{{$getData->username}}">
                 </div>
             </div>
             <div class="col-md-6 pl-1">

@@ -80,7 +80,7 @@
                                         <td style="display:block; box-sizing:border-box; clear:both">
                                             <div class="rounded-lg bg-light shadow px-3 py-2 mb-1">
                                                 <small class="float-right">{{$row->created_at}}</small>
-                                                <p class="mb-1">{{$row->user_code}}</p>
+                                                <p class="mb-1">{{$row->username}}</p>
 
                                                 <a class="btn btn-sm btn-{{$label}} float-right"
                                                     href="{{ URL::to('/') }}/m/detail/vendor-report/{{$row->id}}"><span

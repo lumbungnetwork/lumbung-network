@@ -77,7 +77,7 @@ class ForwardShoppingPaymentJob implements ShouldQueue
             if ($sellerTron == null) {
                 Telegram::sendMessage([
                     'chat_id' => Config::get('services.telegram.overlord'),
-                    'text' => 'ForwardShoppingPaymentJob failed because the seller address is null' . chr(10) . 'Seller: ' . $seller->user_code,
+                    'text' => 'ForwardShoppingPaymentJob failed because the seller address is null' . chr(10) . 'Seller: ' . $seller->username,
                     'parse_mode' => 'markdown'
                 ]);
                 $this->delete();

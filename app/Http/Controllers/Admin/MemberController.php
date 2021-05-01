@@ -161,13 +161,13 @@ class MemberController extends Controller
             $is_tron = 1;
         }
         $dataInsertNewMember = array(
-            'name' => $request->user_code,
+            'name' => $request->username,
             'email' => $request->email,
             'password' => bcrypt($request->password),
             'hp' => $request->hp,
             'tron' => $tron,
             'is_tron' => $is_tron,
-            'user_code' => $request->user_code,
+            'username' => $request->username,
             'affiliate' => $request->affiliate,
             'sponsor_id' => $sponsor_id,
             'is_stockist' => $is_stockist,
@@ -179,11 +179,11 @@ class MemberController extends Controller
             'email' => $request->email,
             'password' => $request->password,
             'hp' => $request->hp,
-            'user_code' => $request->user_code
+            'username' => $request->username
         );
         $emailSend = $request->email;
         SendRegistrationEmailJob::dispatch($dataEmail, $emailSend)->onQueue('mail');
-        Alert::success('Berhasil', 'Registrasi Member baru ' . $request->user_code . ' telah berhasil!')->persistent(true);
+        Alert::success('Berhasil', 'Registrasi Member baru ' . $request->username . ' telah berhasil!')->persistent(true);
         return redirect()->back();
     }
 
@@ -538,7 +538,7 @@ class MemberController extends Controller
         }
         $dataEmail = array(
             'tgl_order' => date('d F Y'),
-            'nama' => $dataUser->user_code,
+            'nama' => $dataUser->username,
             'hp' => $dataUser->hp,
             'transaction_code' => $getTrans->transaction_code,
             'total_pin' => $getTrans->total_pin,
@@ -548,7 +548,7 @@ class MemberController extends Controller
             'alamat' => $alamat
         );
         $message_text = 'LN Pin Purchase by Bank Transfer' . chr(10);
-        $message_text .= 'User: ' . $dataUser->user_code . chr(10);
+        $message_text .= 'User: ' . $dataUser->username . chr(10);
         $message_text .= 'Bank: ' . $getTrans->to_name . chr(10);
         $message_text .= 'Amount: Rp' . number_format($getTrans->price + $getTrans->unique_digit) . chr(10);
 
@@ -1040,7 +1040,7 @@ class MemberController extends Controller
                 );
                 $modelPin->getInsertMemberPin($to_memberPin);
                 $lock->release();
-                Alert::success('Berhasil!', $total_pin . ' Pin telah ditransfer ke ' . $cekMember->name . ' (' . $cekMember->user_code . ') ');
+                Alert::success('Berhasil!', $total_pin . ' Pin telah ditransfer ke ' . $cekMember->name . ' (' . $cekMember->username . ') ');
                 return redirect()->route('m_addTransferPin');
             }
         }
@@ -1243,7 +1243,7 @@ class MemberController extends Controller
         $modelMember = new Member;
         $data = [
             'user_id' => $dataUser->id,
-            'username' => $dataUser->user_code,
+            'username' => $dataUser->username,
             'delegate' => $request->delegate,
             'old_address' => $dataUser->tron
         ];
@@ -1339,7 +1339,7 @@ class MemberController extends Controller
                     $modelMember = new Member;
                     $sendRequest = $modelMember->getInsertStockist([
                         'user_id' => $dataUser->id,
-                        'usernames' => $dataUser->user_code,
+                        'usernames' => $dataUser->username,
                         'delegate' => $request->delegate,
                         'hash' => $hash
                     ]);
@@ -2310,7 +2310,7 @@ class MemberController extends Controller
                     'image' => 'required|mimes:jpeg,png|max:3000',
                 ]);
 
-                $name = $dataUser->user_code;
+                $name = $dataUser->username;
                 $extension = 'jpg';
                 $imageClass = new ImageManager;
                 $imageClass->make($request->image)->fit(200)->save(storage_path('app/public/sellers/' . $name . "." . $extension), 80, 'jpg');
@@ -2361,7 +2361,7 @@ class MemberController extends Controller
                     'image' => 'required|mimes:jpeg,png|max:3000',
                 ]);
 
-                $name = $dataUser->user_code;
+                $name = $dataUser->username;
                 $extension = 'jpg';
                 $imageClass = new ImageManager;
                 $imageClass->make($request->image)->fit(200)->save(storage_path('app/public/sellers/' . $name . "." . $extension), 80, 'jpg');
@@ -2762,7 +2762,7 @@ class MemberController extends Controller
 
     public function getPosShopping(Request $request)
     {
-        $buyer = User::select('id', 'user_code', 'is_active', 'expired_at')->where('user_code', $request->username)->first();
+        $buyer = User::select('id', 'username', 'is_active', 'expired_at')->where('username', $request->username)->first();
         if ($buyer == null) {
             Alert::error('Oops!', 'Username tidak ditemukan, periksa kembali username yang anda masukkan');
             return redirect()->back()->with('username', $request->username);
@@ -3179,7 +3179,7 @@ class MemberController extends Controller
 
                     $sendRequest = $modelMember->getInsertVendor([
                         'user_id' => $dataUser->id,
-                        'usernames' => $dataUser->user_code,
+                        'usernames' => $dataUser->username,
                         'delegate' => $request->delegate,
                         'hash' => $request->hash
                     ]);
@@ -3794,7 +3794,7 @@ class MemberController extends Controller
                             'to' => $hashReceiver,
                             'hash' => $hash,
                             'type' => 5,
-                            'detail' => 'Add Vendor Deposit by: ' . $dataUser->user_code,
+                            'detail' => 'Add Vendor Deposit by: ' . $dataUser->username,
                             'created_at' => date('Y-m-d H:i:s')
                         ]);
 
@@ -5192,13 +5192,13 @@ class MemberController extends Controller
         }
 
         $getDataMaster = Ppob::find($id);
-        $buyer = User::where('id', $getDataMaster->user_id)->select('user_code')->first();
-        $seller = User::where('id', $getDataMaster->vendor_id)->select('user_code')->first();
+        $buyer = User::where('id', $getDataMaster->user_id)->select('username')->first();
+        $seller = User::where('id', $getDataMaster->vendor_id)->select('username')->first();
 
         return view('member.digital.m_vpdf_ppob')
             ->with('getDataMaster', $getDataMaster)
-            ->with('buyer', $buyer->user_code)
-            ->with('seller', $seller->user_code);
+            ->with('buyer', $buyer->username)
+            ->with('seller', $seller->username);
     }
 
     public function getUpdateStatusPPOB($id)

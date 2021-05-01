@@ -245,7 +245,7 @@ class Transferwd extends Model
         $sql = DB::table('transfer_wd')
             ->join('users', 'transfer_wd.user_id', '=', 'users.id')
             ->join('bank', 'transfer_wd.user_bank', '=', 'bank.id')
-            ->selectRaw('transfer_wd.id, users.user_code, users.hp, bank.bank_name, bank.account_no, bank.account_name,'
+            ->selectRaw('transfer_wd.id, users.username, users.hp, bank.bank_name, bank.account_no, bank.account_name,'
                 . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee')
             ->where('transfer_wd.status', '=', 0)
             ->where('transfer_wd.is_tron', '=', 0)
@@ -263,7 +263,7 @@ class Transferwd extends Model
     {
         $sql = DB::table('transfer_wd')
             ->join('users', 'transfer_wd.user_id', '=', 'users.id')
-            ->selectRaw('transfer_wd.id, users.user_code, users.hp, users.tron, transfer_wd.user_id, '
+            ->selectRaw('transfer_wd.id, users.username, users.hp, users.tron, transfer_wd.user_id, '
                 . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee')
             ->where('transfer_wd.status', '=', 0)
             ->where('transfer_wd.type', '=', 5)
@@ -282,7 +282,7 @@ class Transferwd extends Model
         $sql = DB::table('transfer_wd')
             ->join('users', 'transfer_wd.user_id', '=', 'users.id')
             ->join('bank', 'transfer_wd.user_bank', '=', 'bank.id')
-            ->selectRaw('transfer_wd.id, users.user_code, users.hp, users.tron, bank.bank_name, bank.account_no, bank.account_name,'
+            ->selectRaw('transfer_wd.id, users.username, users.hp, users.tron, bank.bank_name, bank.account_no, bank.account_name,'
                 . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.is_tron, transfer_wd.admin_fee')
             ->where('transfer_wd.status', '=', 0)
             ->where('transfer_wd.type', '=', 3)
@@ -300,7 +300,7 @@ class Transferwd extends Model
     //     $sql1 = DB::table('transfer_wd')
     //         ->join('users', 'transfer_wd.user_id', '=', 'users.id')
     //         ->join('bank', 'transfer_wd.user_bank', '=', 'bank.id')
-    //         ->selectRaw('transfer_wd.id, users.user_code, users.hp, bank.bank_name, bank.account_no, bank.account_name, users.tron, transfer_wd.is_tron, '
+    //         ->selectRaw('transfer_wd.id, users.username, users.hp, bank.bank_name, bank.account_no, bank.account_name, users.tron, transfer_wd.is_tron, '
     //             . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee')
     //         ->where('transfer_wd.status', '=', 0)
     //         ->where('transfer_wd.is_tron', '=', 0)
@@ -308,7 +308,7 @@ class Transferwd extends Model
     //     $sql2 = DB::table('transfer_wd')
     //         ->join('users', 'transfer_wd.user_id', '=', 'users.id')
     //         ->join('bank', 'transfer_wd.user_bank', '=', 'bank.id')
-    //         ->selectRaw('transfer_wd.id, users.user_code, users.hp, bank.bank_name, bank.account_no, bank.account_name, users.tron, transfer_wd.is_tron, '
+    //         ->selectRaw('transfer_wd.id, users.username, users.hp, bank.bank_name, bank.account_no, bank.account_name, users.tron, transfer_wd.is_tron, '
     //             . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee')
     //         ->where('transfer_wd.status', '=', 0)
     //         ->where('transfer_wd.is_tron', '=', 1)
@@ -344,7 +344,7 @@ class Transferwd extends Model
         $sql = DB::table('transfer_wd')
             ->join('users', 'transfer_wd.user_id', '=', 'users.id')
             ->join('bank', 'transfer_wd.user_bank', '=', 'bank.id')
-            ->selectRaw('transfer_wd.id, users.user_code, users.hp, bank.bank_name, bank.account_no, bank.account_name,'
+            ->selectRaw('transfer_wd.id, users.username, users.hp, bank.bank_name, bank.account_no, bank.account_name,'
                 . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee, users.full_name,'
                 . 'transfer_wd.reason, transfer_wd.status')
             ->where('transfer_wd.id', '=', $id)
@@ -358,7 +358,7 @@ class Transferwd extends Model
     {
         $sql = DB::table('transfer_wd')
             ->join('users', 'transfer_wd.user_id', '=', 'users.id')
-            ->selectRaw('transfer_wd.id, users.user_code, users.hp,'
+            ->selectRaw('transfer_wd.id, users.username, users.hp,'
                 . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee, users.full_name,'
                 . 'transfer_wd.reason, transfer_wd.status, transfer_wd.is_tron')
             ->where('transfer_wd.id', '=', $id)
@@ -371,7 +371,7 @@ class Transferwd extends Model
     {
         $sql = DB::table('transfer_wd')
             ->join('users', 'transfer_wd.user_id', '=', 'users.id')
-            ->selectRaw('transfer_wd.id, users.user_code, users.hp, users.tron, '
+            ->selectRaw('transfer_wd.id, users.username, users.hp, users.tron, '
                 . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee, users.full_name,'
                 . 'transfer_wd.reason, transfer_wd.is_tron, transfer_wd.status')
             ->where('transfer_wd.id', '=', $id)
@@ -401,7 +401,7 @@ class Transferwd extends Model
         $sql = DB::table('transfer_wd')
             ->join('users', 'transfer_wd.user_id', '=', 'users.id')
             ->join('bank', 'transfer_wd.user_bank', '=', 'bank.id')
-            ->selectRaw('transfer_wd.id, users.user_code, users.hp, bank.bank_name, bank.account_no, bank.account_name,'
+            ->selectRaw('transfer_wd.id, users.username, users.hp, bank.bank_name, bank.account_no, bank.account_name,'
                 . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee, users.full_name,'
                 . 'transfer_wd.reason, transfer_wd.status')
             ->where('transfer_wd.id', '=', $id)
@@ -415,7 +415,7 @@ class Transferwd extends Model
     {
         $sql = DB::table('transfer_wd')
             ->join('users', 'transfer_wd.user_id', '=', 'users.id')
-            ->selectRaw('transfer_wd.id, transfer_wd.user_id, users.tron, users.user_code,'
+            ->selectRaw('transfer_wd.id, transfer_wd.user_id, users.tron, users.username,'
                 . 'transfer_wd.wd_total')
             ->where('transfer_wd.id', '=', $id)
             ->where('transfer_wd.type', '=', 3)
@@ -430,7 +430,7 @@ class Transferwd extends Model
     {
         $sql = DB::table('transfer_wd')
             ->join('users', 'transfer_wd.user_id', '=', 'users.id')
-            ->selectRaw('transfer_wd.id, users.user_code, users.hp,'
+            ->selectRaw('transfer_wd.id, users.username, users.hp,'
                 . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee, users.full_name,'
                 . 'transfer_wd.reason, transfer_wd.status, transfer_wd.is_tron')
             ->where('transfer_wd.id', '=', $id)
@@ -446,7 +446,7 @@ class Transferwd extends Model
             ->join('users', 'transfer_wd.user_id', '=', 'users.id')
             ->join('bank', 'transfer_wd.user_bank', '=', 'bank.id')
             ->join('users as u', 'transfer_wd.submit_by', '=', 'u.id')
-            ->selectRaw('transfer_wd.id, users.user_code, users.hp, bank.bank_name, bank.account_no, bank.account_name,'
+            ->selectRaw('transfer_wd.id, users.username, users.hp, bank.bank_name, bank.account_no, bank.account_name,'
                 . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee, transfer_wd.status,  '
                 . 'transfer_wd.reason, transfer_wd.submit_by, u.name')
             ->where('transfer_wd.type', '=', 1)
@@ -464,7 +464,7 @@ class Transferwd extends Model
         $sql = DB::table('transfer_wd')
             ->join('users', 'transfer_wd.user_id', '=', 'users.id')
             ->join('users as u', 'transfer_wd.submit_by', '=', 'u.id')
-            ->selectRaw('transfer_wd.id, users.user_code, users.hp, users.tron, '
+            ->selectRaw('transfer_wd.id, users.username, users.hp, users.tron, '
                 . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee, transfer_wd.status,  '
                 . 'transfer_wd.reason, transfer_wd.submit_by, u.name')
             ->orderBy('transfer_wd.id', 'DESC')
@@ -483,7 +483,7 @@ class Transferwd extends Model
             ->join('users', 'transfer_wd.user_id', '=', 'users.id')
             ->join('bank', 'transfer_wd.user_bank', '=', 'bank.id')
             ->join('users as u', 'transfer_wd.submit_by', '=', 'u.id')
-            ->selectRaw('transfer_wd.id, users.user_code, users.hp, users.tron, bank.bank_name, bank.account_no, bank.account_name,'
+            ->selectRaw('transfer_wd.id, users.username, users.hp, users.tron, bank.bank_name, bank.account_no, bank.account_name,'
                 . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee, transfer_wd.status,  '
                 . 'transfer_wd.reason, transfer_wd.submit_by, transfer_wd.is_tron, u.name')
             ->whereIn('transfer_wd.type', [3, 6])
@@ -502,7 +502,7 @@ class Transferwd extends Model
         $sql = DB::table('transfer_wd')
             ->join('users', 'transfer_wd.user_id', '=', 'users.id')
             ->join('bank', 'transfer_wd.user_bank', '=', 'bank.id')
-            ->selectRaw('transfer_wd.id, users.user_code, users.hp, bank.bank_name, bank.account_no, bank.account_name,'
+            ->selectRaw('transfer_wd.id, users.username, users.hp, bank.bank_name, bank.account_no, bank.account_name,'
                 . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee')
             ->where('transfer_wd.status', '=', 0)
             ->whereDate('transfer_wd.wd_date', '=', $yesterday)
@@ -521,7 +521,7 @@ class Transferwd extends Model
         $yesterday = date('Y-m-d', strtotime("-1 days"));
         $sql = DB::table('transfer_wd')
             ->join('users', 'transfer_wd.user_id', '=', 'users.id')
-            ->selectRaw('transfer_wd.id, users.user_code, users.hp, users.tron, '
+            ->selectRaw('transfer_wd.id, users.username, users.hp, users.tron, '
                 . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee')
             ->where('transfer_wd.status', '=', 0)
             ->where('transfer_wd.is_tron', '=', 1)
@@ -541,7 +541,7 @@ class Transferwd extends Model
         $sql = DB::table('transfer_wd')
             ->join('users', 'transfer_wd.user_id', '=', 'users.id')
             ->join('bank', 'transfer_wd.user_bank', '=', 'bank.id')
-            ->selectRaw('transfer_wd.id, users.user_code, users.hp, bank.bank_name, bank.account_no, bank.account_name,'
+            ->selectRaw('transfer_wd.id, users.username, users.hp, bank.bank_name, bank.account_no, bank.account_name,'
                 . 'transfer_wd.wd_code, transfer_wd.wd_total, transfer_wd.wd_date, transfer_wd.admin_fee')
             ->where('transfer_wd.status', '=', 0)
             ->where('transfer_wd.type', '=', 3)

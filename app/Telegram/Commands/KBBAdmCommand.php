@@ -60,7 +60,7 @@ class KBBAdmCommand extends Command
             }
 
             if ($params[2] == 'mengajak') {
-                $host = User::where('user_code', $params[1])
+                $host = User::where('username', $params[1])
                     ->whereIn('affiliate', [2, 3])
                     ->where('is_active', 1)
                     ->first();
@@ -71,7 +71,7 @@ class KBBAdmCommand extends Command
                     return;
                 }
 
-                $guest = User::where('user_code', $params[3])
+                $guest = User::where('username', $params[3])
                     ->whereIn('affiliate', [2, 3])
                     ->where('is_active', 1)
                     ->first();
@@ -95,21 +95,21 @@ class KBBAdmCommand extends Command
                         $host->affiliate = 3;
                         $host->save();
                     }
-                    $text = 'Akun ' . $host->user_code . ' telah *berhasil mengajak* ' . $guest->user_code;
+                    $text = 'Akun ' . $host->username . ' telah *berhasil mengajak* ' . $guest->username;
                     $this->replyWithMessage(['text' => $text, 'parse_mode' => 'markdown']);
                     return;
                 }
             } elseif ($params[1] == 'cek') {
-                $query = User::where('user_code', 'LIKE', '%' . $params[2] . '%')->where('is_active', 1)->select('user_code')->get();
+                $query = User::where('username', 'LIKE', '%' . $params[2] . '%')->where('is_active', 1)->select('username')->get();
                 $text = 'Berikut beberapa username yang serupa dengan: ' . $params[2] . chr(10) . chr(10);
 
                 foreach ($query as $row) {
-                    $text .= $row->user_code . chr(10);
+                    $text .= $row->username . chr(10);
                 }
                 $this->replyWithMessage(['text' => $text, 'parse_mode' => 'markdown']);
                 return;
             } elseif ($params[1] == 'reset-pass') {
-                $query = User::where('user_code', $params[2])->first();
+                $query = User::where('username', $params[2])->first();
                 if ($query == null) {
                     $text = 'User tidak ditemukan';
                 } else {
@@ -121,7 +121,7 @@ class KBBAdmCommand extends Command
                 $this->replyWithMessage(['text' => $text, 'parse_mode' => 'markdown']);
                 return;
             } elseif ($params[1] == 'reset-invite') {
-                $query = User::where('user_code', $params[2])->first();
+                $query = User::where('username', $params[2])->first();
                 if ($query == null) {
                     $text = 'User tidak ditemukan';
                 } else {
@@ -133,7 +133,7 @@ class KBBAdmCommand extends Command
                 $this->replyWithMessage(['text' => $text, 'parse_mode' => 'markdown']);
                 return;
             } elseif ($params[1] == 'liquidate') {
-                $query = User::where('user_code', $params[2])->select('id')->first();
+                $query = User::where('username', $params[2])->select('id')->first();
                 if ($query == null) {
                     $text = 'User tidak ditemukan';
                 } else {

@@ -114,7 +114,7 @@
                                                     }
                                                 ?>
                                     <tr>
-                                        <td><b>{{$row->user_code}}</b></td>
+                                        <td><b>{{$row->username}}</b></td>
                                         <td>Total Sponsor: {{$row->total_sponsor}}</td>
                                         <td>{{$name}}</td>
                                         <td><?php echo $image; ?></td>

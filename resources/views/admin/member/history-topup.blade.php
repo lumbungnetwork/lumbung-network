@@ -2,23 +2,23 @@
 @section('content')
 @include('layout.admin.sidebar')
 <div class="main-panel">
-    
+
     <?php //MENU HEADER  ?>
     <nav class="navbar navbar-expand-lg navbar-absolute fixed-top navbar-transparent">
         <div class="container-fluid">
             <div class="navbar-wrapper">
                 <div class="navbar-toggle">
                     <button type="button" class="navbar-toggler">
-                    <span class="navbar-toggler-bar bar1"></span>
-                    <span class="navbar-toggler-bar bar2"></span>
-                    <span class="navbar-toggler-bar bar3"></span>
+                        <span class="navbar-toggler-bar bar1"></span>
+                        <span class="navbar-toggler-bar bar2"></span>
+                        <span class="navbar-toggler-bar bar3"></span>
                     </button>
                 </div>
                 <p class="navbar-brand">{{$headerTitle}}</p>
             </div>
         </div>
     </nav>
-    
+
     <?php //MENU CONTENT  ?>
     <div class="content">
         <div class="row">
@@ -29,14 +29,15 @@
                     </div>
                     <div class="card-body">
                         @if ( Session::has('message') )
-                            <div class="widget-content mt10 mb10 mr15">
-                                <div class="alert alert-{{ Session::get('messageclass') }}">
-                                    <button class="close" type="button" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
-                                    {{  Session::get('message')    }} 
-                                </div>
+                        <div class="widget-content mt10 mb10 mr15">
+                            <div class="alert alert-{{ Session::get('messageclass') }}">
+                                <button class="close" type="button" data-dismiss="alert"><span
+                                        aria-hidden="true">&times;</span></button>
+                                {{  Session::get('message')    }}
                             </div>
+                        </div>
                         @endif
-                         <div class="table-responsive">
+                        <div class="table-responsive">
                             <table class="table table-striped nowrap" id="myTable">
                                 <thead class=" text-primary">
                                     <tr>
@@ -48,14 +49,14 @@
                                         <th>Unique Digit</th>
                                     </tr>
                                 </thead>
-                                
+
                                 <tbody>
                                     @if($getData != null)
-                                        <?php 
+                                    <?php 
                                         $no = 0; 
                                         ?>
-                                        @foreach($getData as $row)
-                                        <?php 
+                                    @foreach($getData as $row)
+                                    <?php 
                                             $no++;
                                             $jmlTopup = $row->nominal;
                                             $color = 'info';
@@ -77,21 +78,22 @@
                                                 $date = date('d M Y', strtotime($row->updated_at));
                                             }
                                         ?>
-                                            <tr>
-                                                <td>{{$no}}</td>
-                                                <td>{{$row->user_code}}</td>
-                                                <td>
-                                                    <span class="badge badge-pill badge-{{$color}}">{{$status}}</span>
-                                                </td>
-                                                <td>{{$date}}</td>
-                                                <td>{{number_format($jmlTopup, 0, ',', ',')}}</td>
-                                                <td>{{number_format($row->unique_digit, 0, ',', ',')}}</td>
-                                            </tr>
-                                        @endforeach
+                                    <tr>
+                                        <td>{{$no}}</td>
+                                        <td>{{$row->username}}</td>
+                                        <td>
+                                            <span class="badge badge-pill badge-{{$color}}">{{$status}}</span>
+                                        </td>
+                                        <td>{{$date}}</td>
+                                        <td>{{number_format($jmlTopup, 0, ',', ',')}}</td>
+                                        <td>{{number_format($row->unique_digit, 0, ',', ',')}}</td>
+                                    </tr>
+                                    @endforeach
                                     @endif
                                 </tbody>
                             </table>
-                             <div class="modal fade" id="popUp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="false">
+                            <div class="modal fade" id="popUp" tabindex="-1" role="dialog"
+                                aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="false">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content"></div>
                                 </div>

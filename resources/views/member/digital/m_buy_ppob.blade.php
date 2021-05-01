@@ -24,7 +24,7 @@
                         <h6 class="text-muted">Transaksi Produk Digital</h6>
                         @endif
                         <span id="showAddress"></span>
-                        <small>Vendor: {{$getVendor->user_code}}<strong></strong></small>
+                        <small>Vendor: {{$getVendor->username}}<strong></strong></small>
                 </div>
 
                 @if ($getDataMaster->status == 1 && $getDataMaster->buy_metode == 3)

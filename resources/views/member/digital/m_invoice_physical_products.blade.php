@@ -61,7 +61,7 @@
                     <td colspan="3" style="text-align:right">
                         Seller: {{$shopName}}
                         <br>
-                        Buyer: {{$dataSales->user_code}}
+                        Buyer: {{$dataSales->username}}
                     </td>
                 </tr>
 

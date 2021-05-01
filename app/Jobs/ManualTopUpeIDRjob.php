@@ -136,7 +136,7 @@ class ManualTopUpeIDRjob implements ShouldQueue
                     'to' => $to,
                     'hash' => $txHash,
                     'type' => 3,
-                    'detail' => 'Topup eIDR by: ' . $user->user_code,
+                    'detail' => 'Topup eIDR by: ' . $user->username,
                     'created_at' => date('Y-m-d H:i:s')
                 ]);
 

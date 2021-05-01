@@ -574,7 +574,7 @@ class AjaxmemberController extends Controller
             }
 
             $notification = [
-                'buyer' => $dataUser->user_code,
+                'buyer' => $dataUser->username,
                 'price' => 'Rp' . number_format($price),
                 'payment' => 'TUNAI'
             ];
@@ -641,7 +641,7 @@ class AjaxmemberController extends Controller
                                 $product->update(['qty' => $remaining]);
                             }
                             $notification = [
-                                'buyer' => $dataUser->user_code,
+                                'buyer' => $dataUser->username,
                                 'price' => 'Rp' . number_format($amount),
                                 'payment' => 'eIDR (Tuntas Otomatis)'
                             ];
@@ -672,18 +672,18 @@ class AjaxmemberController extends Controller
         $modelValidasi = new Validation;
         $canInsert = $modelValidasi->getCheckNewSponsor($request);
         $modelMember = new Member;
-        $getCheck = $modelMember->getCheckUsercode($request->user_code);
+        $getCheck = $modelMember->getCheckUsercode($request->username);
         if ($getCheck->cekCode == 1) {
             $canInsert = (object) array('can' => false,  'pesan' => 'Username sudah terpakai');
         }
-        $user_code = $request->user_code;
+        $username = $request->username;
         if ($request->affiliate == 1) {
-            $user_code = $modelMember->getCountNewKBBUserCode();
+            $username = $modelMember->getCountNewKBBUserCode();
         }
         $data = (object) array(
             'email' => $request->email,
             'hp' => $request->hp,
-            'username' => $user_code,
+            'username' => $username,
             'password' => $request->password,
             'affiliate' => $request->affiliate
         );
@@ -928,7 +928,7 @@ class AjaxmemberController extends Controller
             'total_pin' => $request->total_pin,
             'id' => $cekMember->id,
             'name' => $cekMember->name,
-            'user_code' => $cekMember->user_code,
+            'username' => $cekMember->username,
             'email' => $cekMember->email,
             'hp' => $cekMember->hp
         );
@@ -1914,7 +1914,7 @@ class AjaxmemberController extends Controller
 
     public function getSearchUserbyUsercode(Request $request)
     {
-        $query = User::where('user_code', 'LIKE', '%' . $request->name . '%')->where('is_active', 1)->where('user_type', 10)->select('id', 'user_code')->get();
+        $query = User::where('username', 'LIKE', '%' . $request->name . '%')->where('is_active', 1)->where('user_type', 10)->select('id', 'username')->get();
         $dataUser =  Auth::user();
         return view('member.ajax.get_name_autocomplete')
             ->with('getData', $query)
@@ -2637,7 +2637,7 @@ class AjaxmemberController extends Controller
             $paymentMethod = 'eIDR (Tuntas Otomatis';
         }
         $notification = [
-            'buyer' => $dataUser->user_code,
+            'buyer' => $dataUser->username,
             'product' => $getDataMaster->message,
             'price' => $getDataMaster->ppob_price,
             'payment' => $paymentMethod

@@ -111,7 +111,7 @@
                                     <tr>
                                         <td>{{$no}}</td>
                                         <td>{{date('d-m-Y', strtotime($row->sale_date))}}</td>
-                                        <td>{{$row->user_code}}<br><a class="label label-primary"
+                                        <td>{{$row->username}}<br><a class="label label-primary"
                                                 href="{{ URL::to('/') }}/m/shopping/payment/{{$row->id}}/2">detail</a>
                                         </td>
                                         <td>{{number_format($row->sale_price, 0, ',', ',')}}<br><span

@@ -119,7 +119,7 @@
                                         @foreach($getData as $row)
                                         <?php $no++;?>
                                         <tr>
-                                            <td>{{$row->user_code}}</td>
+                                            <td>{{$row->username}}</td>
                                             <td>{{$row->level_id}}</td>
                                         </tr>
                                         @endforeach

@@ -84,7 +84,7 @@ class SendLMBRewardPeringkatJob implements ShouldQueue
             $client->request('GET', 'https://api.telegram.org/bot' . $tgAk . '/sendMessage', [
                 'query' => [
                     'chat_id' => '365874331',
-                    'text' => $getData->user_code . ' claim reward peringkat no. ' . $getData->reward_id,
+                    'text' => $getData->username . ' claim reward peringkat no. ' . $getData->reward_id,
                     'parse_mode' => 'markdown',
                     'disable_web_page_preview' => 'true'
                 ]
@@ -155,7 +155,7 @@ class SendLMBRewardPeringkatJob implements ShouldQueue
 
             $tgMessage = '
             Selamat!
-*' . $getData->user_code . '* baru saja Claim ' . $reward . ' LMB dari pencapaian ' . $rewardType . '
+*' . $getData->username . '* baru saja Claim ' . $reward . ' LMB dari pencapaian ' . $rewardType . '
     *Hash: *[' . $shortenHash . '](https://tronscan.org/#/transaction/' . $txHash . ')
             ';
             $client->request('GET', 'https://api.telegram.org/bot' . $tgAk . '/sendMessage', [
@@ -181,7 +181,7 @@ class SendLMBRewardPeringkatJob implements ShouldQueue
 
             return;
         } else {
-            dd('SendLMBRewardJualBelijob FAILED, Tron Transfer FAILED. (' . $getData->user_code . ' claim: ' . $reward . ')');
+            dd('SendLMBRewardJualBelijob FAILED, Tron Transfer FAILED. (' . $getData->username . ' claim: ' . $reward . ')');
         }
     }
 }

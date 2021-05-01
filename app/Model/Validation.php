@@ -26,7 +26,7 @@ class Validation extends Model
             $canInsert = (object) array('can' => false, 'pesan' => 'Password tidak boleh kosong');
             return $canInsert;
         }
-        if ($request->user_code == null) {
+        if ($request->username == null) {
             $canInsert = (object) array('can' => false, 'pesan' => 'Username tidak boleh kosong');
             return $canInsert;
         }
@@ -67,7 +67,7 @@ class Validation extends Model
             $canInsert = (object) array('can' => false, 'pesan' => 'Nomor HP terlalu panjang, maksimal 13 angka');
             return $canInsert;
         }
-        if (strpos($request->user_code, ' ') !== false) {
+        if (strpos($request->username, ' ') !== false) {
             $canInsert = (object) array('can' => false, 'pesan' => 'Username tidak boleh ada spasi');
             return $canInsert;
         }

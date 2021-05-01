@@ -213,7 +213,7 @@ class BonusmemberController extends Controller
         $modelWD->getInsertWD($dataInsert);
 
         $message_text = 'LN Bank WD Request' . chr(10);
-        $message_text .= 'User: ' . $dataUser->user_code . chr(10);
+        $message_text .= 'User: ' . $dataUser->username . chr(10);
         $message_text .= 'Amount: Rp' . number_format($request->saldo_wd) . chr(10);
 
         Telegram::sendMessage([
@@ -812,7 +812,7 @@ class BonusmemberController extends Controller
             $bankName = 'BCA';
         }
         $data = [
-            'username' => $dataUser->user_code,
+            'username' => $dataUser->username,
             'bank' => $bankName,
             'amount' => $transfer,
             'request_id' => $id_topup

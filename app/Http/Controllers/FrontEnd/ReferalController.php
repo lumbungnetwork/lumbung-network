@@ -8,15 +8,17 @@ use App\Model\Member;
 use App\Model\Validation;
 use Illuminate\Support\Facades\Mail;
 
-class ReferalController extends Controller {
+class ReferalController extends Controller
+{
 
-    public function __construct(){
-        
+    public function __construct()
+    {
     }
-    public function getAddReferalLink($code_referal){
-        $modelMember = New Member;
-        $getDataSponsor = $modelMember->getUsers('user_code', $code_referal);
-        if($getDataSponsor == null){
+    public function getAddReferalLink($code_referal)
+    {
+        $modelMember = new Member;
+        $getDataSponsor = $modelMember->getUsers('username', $code_referal);
+        if ($getDataSponsor == null) {
             return redirect()->to('page-not-found');
         }
         $dataValue = (object) array(
@@ -25,44 +27,45 @@ class ReferalController extends Controller {
             'hp' => null
         );
         return view('member.sponsor.referal')
-                ->with('dataValue', $dataValue)
-                ->with('dataUser', $getDataSponsor);
+            ->with('dataValue', $dataValue)
+            ->with('dataUser', $getDataSponsor);
     }
-    
-    public function postAddReferalLink(Request $request){
-        $modelValidasi = New Validation;
+
+    public function postAddReferalLink(Request $request)
+    {
+        $modelValidasi = new Validation;
         $dataRequest = (object) array(
             'email' => $request->email,
-            'hp' =>$request->hp,
-            'name' =>$request->user_code,
-            'user_code' =>$request->user_code,
-            'password' =>$request->password,
-            'repassword' =>$request->repassword,
+            'hp' => $request->hp,
+            'name' => $request->username,
+            'username' => $request->username,
+            'password' => $request->password,
+            'repassword' => $request->repassword,
         );
         $canInsert = $modelValidasi->getCheckNewSponsor($dataRequest);
-        $modelMember = New Member;
-        $getCheck = $modelMember->getCheckUsercode($request->user_code);
-        if($getCheck->cekCode == 1){
+        $modelMember = new Member;
+        $getCheck = $modelMember->getCheckUsercode($request->username);
+        if ($getCheck->cekCode == 1) {
             $canInsert = (object) array('can' => false,  'pesan' => 'Username sudah terpakai');
         }
-        if($canInsert->can == false){
+        if ($canInsert->can == false) {
             return redirect()->route('referalLink', $request->ref)
-                    ->with('message', $canInsert->pesan)
-                    ->with('messageclass', 'danger')
-                    ->with('email', $request->email)
-                    ->with('hp', $request->hp)
-                    ->with('user_code', $request->user_code);
+                ->with('message', $canInsert->pesan)
+                ->with('messageclass', 'danger')
+                ->with('email', $request->email)
+                ->with('hp', $request->hp)
+                ->with('username', $request->username);
         }
-        $getDataSponsor = $modelMember->getUsers('user_code', $request->ref);
-        if($getDataSponsor == null){
+        $getDataSponsor = $modelMember->getUsers('username', $request->ref);
+        if ($getDataSponsor == null) {
             return redirect()->to('page-not-found');
         }
         $dataInsertNewMember = array(
-            'name' => $request->user_code,
+            'name' => $request->username,
             'email' => $request->email,
             'password' => bcrypt($request->password),
             'hp' => $request->hp,
-            'user_code' => $request->user_code,
+            'username' => $request->username,
             'sponsor_id' => $getDataSponsor->id,
             'is_referal_link' => 1
         );
@@ -71,18 +74,16 @@ class ReferalController extends Controller {
             'name' => $request->name,
             'password' => $request->password,
             'hp' => $request->hp,
-            'user_code' => $request->user_code,
+            'username' => $request->username,
             'email' => $request->email
         );
         $emailSend = $request->email;
-        Mail::send('member.email.email', $dataEmail, function($message) use($emailSend){
+        Mail::send('member.email.email', $dataEmail, function ($message) use ($emailSend) {
             $message->to($emailSend, 'Lumbung Network Registration')
-                    ->subject('Welcome to Lumbung Network');
+                ->subject('Welcome to Lumbung Network');
         });
         return redirect()->route('areaLogin')
-                ->with('message', 'Registrasi melalui referal link berhasil, silakan login')
-                ->with('messageclass', 'success');
+            ->with('message', 'Registrasi melalui referal link berhasil, silakan login')
+            ->with('messageclass', 'success');
     }
-
-
 }

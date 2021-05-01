@@ -69,7 +69,7 @@ class MasterAdminController extends Controller
                 ->with('messageclass', 'danger');
         }
         $dataInsert = array(
-            'user_code' => $request->email,
+            'username' => $request->email,
             'password' => bcrypt($request->password),
             'name' => $request->f_name,
             'email' => $request->email,
@@ -81,7 +81,7 @@ class MasterAdminController extends Controller
         $modelAdmin->getInsertUser($dataInsert);
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => 'POST /adm/new-admin user_code = ' . $request->email
+            'detail_log' => 'POST /adm/new-admin username = ' . $request->email
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('addCrew')
@@ -114,7 +114,7 @@ class MasterAdminController extends Controller
                 ->with('messageclass', 'danger');
         }
         $dataUpdate = array(
-            'user_code' => $request->user_code,
+            'username' => $request->username,
             'password' => bcrypt($request->password),
             'name' => $request->name,
             'email' => $request->email,
@@ -122,7 +122,7 @@ class MasterAdminController extends Controller
         $modelAdmin->getUpdateMember('id', $request->cekId, $dataUpdate);
         $logHistory = array(
             'user_id' => $dataUser->id,
-            'detail_log' => 'POST /adm/admin user_code = ' . $request->email
+            'detail_log' => 'POST /adm/admin username = ' . $request->email
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('addCrew')
@@ -996,7 +996,7 @@ class MasterAdminController extends Controller
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listMemberStockist')
-            ->with('message', 'stockist ' . $request->user_code . ' dihapus kememberannya')
+            ->with('message', 'stockist ' . $request->username . ' dihapus kememberannya')
             ->with('messageclass', 'success');
     }
 
@@ -1027,7 +1027,7 @@ class MasterAdminController extends Controller
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listMemberStockist')
-            ->with('message', 'stockist ' . $request->user_code . ' dihapus kememberannya')
+            ->with('message', 'stockist ' . $request->username . ' dihapus kememberannya')
             ->with('messageclass', 'success');
     }
 
@@ -1732,7 +1732,7 @@ class MasterAdminController extends Controller
             return redirect()->route('mainDashboard');
         }
         $modelMember = new Member;
-        $getCheck = $modelMember->getCheckUsercodeNotHim($request->user_code, $request->cekId);
+        $getCheck = $modelMember->getCheckUsercodeNotHim($request->username, $request->cekId);
         if ($getCheck->cekCode == 1) {
             return redirect()->route('adm_listMember')
                 ->with('message', 'Username sudah terpakai')
@@ -1740,14 +1740,14 @@ class MasterAdminController extends Controller
         }
         $getData = $modelMember->getUsers('id', $request->cekId);
         $full_name = null;
-        $user_code = $request->user_code;
+        $username = $request->username;
         $tron = $getData->tron;
         $is_tron = $getData->is_tron;
         if ($getData->full_name != null) {
             $full_name = $request->full_name;
         }
         if ($request->affiliate == 1) {
-            $user_code = $modelMember->getCountNewKBBUserCode();
+            $username = $modelMember->getCountNewKBBUserCode();
             $tron = 'TKrUoW4kfm2HVrAtpcW9sDBz4GmrbaJcBv';
             $is_tron = 1;
         }
@@ -1756,7 +1756,7 @@ class MasterAdminController extends Controller
             $is_tron = 1;
         }
         $dataUpdate = array(
-            'user_code' => $user_code,
+            'username' => $username,
             'email' => $request->email,
             'hp' => $request->hp,
             'tron' => $tron,
@@ -1805,7 +1805,7 @@ class MasterAdminController extends Controller
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listMember')
-            ->with('message', 'Password username ' . $request->user_code . ' berhasil diubah')
+            ->with('message', 'Password username ' . $request->username . ' berhasil diubah')
             ->with('messageclass', 'success');
     }
 
@@ -1843,7 +1843,7 @@ class MasterAdminController extends Controller
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listMember')
-            ->with('message', 'Kode Pin 2FA dari ' . $request->user_code . ' berhasil diubah')
+            ->with('message', 'Kode Pin 2FA dari ' . $request->username . ' berhasil diubah')
             ->with('messageclass', 'success');
     }
 
@@ -2742,7 +2742,7 @@ class MasterAdminController extends Controller
         );
         $modelAdmin->getInsertLogHistory($logHistory);
         return redirect()->route('adm_listMemberVendor')
-            ->with('message', 'vendor ' . $request->user_code . ' dihapus kememberannya')
+            ->with('message', 'vendor ' . $request->username . ' dihapus kememberannya')
             ->with('messageclass', 'success');
     }
 

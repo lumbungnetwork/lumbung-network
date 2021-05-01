@@ -76,7 +76,7 @@
                                         <tr>
                                             <td><input type="checkbox" name="id[]" value="{{$row->id}}"></td>
                                             <td>{{$no}}</td>
-                                            <td>{{$row->user_code}}</td>
+                                            <td>{{$row->username}}</td>
                                             <td>{{$row->tron}}</td>
                                             <td>{{$row->monthly}}</td>
                                             <td>{{date('d M Y', strtotime($row->created_at))}}</td>

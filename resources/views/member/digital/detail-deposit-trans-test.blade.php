@@ -6,7 +6,7 @@
         <input type="hidden" id="isTronWeb" value="0" readonly>
         <input type="hidden" id="userTron" value="0" readonly>
         <input type="hidden" id="txType" value="3" readonly>
-        <input type="hidden" id="username" value="{{$dataUser->user_code}}" readonly>
+        <input type="hidden" id="username" value="{{$dataUser->username}}" readonly>
         <div class="bg-gradient-sm">
             <nav class="navbar navbar-expand-lg navbar-light bg-transparent w-100">
                 <div class="container">
@@ -26,12 +26,12 @@
                     <span id="showAddress"></span>
 
                     @if ( Session::has('message') )
-                        <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible" role="alert">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                            </button>
-                            {{  Session::get('message')    }}
-                        </div>
+                    <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                        {{  Session::get('message')    }}
+                    </div>
                     @endif
 
                 </div>
@@ -59,14 +59,15 @@
                                 <small>{{$getData->transaction_code}}</small>
                             </h5>
                             <p><strong>Tanggal Order: </strong>{{date('d F Y', strtotime($getData->created_at))}}</p>
-                            <p class="m-t-10"><strong>Order Status: </strong> <span class="label label-{{$label}}">{{$status}}</span></p>
+                            <p class="m-t-10"><strong>Order Status: </strong> <span
+                                    class="label label-{{$label}}">{{$status}}</span></p>
                         </div>
                         <div class="table-responsive">
                             <table class="table m-t-30">
                                 <thead class="bg-faded">
                                     <tr>
                                         <th>#</th>
-                                    <th>Total Deposit (Rp.)</th>
+                                        <th>Total Deposit (Rp.)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -88,65 +89,72 @@
                     <h5>Pilih Metode Pembayaran</h5>
                     <address>
                         @if($getData->bank_perusahaan_id != null)
-                            @if($getData->is_tron == 0)
-                                <br>
-                                Nama Rekening: <strong>{{$bankPerusahaan->account_name}}</strong>
-                                <br>
-                                Nama Bank: <strong>{{$bankPerusahaan->bank_name}}</strong>
-                                <br>
-                                No. Rekening: <strong>{{$bankPerusahaan->account_no}}</strong>
-                            @endif
-                            @if($getData->is_tron == 1 && $getData->bank_perusahaan_id != 9)
-                                <br>
-                                Nama: <strong>Pembayaran via eIDR</strong>
-                                <br>
-                                Alamat Tron: <strong>TC1o89VSHMSPno2FE6SgoCsuy8i4mVSWge</strong>
-                            @endif
-                            @if($getData->is_tron == 1 && $getData->bank_perusahaan_id == 9)
-                                <br>
-                                Nama: <strong>Pembayaran via eIDR Autoconfirm</strong>
-                                <br>
-                                Alamat Tron: <strong>TC1o89VSHMSPno2FE6SgoCsuy8i4mVSWge</strong>
-                            @endif
+                        @if($getData->is_tron == 0)
+                        <br>
+                        Nama Rekening: <strong>{{$bankPerusahaan->account_name}}</strong>
+                        <br>
+                        Nama Bank: <strong>{{$bankPerusahaan->bank_name}}</strong>
+                        <br>
+                        No. Rekening: <strong>{{$bankPerusahaan->account_no}}</strong>
+                        @endif
+                        @if($getData->is_tron == 1 && $getData->bank_perusahaan_id != 9)
+                        <br>
+                        Nama: <strong>Pembayaran via eIDR</strong>
+                        <br>
+                        Alamat Tron: <strong>TC1o89VSHMSPno2FE6SgoCsuy8i4mVSWge</strong>
+                        @endif
+                        @if($getData->is_tron == 1 && $getData->bank_perusahaan_id == 9)
+                        <br>
+                        Nama: <strong>Pembayaran via eIDR Autoconfirm</strong>
+                        <br>
+                        Alamat Tron: <strong>TC1o89VSHMSPno2FE6SgoCsuy8i4mVSWge</strong>
+                        @endif
                         @endif
                         <div class="accordion mt-2" id="accordionExample">
                             @if($getData->bank_perusahaan_id == null)
                             <?php $no = 1; ?>
                             @foreach($bankPerusahaan as $rowBank)
-                                <div class="card">
-                                    <div class="card-header" id="heading{{$no}}">
-                                        <h1 class="mb-0">
-                                            <button class="btn btn-outline-primary btn-lg" id="bankbutton{{$no}}" type="button" data-toggle="collapse" data-target="#collapse{{$no}}" aria-expanded="true" aria-controls="collapse{{$no}}">
+                            <div class="card">
+                                <div class="card-header" id="heading{{$no}}">
+                                    <h1 class="mb-0">
+                                        <button class="btn btn-outline-primary btn-lg" id="bankbutton{{$no}}"
+                                            type="button" data-toggle="collapse" data-target="#collapse{{$no}}"
+                                            aria-expanded="true" aria-controls="collapse{{$no}}">
                                             Bayar via Transfer {{$rowBank->bank_name}}
-                                            </button>
-                                        </h1>
-                                    </div>
+                                        </button>
+                                    </h1>
+                                </div>
 
-                                    <div id="collapse{{$no}}" class="collapse" aria-labelledby="heading{{$no}}" data-parent="#accordionExample">
-                                        <div class="card-body">
-                                            <div class="radio radio-primary">
-                                                    <input type="radio" name="radio" id="radio{{$no}}" value="0_{{$rowBank->id}}">
-                                                    <label for="radio{{$no}}">
-                                                        {{$rowBank->bank_name}} a/n <b>{{$rowBank->account_name}}</b>
-                                                        <br>
-                                                        {{$rowBank->account_no}}
-                                                    </label>
-                                                </div>
+                                <div id="collapse{{$no}}" class="collapse" aria-labelledby="heading{{$no}}"
+                                    data-parent="#accordionExample">
+                                    <div class="card-body">
+                                        <div class="radio radio-primary">
+                                            <input type="radio" name="radio" id="radio{{$no}}"
+                                                value="0_{{$rowBank->id}}">
+                                            <label for="radio{{$no}}">
+                                                {{$rowBank->bank_name}} a/n <b>{{$rowBank->account_name}}</b>
+                                                <br>
+                                                {{$rowBank->account_no}}
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
                             <?php $no++; ?>
                             @endforeach
                             <?php $eidrno = count($bankPerusahaan) + 1; ?>
-                                <div class="card">
-                                    <div class="card-header" id="headingTwo">
+                            <div class="card">
+                                <div class="card-header" id="headingTwo">
                                     <h1 class="mb-0">
-                                        <button class="btn btn-outline-warning btn-lg" id="eidrbutton" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                        Bayar via eIDR
+                                        <button class="btn btn-outline-warning btn-lg" id="eidrbutton" type="button"
+                                            data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false"
+                                            aria-controls="collapseTwo">
+                                            Bayar via eIDR
                                         </button>
                                     </h1>
-                                    </div>
-                                    <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                                </div>
+                                <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo"
+                                    data-parent="#accordionExample">
                                     <div class="card-body">
                                         <div class="radio radio-primary">
                                             <input type="radio" name="radio" id="radio{{$eidrno}}" value="1_1" checked>
@@ -157,8 +165,8 @@
                                             </label>
                                         </div>
                                     </div>
-                                    </div>
                                 </div>
+                            </div>
                             @endif
                         </div>
                     </address>
@@ -170,8 +178,10 @@
                 <div class="rounded-lg bg-white p-3 mb-3">
                     <div class="row">
                         <div class="col-sm-6 col-xs-6">
-                            <p class="text-xs-right"><b>Sub-total:</b> Rp. {{number_format($getData->price, 0, ',', ',')}}</p>
-                            <p class="text-xs-right"><b>Kode Unik:</b> {{number_format($getData->unique_digit, 0, ',', ',')}}</p>
+                            <p class="text-xs-right"><b>Sub-total:</b> Rp.
+                                {{number_format($getData->price, 0, ',', ',')}}</p>
+                            <p class="text-xs-right"><b>Kode Unik:</b>
+                                {{number_format($getData->unique_digit, 0, ',', ',')}}</p>
                             <hr>
                             <h3 class="text-xs-right">Rp. {{number_format($total, 0, ',', ',')}}</h3>
                             <br>
@@ -187,9 +197,14 @@
                                 <div class="pull-xs-right">
                                     <input type="hidden" value="{{$getData->id}}" name="id_trans" id="id_trans">
                                     <input type="hidden" value="{{$total}}" name="deposit" id="deposit">
-                                    <button type="submit" class="btn btn-danger"  id="rejectBtn" data-toggle="modal" data-target="#rejectSubmit" onClick="rejectSubmit()">Batal</button>
-                                    <button type="submit" class="btn btn-success"  id="submitBtn" data-toggle="modal" data-target="#confirmSubmit" onClick="inputSubmit()">Saya sudah transfer</button>
-                                    <button type="submit" class="btn btn-success" id="eidr-pay-button" data-toggle="modal" data-target="#confirmSubmit" onClick="inputSubmitTron()">Bayar via eIDR</button>
+                                    <button type="submit" class="btn btn-danger" id="rejectBtn" data-toggle="modal"
+                                        data-target="#rejectSubmit" onClick="rejectSubmit()">Batal</button>
+                                    <button type="submit" class="btn btn-success" id="submitBtn" data-toggle="modal"
+                                        data-target="#confirmSubmit" onClick="inputSubmit()">Saya sudah
+                                        transfer</button>
+                                    <button type="submit" class="btn btn-success" id="eidr-pay-button"
+                                        data-toggle="modal" data-target="#confirmSubmit"
+                                        onClick="inputSubmitTron()">Bayar via eIDR</button>
                                 </div>
                                 <div class="clearfix"></div>
                             </div>
@@ -197,44 +212,50 @@
                             @if($getData->status == 1 || $getData->status == 2 || $getData->status == 3)
                             <div class="hidden-print">
                                 <div class="pull-xs-right">
-                                    <a  class="btn btn-success" href="{{ URL::to('/') }}/m/list/transactions">Kembali</a>
+                                    <a class="btn btn-success" href="{{ URL::to('/') }}/m/list/transactions">Kembali</a>
                                 </div>
                                 <div class="clearfix"></div>
                             </div>
                             @endif
                         </div>
                     </div>
-                    <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true" data-backdrop="false">
+                    <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
+                        aria-hidden="true" data-backdrop="false">
                         <div class="modal-dialog" role="document" id="confirmDetail">
                         </div>
                     </div>
-                    <div class="modal fade" id="rejectSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true" data-backdrop="false">
+                    <div class="modal fade" id="rejectSubmit" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
+                        aria-hidden="true" data-backdrop="false">
                         <div class="modal-dialog" role="document" id="rejectDetail">
                         </div>
                     </div>
+                </div>
             </div>
+            @include('layout.member.nav')
         </div>
-        @include('layout.member.nav')
+        <div class="overlay"></div>
     </div>
-    <div class="overlay"></div>
-</div>
 
-@stop
+    @stop
 
 
-@section('styles')
-<link rel="stylesheet" href="{{ asset('asset_member/css/cart.css') }}">
+    @section('styles')
+    <link rel="stylesheet" href="{{ asset('asset_member/css/cart.css') }}">
     <link rel="stylesheet" href="{{ asset('asset_new/css/siderbar.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/4.9.95/css/materialdesignicons.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/4.9.95/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/fonts/slick.woff">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
 
-@stop
+    @stop
 
-@section('javascript')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
+    @section('javascript')
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js">
+    </script>
     <script src="{{ asset('asset_new/js/sidebar.js') }}"></script>
     <script src="{{ asset('asset_member/js/jquery.cart.min.js') }}"></script>
     {{-- <script src="{{ asset('asset_new/js/tronweb.js') }}"></script> --}}
@@ -417,5 +438,5 @@
                 $('#submit').remove();
             }
     </script>
-@endif
-@stop
+    @endif
+    @stop

@@ -88,7 +88,7 @@
                                         ?>
                                     <tr>
                                         <td>{{$no}}</td>
-                                        <td>{{$row->user_code}}</td>
+                                        <td>{{$row->username}}</td>
                                         <td>{{$row->hp}}</td>
                                         <td>
                                             {{$row->alamat}}
