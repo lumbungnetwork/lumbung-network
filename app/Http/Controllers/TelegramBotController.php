@@ -334,7 +334,7 @@ class TelegramBotController extends Controller
 
             $modelMember->getUpdateStockist('id', $callback_data['request_id'], $data);
 
-            $user = User::where('user_code', $callback_data['username1'])->first();
+            $user = User::where('username', $callback_data['username1'])->first();
             $user->is_stockist = 1;
             $user->stockist_at = date("Y-m-d H:i:s");
             $user->save();
@@ -385,7 +385,7 @@ class TelegramBotController extends Controller
 
             $modelMember->getUpdateVendor('id', $callback_data['request_id'], $data);
 
-            $user = User::where('user_code', $callback_data['username1'])->first();
+            $user = User::where('username', $callback_data['username1'])->first();
             $user->is_vendor = 1;
             $user->vendor_at = date("Y-m-d H:i:s");
             $user->save();
@@ -435,7 +435,7 @@ class TelegramBotController extends Controller
 
             $modelMember->getUpdateResetTron('id', $callback_data['request_id'], $data);
 
-            $user = User::where('user_code', $callback_data['username1'])->first();
+            $user = User::where('username', $callback_data['username1'])->first();
             $user->is_tron = 0;
             $user->tron = null;
             $user->save();

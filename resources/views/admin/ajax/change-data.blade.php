@@ -17,8 +17,7 @@
             <div class="col-md-7">
                 <div class="form-group">
                     <label>UserID</label>
-                    <input type="text" class="form-control" name="user_code" value="{{$getData->user_code}}"
-                        required="">
+                    <input type="text" class="form-control" name="username" value="{{$getData->username}}" required="">
                 </div>
             </div>
             <div class="col-md-5">

@@ -5,29 +5,29 @@
     <div class="modal-body">
         {{ csrf_field() }}
         @if($getData != null)
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label>User ID</label>
-                        <input type="text" class="form-control" readonly="" value="{{$getData->user_code}}">
-                    </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>User ID</label>
+                    <input type="text" class="form-control" readonly="" value="{{$getData->username}}">
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Reward</label>
-                        <input type="text" class="form-control" readonly="" value="{{$getData->reward}} LMB">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Periode</label>
-                        <input type="text" class="form-control" readonly="" value="{{$getData->monthly}}">
-                    </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Reward</label>
+                    <input type="text" class="form-control" readonly="" value="{{$getData->reward}} LMB">
                 </div>
             </div>
-            <?php
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Periode</label>
+                    <input type="text" class="form-control" readonly="" value="{{$getData->monthly}}">
+                </div>
+            </div>
+        </div>
+        <?php
                 $status = 'Proses Transfer';
                 $label = 'info';
                 if($getData->status == 1){
@@ -39,31 +39,32 @@
                     $label = 'danger';
                 }
             ?>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label>Status</label>
-                        <input type="text" class="form-control" readonly="" value="{{$status}}">
-                    </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>Status</label>
+                    <input type="text" class="form-control" readonly="" value="{{$status}}">
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label>Alasan Reject</label>
-                        <textarea class="form-control" id="reason" rows="2" name="reason" readonly="">{{$getData->reason}}</textarea>
-                    </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>Alasan Reject</label>
+                    <textarea class="form-control" id="reason" rows="2" name="reason"
+                        readonly="">{{$getData->reason}}</textarea>
                 </div>
-                <input type="hidden" name="cekId" value="{{$getData->id}}" >
             </div>
-        @else 
-            Tidak ada data
+            <input type="hidden" name="cekId" value="{{$getData->id}}">
+        </div>
+        @else
+        Tidak ada data
         @endif
     </div>
-    
+
     <div class="modal-footer">
         <div class="left-side">
             <button type="button" class="btn btn-danger btn-link" data-dismiss="modal">Tutup</button>
         </div>
     </div>
-</form>   
+</form>

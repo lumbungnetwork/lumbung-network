@@ -10,108 +10,115 @@ use Illuminate\Support\Facades\Mail;
 use App\Model\Member;
 use App\Model\Pin;
 
-class FrontEndController extends Controller {
+class FrontEndController extends Controller
+{
 
-    public function __construct(){
-        
+    public function __construct()
+    {
     }
-    
-    public function getIndex(){
+
+    public function getIndex()
+    {
         return view('frontend.index');
     }
-    
-    public function getForgotPassword(){
+
+    public function getForgotPassword()
+    {
         $dataUser = Auth::user();
-        if($dataUser != null){
+        if ($dataUser != null) {
             return redirect()->route('mainDashboard');
         }
         return view('member.forgot-passwd');
     }
-    
-    public function postForgotPassword(Request $request){
+
+    public function postForgotPassword(Request $request)
+    {
         //validasi disini
         $dataUser = Auth::user();
-        if($dataUser != null){
+        if ($dataUser != null) {
             return redirect()->route('mainDashboard');
         }
-        $modelmember = New Member;
-        $getData = $modelmember->getUsers('user_code', $request->user_id);
-        if($getData == null){
+        $modelmember = new Member;
+        $getData = $modelmember->getUsers('username', $request->user_id);
+        if ($getData == null) {
             return redirect()->route('forgotPasswd')
-                    ->with('message', 'Data tidak ditemukan')
-                    ->with('messageclass', 'danger');
+                ->with('message', 'Data tidak ditemukan')
+                ->with('messageclass', 'danger');
         }
         $uniqueCode = uniqid();
         $rand = rand(10, 99);
-        $code = $rand.$uniqueCode.$getData->user_code;
+        $code = $rand . $uniqueCode . $getData->username;
         $dataEmail = array(
-            'dataLink' => 'auth/passwd/'.$code,
+            'dataLink' => 'auth/passwd/' . $code,
             'email' => $getData->email,
         );
         $emailSend = $getData->email;
-        Mail::send('member.email.forgot', $dataEmail, function($message) use($emailSend){
+        Mail::send('member.email.forgot', $dataEmail, function ($message) use ($emailSend) {
             $message->to($emailSend, 'Lumbung Reset Password')
-                    ->subject('Reset Password');
+                ->subject('Reset Password');
         });
         return redirect()->route('forgotPasswd')
-                    ->with('message', 'Email verifikasi forgot password terkirim')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Email verifikasi forgot password terkirim')
+            ->with('messageclass', 'success');
     }
-    
-    public function getAuthPassword($code, $email){
+
+    public function getAuthPassword($code, $email)
+    {
         $dataUser = Auth::user();
-        if($dataUser != null){
+        if ($dataUser != null) {
             return redirect()->route('mainDashboard');
         }
         $getUserCode = substr($code, 15);
-        $modelMember = New Member;
+        $modelMember = new Member;
         $getData = $modelMember->getUsersCodeEmail($getUserCode, $email);
-        if($getData == null){
+        if ($getData == null) {
             return redirect()->route('areaLogin')
-                    ->with('message', 'Data tidak ditemukan')
-                    ->with('messageclass', 'danger');
+                ->with('message', 'Data tidak ditemukan')
+                ->with('messageclass', 'danger');
         }
         return view('member.auth-passwd')
-                ->with('hiddenCode', $code)
-                ->with('data', $getData);
+            ->with('hiddenCode', $code)
+            ->with('data', $getData);
     }
-    
-    public function postAuthPassword(Request $request){
+
+    public function postAuthPassword(Request $request)
+    {
         $dataUser = Auth::user();
-        if($dataUser != null){
+        if ($dataUser != null) {
             return redirect()->route('mainDashboard');
         }
-        if($request->password == null){
+        if ($request->password == null) {
             return redirect()->route('passwdauth', array($request->authCode, $request->emailCheck))
-                    ->with('message', 'Password harus diisi')
-                    ->with('messageclass', 'danger');
+                ->with('message', 'Password harus diisi')
+                ->with('messageclass', 'danger');
         }
-        if($request->repassword == null){
+        if ($request->repassword == null) {
             return redirect()->route('passwdauth', array($request->authCode, $request->emailCheck))
-                    ->with('message', 'Ketik ulang password harus diisi')
-                    ->with('messageclass', 'danger');
+                ->with('message', 'Ketik ulang password harus diisi')
+                ->with('messageclass', 'danger');
         }
-        if($request->password != $request->repassword){
+        if ($request->password != $request->repassword) {
             return redirect()->route('passwdauth', array($request->authCode, $request->emailCheck))
-                    ->with('message', 'Password dan ketik ulang password tidak sama')
-                    ->with('messageclass', 'danger');
+                ->with('message', 'Password dan ketik ulang password tidak sama')
+                ->with('messageclass', 'danger');
         }
-        if(strlen($request->password) < 6){
+        if (strlen($request->password) < 6) {
             return redirect()->route('passwdauth', array($request->authCode, $request->emailCheck))
-                    ->with('message', 'Password terlalu pendek, minimal 6 karakter')
-                    ->with('messageclass', 'danger');
+                ->with('message', 'Password terlalu pendek, minimal 6 karakter')
+                ->with('messageclass', 'danger');
         }
-        $modelMember = New Member;
+        $modelMember = new Member;
         $dataUpdate = array(
             'password' => bcrypt($request->password)
         );
-        $modelMember->getUpdateUsers('user_code', $request->userID, $dataUpdate);
+        $modelMember->getUpdateUsers('username', $request->userID, $dataUpdate);
         return redirect()->route('areaLogin')
-                    ->with('message', 'Data Password telah anda reset. silakan login')
-                    ->with('messageclass', 'success');
+            ->with('message', 'Data Password telah anda reset. silakan login')
+            ->with('messageclass', 'success');
     }
-    
-    public function getAndyaBernaApproveDeposit($code){
+
+    public function getAndyaBernaApproveDeposit($code)
+    {
         $modelPin = new Pin;
         $dataUpdate = array(
             'status' => 1,
@@ -119,11 +126,7 @@ class FrontEndController extends Controller {
         );
         $modelPin->getUpdateMasterDeposit('code', $code, $dataUpdate);
         return redirect()->route('areaLogin')
-                    ->with('message', 'data approve deposit sistem berhasil')
-                    ->with('messageclass', 'success');
+            ->with('message', 'data approve deposit sistem berhasil')
+            ->with('messageclass', 'success');
     }
-    
-
-
-
 }

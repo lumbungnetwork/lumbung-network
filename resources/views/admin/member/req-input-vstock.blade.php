@@ -73,7 +73,7 @@
                                         ?>
                                     <tr>
                                         <td>{{$no}}</td>
-                                        <td>{{$row->user_code}}</td>
+                                        <td>{{$row->username}}</td>
                                         <td>{{$row->hp}}</td>
                                         <td>{{date('d F Y', strtotime($row->created_at))}}</td>
                                         <td>{{$metode}} <br> <?php echo $detail ?></td>

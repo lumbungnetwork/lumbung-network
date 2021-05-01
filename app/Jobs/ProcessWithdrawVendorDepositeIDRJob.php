@@ -51,7 +51,7 @@ class ProcessWithdrawVendorDepositeIDRJob implements ShouldQueue
 
         // Get Username
         $user = DB::table('users')
-            ->select('user_code')
+            ->select('username')
             ->where('id', $tx->user_id)
             ->first();
 
@@ -114,7 +114,7 @@ class ProcessWithdrawVendorDepositeIDRJob implements ShouldQueue
             'to' => $to,
             'hash' => $txHash,
             'type' => 4,
-            'detail' => 'Withdraw Vendor Deposit by: ' . $user->user_code,
+            'detail' => 'Withdraw Vendor Deposit by: ' . $user->username,
             'created_at' => date('Y-m-d H:i:s')
         ]);
 

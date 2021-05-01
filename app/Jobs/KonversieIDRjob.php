@@ -115,7 +115,7 @@ class KonversieIDRjob implements ShouldQueue
                 'to' => $to,
                 'hash' => $txHash,
                 'type' => 1,
-                'detail' => 'Konversi Bonus ke eIDR by: ' . $user->user_code,
+                'detail' => 'Konversi Bonus ke eIDR by: ' . $user->username,
                 'created_at' => date('Y-m-d H:i:s')
             ]);
 

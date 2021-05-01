@@ -55,10 +55,10 @@
                                 @endphp
                                 <tr>
                                     <td>{{$no}}</td>
-                                    <td> @if ($staker->user_code == 'lumbung001')
+                                    <td> @if ($staker->username == 'lumbung001')
                                         LumbungCustody
                                         @else
-                                        {{$staker->user_code}}
+                                        {{$staker->username}}
                                         @endif </td>
                                     <td>{{number_format($staker->net, 2)}}</td>
 

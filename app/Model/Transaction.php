@@ -65,7 +65,7 @@ class Transaction extends Model
             $sql = DB::table('transaction')
                 ->join('users', 'transaction.user_id', '=', 'users.id')
                 ->join('bank', 'transaction.bank_perusahaan_id', '=', 'bank.id')
-                ->selectRaw('users.name, users.hp, users.user_code, '
+                ->selectRaw('users.name, users.hp, users.username, '
                     . 'transaction.transaction_code, transaction.type, transaction.total_pin, transaction.price, transaction.status,'
                     . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id, transaction.is_tron, '
                     . 'bank.bank_name as to_name, bank.account_name, bank.account_no as account')
@@ -76,7 +76,7 @@ class Transaction extends Model
             $sql = DB::table('transaction')
                 ->join('users', 'transaction.user_id', '=', 'users.id')
                 ->join('tron', 'transaction.bank_perusahaan_id', '=', 'tron.id')
-                ->selectRaw('users.name, users.hp, users.user_code, '
+                ->selectRaw('users.name, users.hp, users.username, '
                     . 'transaction.transaction_code, transaction.type, transaction.total_pin, transaction.price, transaction.status,'
                     . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id, transaction.is_tron, '
                     . 'tron.tron_name as to_name, tron.tron as account, " " as account_name ')
@@ -93,7 +93,7 @@ class Transaction extends Model
         $sql = DB::table('transaction')
             ->join('users', 'transaction.user_id', '=', 'users.id')
             ->join('bank', 'transaction.bank_perusahaan_id', '=', 'bank.id')
-            ->selectRaw('users.name, users.hp, users.user_code, '
+            ->selectRaw('users.name, users.hp, users.username, '
                 . 'transaction.transaction_code, transaction.type, transaction.total_pin, transaction.price, transaction.status,'
                 . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id, transaction.is_tron, '
                 . 'bank.bank_name, bank.account_name, bank.account_no')
@@ -108,7 +108,7 @@ class Transaction extends Model
     {
         $sql = DB::table('transaction')
             ->join('users', 'transaction.user_id', '=', 'users.id')
-            ->selectRaw('users.name, users.hp, users.user_code, '
+            ->selectRaw('users.name, users.hp, users.username, '
                 . 'transaction.transaction_code, transaction.type, transaction.total_pin, transaction.price, transaction.status,'
                 . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id, transaction.is_tron')
             ->where('transaction.id', '=', $id)
@@ -123,7 +123,7 @@ class Transaction extends Model
             $sql = DB::table('transaction')
                 ->join('users', 'transaction.user_id', '=', 'users.id')
                 ->join('bank', 'transaction.bank_perusahaan_id', '=', 'bank.id')
-                ->selectRaw('users.name, users.hp, users.user_code, '
+                ->selectRaw('users.name, users.hp, users.username, '
                     . 'transaction.transaction_code, transaction.type, transaction.total_pin, transaction.price, transaction.status,'
                     . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id, transaction.is_tron, '
                     . 'bank.bank_name, bank.account_name, bank.account_no')
@@ -135,7 +135,7 @@ class Transaction extends Model
             $sql = DB::table('transaction')
                 ->join('users', 'transaction.user_id', '=', 'users.id')
                 ->join('tron', 'transaction.bank_perusahaan_id', '=', 'tron.id')
-                ->selectRaw('users.name, users.hp, users.user_code, '
+                ->selectRaw('users.name, users.hp, users.username, '
                     . 'transaction.transaction_code, transaction.type, transaction.total_pin, transaction.price, transaction.status,'
                     . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id, transaction.is_tron, '
                     . 'tron.tron_name, tron.tron')
@@ -153,7 +153,7 @@ class Transaction extends Model
         if ($is_tron == 0) {
             $sql = DB::table('transaction')
                 ->join('users', 'transaction.user_id', '=', 'users.id')
-                ->selectRaw('users.name, users.hp, users.user_code, '
+                ->selectRaw('users.name, users.hp, users.username, '
                     . 'transaction.transaction_code, transaction.type, transaction.total_pin, transaction.price, transaction.status,'
                     . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id, transaction.is_tron ')
                 ->where('transaction.id', '=', $id)
@@ -163,7 +163,7 @@ class Transaction extends Model
             $sql = DB::table('transaction')
                 ->join('users', 'transaction.user_id', '=', 'users.id')
                 ->join('tron', 'transaction.bank_perusahaan_id', '=', 'tron.id')
-                ->selectRaw('users.name, users.hp, users.user_code, '
+                ->selectRaw('users.name, users.hp, users.username, '
                     . 'transaction.transaction_code, transaction.type, transaction.total_pin, transaction.price, transaction.status,'
                     . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id, transaction.is_tron, '
                     . 'tron.tron_name, tron.tron')
@@ -180,7 +180,7 @@ class Transaction extends Model
         if ($status == null) {
             $sql = DB::table('transaction')
                 ->join('users', 'transaction.user_id', '=', 'users.id')
-                ->selectRaw('users.user_code, users.hp, users.user_code, '
+                ->selectRaw('users.username, users.hp, users.username, '
                     . 'transaction.transaction_code, transaction.type, transaction.total_pin, transaction.price, transaction.status,'
                     . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id, transaction.is_tron')
                 ->where('transaction.status', '<', 2)
@@ -190,7 +190,7 @@ class Transaction extends Model
         } else {
             $sql = DB::table('transaction')
                 ->join('users', 'transaction.user_id', '=', 'users.id')
-                ->selectRaw('users.user_code, users.hp, users.user_code, '
+                ->selectRaw('users.username, users.hp, users.username, '
                     . 'transaction.transaction_code, transaction.type, transaction.total_pin, transaction.price, transaction.status,'
                     . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id, transaction.is_tron')
                 ->where('transaction.status', '=', $status)
@@ -208,7 +208,7 @@ class Transaction extends Model
         $sql = DB::table('transaction')
             ->join('users', 'transaction.user_id', '=', 'users.id')
             ->join('users as u', 'transaction.submit_by', '=', 'u.id')
-            ->selectRaw('users.user_code, users.hp, users.user_code, '
+            ->selectRaw('users.username, users.hp, users.username, '
                 . 'transaction.transaction_code, transaction.type, transaction.total_pin, transaction.price, transaction.status, transaction.bank_perusahaan_id,'
                 . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id, transaction.is_tron, transaction.submit_by, u.name')
             ->where('transaction.status', '>', 1)
@@ -226,7 +226,7 @@ class Transaction extends Model
         $yesterday = date('Y-m-d', strtotime("-1 days"));
         $sql = DB::table('transaction')
             ->join('users', 'transaction.user_id', '=', 'users.id')
-            ->selectRaw('users.user_code, users.hp, users.user_code, '
+            ->selectRaw('users.username, users.hp, users.username, '
                 . 'transaction.transaction_code, transaction.type, transaction.total_pin, transaction.price, transaction.status,'
                 . 'transaction.created_at, transaction.unique_digit, transaction.user_id, transaction.id, transaction.is_tron')
             ->where('transaction.status', '<', 2)
@@ -297,7 +297,7 @@ class Transaction extends Model
             $sql = DB::table('deposit_transaction')
                 ->join('users', 'deposit_transaction.user_id', '=', 'users.id')
                 ->join('bank', 'deposit_transaction.bank_perusahaan_id', '=', 'bank.id')
-                ->selectRaw('users.name, users.hp, users.user_code, '
+                ->selectRaw('users.name, users.hp, users.username, '
                     . 'deposit_transaction.transaction_code, deposit_transaction.type, deposit_transaction.price, deposit_transaction.status,'
                     . 'deposit_transaction.created_at, deposit_transaction.unique_digit, deposit_transaction.user_id, deposit_transaction.id, deposit_transaction.is_tron, '
                     . 'bank.bank_name, bank.account_name, bank.account_no')
@@ -308,7 +308,7 @@ class Transaction extends Model
             $sql = DB::table('deposit_transaction')
                 ->join('users', 'deposit_transaction.user_id', '=', 'users.id')
                 ->join('tron', 'deposit_transaction.bank_perusahaan_id', '=', 'tron.id')
-                ->selectRaw('users.name, users.hp, users.user_code, '
+                ->selectRaw('users.name, users.hp, users.username, '
                     . 'deposit_transaction.transaction_code, deposit_transaction.type, deposit_transaction.price, deposit_transaction.status,'
                     . 'deposit_transaction.created_at, deposit_transaction.unique_digit, deposit_transaction.user_id, deposit_transaction.id, deposit_transaction.is_tron, '
                     . 'tron.tron_name, tron.tron, deposit_transaction.tron_transfer ')
@@ -324,7 +324,7 @@ class Transaction extends Model
         if ($is_tron == 0) {
             $sql = DB::table('deposit_transaction')
                 ->join('users', 'deposit_transaction.user_id', '=', 'users.id')
-                ->selectRaw('users.name, users.hp, users.user_code, '
+                ->selectRaw('users.name, users.hp, users.username, '
                     . 'deposit_transaction.transaction_code, deposit_transaction.type, deposit_transaction.price, deposit_transaction.status,'
                     . 'deposit_transaction.created_at, deposit_transaction.unique_digit, deposit_transaction.user_id, deposit_transaction.id, deposit_transaction.is_tron ')
                 ->where('deposit_transaction.id', '=', $id)
@@ -334,7 +334,7 @@ class Transaction extends Model
             $sql = DB::table('deposit_transaction')
                 ->join('users', 'deposit_transaction.user_id', '=', 'users.id')
                 ->join('tron', 'deposit_transaction.bank_perusahaan_id', '=', 'tron.id')
-                ->selectRaw('users.name, users.hp, users.user_code, '
+                ->selectRaw('users.name, users.hp, users.username, '
                     . 'deposit_transaction.transaction_code, deposit_transaction.type, deposit_transaction.price, deposit_transaction.status,'
                     . 'deposit_transaction.created_at, deposit_transaction.unique_digit, deposit_transaction.user_id, deposit_transaction.id, deposit_transaction.is_tron, '
                     . 'tron.tron_name, tron.tron')
@@ -350,7 +350,7 @@ class Transaction extends Model
     {
         $sql = DB::table('deposit_transaction')
             ->join('users', 'deposit_transaction.user_id', '=', 'users.id')
-            ->selectRaw('users.user_code, users.hp,  '
+            ->selectRaw('users.username, users.hp,  '
                 . 'deposit_transaction.transaction_code, deposit_transaction.price, deposit_transaction.status,'
                 . 'deposit_transaction.created_at, deposit_transaction.unique_digit, deposit_transaction.user_id, deposit_transaction.id, deposit_transaction.is_tron, deposit_transaction.bank_perusahaan_id')
             ->where('deposit_transaction.type', '=', 1)
@@ -369,7 +369,7 @@ class Transaction extends Model
         $sql = DB::table('deposit_transaction')
             ->join('users', 'deposit_transaction.user_id', '=', 'users.id')
             ->join('bank', 'deposit_transaction.bank_perusahaan_id', '=', 'bank.id')
-            ->selectRaw('users.name, users.hp, users.user_code, '
+            ->selectRaw('users.name, users.hp, users.username, '
                 . 'deposit_transaction.transaction_code, deposit_transaction.type, deposit_transaction.price, deposit_transaction.status,'
                 . 'deposit_transaction.created_at, deposit_transaction.unique_digit, deposit_transaction.user_id, deposit_transaction.id, deposit_transaction.is_tron, '
                 . 'bank.bank_name, bank.account_name, bank.account_no')
@@ -384,7 +384,7 @@ class Transaction extends Model
     {
         $sql = DB::table('deposit_transaction')
             ->join('users', 'deposit_transaction.user_id', '=', 'users.id')
-            ->selectRaw('users.name, users.hp, users.user_code, '
+            ->selectRaw('users.name, users.hp, users.username, '
                 . 'deposit_transaction.transaction_code, deposit_transaction.type, deposit_transaction.price, deposit_transaction.status,'
                 . 'deposit_transaction.created_at, deposit_transaction.unique_digit, deposit_transaction.user_id, deposit_transaction.id, deposit_transaction.is_tron')
             ->where('deposit_transaction.id', '=', $id)
@@ -421,7 +421,7 @@ class Transaction extends Model
         $sql = DB::table('deposit_transaction')
             ->join('users', 'deposit_transaction.user_id', '=', 'users.id')
             ->leftJoin('bank', 'deposit_transaction.user_bank', '=', 'bank.id')
-            ->selectRaw('users.user_code, users.hp, '
+            ->selectRaw('users.username, users.hp, '
                 . 'deposit_transaction.transaction_code, deposit_transaction.price, deposit_transaction.status,'
                 . 'deposit_transaction.created_at, deposit_transaction.unique_digit, deposit_transaction.user_id, '
                 . 'deposit_transaction.id, deposit_transaction.is_tron, users.tron as user_tron,'
@@ -442,7 +442,7 @@ class Transaction extends Model
         $sql = DB::table('deposit_transaction')
             ->join('users', 'deposit_transaction.user_id', '=', 'users.id')
             ->leftJoin('bank', 'deposit_transaction.user_bank', '=', 'bank.id')
-            ->selectRaw('users.user_code, users.hp, '
+            ->selectRaw('users.username, users.hp, '
                 . 'deposit_transaction.transaction_code, deposit_transaction.price, deposit_transaction.status,'
                 . 'deposit_transaction.created_at, deposit_transaction.unique_digit, deposit_transaction.user_id, '
                 . 'deposit_transaction.id, deposit_transaction.is_tron, users.tron as user_tron,'
@@ -481,25 +481,25 @@ class Transaction extends Model
             ->join('users', 'deposit_transaction.user_id', '=', 'users.id')
             ->join('users as a', 'deposit_transaction.submit_by', '=', 'a.id')
             ->leftJoin('bank', 'deposit_transaction.bank_perusahaan_id', '=', 'bank.id')
-            ->selectRaw('users.user_code, users.hp, '
+            ->selectRaw('users.username, users.hp, '
                 . 'deposit_transaction.transaction_code, deposit_transaction.price, deposit_transaction.status,'
                 . 'deposit_transaction.created_at, deposit_transaction.unique_digit, deposit_transaction.user_id, deposit_transaction.id, '
                 . 'deposit_transaction.is_tron, deposit_transaction.type,  deposit_transaction.user_bank, deposit_transaction.bank_perusahaan_id,'
                 . 'deposit_transaction.tron_transfer, deposit_transaction.tuntas_at, '
                 . 'CONCAT(bank.bank_name, bank.account_no, bank.account_name) as buy_metode,'
-                . 'a.user_code as submit_name, deposit_transaction.submit_by ')
+                . 'a.username as submit_name, deposit_transaction.submit_by ')
             ->orderBy('deposit_transaction.id', 'DESC')
             ->where('deposit_transaction.is_tron', '=', 0);
         $sql2 = DB::table('deposit_transaction')
             ->join('users', 'deposit_transaction.user_id', '=', 'users.id')
             ->join('users as a', 'deposit_transaction.submit_by', '=', 'a.id')
             ->leftJoin('tron', 'deposit_transaction.bank_perusahaan_id', '=', 'tron.id')
-            ->selectRaw('users.user_code, users.hp, '
+            ->selectRaw('users.username, users.hp, '
                 . 'deposit_transaction.transaction_code, deposit_transaction.price, deposit_transaction.status,'
                 . 'deposit_transaction.created_at, deposit_transaction.unique_digit, deposit_transaction.user_id, deposit_transaction.id, '
                 . 'deposit_transaction.is_tron, deposit_transaction.type,  deposit_transaction.user_bank, deposit_transaction.bank_perusahaan_id,'
                 . 'deposit_transaction.tron_transfer, deposit_transaction.tuntas_at, '
-                . 'tron.tron as buy_metode, a.user_code as submit_name, deposit_transaction.submit_by')
+                . 'tron.tron as buy_metode, a.username as submit_name, deposit_transaction.submit_by')
             ->orderBy('deposit_transaction.id', 'DESC')
             ->where('deposit_transaction.is_tron', '=', 1)
             ->union($sql1)
@@ -513,7 +513,7 @@ class Transaction extends Model
         $sql = DB::table('deposit_transaction')
             ->join('users', 'deposit_transaction.user_id', '=', 'users.id')
             ->leftJoin('tron', 'deposit_transaction.bank_perusahaan_id', '=', 'tron.id')
-            ->selectRaw('users.user_code, users.hp, '
+            ->selectRaw('users.username, users.hp, '
                 . 'deposit_transaction.transaction_code, deposit_transaction.price, deposit_transaction.status,'
                 . 'deposit_transaction.created_at, deposit_transaction.unique_digit, deposit_transaction.user_id, deposit_transaction.id, '
                 . 'deposit_transaction.is_tron, deposit_transaction.type,  deposit_transaction.user_bank, deposit_transaction.bank_perusahaan_id,'

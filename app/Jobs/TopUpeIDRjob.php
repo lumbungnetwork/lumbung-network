@@ -81,7 +81,7 @@ class TopUpeIDRjob implements ShouldQueue
             $client->request('GET', 'https://api.telegram.org/bot' . $tgAk . '/sendMessage', [
                 'query' => [
                     'chat_id' => '365874331',
-                    'text' => 'Top-up eIDR need Manual Action ' . $getData->user_code . ' nominal:' . number_format($getData->nominal + $getData->unique_digit),
+                    'text' => 'Top-up eIDR need Manual Action ' . $getData->username . ' nominal:' . number_format($getData->nominal + $getData->unique_digit),
                     'parse_mode' => 'markdown'
                 ]
             ]);
@@ -155,7 +155,7 @@ class TopUpeIDRjob implements ShouldQueue
                             $client->request('GET', 'https://api.telegram.org/bot' . $tgAk . '/sendMessage', [
                                 'query' => [
                                     'chat_id' => '365874331',
-                                    'text' => 'Top-up eIDR Berhasil, username ' . $getData->user_code . ' nominal:' . number_format($mutationAmount) . '. Sisa saldo eIDRhot: ' . number_format($eIDRbalance),
+                                    'text' => 'Top-up eIDR Berhasil, username ' . $getData->username . ' nominal:' . number_format($mutationAmount) . '. Sisa saldo eIDRhot: ' . number_format($eIDRbalance),
                                     'parse_mode' => 'markdown'
                                 ]
                             ]);
@@ -164,7 +164,7 @@ class TopUpeIDRjob implements ShouldQueue
                             $client->request('GET', 'https://api.telegram.org/bot' . $tgAk . '/sendMessage', [
                                 'query' => [
                                     'chat_id' => '365874331',
-                                    'text' => 'Transfer eIDR untuk Top-up eIDR GAGAL, username ' . $getData->user_code . ' nominal:' . $mutationAmount,
+                                    'text' => 'Transfer eIDR untuk Top-up eIDR GAGAL, username ' . $getData->username . ' nominal:' . $mutationAmount,
                                     'parse_mode' => 'markdown'
                                 ]
                             ]);

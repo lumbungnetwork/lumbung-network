@@ -9,7 +9,7 @@
             <div class="col-md-12">
                 <div class="form-group">
                     <label>Username</label>
-                    <input type="text" class="form-control" disabled="" value="{{$getData->user_code}}">
+                    <input type="text" class="form-control" disabled="" value="{{$getData->username}}">
                 </div>
             </div>
         </div>
@@ -17,7 +17,8 @@
             <div class="col-md-12">
                 <div class="form-group">
                     <label>Tanggal</label>
-                    <input type="text" class="form-control" disabled="" value="{{date('d F Y', strtotime($getData->sale_date))}}">
+                    <input type="text" class="form-control" disabled=""
+                        value="{{date('d F Y', strtotime($getData->sale_date))}}">
                 </div>
             </div>
         </div>
@@ -25,12 +26,13 @@
             <div class="col-md-12">
                 <div class="form-group">
                     <label>Sale Price</label>
-                    <input type="text" class="form-control" disabled="" value="{{number_format($getData->sale_price, 0, ',', ',')}}">
+                    <input type="text" class="form-control" disabled=""
+                        value="{{number_format($getData->sale_price, 0, ',', ',')}}">
                 </div>
             </div>
         </div>
     </div>
-    
+
     <div class="modal-footer">
         <div class="left-side">
             <button type="button" class="btn btn-danger btn-link" data-dismiss="modal">Tutup</button>
@@ -40,4 +42,4 @@
             <button type="submit" class="btn btn-info btn-link">Submit</button>
         </div>
     </div>
-</form>   
+</form>

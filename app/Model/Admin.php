@@ -53,7 +53,7 @@ class Admin extends Model
     {
         $sql = DB::table('users')
             ->selectRaw('id')
-            ->where('users.user_code', '=', $username)
+            ->where('users.username', '=', $username)
             ->first();
         return $sql;
     }
@@ -62,7 +62,7 @@ class Admin extends Model
     {
         $sql = DB::table('users')
             ->selectRaw('id')
-            ->where('users.user_code', '=', $username)
+            ->where('users.username', '=', $username)
             ->where('users.id', '!=', $id)
             ->first();
         return $sql;
@@ -71,7 +71,7 @@ class Admin extends Model
     public function getAdminById($id)
     {
         $sql = DB::table('users')
-            ->selectRaw('id, email, name, user_type, user_code')
+            ->selectRaw('id, email, name, user_type, username')
             ->where('id', '=', $id)
             ->first();
         return $sql;

@@ -42,7 +42,7 @@
 
                     <div class="row">
                         <div class="col-12">
-                            Pembeli: <strong>{{$getDataSales->user_code}}</strong>
+                            Pembeli: <strong>{{$getDataSales->username}}</strong>
 
                             <?php
                                 $confirm = 'Konfirmasi Pembayaran';

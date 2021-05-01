@@ -322,7 +322,7 @@ class Sales extends Model
     {
         $sql = DB::table('sales')
             ->join('users', 'sales.stockist_id', '=', 'users.id')
-            ->selectRaw('sales.sale_date, users.user_code, sales.sale_price')
+            ->selectRaw('sales.sale_date, users.username, sales.sale_price')
             ->where('sales.user_id', '=', $id)
             ->whereDate('sales.sale_date', '>=', $date->startDay)
             ->whereDate('sales.sale_date', '<=', $date->endDay)
@@ -539,7 +539,7 @@ class Sales extends Model
     {
         $sql = DB::table('master_sales')
             ->join('users', 'master_sales.stockist_id', '=', 'users.id')
-            ->selectRaw('master_sales.sale_date, users.user_code, master_sales.total_price as sale_price, '
+            ->selectRaw('master_sales.sale_date, users.username, master_sales.total_price as sale_price, '
                 . 'master_sales.id, master_sales.status, master_sales.buy_metode')
             ->where('master_sales.user_id', '=', $id)
             ->whereDate('master_sales.sale_date', '>=', $date->startDay)
@@ -557,7 +557,7 @@ class Sales extends Model
     {
         $sql = DB::table('vmaster_sales')
             ->join('users', 'vmaster_sales.vendor_id', '=', 'users.id')
-            ->selectRaw('vmaster_sales.sale_date, users.user_code, vmaster_sales.total_price as sale_price, '
+            ->selectRaw('vmaster_sales.sale_date, users.username, vmaster_sales.total_price as sale_price, '
                 . 'vmaster_sales.id, vmaster_sales.status, vmaster_sales.buy_metode')
             ->where('vmaster_sales.user_id', '=', $id)
             ->whereDate('vmaster_sales.sale_date', '>=', $date->startDay)
@@ -575,7 +575,7 @@ class Sales extends Model
     {
         $sql = DB::table('ppob')
             ->join('users', 'ppob.vendor_id', '=', 'users.id')
-            ->selectRaw('ppob.ppob_date, users.user_code, ppob.ppob_price as sale_price, '
+            ->selectRaw('ppob.ppob_date, users.username, ppob.ppob_price as sale_price, '
                 . 'ppob.id, ppob.status, ppob.buy_metode')
             ->where('ppob.user_id', '=', $id)
             ->whereDate('ppob.ppob_date', '>=', $date->startDay)
@@ -593,7 +593,7 @@ class Sales extends Model
     {
         $sql = DB::table('ppob')
             ->join('users', 'ppob.vendor_id', '=', 'users.id')
-            ->selectRaw('ppob.ppob_date, users.user_code, ppob.ppob_price as sale_price, '
+            ->selectRaw('ppob.ppob_date, users.username, ppob.ppob_price as sale_price, '
                 . 'ppob.id, ppob.status, ppob.buy_metode')
             ->where('ppob.user_id', '=', $id)
             ->where('ppob.type', '<=', 2)
@@ -888,7 +888,7 @@ class Sales extends Model
     {
         $sql = DB::table('item_purchase_master')
             ->join('users', 'item_purchase_master.stockist_id', '=', 'users.id')
-            ->selectRaw('users.user_code, users.hp,  item_purchase_master.stockist_id, '
+            ->selectRaw('users.username, users.hp,  item_purchase_master.stockist_id, '
                 . 'item_purchase_master.id, item_purchase_master.price, item_purchase_master.created_at,'
                 . 'item_purchase_master.buy_metode, item_purchase_master.tron, item_purchase_master.tron_transfer,'
                 . 'item_purchase_master.bank_name, item_purchase_master.account_no, item_purchase_master.account_name')
@@ -905,7 +905,7 @@ class Sales extends Model
     {
         $sql = DB::table('vitem_purchase_master')
             ->join('users', 'vitem_purchase_master.vendor_id', '=', 'users.id')
-            ->selectRaw('users.user_code, users.hp,  vitem_purchase_master.vendor_id, '
+            ->selectRaw('users.username, users.hp,  vitem_purchase_master.vendor_id, '
                 . 'vitem_purchase_master.id, vitem_purchase_master.price, vitem_purchase_master.created_at,'
                 . 'vitem_purchase_master.buy_metode, vitem_purchase_master.tron, vitem_purchase_master.tron_transfer,'
                 . 'vitem_purchase_master.bank_name, vitem_purchase_master.account_no, vitem_purchase_master.account_name')
@@ -922,7 +922,7 @@ class Sales extends Model
     {
         $sql = DB::table('item_purchase_master')
             ->join('users', 'item_purchase_master.stockist_id', '=', 'users.id')
-            ->selectRaw('users.user_code, users.hp,  item_purchase_master.stockist_id, '
+            ->selectRaw('users.username, users.hp,  item_purchase_master.stockist_id, '
                 . 'item_purchase_master.id, item_purchase_master.price, item_purchase_master.created_at,'
                 . 'item_purchase_master.buy_metode, item_purchase_master.tron, item_purchase_master.tron_transfer,'
                 . 'item_purchase_master.bank_name, item_purchase_master.account_no, item_purchase_master.account_name')
@@ -936,7 +936,7 @@ class Sales extends Model
     {
         $sql = DB::table('vitem_purchase_master')
             ->join('users', 'vitem_purchase_master.vendor_id', '=', 'users.id')
-            ->selectRaw('users.user_code, users.hp,  vitem_purchase_master.vendor_id, '
+            ->selectRaw('users.username, users.hp,  vitem_purchase_master.vendor_id, '
                 . 'vitem_purchase_master.id, vitem_purchase_master.price, vitem_purchase_master.created_at,'
                 . 'vitem_purchase_master.buy_metode, vitem_purchase_master.tron, vitem_purchase_master.tron_transfer,'
                 . 'vitem_purchase_master.bank_name, vitem_purchase_master.account_no, vitem_purchase_master.account_name')
@@ -1160,7 +1160,7 @@ class Sales extends Model
     {
         $sql = DB::table('master_sales')
             ->join('users', 'master_sales.user_id', '=', 'users.id')
-            ->selectRaw('master_sales.sale_date, users.user_code, master_sales.total_price as sale_price, '
+            ->selectRaw('master_sales.sale_date, users.username, master_sales.total_price as sale_price, '
                 . 'master_sales.id, master_sales.status, master_sales.buy_metode, master_sales.created_at')
             ->where('master_sales.stockist_id', '=', $id)
             ->where('master_sales.status', '>', 0)
@@ -1178,7 +1178,7 @@ class Sales extends Model
     {
         $sql = DB::table('vmaster_sales')
             ->join('users', 'vmaster_sales.user_id', '=', 'users.id')
-            ->selectRaw('vmaster_sales.sale_date, users.user_code, vmaster_sales.total_price as sale_price, '
+            ->selectRaw('vmaster_sales.sale_date, users.username, vmaster_sales.total_price as sale_price, '
                 . 'vmaster_sales.id, vmaster_sales.status, vmaster_sales.buy_metode, vmaster_sales.created_at')
             ->where('vmaster_sales.vendor_id', '=', $id)
             ->whereNull('vmaster_sales.deleted_at')
@@ -1195,7 +1195,7 @@ class Sales extends Model
     {
         $sql = DB::table('master_sales')
             ->join('users', 'master_sales.user_id', '=', 'users.id')
-            ->selectRaw('master_sales.sale_date, users.user_code, master_sales.total_price as sale_price, '
+            ->selectRaw('master_sales.sale_date, users.username, master_sales.total_price as sale_price, '
                 . 'master_sales.id, master_sales.status, master_sales.buy_metode, master_sales.reason, '
                 . 'master_sales.tron, master_sales.tron_transfer, master_sales.bank_name, master_sales.account_name, master_sales.account_no')
             ->where('master_sales.id', '=', $id)
@@ -1210,7 +1210,7 @@ class Sales extends Model
     {
         $sql = DB::table('vmaster_sales')
             ->join('users', 'vmaster_sales.user_id', '=', 'users.id')
-            ->selectRaw('vmaster_sales.sale_date, users.user_code, vmaster_sales.total_price as sale_price, '
+            ->selectRaw('vmaster_sales.sale_date, users.username, vmaster_sales.total_price as sale_price, '
                 . 'vmaster_sales.id, vmaster_sales.status, vmaster_sales.buy_metode, vmaster_sales.reason, '
                 . 'vmaster_sales.tron, vmaster_sales.tron_transfer, vmaster_sales.bank_name, vmaster_sales.account_name, vmaster_sales.account_no')
             ->where('vmaster_sales.id', '=', $id)
@@ -1225,7 +1225,7 @@ class Sales extends Model
     {
         $sql = DB::table('master_sales')
             ->join('users', 'master_sales.stockist_id', '=', 'users.id')
-            ->selectRaw('master_sales.sale_date, users.user_code, master_sales.total_price as sale_price, '
+            ->selectRaw('master_sales.sale_date, users.username, master_sales.total_price as sale_price, '
                 . 'master_sales.id, master_sales.status, master_sales.buy_metode')
             ->where('master_sales.status', '=', 2)
             ->whereNull('master_sales.deleted_at')
@@ -1241,7 +1241,7 @@ class Sales extends Model
     {
         $sql = DB::table('master_sales')
             ->join('users', 'master_sales.stockist_id', '=', 'users.id')
-            ->selectRaw('users.user_code, master_sales.total_price as sale_price, master_sales.sale_date, '
+            ->selectRaw('users.username, master_sales.total_price as sale_price, master_sales.sale_date, '
                 . 'master_sales.id, master_sales.status, master_sales.buy_metode')
             ->where('master_sales.status', '=', 4)
             ->whereNull('master_sales.deleted_at')
@@ -1257,7 +1257,7 @@ class Sales extends Model
     {
         $sql = DB::table('master_sales')
             ->join('users', 'master_sales.stockist_id', '=', 'users.id')
-            ->selectRaw('master_sales.sale_date, users.user_code, master_sales.total_price as sale_price, '
+            ->selectRaw('master_sales.sale_date, users.username, master_sales.total_price as sale_price, '
                 . 'master_sales.id, master_sales.status, master_sales.buy_metode')
             ->where('master_sales.id', '=', $id)
             ->where('master_sales.status', '=', 2)
@@ -1270,7 +1270,7 @@ class Sales extends Model
     {
         $sql = DB::table('master_sales')
             ->join('users', 'master_sales.stockist_id', '=', 'users.id')
-            ->selectRaw('users.user_code, master_sales.total_price as sale_price, master_sales.sale_date, '
+            ->selectRaw('users.username, master_sales.total_price as sale_price, master_sales.sale_date, '
                 . 'master_sales.id, master_sales.status, master_sales.buy_metode')
             ->where('master_sales.status', '=', 4)
             ->where('master_sales.id', '=', $id)
@@ -1299,7 +1299,7 @@ class Sales extends Model
     {
         $sql = DB::table('master_sales')
             ->join('users', 'master_sales.user_id', '=', 'users.id')
-            ->selectRaw('master_sales.sale_date, users.user_code, master_sales.total_price as sale_price, '
+            ->selectRaw('master_sales.sale_date, users.username, master_sales.total_price as sale_price, '
                 . 'master_sales.id, master_sales.status, master_sales.buy_metode')
             ->where('master_sales.stockist_id', '=', $id)
             ->where('master_sales.status', '=', 1)
@@ -1316,7 +1316,7 @@ class Sales extends Model
     {
         $sql = DB::table('vmaster_sales')
             ->join('users', 'vmaster_sales.user_id', '=', 'users.id')
-            ->selectRaw('vmaster_sales.sale_date, users.user_code, vmaster_sales.total_price as sale_price, '
+            ->selectRaw('vmaster_sales.sale_date, users.username, vmaster_sales.total_price as sale_price, '
                 . 'vmaster_sales.id, vmaster_sales.status, vmaster_sales.buy_metode')
             ->where('vmaster_sales.vendor_id', '=', $id)
             ->where('vmaster_sales.status', '=', 1)
@@ -1333,7 +1333,7 @@ class Sales extends Model
     {
         $sql = DB::table('ppob')
             ->join('users', 'ppob.user_id', '=', 'users.id')
-            ->selectRaw('ppob.ppob_date, users.user_code, ppob.ppob_price as sale_price, '
+            ->selectRaw('ppob.ppob_date, users.username, ppob.ppob_price as sale_price, '
                 . 'ppob.id, ppob.status, ppob.buy_metode')
             ->where('ppob.vendor_id', '=', $id)
             ->where('ppob.status', '=', 1)
@@ -1747,7 +1747,7 @@ class Sales extends Model
         $yesterday = date('Y-m-d', strtotime("-1 days"));
         $sql = DB::table('item_purchase_master')
             ->join('users', 'item_purchase_master.stockist_id', '=', 'users.id')
-            ->selectRaw('users.user_code, users.hp,  item_purchase_master.stockist_id, '
+            ->selectRaw('users.username, users.hp,  item_purchase_master.stockist_id, '
                 . 'item_purchase_master.id, item_purchase_master.price, item_purchase_master.created_at,'
                 . 'item_purchase_master.buy_metode, item_purchase_master.tron, item_purchase_master.tron_transfer,'
                 . 'item_purchase_master.bank_name, item_purchase_master.account_no, item_purchase_master.account_name')
@@ -1807,7 +1807,7 @@ class Sales extends Model
         $sql = DB::table('item_purchase_master')
             ->join('users', 'item_purchase_master.stockist_id', '=', 'users.id')
             ->join('users as u', 'item_purchase_master.submit_by', '=', 'u.id')
-            ->selectRaw('users.user_code, users.hp,  item_purchase_master.stockist_id, '
+            ->selectRaw('users.username, users.hp,  item_purchase_master.stockist_id, '
                 . 'item_purchase_master.id, item_purchase_master.price, item_purchase_master.created_at,'
                 . 'item_purchase_master.buy_metode, item_purchase_master.tron, item_purchase_master.tron_transfer,'
                 . 'item_purchase_master.bank_name, item_purchase_master.account_no, item_purchase_master.account_name, item_purchase_master.status,'
@@ -1828,7 +1828,7 @@ class Sales extends Model
         $sql = DB::table('vitem_purchase_master')
             ->join('users', 'vitem_purchase_master.vendor_id', '=', 'users.id')
             ->join('users as u', 'vitem_purchase_master.submit_by', '=', 'u.id')
-            ->selectRaw('users.user_code, users.hp,  vitem_purchase_master.vendor_id, '
+            ->selectRaw('users.username, users.hp,  vitem_purchase_master.vendor_id, '
                 . 'vitem_purchase_master.id, vitem_purchase_master.price, vitem_purchase_master.created_at,'
                 . 'vitem_purchase_master.buy_metode, vitem_purchase_master.tron, vitem_purchase_master.tron_transfer,'
                 . 'vitem_purchase_master.bank_name, vitem_purchase_master.account_no, vitem_purchase_master.account_name, vitem_purchase_master.status,'

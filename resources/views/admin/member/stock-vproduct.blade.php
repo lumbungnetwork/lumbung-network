@@ -26,7 +26,7 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title">List Vendor Stock {{$getStockist->user_code}}</h5>
+                        <h5 class="card-title">List Vendor Stock {{$getStockist->username}}</h5>
                     </div>
                     <div class="card-body">
                         @if ( Session::has('message') )

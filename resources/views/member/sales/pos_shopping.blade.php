@@ -21,7 +21,7 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="rounded-lg bg-light p-3">
-                                <h6>Pembeli: <mark>{{$user->user_code}}</mark></h6>
+                                <h6>Pembeli: <mark>{{$user->username}}</mark></h6>
                             </div>
                         </div>
                     </div>

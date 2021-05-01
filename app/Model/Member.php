@@ -66,20 +66,20 @@ class Member extends Model
         return $sql;
     }
 
-    public function getCekMemberExist($user_code)
+    public function getCekMemberExist($username)
     {
         $sql = DB::table('users')
-            ->where('user_code', '=', $user_code)
+            ->where('username', '=', $username)
             ->where('is_active', '=', 1)
             ->where('user_type', '=', 10)
             ->first();
         return $sql;
     }
 
-    public function getKBBMember($user_code)
+    public function getKBBMember($username)
     {
         $sql = DB::table('users')
-            ->where('user_code', '=', $user_code)
+            ->where('username', '=', $username)
             ->where('is_active', '=', 1)
             ->where('user_type', '=', 10)
             ->whereIn('affiliate', [2, 3])
@@ -90,7 +90,7 @@ class Member extends Model
     public function getInviteCount($user_id)
     {
         $sql = DB::table('users')
-            ->selectRaw('users.id, users.user_code')
+            ->selectRaw('users.id, users.username')
             ->where('invited_by', '=', $user_id)
             ->where('is_active', '=', 1)
             ->where('user_type', '=', 10)
@@ -114,8 +114,8 @@ class Member extends Model
     public function getAllMemberByAdmin()
     {
         $sql = DB::table('users')
-            ->selectRaw('users.id, users.name, users.email, users.hp, users.is_active, users.active_at, u1.user_code as sp_name, '
-                . 'users.user_code, users.is_tron, users.tron, users.pin_activate_at')
+            ->selectRaw('users.id, users.name, users.email, users.hp, users.is_active, users.active_at, u1.username as sp_name, '
+                . 'users.username, users.is_tron, users.tron, users.pin_activate_at')
             ->leftJoin('users as u1', 'users.sponsor_id', '=', 'u1.id')
             ->where('users.is_active', '=', 1)
             ->where('users.user_type', '=', 10)
@@ -127,12 +127,12 @@ class Member extends Model
     public function getSearchAllMemberByAdmin($search)
     {
         $sql = DB::table('users')
-            ->selectRaw('users.id, users.name, users.email, users.hp, users.is_active, users.active_at, u1.user_code as sp_name, '
-                . 'users.user_code, users.is_tron, users.tron, users.pin_activate_at')
+            ->selectRaw('users.id, users.name, users.email, users.hp, users.is_active, users.active_at, u1.username as sp_name, '
+                . 'users.username, users.is_tron, users.tron, users.pin_activate_at')
             ->leftJoin('users as u1', 'users.sponsor_id', '=', 'u1.id')
             ->where('users.is_active', '=', 1)
             ->where('users.user_type', '=', 10)
-            ->where('users.user_code', 'LIKE', '%' . $search . '%')
+            ->where('users.username', 'LIKE', '%' . $search . '%')
             ->orderBy('users.active_at', 'DESC')
             ->get();
         $return = (object) array(
@@ -151,8 +151,8 @@ class Member extends Model
     public function getSearchAllMemberByTron($search)
     {
         $sql = DB::table('users')
-            ->selectRaw('users.id, users.name, users.email, users.hp, users.is_active, users.active_at, u1.user_code as sp_name, '
-                . 'users.user_code, users.is_tron, users.tron, users.pin_activate_at')
+            ->selectRaw('users.id, users.name, users.email, users.hp, users.is_active, users.active_at, u1.username as sp_name, '
+                . 'users.username, users.is_tron, users.tron, users.pin_activate_at')
             ->leftJoin('users as u1', 'users.sponsor_id', '=', 'u1.id')
             ->where('users.is_active', '=', 1)
             ->where('users.user_type', '=', 10)
@@ -175,8 +175,8 @@ class Member extends Model
     public function getSearchMemberByMonthByAdmin($date)
     {
         $sql = DB::table('users')
-            ->selectRaw('users.id, users.name, users.email, users.hp, users.is_active, users.active_at, u1.user_code as sp_name, '
-                . 'users.user_code, users.is_tron, users.tron, users.pin_activate_at')
+            ->selectRaw('users.id, users.name, users.email, users.hp, users.is_active, users.active_at, u1.username as sp_name, '
+                . 'users.username, users.is_tron, users.tron, users.pin_activate_at')
             ->leftJoin('users as u1', 'users.sponsor_id', '=', 'u1.id')
             ->where('users.is_active', '=', 1)
             ->where('users.user_type', '=', 10)
@@ -203,7 +203,7 @@ class Member extends Model
             ->where('user_type', '=', 10)
             ->where('is_active', '=', 1)
             ->where('is_stockist', '=', 1)
-            ->where('users.user_code', 'LIKE', '%' . $search . '%')
+            ->where('users.username', 'LIKE', '%' . $search . '%')
             ->orderBy('stockist_at', 'DESC')
             ->get();
         $return = (object) array(
@@ -225,7 +225,7 @@ class Member extends Model
             ->where('user_type', '=', 10)
             ->where('is_active', '=', 1)
             ->where('is_vendor', '=', 1)
-            ->where('users.user_code', 'LIKE', '%' . $search . '%')
+            ->where('users.username', 'LIKE', '%' . $search . '%')
             ->orderBy('vendor_at', 'DESC')
             ->get();
         $return = (object) array(
@@ -251,7 +251,7 @@ class Member extends Model
     {
         $sqlEmail = DB::table('users')->selectRaw('id')->where('email', '=', $mail)->where('user_type', '=', 10)->count();
         $sqlHP = DB::table('users')->selectRaw('id')->where('hp', '=', $phone)->where('user_type', '=', 10)->count();
-        $sqlCode = DB::table('users')->selectRaw('id')->where('user_code', '=', $usercode)->where('user_type', '=', 10)->count();
+        $sqlCode = DB::table('users')->selectRaw('id')->where('username', '=', $usercode)->where('user_type', '=', 10)->count();
         $data = (object) array(
             'cekEmail' => $sqlEmail, 'cekHP' => $sqlHP, 'cekCode' => $sqlCode
         );
@@ -260,7 +260,7 @@ class Member extends Model
 
     public function getCheckUsercode($usercode)
     {
-        $sqlCode = DB::table('users')->selectRaw('id')->where('user_code', '=', $usercode)->count();
+        $sqlCode = DB::table('users')->selectRaw('id')->where('username', '=', $usercode)->count();
         $data = (object) array(
             'cekCode' => $sqlCode
         );
@@ -271,7 +271,7 @@ class Member extends Model
     {
         $sqlCode = DB::table('users')
             ->selectRaw('id')
-            ->where('user_code', '=', $usercode)
+            ->where('username', '=', $usercode)
             ->where('id', '!=', $id)
             ->where('user_type', '=', 10)
             ->count();
@@ -297,7 +297,7 @@ class Member extends Model
     {
         $getCount = DB::table('users')
             ->selectRaw('id')
-            ->where('user_code', 'LIKE', 'KBB-%')
+            ->where('username', 'LIKE', 'KBB-%')
             ->where('is_active', '=', 1)
             ->where('affiliate', '=', 1)
             ->count();
@@ -466,7 +466,7 @@ class Member extends Model
     public function getMyDownlineAllStatus($downline, $id)
     {
         $sql = DB::table('users')
-            ->selectRaw('users.id, users.name, users.email, users.hp, users.user_code, users.active_at, users.is_active, '
+            ->selectRaw('users.id, users.name, users.email, users.hp, users.username, users.active_at, users.is_active, '
                 . 'users.package_id, package.name as paket_name')
             ->leftJoin('package', 'package.id', '=', 'users.package_id')
             ->where('users.user_type', '=', 10)
@@ -483,7 +483,7 @@ class Member extends Model
             ->where('user_type', '=', 10)
             ->where('is_active', '=', 1)
             ->where('upline_detail', 'LIKE', $downline . '%')
-            ->where('user_code', 'LIKE', '%' . $username . '%')
+            ->where('username', 'LIKE', '%' . $username . '%')
             ->orderBy('id', 'ASC')
             ->get();
         $return = null;
@@ -505,9 +505,9 @@ class Member extends Model
         return $sql;
     }
 
-    public function getUsersCodeEmail($user_code, $email)
+    public function getUsersCodeEmail($username, $email)
     {
-        $sql = DB::table('users')->where('user_code', '=', $user_code)->where('email', '=', $email)->first();
+        $sql = DB::table('users')->where('username', '=', $username)->where('email', '=', $email)->first();
         return $sql;
     }
 
@@ -649,14 +649,14 @@ class Member extends Model
     public function getLevelSponsoring($id)
     {
         $sql = DB::table('users')
-            ->selectRaw('users.id, users.user_code, '
-                . 'u1.id as id_lvl1, u1.user_code as user_code_lvl1, '
-                . 'u2.id as id_lvl2, u2.user_code as user_code_lvl2, '
-                . 'u3.id as id_lvl3, u3.user_code as user_code_lvl3, '
-                . 'u4.id as id_lvl4, u4.user_code as user_code_lvl4, '
-                . 'u5.id as id_lvl5, u5.user_code as user_code_lvl5, '
-                . 'u6.id as id_lvl6, u6.user_code as user_code_lvl6, '
-                . 'u7.id as id_lvl7, u7.user_code as user_code_lvl7')
+            ->selectRaw('users.id, users.username, '
+                . 'u1.id as id_lvl1, u1.username as username_lvl1, '
+                . 'u2.id as id_lvl2, u2.username as username_lvl2, '
+                . 'u3.id as id_lvl3, u3.username as username_lvl3, '
+                . 'u4.id as id_lvl4, u4.username as username_lvl4, '
+                . 'u5.id as id_lvl5, u5.username as username_lvl5, '
+                . 'u6.id as id_lvl6, u6.username as username_lvl6, '
+                . 'u7.id as id_lvl7, u7.username as username_lvl7')
             ->leftJoin('users as u1', 'users.sponsor_id', '=', 'u1.id')
             ->leftJoin('users as u2', 'u1.sponsor_id', '=', 'u2.id')
             ->leftJoin('users as u3', 'u2.sponsor_id', '=', 'u3.id')
@@ -702,7 +702,7 @@ class Member extends Model
     {
         $sql = DB::table('users')
             ->leftJoin('bonus_reward2', 'users.member_type', '=', 'bonus_reward2.type')
-            ->selectRaw('users.user_code, users.member_type, bonus_reward2.name, users.total_sponsor, bonus_reward2.image')
+            ->selectRaw('users.username, users.member_type, bonus_reward2.name, users.total_sponsor, bonus_reward2.image')
             ->where('users.sponsor_id', '=', $data->id)
             ->where('users.user_type', '=', 10)
             ->where('users.is_active', '=', 1)
@@ -724,7 +724,7 @@ class Member extends Model
     public function getSearchUserStockist($data)
     {
         $sql = DB::table('users')
-            ->where('user_code', '=', $data)
+            ->where('username', '=', $data)
             ->where('user_type', '=', 10)
             ->where('is_active', '=', 1)
             ->where('is_stockist', '=', 1)
@@ -740,7 +740,7 @@ class Member extends Model
     public function getSearchUserVendor($data)
     {
         $sql = DB::table('users')
-            ->where('user_code', '=', $data)
+            ->where('username', '=', $data)
             ->where('user_type', '=', 10)
             ->where('is_active', '=', 1)
             ->where('is_vendor', '=', 1)
@@ -758,7 +758,7 @@ class Member extends Model
         $sql = DB::table('users')
             ->where('user_type', '=', 10)
             ->where('is_active', '=', 1)
-            ->where('user_code', 'LIKE', '%' . $username . '%')
+            ->where('username', 'LIKE', '%' . $username . '%')
             ->where('is_stockist', '=', 1)
             ->orderBy('id', 'ASC')
             ->get();
@@ -774,7 +774,7 @@ class Member extends Model
         $sql = DB::table('users')
             ->where('user_type', '=', 10)
             ->where('is_active', '=', 1)
-            ->where('user_code', 'LIKE', '%' . $username . '%')
+            ->where('username', 'LIKE', '%' . $username . '%')
             ->where('is_vendor', '=', 1)
             ->orderBy('id', 'ASC')
             ->get();
@@ -801,11 +801,11 @@ class Member extends Model
         return $return;
     }
 
-    public function getCekHakUsaha($data, $user_code)
+    public function getCekHakUsaha($data, $username)
     {
         $sql = DB::table('users')
             ->where('sponsor_id', '=', $data->id)
-            ->where('user_code', '=', $user_code)
+            ->where('username', '=', $username)
             ->where('user_type', '=', 10)
             ->where('is_active', '=', 1)
             ->first();
@@ -1050,7 +1050,7 @@ class Member extends Model
     {
         $sql = DB::table('stockist_request')
             ->join('users', 'users.id', '=', 'stockist_request.user_id')
-            ->selectRaw('stockist_request.id, users.user_code, users.total_sponsor, users.id as id_user')
+            ->selectRaw('stockist_request.id, users.username, users.total_sponsor, users.id as id_user')
             ->where('stockist_request.id', '=', $id)
             ->where('stockist_request.status', '=', 0)
             ->first();
@@ -1061,7 +1061,7 @@ class Member extends Model
     {
         $sql = DB::table('vendor_request')
             ->join('users', 'users.id', '=', 'vendor_request.user_id')
-            ->selectRaw('vendor_request.id, users.user_code, users.total_sponsor, users.id as id_user')
+            ->selectRaw('vendor_request.id, users.username, users.total_sponsor, users.id as id_user')
             ->where('vendor_request.id', '=', $id)
             ->where('vendor_request.status', '=', 0)
             ->first();
@@ -1072,7 +1072,7 @@ class Member extends Model
     {
         $sql = DB::table('stockist_request')
             ->join('users', 'users.id', '=', 'stockist_request.user_id')
-            ->selectRaw('stockist_request.id, users.user_code, users.total_sponsor, users.id as id_user, users.hp')
+            ->selectRaw('stockist_request.id, users.username, users.total_sponsor, users.id as id_user, users.hp')
             ->where('users.id', '=', $id)
             ->where('users.user_type', '=', 10)
             ->where('users.is_active', '=', 1)
@@ -1085,7 +1085,7 @@ class Member extends Model
     {
         $sql = DB::table('vendor_request')
             ->join('users', 'users.id', '=', 'vendor_request.user_id')
-            ->selectRaw('vendor_request.id, users.user_code, users.total_sponsor, users.id as id_user, users.hp')
+            ->selectRaw('vendor_request.id, users.username, users.total_sponsor, users.id as id_user, users.hp')
             ->where('users.id', '=', $id)
             ->where('users.user_type', '=', 10)
             ->where('users.is_active', '=', 1)
@@ -1098,7 +1098,7 @@ class Member extends Model
     {
         $sql = DB::table('stockist_request')
             ->join('users', 'users.id', '=', 'stockist_request.user_id')
-            ->selectRaw('stockist_request.id, users.user_code, users.total_sponsor, stockist_request.created_at')
+            ->selectRaw('stockist_request.id, users.username, users.total_sponsor, stockist_request.created_at')
             ->where('stockist_request.status', '=', 0)
             ->get();
         return $sql;
@@ -1108,7 +1108,7 @@ class Member extends Model
     {
         $sql = DB::table('vendor_request')
             ->join('users', 'users.id', '=', 'vendor_request.user_id')
-            ->selectRaw('vendor_request.id, users.user_code, users.total_sponsor, vendor_request.created_at')
+            ->selectRaw('vendor_request.id, users.username, users.total_sponsor, vendor_request.created_at')
             ->where('vendor_request.status', '=', 0)
             ->get();
         return $sql;
@@ -1119,7 +1119,7 @@ class Member extends Model
         $sql = DB::table('stockist_request')
             ->join('users', 'users.id', '=', 'stockist_request.user_id')
             ->join('users as u', 'stockist_request.submit_by', '=', 'u.id')
-            ->selectRaw('stockist_request.id, users.user_code, users.total_sponsor, stockist_request.created_at, u.name as submit_name, '
+            ->selectRaw('stockist_request.id, users.username, users.total_sponsor, stockist_request.created_at, u.name as submit_name, '
                 . 'stockist_request.active_at, stockist_request.submit_at, stockist_request.status, stockist_request.submit_by')
             ->orderBy('stockist_request.status', 'ASC')
             ->get();
@@ -1131,7 +1131,7 @@ class Member extends Model
         $sql = DB::table('vendor_request')
             ->join('users', 'users.id', '=', 'vendor_request.user_id')
             ->join('users as u', 'vendor_request.submit_by', '=', 'u.id')
-            ->selectRaw('vendor_request.id, users.user_code, users.total_sponsor, vendor_request.created_at, u.name as submit_name, '
+            ->selectRaw('vendor_request.id, users.username, users.total_sponsor, vendor_request.created_at, u.name as submit_name, '
                 . 'vendor_request.active_at, vendor_request.submit_at, vendor_request.status, vendor_request.submit_by')
             ->orderBy('vendor_request.status', 'ASC')
             ->get();
@@ -1273,7 +1273,7 @@ class Member extends Model
             ->where('is_stockist', '=', 1)
             ->whereHas('sellerProfile')
             ->with('sellerProfile')
-            ->orderBy('user_code', 'ASC')
+            ->orderBy('username', 'ASC')
             ->get();
         $return = null;
         if (count($sql) > 0) {
@@ -1291,7 +1291,7 @@ class Member extends Model
             ->where('is_stockist', '=', 1)
             ->whereHas('sellerProfile')
             ->with('sellerProfile')
-            ->orderBy('user_code', 'ASC')
+            ->orderBy('username', 'ASC')
             ->get();
         $return = null;
         if (count($sql) > 0) {
@@ -1310,7 +1310,7 @@ class Member extends Model
             ->where('is_stockist', '=', 1)
             ->whereHas('sellerProfile')
             ->with('sellerProfile')
-            ->orderBy('user_code', 'ASC')
+            ->orderBy('username', 'ASC')
             ->get();
         $return = null;
         if (count($sql) > 0) {
@@ -1328,7 +1328,7 @@ class Member extends Model
             ->where('is_vendor', '=', 1)
             ->whereHas('sellerProfile')
             ->with('sellerProfile')
-            ->orderBy('user_code', 'ASC')
+            ->orderBy('username', 'ASC')
             ->get();
         $return = null;
         if (count($sql) > 0) {
@@ -1346,7 +1346,7 @@ class Member extends Model
             ->where('is_vendor', '=', 1)
             ->whereHas('sellerProfile')
             ->with('sellerProfile')
-            ->orderBy('user_code', 'ASC')
+            ->orderBy('username', 'ASC')
             ->get();
         $return = null;
         if (count($sql) > 0) {
@@ -1365,7 +1365,7 @@ class Member extends Model
             ->where('is_vendor', '=', 1)
             ->whereHas('sellerProfile')
             ->with('sellerProfile')
-            ->orderBy('user_code', 'ASC')
+            ->orderBy('username', 'ASC')
             ->get();
         $return = null;
         if (count($sql) > 0) {
@@ -1404,7 +1404,7 @@ class Member extends Model
             ->where('is_active', '=', 1)
             ->where('id', '!=', $id)
             ->where('id', '>', 11)
-            ->where('user_code', 'LIKE', '%' . $username . '%')
+            ->where('username', 'LIKE', '%' . $username . '%')
             ->orderBy('id', 'ASC')
             ->get();
         $return = null;

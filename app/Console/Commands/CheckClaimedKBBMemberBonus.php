@@ -43,7 +43,7 @@ class CheckClaimedKBBMemberBonus extends Command
         $sql = DB::table('kbb_bonuses')
             ->join('users', 'users.id', '=', 'kbb_bonuses.user_id')
             ->join('bank', 'bank.user_id', '=', 'kbb_bonuses.user_id')
-            ->select('users.user_code', 'kbb_bonuses.amount', 'bank.bank_name', 'bank.account_no', 'bank.account_name')
+            ->select('users.username', 'kbb_bonuses.amount', 'bank.bank_name', 'bank.account_no', 'bank.account_name')
             ->whereDate('kbb_bonuses.created_at', '>=', date('Y-m-01'))
             ->get();
         if (count($sql) == 0) {
@@ -51,7 +51,7 @@ class CheckClaimedKBBMemberBonus extends Command
             return;
         }
         foreach ($sql as $row) {
-            $message_text = $row->user_code . chr(10);
+            $message_text = $row->username . chr(10);
             $message_text .= 'Amount: Rp' . number_format($row->amount) . chr(10);
             $message_text .= 'Bank: ' . $row->bank_name . chr(10);
             $message_text .= 'Acc No.: ' . $row->account_no . chr(10);

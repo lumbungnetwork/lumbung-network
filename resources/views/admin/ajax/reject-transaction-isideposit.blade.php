@@ -5,79 +5,81 @@
     <div class="modal-body">
         {{ csrf_field() }}
         @if($getData != null)
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="form-group">
-                        <label>UserID</label>
-                        <input type="text" class="form-control" readonly="" value="{{$getData->user_code}}">
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>Handphone</label>
-                        <input type="text" readonly=""  class="form-control" value="{{$getData->hp}}">
-                    </div>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label>UserID</label>
+                    <input type="text" class="form-control" readonly="" value="{{$getData->username}}">
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label>Kode Transaksi</label>
-                        <input type="text" readonly=""  class="form-control" value="{{$getData->transaction_code}}">
-                    </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Handphone</label>
+                    <input type="text" readonly="" class="form-control" value="{{$getData->hp}}">
                 </div>
             </div>
-            @if($getData->is_tron == 0)
-            
-            @endif
-            
-            @if($getData->is_tron == 1)
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label>Nama</label>
-                        <input type="text" class="form-control" readonly="" value="{{$getData->tron_name}}">
-                    </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>Kode Transaksi</label>
+                    <input type="text" readonly="" class="form-control" value="{{$getData->transaction_code}}">
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label>Alamat Tron</label>
-                        <input type="text" class="form-control" readonly="" value="{{$getData->tron}}">
-                    </div>
+        </div>
+        @if($getData->is_tron == 0)
+
+        @endif
+
+        @if($getData->is_tron == 1)
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>Nama</label>
+                    <input type="text" class="form-control" readonly="" value="{{$getData->tron_name}}">
                 </div>
             </div>
-            @endif
-            <div class="row">
-                <div class="col-md-7">
-                    <div class="form-group">
-                        <label>Total harga</label>
-                        <input type="text" readonly=""  class="form-control" value="Rp. {{number_format($getData->price, 0, ',', ',')}}">
-                    </div>
-                </div>
-                <div class="col-md-5">
-                    <div class="form-group">
-                        <label>Total Pin</label>
-                        <input type="text" class="form-control" readonly=""  value="{{number_format($getData->unique_digit, 0, ',', ',')}}">
-                    </div>
-                </div>
-                <input type="hidden" name="cekId" value="{{$getData->id}}" >
-                <input type="hidden" name="cekMemberId" value="{{$getData->user_id}}" >
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label>Alasan</label>
-                        <input type="text" class="form-control" name="reason" autocomplete="off">
-                    </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>Alamat Tron</label>
+                    <input type="text" class="form-control" readonly="" value="{{$getData->tron}}">
                 </div>
             </div>
-        @else 
-            Tidak ada data
+        </div>
+        @endif
+        <div class="row">
+            <div class="col-md-7">
+                <div class="form-group">
+                    <label>Total harga</label>
+                    <input type="text" readonly="" class="form-control"
+                        value="Rp. {{number_format($getData->price, 0, ',', ',')}}">
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="form-group">
+                    <label>Total Pin</label>
+                    <input type="text" class="form-control" readonly=""
+                        value="{{number_format($getData->unique_digit, 0, ',', ',')}}">
+                </div>
+            </div>
+            <input type="hidden" name="cekId" value="{{$getData->id}}">
+            <input type="hidden" name="cekMemberId" value="{{$getData->user_id}}">
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>Alasan</label>
+                    <input type="text" class="form-control" name="reason" autocomplete="off">
+                </div>
+            </div>
+        </div>
+        @else
+        Tidak ada data
         @endif
     </div>
-    
+
     <div class="modal-footer">
         <div class="left-side">
             <button type="button" class="btn btn-danger btn-link" data-dismiss="modal">Tutup</button>
@@ -87,4 +89,4 @@
             <button type="submit" class="btn btn-info btn-link">Confirm</button>
         </div>
     </div>
-</form>   
+</form>

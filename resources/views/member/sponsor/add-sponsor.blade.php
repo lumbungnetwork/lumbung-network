@@ -52,7 +52,7 @@
                                     <div class="col-12">
                                         <fieldset class="form-group">
                                             <label for="input_username">Username (Login User)</label>
-                                            <input type="text" class="form-control" id="input_username" name="user_code"
+                                            <input type="text" class="form-control" id="input_username" name="username"
                                                 autocomplete="off" required="">
                                         </fieldset>
                                     </div>
@@ -152,11 +152,11 @@
            var password = $("#input_password").val();
            var repassword = $("#input_repassword").val();
            var affiliate = $("#affiliate").val();
-           var user_code = $("#input_username").val();
+           var username = $("#input_username").val();
            var hp = $("#input_hp").val();
             $.ajax({
                 type: "GET",
-                url: "{{ URL::to('/') }}/m/cek/add-sponsor?email="+email+"&password="+password+"&repassword="+repassword+"&affiliate="+affiliate+"&user_code="+user_code+"&hp="+hp ,
+                url: "{{ URL::to('/') }}/m/cek/add-sponsor?email="+email+"&password="+password+"&repassword="+repassword+"&affiliate="+affiliate+"&username="+username+"&hp="+hp ,
                 success: function(url){
                     $("#confirmDetail" ).empty();
                     $("#confirmDetail").html(url);

@@ -30,7 +30,7 @@
                 </div>
 
                 <div>
-                    <h1>Welcome, {{$user->user_code}}</h1>
+                    <h1>Welcome, {{$user->username}}</h1>
                 </div>
 
             </div>

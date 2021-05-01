@@ -9,9 +9,9 @@
             <div class="navbar-wrapper">
                 <div class="navbar-toggle">
                     <button type="button" class="navbar-toggler">
-                    <span class="navbar-toggler-bar bar1"></span>
-                    <span class="navbar-toggler-bar bar2"></span>
-                    <span class="navbar-toggler-bar bar3"></span>
+                        <span class="navbar-toggler-bar bar1"></span>
+                        <span class="navbar-toggler-bar bar2"></span>
+                        <span class="navbar-toggler-bar bar3"></span>
                     </button>
                 </div>
                 <p class="navbar-brand">{{$headerTitle}}</p>
@@ -29,14 +29,15 @@
                     </div>
                     <div class="card-body">
                         @if ( Session::has('message') )
-                            <div class="widget-content mt10 mb10 mr15">
-                                <div class="alert alert-{{ Session::get('messageclass') }}">
-                                    <button class="close" type="button" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
-                                    {{  Session::get('message')    }}
-                                </div>
+                        <div class="widget-content mt10 mb10 mr15">
+                            <div class="alert alert-{{ Session::get('messageclass') }}">
+                                <button class="close" type="button" data-dismiss="alert"><span
+                                        aria-hidden="true">&times;</span></button>
+                                {{  Session::get('message')    }}
                             </div>
+                        </div>
                         @endif
-                         <div class="table-responsive">
+                        <div class="table-responsive">
                             <table class="table table-striped nowrap" id="myTable">
                                 <thead class=" text-primary">
                                     <tr>
@@ -55,11 +56,11 @@
 
                                 <tbody>
                                     @if($getAllTransaction != null)
-                                        <?php
+                                    <?php
                                         $no = 0;
                                         ?>
-                                        @foreach($getAllTransaction as $row)
-                                        <?php
+                                    @foreach($getAllTransaction as $row)
+                                    <?php
                                             $no++;
                                             $price = $row->price;
                                             $buy_metode = '-';
@@ -96,21 +97,21 @@
                                                 $name = 'Master Admin';
                                             }
                                         ?>
-                                            <tr>
-                                                <td>{{$no}}</td>
-                                                <td>{{$row->user_code}}</td>
-                                                <td>{{$row->transaction_code}}</td>
-                                                <td>{{$type}}</td>
-                                                <td>
-                                                    <span class="badge badge-pill badge-{{$label}}">{{$status}}</span>
-                                                </td>
-                                                <td>{{$typePay}}</td>
-                                                <td>{{$buy_metode}}</td>
-                                                <td>{{date('d M Y', strtotime($row->created_at))}}</td>
-                                                <td>{{number_format($price, 0, ',', ',')}}</td>
-                                                <td>{{$name}}</td>
-                                            </tr>
-                                        @endforeach
+                                    <tr>
+                                        <td>{{$no}}</td>
+                                        <td>{{$row->username}}</td>
+                                        <td>{{$row->transaction_code}}</td>
+                                        <td>{{$type}}</td>
+                                        <td>
+                                            <span class="badge badge-pill badge-{{$label}}">{{$status}}</span>
+                                        </td>
+                                        <td>{{$typePay}}</td>
+                                        <td>{{$buy_metode}}</td>
+                                        <td>{{date('d M Y', strtotime($row->created_at))}}</td>
+                                        <td>{{number_format($price, 0, ',', ',')}}</td>
+                                        <td>{{$name}}</td>
+                                    </tr>
+                                    @endforeach
                                     @endif
 
 

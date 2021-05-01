@@ -49,7 +49,7 @@ class UserClaimDividendJob implements ShouldQueue
         $controller = new Controller;
         $tron = $controller->getTron();
         $tron->setPrivateKey(Config::get('services.telegram.test'));
-        $user = User::where('id', $this->user_id)->select('id', 'tron', 'user_code')->first();
+        $user = User::where('id', $this->user_id)->select('id', 'tron', 'username')->first();
 
         $claim = DB::table('users_dividend')->select('hash', 'amount')->where('id', $this->div_id)->first();
 
@@ -109,7 +109,7 @@ class UserClaimDividendJob implements ShouldQueue
                 'to' => $to,
                 'hash' => $txHash,
                 'type' => 2,
-                'detail' => 'Claim Staking LMB Dividend by: ' . $user->user_code,
+                'detail' => 'Claim Staking LMB Dividend by: ' . $user->username,
                 'created_at' => date('Y-m-d H:i:s')
             ]);
 

@@ -60,7 +60,7 @@
                                         ?>
                                     <tr>
                                         <td>{{$no}}</td>
-                                        <td>{{$row->user_code}}</td>
+                                        <td>{{$row->username}}</td>
                                         <td>{{$row->total_sponsor}}</td>
                                         <td>{{date('d F Y', strtotime($row->created_at))}}</td>
                                         <td>

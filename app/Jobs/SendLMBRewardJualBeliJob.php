@@ -144,7 +144,7 @@ class SendLMBRewardJualBeliJob implements ShouldQueue
             }
 
             $tgMessage = '
-*' . $getData->user_code . '* baru saja Claim ' . $getData->reward . ' LMB dari ' . $rewardType . '
+*' . $getData->username . '* baru saja Claim ' . $getData->reward . ' LMB dari ' . $rewardType . '
     _Periode: ' . $getData->monthly . '_
     *Hash: *[' . $shortenHash . '](https://tronscan.org/#/transaction/' . $txHash . ')
             ';

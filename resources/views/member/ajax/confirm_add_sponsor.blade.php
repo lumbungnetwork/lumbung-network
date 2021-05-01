@@ -12,7 +12,7 @@
                 <div class="col-12">
                     <div class="form-group">
                         <label>Username Akun KBB</label>
-                        <input type="text" class="form-control" readonly="" name="user_code"
+                        <input type="text" class="form-control" readonly="" name="username"
                             value="{{$dataRequest->username}}">
                     </div>
                 </div>
@@ -36,7 +36,7 @@
                 <div class="col-12">
                     <div class="form-group">
                         <label>Username</label>
-                        <input type="text" class="form-control" readonly="" name="user_code"
+                        <input type="text" class="form-control" readonly="" name="username"
                             value="{{$dataRequest->username}}">
                     </div>
                 </div>

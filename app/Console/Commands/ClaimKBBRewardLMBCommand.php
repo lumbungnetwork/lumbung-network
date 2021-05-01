@@ -47,7 +47,7 @@ class ClaimKBBRewardLMBCommand extends Command
         //get accounts for Silver III
 
         $silver3 = DB::table('users')
-            ->select('users.id', 'users.user_code')
+            ->select('users.id', 'users.username')
             ->leftJoin('claim_reward', 'claim_reward.user_id', '=', 'users.id')
             ->where('users.affiliate', 1)
             ->where('users.member_type', '>=', 10)
@@ -64,14 +64,14 @@ class ClaimKBBRewardLMBCommand extends Command
                 );
                 $getRewardId = $modelBonus->getInsertClaimReward($dataInsert);
                 SendLMBRewardPeringkatJob::dispatch($getRewardId->lastID)->onQueue('tron');
-                $message .= $s3->user_code . ' 100 LMB' . chr(10);
+                $message .= $s3->username . ' 100 LMB' . chr(10);
             }
         }
 
         //silver II
 
         $silver2 = DB::table('users')
-            ->select('users.id', 'users.user_code')
+            ->select('users.id', 'users.username')
             ->leftJoin('claim_reward', 'claim_reward.user_id', '=', 'users.id')
             ->where('users.affiliate', 1)
             ->where('users.member_type', '>=', 11)
@@ -89,14 +89,14 @@ class ClaimKBBRewardLMBCommand extends Command
                 );
                 $getRewardId = $modelBonus->getInsertClaimReward($dataInsert);
                 SendLMBRewardPeringkatJob::dispatch($getRewardId->lastID)->onQueue('tron');
-                $message .= $s2->user_code . ' 200 LMB' . chr(10);
+                $message .= $s2->username . ' 200 LMB' . chr(10);
             }
         }
 
         //silver I
 
         $silver1 = DB::table('users')
-            ->select('users.id', 'users.user_code')
+            ->select('users.id', 'users.username')
             ->leftJoin('claim_reward', 'claim_reward.user_id', '=', 'users.id')
             ->where('users.affiliate', 1)
             ->where('users.member_type', '>=', 12)
@@ -114,14 +114,14 @@ class ClaimKBBRewardLMBCommand extends Command
                 );
                 $getRewardId = $modelBonus->getInsertClaimReward($dataInsert);
                 SendLMBRewardPeringkatJob::dispatch($getRewardId->lastID)->onQueue('tron');
-                $message .= $s1->user_code . ' 500 LMB' . chr(10);
+                $message .= $s1->username . ' 500 LMB' . chr(10);
             }
         }
 
         //gold III
 
         $gold3 = DB::table('users')
-            ->select('users.id', 'users.user_code')
+            ->select('users.id', 'users.username')
             ->leftJoin('claim_reward', 'claim_reward.user_id', '=', 'users.id')
             ->where('users.affiliate', 1)
             ->where('users.member_type', '>=', 13)
@@ -139,7 +139,7 @@ class ClaimKBBRewardLMBCommand extends Command
                 );
                 $getRewardId = $modelBonus->getInsertClaimReward($dataInsert);
                 SendLMBRewardPeringkatJob::dispatch($getRewardId->lastID)->onQueue('tron');
-                $message .= $g3->user_code . ' 2000 LMB' . chr(10);
+                $message .= $g3->username . ' 2000 LMB' . chr(10);
             }
         }
 

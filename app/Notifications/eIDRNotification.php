@@ -45,7 +45,7 @@ class eIDRNotification extends Notification
             ->to($notifiable->chat_id)
             // Markdown supported.
             ->content("*eIDR berhasil diterima!*
-            \nAkun: " . $notifiable->user_code .
+            \nAkun: " . $notifiable->username .
                 "\nJumlah: Rp" . number_format($this->notification['amount']) .
                 "\nSumber: " . $this->notification['type'] .
                 "\nHash: " . $this->notification['hash'])

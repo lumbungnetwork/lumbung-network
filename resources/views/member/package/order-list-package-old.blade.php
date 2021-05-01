@@ -15,44 +15,45 @@
             </div>
             <div class="row">
                 <div class="col-sm-12 card-box table-responsive">
-                        @if ( Session::has('message') )
-                            <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible fade in" role="alert">
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">×</span>
-                                </button>
-                                {{  Session::get('message')    }} 
-                            </div>
-                        @endif
-                        <table id="datatable" class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>No.</th>
-                                    <th>Nama</th>
-                                    <th>Handphone</th>
-                                    <th>Jenis Paket</th>
-                                    <th>###</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
+                    @if ( Session::has('message') )
+                    <div class="alert alert-{{ Session::get('messageclass') }} alert-dismissible fade in" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                        {{  Session::get('message')    }}
+                    </div>
+                    @endif
+                    <table id="datatable" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Nama</th>
+                                <th>Handphone</th>
+                                <th>Jenis Paket</th>
+                                <th>###</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
                                     $no = 0;
                                 ?>
-                                @foreach($allPackage as $row)
-                                <?php 
+                            @foreach($allPackage as $row)
+                            <?php 
                                     $no++;
                                 ?>
-                                <tr>
-                                    <td>{{$no}}</td>
-                                    <td>{{$row->user_code}}</td>
-                                    <td>{{$row->hp}}</td>
-                                    <td>{{$row->name}}</td>
-                                    <td class="td-actions text-left" >
-                                        <a class="text-primary" href="{{ URL::to('/') }}/m/detail/order-package/{{$row->id}}">detail</a>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                            <tr>
+                                <td>{{$no}}</td>
+                                <td>{{$row->username}}</td>
+                                <td>{{$row->hp}}</td>
+                                <td>{{$row->name}}</td>
+                                <td class="td-actions text-left">
+                                    <a class="text-primary"
+                                        href="{{ URL::to('/') }}/m/detail/order-package/{{$row->id}}">detail</a>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
             <!-- end row -->

@@ -92,8 +92,8 @@ class API extends Model
             ->count();
 
         $detailNewMember = DB::table('users')
-            ->selectRaw('users.active_at, u1.user_code as sp_name, '
-                . 'users.user_code')
+            ->selectRaw('users.active_at, u1.username as sp_name, '
+                . 'users.username')
             ->leftJoin('users as u1', 'users.sponsor_id', '=', 'u1.id')
             ->where('users.is_active', '=', 1)
             ->where('users.user_type', '=', 10)
@@ -104,8 +104,8 @@ class API extends Model
             ->get();
 
         $detailResubscribe = DB::table('users')
-            ->selectRaw('users.active_at, u1.user_code as sp_name, '
-                . 'users.user_code')
+            ->selectRaw('users.active_at, u1.username as sp_name, '
+                . 'users.username')
             ->leftJoin('users as u1', 'users.sponsor_id', '=', 'u1.id')
             ->where('users.is_active', '=', 1)
             ->where('users.user_type', '=', 10)

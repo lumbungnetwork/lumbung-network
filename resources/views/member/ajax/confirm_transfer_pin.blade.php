@@ -30,7 +30,7 @@
                 <div class="col-9">
                     <div class="form-group">
                         <label>Penerima</label>
-                        <input type="text" class="form-control" readonly="" value="{{$dataRequest->user_code}}">
+                        <input type="text" class="form-control" readonly="" value="{{$dataRequest->username}}">
                     </div>
                 </div>
                 <input type="hidden" name="to_id" value="{{$dataRequest->id}}">

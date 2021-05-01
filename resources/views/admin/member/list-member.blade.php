@@ -180,7 +180,7 @@
                                     @endphp
                                     <tr>
                                         <td>{{$no}}</td>
-                                        <td>{{$row->user_code}}</td>
+                                        <td>{{$row->username}}</td>
                                         <td class="td-actions text-left">
                                             <div class="table-icons">
                                                 <a rel="tooltip" data-toggle="modal" data-target="#popUp"
