@@ -42,7 +42,7 @@
                         </div>
                     </div>
                     <div class="flex items-center justify-center px-3 mt-0">
-                        <a href="/area/login"
+                        <a href="/login"
                             class="lg:ml-16 mt-0 px-4 py-2 sm:px-8 sm:py-4 rounded-full font-light tracking-wide bg-gradient-to-r from-yellow-100 to-yellow-200 text-gray-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">
                             Login</a>
 

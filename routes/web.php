@@ -5,8 +5,6 @@ use Illuminate\Support\Facades\Auth;
 use Telegram\Bot\Laravel\Facades\Telegram;
 use Illuminate\Support\Facades\Config;
 
-use App\Http\Controllers\Member\AppController;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -38,10 +36,8 @@ Route::domain('member.' . Config::get('services.app.url'))->group(function () {
     //telegram bot
     Route::post('/zMbH9dshaPZqdGIJtgvQNfsj38MfPRizcDuNeGu5xyvOWJaswzhkhFJaoeHddWaW/webhook', 'TelegramBotController@handleRequest');
 
-    Auth::routes();
-
     // New Member Routes
-    Route::get('/dashboard', 'Member\AppController@getDashboard')->name('member.dashboard')->middleware('auth');
+    Route::get('/home', 'Member\AppController@getHome')->name('member.home')->middleware('auth');
 
     Route::prefix('/')->group(function () {
 
@@ -649,7 +645,7 @@ Route::group(['domain' => 'finance.' . Config::get('services.app.domain')], func
 
 //main domain
 Route::get('/', function () {
-    return view('home')->with('title', 'Lumbung Network');
+    return view('home')->with('title', 'Lumbung Network')->name('lumbung.network');
 });
 Route::get('/about-core', function () {
     return view('about-core')->with('title', 'Tentang Lumbung Network');

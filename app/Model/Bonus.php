@@ -4,6 +4,7 @@ namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use Throwable;
 
 class Bonus extends Model
@@ -22,18 +23,21 @@ class Bonus extends Model
 
     public function getLMBDividendPool()
     {
-        try {
-            $div = DB::table('lmb_dividend')->selectRaw('
+        $pool = Cache::remember('lmb_div_pool', 900, function () {
+            try {
+                $div = DB::table('lmb_dividend')->selectRaw('
 		sum(case when status = 0 then amount else 0 end) as debits,
 		sum(case when status = 1 then amount else 0 end) as credits
                     ')
-                ->first();
-            $result = $div->credits - $div->debits;
-        } catch (Throwable $ex) {
-            $message = $ex->getMessage();
-            $result = 0;
-        }
-        return $result;
+                    ->first();
+                $result = $div->credits - $div->debits;
+            } catch (Throwable $ex) {
+                $result = 0;
+            }
+            return $result;
+        });
+
+        return $pool;
     }
 
     public function insertUserDividend($data)
