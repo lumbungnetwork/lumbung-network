@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -26,7 +28,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/dashboard';
+    protected $redirectTo = '/home';
 
     /**
      * Create a new controller instance.
@@ -53,8 +55,9 @@ class LoginController extends Controller
         $credentials = $request->only('username', 'password');
         if ($this->guard()->attempt($credentials)) {
             Auth::logoutOtherDevices($request->password);
-            return redirect()->intended('/dashboard');
+            return redirect()->intended($this->redirectPath());
         }
+
         Alert::error('Oops!', 'Login failed, wrong username or password!');
         return redirect()->route('member.login');
     }

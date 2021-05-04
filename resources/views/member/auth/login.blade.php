@@ -3,10 +3,8 @@
 
 <div class="mt-10 flex flex-col justify-center px-4">
     <div class="relative w-full max-w-md mx-auto">
-        <div
-            class="absolute inset-0 -mr-2 bg-gradient-to-r from-green-100 to-yellow-300 shadow-lg transform skew-y-0 rotate-3 rounded-3xl">
-        </div>
-        <div class="relative nm-flat-gray-100 rounded-3xl">
+
+        <div class="relative nm-concave-gray-50 rounded-3xl">
 
             <div class="flex items-center justify-start pt-6 pl-6">
                 <span class="w-3 h-3 bg-red-400 rounded-full mr-2"></span>
@@ -16,15 +14,15 @@
 
             <div class="px-4 lg:px-20 py-6">
 
-                <div class="mt-8 mb-4">
-                    <img class="object-contain w-full max-h-24 lg:max-h-32" src="/image/logo_lumbung2.png"
+                <div class="mt-4 mb-4">
+                    <img class="object-contain w-full max-h-14 lg:max-h-28" src="/image/logo_lumbung2.png"
                         alt="logo lumbung network">
                 </div>
 
                 <!-- Layout  -->
                 <h1 class="text-3xl font-light mb-2">Login</h1>
                 <p class="text-sm font-light">Silakan masuk ke akun anda dengan username dan password anda.</p>
-                <form class="space-y-5 mt-5" method="POST" action="/login" autocomplete="off">
+                <form class="space-y-5 mt-5" method="POST" action="{{ route('member.postLogin') }}" autocomplete="off">
                     @csrf
                     <div class="mt-2 nm-inset-gray-50 rounded-xl py-2 px-4 ">
 
