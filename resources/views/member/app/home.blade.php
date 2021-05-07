@@ -5,7 +5,8 @@
 <div class="bg-white px-4 py-2">
     <div x-data="{ open: false }" class="mt-2 flex justify-between">
         {{-- Profile --}}
-        <button @click="open = true" id="profile" class="flex justify-start items-end focus:outline-none">
+        <button @click="open = true" id="profile"
+            class="flex justify-start items-end focus:outline-none cursor-pointer">
             <svg class="bg-gray-600 rounded-full w-6" viewBox="0 0 20 20">
                 <path fill="white"
                     d="M10,10.9c2.373,0,4.303-1.932,4.303-4.306c0-2.372-1.93-4.302-4.303-4.302S5.696,4.223,5.696,6.594C5.696,8.969,7.627,10.9,10,10.9z M10,3.331c1.801,0,3.266,1.463,3.266,3.263c0,1.802-1.465,3.267-3.266,3.267c-1.8,0-3.265-1.465-3.265-3.267C6.735,4.794,8.2,3.331,10,3.331z">
@@ -21,7 +22,12 @@
 
         </button>
         {{-- Profile Dropdown Menu --}}
-        <div x-show="open" @click.away="open = false" id="profile-menu"
+        <div x-show="open" x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 transform scale-90"
+            x-transition:enter-end="opacity-100 transform scale-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100 transform scale-100"
+            x-transition:leave-end="opacity-0 transform scale-90" @click.away="open = false" id="profile-menu"
             class="hidden absolute mt-8 z-50 bg-gray-700 opacity-90 rounded-br-2xl rounded-bl-2xl drop-shadow w-11/12 py-2 px-4">
             <div class="flex justify-between">
                 <div class="space-y-2">
@@ -100,8 +106,8 @@
             <div class="flex flex-col align-middle items-center">
                 <img class="object-contain w-10" src="/image/koin_lmb2.png" alt="koin LMB">
                 <div class="mt-1">
-                    <a href="#"
-                        class="rounded-lg py-1 px-2 bg-gradient-to-br from-yellow-200 to-red-200 text-sm text-gray-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Claim</a>
+                    <a href="{{ route('member.claim.shoppingReward') }}"
+                        class="cursor-pointer rounded-lg py-1 px-2 bg-gradient-to-br from-yellow-200 to-red-200 text-sm text-gray-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Claim</a>
                 </div>
             </div>
             <div>
@@ -246,7 +252,7 @@
                 <h4 class="font-medium text-gray-600 text-xs">Your Stake</h4>
                 <p class="text-sm font-light">{{ number_format($userStakedLMB, 2) }} LMB</p>
                 <div>
-                    <a href="#"
+                    <a href="{{ route('member.stake') }}"
                         class="rounded-lg py-1 px-2 bg-gradient-to-r from-yellow-100 to-yellow-200 text-sm text-gray-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Stake</a>
                 </div>
             </div>

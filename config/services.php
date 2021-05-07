@@ -59,6 +59,7 @@ return [
 
     'tron' => [
         'lmb_staking' => env('LMBSTAKING'),
+        'lmb_distributor' => env('DLMB') . env('CLMB'),
         'eidr_hot' => env('CEIDR') . env('AEIDR')
     ],
 

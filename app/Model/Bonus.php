@@ -9,6 +9,14 @@ use Throwable;
 
 class Bonus extends Model
 {
+    public function checkUsedHashExist($hash, $table, $column)
+    {
+        $sql = DB::table($table)
+            ->where($column, $hash)
+            ->exists();
+        return $sql;
+    }
+
     public function insertLMBDividend($data)
     {
         try {
@@ -104,7 +112,7 @@ class Bonus extends Model
             ->select('date', 'amount', 'type')
             ->where('user_id', $id)
             ->orderByDesc('date')
-            ->get();
+            ->paginate(10);
     }
 
     public function insertUserStake($data)
@@ -234,7 +242,7 @@ class Bonus extends Model
             ')
             ->groupBy('staking.user_id')
             ->orderBy('net', 'DESC')
-            ->get();
+            ->paginate();
     }
 
     public function getInsertBonusMember($data)

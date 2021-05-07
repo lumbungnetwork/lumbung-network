@@ -76,7 +76,7 @@ class Handler extends ExceptionHandler
                 //     break;
 
             default:
-                $login = 'areaLogin';
+                $login = 'member.login';
                 break;
         }
 

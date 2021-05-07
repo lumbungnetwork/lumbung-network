@@ -38,6 +38,29 @@ Route::domain('member.' . Config::get('services.app.url'))->group(function () {
 
     // New Member Routes
     Route::get('/home', 'Member\AppController@getHome')->name('member.home')->middleware('auth');
+    Route::get('/stake', 'Member\AppController@getStake')->name('member.stake')->middleware('auth');
+    Route::get('/stake/history', 'Member\AppController@getStakeHistory')->name('member.stakeHistory')->middleware('auth');
+    Route::get('/stake/claimed-div-history', 'Member\AppController@getStakeClaimedDivHistory')->name('member.stakeClaimedDivHistory')->middleware('auth');
+    Route::get('/stake/div-history', 'Member\AppController@getStakeDivHistory')->name('member.stakeDivHistory')->middleware('auth');
+    Route::get('/stake/leaderboard', 'Member\AppController@getStakeLeaderboard')->name('member.stakeLeaderboard')->middleware('auth');
+
+
+    // Claims
+    Route::get('/claim/shopping-reward', 'Member\AppController@getClaimShoppingReward')->name('member.claim.shoppingReward')->middleware('auth');
+
+    // AJAX
+    Route::group(['prefix' => 'ajax'], function () {
+        // Reward Claims
+        Route::post('/claim/shopping-reward', 'Member\AjaxController@postClaimShoppingReward')->name('ajax.claim.shoppingReward')->middleware('auth');
+        Route::post('/claim/staking-dividend', 'Member\AjaxController@postClaimStakingDividend')->name('ajax.claim.stakingDividend')->middleware('auth');
+        Route::post('/stake/shopping-reward', 'Member\AjaxController@postStakeShoppingReward')->name('ajax.stake.shoppingReward')->middleware('auth');
+
+        // Staking
+        Route::get('/stake/add', 'Member\AjaxController@getStakeAdd')->name('ajax.stake.add')->middleware('auth');
+        Route::get('/stake/substract', 'Member\AjaxController@getStakeSubstract')->name('ajax.stake.substract')->middleware('auth');
+        Route::post('/stake/confirm', 'Member\AjaxController@postStakeConfirm')->name('ajax.stake.confirm')->middleware('auth');
+        Route::post('/stake/unstake', 'Member\AjaxController@postUnstake')->name('ajax.unstake')->middleware('auth');
+    });
 
     Route::prefix('/')->group(function () {
 

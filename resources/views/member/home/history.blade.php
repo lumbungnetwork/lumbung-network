@@ -50,8 +50,13 @@
 
                                     <td>@if (isset($row->type))
                                         @if ($row->type == 1)
+                                        @if (strpos($row->hash, 'Stake dari Shopping Reward') !== false)
+                                        {{$row->hash}}
+                                        @else
                                         <a href="https://tronscan.org/#/transaction/{{$row->hash}}"
                                             class="text-info">Stake</a>
+                                        @endif
+
                                         @else
                                         @if (strpos($row->hash, 'Unstaking') !== false)
                                         {{$row->hash}}
