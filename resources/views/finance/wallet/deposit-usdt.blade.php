@@ -182,10 +182,7 @@
         
         //Pay using TronWeb service
         $("#deposit-btn").click(async function () {
-            Swal.fire({
-                title: 'Confirming...',
-                allowOutsideClick: false
-            });
+            Swal.fire('Confirming...');
             Swal.showLoading();
             const {
                     abi
@@ -197,9 +194,9 @@
                     const hash = await contract.methods.transfer(toAddress, sendAmount).send();
                     
                     Swal.fire({
-                    title: 'Verifying...',
-                    text: 'Please wait 10-12 seconds to verify the transaction',
-                    allowOutsideClick: false
+                        title: 'Verifying...',
+                        text: 'Please wait 10-12 seconds to verify the transaction',
+                        allowOutsideClick: false
                     });
                     Swal.showLoading();
                     $.ajax({
@@ -211,11 +208,7 @@
                         },
                         success: function(response){
                             if(response.success) {
-                                Swal.fire({
-                                    title: 'Decoding...',
-                                    text: 'Almost done...',
-                                    allowOutsideClick: false
-                                });
+                                Swal.fire('Decoding...');
                                 Swal.showLoading();
                                 const decodedData = contract.decodeInput(response.message);
 
