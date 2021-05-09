@@ -293,7 +293,7 @@
             async function main() {
                 if (!(window.tronWeb && window.tronWeb.ready)) return (waiting += 1, 50 == waiting) ? void console.log('Failed to connect to TronWeb') : (console.warn("main retries", "Could not connect to TronLink.", waiting), void setTimeout(main, 500));
                 tronWeb = window.tronWeb;
-                tronWeb.setHeader({ "TRON-PRO-API-KEY": 'eb052158-9f47-4a63-85ac-a2ae28bc1dd7' });
+                
                 try {
                     await showTronBalance();
                 } catch (a) {
@@ -352,6 +352,7 @@
 
                     // var signedTx = await tronWeb.trx.sign(tx);
                     // var broastTx = await tronWeb.trx.sendRawTransaction(signedTx);
+                    console.log(tx)
                     if (tx.result) {
                         console.log(tx);
                         $('#hash').val(tx.transaction.txID);
@@ -361,6 +362,7 @@
 
                     } else {
                         eAlert('Transaksi Gagal, periksa koneksi dan ulangi kembali');
+                        console.log(tx)
                     }
                 } catch (e) {
                     if (e.includes("assetBalance is not sufficient")) {

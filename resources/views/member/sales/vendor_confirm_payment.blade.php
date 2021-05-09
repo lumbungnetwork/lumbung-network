@@ -285,7 +285,7 @@
             async function main() {
                 if (!(window.tronWeb && window.tronWeb.ready)) return (waiting += 1, 50 == waiting) ? void console.log('Failed to connect to TronWeb') : (console.warn("main retries", "Could not connect to TronLink.", waiting), void setTimeout(main, 500));
                 tronWeb = window.tronWeb;
-                tronWeb.setHeader({ "TRON-PRO-API-KEY": 'eb052158-9f47-4a63-85ac-a2ae28bc1dd7' });
+                
                 try {
                     await showTronBalance();
                 } catch (a) {
