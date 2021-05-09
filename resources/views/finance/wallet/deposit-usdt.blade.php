@@ -220,7 +220,7 @@
                                 hash:hash,
                                 _token:_token
                             },
-                            success: function(response){
+                            success: async function(response){
                                 if(response.success) {
                                     Swal.fire('Decoding...');
                                     Swal.showLoading();
