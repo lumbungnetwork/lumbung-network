@@ -137,7 +137,7 @@
     {{-- Quick actions --}}
     <div class="mt-1 px-3 flex flex-wrap justify-between">
         {{-- Belanja --}}
-        <a class="mt-1 mx-0.5 flex flex-col w-14 items-center" href="#">
+        <a class="mt-1 mx-0.5 flex flex-col w-14 items-center" href="{{ route('member.shopping') }}">
             <div
                 class="rounded-2xl bg-gradient-to-br from-blue-300 to-green-300 w-12 h-12 p-1 flex justify-center items-end">
                 <svg class="w-8 " viewBox="0 0 20 20">

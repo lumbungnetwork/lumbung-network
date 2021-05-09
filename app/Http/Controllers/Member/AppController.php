@@ -125,4 +125,10 @@ class AppController extends Controller
             ->with(compact('totalStakedLMB'))
             ->with(compact('stakers'));
     }
+
+    public function getShopping()
+    {
+        return view('member.app.shopping')
+            ->with('title', 'Shopping');
+    }
 }

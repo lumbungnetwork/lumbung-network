@@ -44,6 +44,8 @@ Route::domain('member.' . Config::get('services.app.url'))->group(function () {
     Route::get('/stake/div-history', 'Member\AppController@getStakeDivHistory')->name('member.stakeDivHistory')->middleware('auth');
     Route::get('/stake/leaderboard', 'Member\AppController@getStakeLeaderboard')->name('member.stakeLeaderboard')->middleware('auth');
 
+    Route::get('/shopping', 'Member\AppController@getShopping')->name('member.shopping')->middleware('auth');
+
 
     // Claims
     Route::get('/claim/shopping-reward', 'Member\AppController@getClaimShoppingReward')->name('member.claim.shoppingReward')->middleware('auth');
