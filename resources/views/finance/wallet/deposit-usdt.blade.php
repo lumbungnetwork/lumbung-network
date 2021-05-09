@@ -182,8 +182,12 @@
         
         //Pay using TronWeb service
         $("#deposit-btn").click(async function () {
-            Swal.fire('Processing...');
+            Swal.fire({
+                title: 'Confirming...',
+                allowOutsideClick: false
+            });
             Swal.showLoading();
+            return false;
             const {
                     abi
                 } = await tronWeb.trx.getContract(USDTcontract);
@@ -193,7 +197,11 @@
                 try {
                     const hash = await contract.methods.transfer(toAddress, sendAmount).send();
                     
-                    Swal.fire('Verifying...');
+                    Swal.fire({
+                    title: 'Verifying...',
+                    text: 'Please wait 10-12 seconds to verify the transaction'
+                    allowOutsideClick: false
+                    });
                     Swal.showLoading();
                     $.ajax({
                         type: "POST",
@@ -204,13 +212,20 @@
                         },
                         success: function(response){
                             if(response.success) {
-                                Swal.fire('Decoding...');
+                                Swal.fire({
+                                    title: 'Decoding...',
+                                    text: 'Almost done...'
+                                    allowOutsideClick: false
+                                });
                                 Swal.showLoading();
                                 const decodedData = contract.decodeInput(response.message);
 
                                 setTimeout(function() {
                                     
-                                    Swal.fire('Validating...');
+                                    Swal.fire({
+                                        title: 'Validating...',
+                                        allowOutsideClick: false
+                                    });
                                     Swal.showLoading();
                                     
                                     $.ajax({
