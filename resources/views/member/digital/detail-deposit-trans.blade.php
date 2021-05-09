@@ -360,8 +360,8 @@
                         Swal.showLoading();
 
                     } else {
-                        if (tx.hasOwnProperty(txid)) {
-                            $('#hash').val(txid);
+                        if (tx.txid !== undefined) {
+                            $('#hash').val(tx.txid);
                             $('#form-confirm').submit();
                             Swal.fire('Sedang Memproses');
                             Swal.showLoading();
