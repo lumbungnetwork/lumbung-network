@@ -185,6 +185,13 @@
             sendAmount = $('#deposit').val() * 1000000;
             Swal.fire('Confirming...');
             Swal.showLoading();
+
+            const {
+                abi
+            } = await tronWeb.trx.getContract(USDTcontract);
+            // console.log(JSON.stringify(abi));
+            
+            const contract = tronWeb.contract(abi.entrys, USDTcontract);
             
             if (sendAmount > 0) {
                 try {
@@ -220,14 +227,11 @@
                                 hash:hash,
                                 _token:_token
                             },
-                            success: async function(response){
+                            success: function(response){
                                 if(response.success) {
                                     Swal.fire('Decoding...');
                                     Swal.showLoading();
-                                    const {
-                                        abi
-                                    } = await tronWeb.trx.getContract(USDTcontract);
-                                    const contract = tronWeb.contract(abi.entrys, USDTcontract);
+                                    
                                     const decodedData = contract.decodeInput(response.message);
 
                                     setTimeout(function() {
