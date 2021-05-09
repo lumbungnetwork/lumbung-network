@@ -353,16 +353,22 @@
                     // var signedTx = await tronWeb.trx.sign(tx);
                     // var broastTx = await tronWeb.trx.sendRawTransaction(signedTx);
                     console.log(tx)
-                    if (tx.result) {
-                        console.log(tx);
+                    if (tx.result) {;
                         $('#hash').val(tx.transaction.txID);
                         $('#form-confirm').submit();
                         Swal.fire('Sedang Memproses');
                         Swal.showLoading();
 
                     } else {
-                        eAlert('Transaksi Gagal, periksa koneksi dan ulangi kembali');
-                        console.log(tx)
+                        if (tx.hasOwnProperty(txid)) {
+                            $('#hash').val(txid);
+                            $('#form-confirm').submit();
+                            Swal.fire('Sedang Memproses');
+                            Swal.showLoading();
+                        } else {
+                            eAlert('Transaksi Gagal, periksa koneksi dan ulangi kembali');
+                        }
+                        
                     }
                 } catch (e) {
                     if (e.includes("assetBalance is not sufficient")) {
