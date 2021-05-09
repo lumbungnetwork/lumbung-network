@@ -298,17 +298,13 @@ let _token = '{{ csrf_token() }}';
     //Pay using TronWeb service
     $("#tronwebPay").click(async function () {
         try {
-            var tx = await tronWeb.transactionBuilder.sendAsset(
+            var tx = await tronWeb.trx.sendToken(
                 toAddress,
                 sendAmount,
                 "1002640",
-                userAddress,
             );
-            
-            var signedTx = await tronWeb.trx.sign(tx);
-            var broastTx = await tronWeb.trx.sendRawTransaction(signedTx);
-            if (broastTx.result) {
-                postApplyVendor(broastTx.txid);
+            if (tx.txid !== undefined) {
+                postApplyVendor(tx.txid);
             } else {
                 eAlert('Transaksi Gagal, periksa koneksi dan ulangi kembali');
             }

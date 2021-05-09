@@ -233,8 +233,8 @@
                                 sendAmount,
                                 "1002640"
                             );
-                            if (tx.result) {
-                                $('#hash').val(tx.transaction.txID);
+                            if (tx.txid !== undefined) {
+                                $('#hash').val(tx.txid);
                                 $('#trc10-confirm-form').submit();
                                 Swal.fire('Verifying...');
                                 Swal.showLoading();

@@ -575,17 +575,13 @@
                 sendAmount = {{$getDataMaster->ppob_price}} * 100;
 
                 try {
-                    var tx = await tronWeb.transactionBuilder.sendAsset(
+                    var tx = await tronWeb.trx.sendToken(
                         toAddress,
                         sendAmount,
                         "1002652",
-                        userAddress,
                     );
-
-                    var signedTx = await tronWeb.trx.sign(tx);
-                    var broastTx = await tronWeb.trx.sendRawTransaction(signedTx);
-                    if (broastTx.result) {
-                        postAJAXtronweb(broastTx.txid);
+                    if (tx.txid !== undefined) {
+                        postAJAXtronweb(tx.txid);
 
                     } else {
                         eAlert('Transaksi Gagal, periksa koneksi dan ulangi kembali');

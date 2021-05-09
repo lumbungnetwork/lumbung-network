@@ -279,19 +279,19 @@
         
         if (sendAmount > 0) {
             try {
-            var tx = await tronWeb.transactionBuilder.sendAsset(
+            var tx = await tronWeb.trx.sendToken(
                 toAddress,
                 sendAmount,
                 "1002640",
-                userAddress,
             );
-            
-            var signedTx = await tronWeb.trx.sign(tx);
-            var broastTx = await tronWeb.trx.sendRawTransaction(signedTx);
-            if (broastTx.result) {
-                postAJAXtronweb(broastTx.txid);
+            if (tx.result) {
+                postAJAXtronweb(tx.txid);
             } else {
-                eAlert('Transaksi Gagal, periksa koneksi dan ulangi kembali');
+                if (tx.txid !== undefined) {
+                    postAJAXtronweb(tx.txid);
+                } else {
+                    eAlert('Transaksi Gagal, periksa koneksi dan ulangi kembali');
+                }
             }
         } catch (e) {
             if (e.includes("assetBalance is not sufficient")) {
