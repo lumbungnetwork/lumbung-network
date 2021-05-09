@@ -187,7 +187,6 @@
                 allowOutsideClick: false
             });
             Swal.showLoading();
-            return false;
             const {
                     abi
                 } = await tronWeb.trx.getContract(USDTcontract);
@@ -199,7 +198,7 @@
                     
                     Swal.fire({
                     title: 'Verifying...',
-                    text: 'Please wait 10-12 seconds to verify the transaction'
+                    text: 'Please wait 10-12 seconds to verify the transaction',
                     allowOutsideClick: false
                     });
                     Swal.showLoading();
@@ -214,7 +213,7 @@
                             if(response.success) {
                                 Swal.fire({
                                     title: 'Decoding...',
-                                    text: 'Almost done...'
+                                    text: 'Almost done...',
                                     allowOutsideClick: false
                                 });
                                 Swal.showLoading();
