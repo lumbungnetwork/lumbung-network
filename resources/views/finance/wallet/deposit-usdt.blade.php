@@ -182,91 +182,112 @@
         
         //Pay using TronWeb service
         $("#deposit-btn").click(async function () {
+            sendAmount = $('#deposit').val() * 1000000;
             Swal.fire('Confirming...');
             Swal.showLoading();
-            const {
-                    abi
-                } = await tronWeb.trx.getContract(USDTcontract);
-            const contract = tronWeb.contract(abi.entrys, USDTcontract);
-            sendAmount = $('#deposit').val() * 1000000;
+            
             if (sendAmount > 0) {
                 try {
-                    const hash = await contract.methods.transfer(toAddress, sendAmount).send();
+                    var parameter = [{type:'address',value:toAddress},{type:'uint256',value:sendAmount}]
+                    var options = {
+                        feeLimit:100000000
+                    }
                     
-                    Swal.fire({
-                        title: 'Verifying...',
-                        text: 'Please wait 10-12 seconds to verify the transaction',
-                        allowOutsideClick: false
-                    });
-                    Swal.showLoading();
-                    $.ajax({
-                        type: "POST",
-                        url: "{{ route('finance.ajax.postVerifyUSDTDeposit') }}",
-                        data: {
-                            hash:hash,
-                            _token:_token
-                        },
-                        success: function(response){
-                            if(response.success) {
-                                Swal.fire('Decoding...');
-                                Swal.showLoading();
-                                const decodedData = contract.decodeInput(response.message);
-
-                                setTimeout(function() {
-                                    
-                                    Swal.fire({
-                                        title: 'Validating...',
-                                        allowOutsideClick: false
-                                    });
+                    const transactionObject = await tronWeb.transactionBuilder.triggerSmartContract(
+                        tronWeb.address.toHex(USDTcontract),
+                        "transfer(address,uint256)",
+                        options,
+                        parameter,
+                        tronWeb.address.toHex(userAddress)
+                    );
+                    
+                    var signedTransaction = await tronWeb.trx.sign(transactionObject.transaction);
+                    
+                    var broadcastTransaction = await tronWeb.trx.sendRawTransaction(signedTransaction);
+                    
+                    if (broadcastTransaction.txid !== undefined) {
+                        const hash = broadcastTransaction.txid;
+                        Swal.fire({
+                            title: 'Verifying...',
+                            text: 'Please wait 10-12 seconds to verify the transaction',
+                            allowOutsideClick: false
+                        });
+                        Swal.showLoading();
+                        $.ajax({
+                            type: "POST",
+                            url: "{{ route('finance.ajax.postVerifyUSDTDeposit') }}",
+                            data: {
+                                hash:hash,
+                                _token:_token
+                            },
+                            success: function(response){
+                                if(response.success) {
+                                    Swal.fire('Decoding...');
                                     Swal.showLoading();
-                                    
-                                    $.ajax({
-                                        type: "POST",
-                                        url: "{{ route('finance.ajax.postValidateUSDTDeposit') }}",
-                                        data: {
-                                            data:JSON.stringify(decodedData),
-                                            hash:hash,
-                                            _token:_token
-                                        },
-                                        success: function(response) {
-                                            if(response.success) {
-                                                Swal.fire(
-                                                    'Success!',
-                                                    'USDT successfuly deposited!',
-                                                    'success'
-                                                )
-                                                setTimeout(function() {
-                                                    window.location.reload(true);
-                                                }, 3000)
-                                            } else {
-                                                Swal.fire(
-                                                    'Oops!',
-                                                    response.message,
-                                                    'error'
-                                                )
-                                                setTimeout(function() {
-                                                    window.location.reload(true);
-                                                }, 5000)
-                                            }
-                                        }
-                                    });
+                                    const {
+                                        abi
+                                    } = await tronWeb.trx.getContract(USDTcontract);
+                                    const contract = tronWeb.contract(abi.entrys, USDTcontract);
+                                    const decodedData = contract.decodeInput(response.message);
 
-                                }, 3000)
-                                
-                                
-                            } else {
-                                Swal.fire(
-                                'Oops!',
-                                response.message,
-                                'error'
-                                )
-                                setTimeout(function() {
-                                    window.location.reload(true);
-                                }, 5000)
+                                    setTimeout(function() {
+                                        
+                                        Swal.fire({
+                                            title: 'Validating...',
+                                            allowOutsideClick: false
+                                        });
+                                        Swal.showLoading();
+                                        
+                                        $.ajax({
+                                            type: "POST",
+                                            url: "{{ route('finance.ajax.postValidateUSDTDeposit') }}",
+                                            data: {
+                                                data:JSON.stringify(decodedData),
+                                                hash:hash,
+                                                _token:_token
+                                            },
+                                            success: function(response) {
+                                                if(response.success) {
+                                                    Swal.fire(
+                                                        'Success!',
+                                                        'USDT successfuly deposited!',
+                                                        'success'
+                                                    )
+                                                    setTimeout(function() {
+                                                        window.location.reload(true);
+                                                    }, 3000)
+                                                } else {
+                                                    Swal.fire(
+                                                        'Oops!',
+                                                        response.message,
+                                                        'error'
+                                                    )
+                                                    setTimeout(function() {
+                                                        window.location.reload(true);
+                                                    }, 5000)
+                                                }
+                                            }
+                                        });
+
+                                    }, 3000)
+                                    
+                                    
+                                } else {
+                                    Swal.fire(
+                                    'Oops!',
+                                    response.message,
+                                    'error'
+                                    )
+                                    setTimeout(function() {
+                                        window.location.reload(true);
+                                    }, 5000)
+                                }
+                
                             }
-            
-                        }
-                    })
+                        })
+                    }
+                    
+                    
               
                 } catch (e) {
                     console.log("error:", e);
