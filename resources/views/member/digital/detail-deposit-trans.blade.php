@@ -293,6 +293,7 @@
             async function main() {
                 if (!(window.tronWeb && window.tronWeb.ready)) return (waiting += 1, 50 == waiting) ? void console.log('Failed to connect to TronWeb') : (console.warn("main retries", "Could not connect to TronLink.", waiting), void setTimeout(main, 500));
                 tronWeb = window.tronWeb;
+                tronWeb.setHeader({ "TRON-PRO-API-KEY": '50e0b74c-a6f8-42e5-8779-0fe170589d1b' });
                 try {
                     await showTronBalance();
                 } catch (a) {
@@ -340,13 +341,15 @@
             //Pay using TronWeb service
             async function tronWebPay() {
                 sendAmount = {{$total}} * 100;
+                tronWeb.setHeader({ "TRON-PRO-API-KEY": '50e0b74c-a6f8-42e5-8779-0fe170589d1b' });
 
                 try {
-                    var tx = await tronWeb.trx.sendToken(
-                        toAddress,
-                        sendAmount,
-                        "1002652"
-                    );
+                    var tx = 
+                        await tronWeb.trx.sendToken(
+                            toAddress,
+                            sendAmount,
+                            "1002652"
+                        );
 
                     // var signedTx = await tronWeb.trx.sign(tx);
                     // var broastTx = await tronWeb.trx.sendRawTransaction(signedTx);

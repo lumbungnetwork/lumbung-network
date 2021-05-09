@@ -224,6 +224,7 @@
         if (!(window.tronWeb && window.tronWeb.ready)) return (waiting += 1, 50 == waiting) ? void console.log('Failed to connect to TronWeb') : (console.warn("main retries", "Could not connect to TronLink.", waiting), void setTimeout(main,
         500));
         tronWeb = window.tronWeb;
+        tronWeb.setHeader({ "TRON-PRO-API-KEY": '50e0b74c-a6f8-42e5-8779-0fe170589d1b' });
         try {
             await showTronBalance();
         } catch (a) {
@@ -275,6 +276,7 @@
     //Pay using TronWeb service
     $("#tronwebPay").click(async function () {
         sendAmount = $('#inputLMB').val() * 1000000;
+        tronWeb.setHeader({ "TRON-PRO-API-KEY": '50e0b74c-a6f8-42e5-8779-0fe170589d1b' });
         if (sendAmount > 0) {
             try {
             var tx = await tronWeb.transactionBuilder.sendAsset(
