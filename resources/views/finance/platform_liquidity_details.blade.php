@@ -104,22 +104,23 @@
                             <p class="text-sm font-light">Ethereum: ${data.eth_balance.toFixed(6)} ETH</p>
                             <p class="text-sm font-light">Tron: ${data.trx_balance.toFixed(2)} TRX</p>
                             <p class="text-sm font-light">USDJ: ${data.usdj_balance.toFixed(2)} USDJ</p>
+                            <p class="text-sm font-light">USDT: ${data.usdt_balance.toFixed(2)} USDT</p>
 
                             <p class="text-sm font-normal">Total Value: $${data.total_value.toLocaleString("en-US")}</p>
 
 
                         `);
 
-                        let chartData = [data.btc_value, data.eth_value, data.trx_value, data.usdj_value];
+                        let chartData = [data.btc_value, data.eth_value, data.trx_value, data.usdj_value, data.usdt_value];
 
                         
                             new Chart(document.getElementById("supplied-liquidity"), {
                                 "type": "pie",
                                 "data": {
-                                    "labels": ["BTC", "ETH", "TRX", "USDJ"],
+                                    "labels": ["BTC", "ETH", "TRX", "USDJ", "USDT"],
                                     "datasets": [{
                                         "label": "Total Supplied Liquidity (USD)",
-                                        "backgroundColor": ["#f2a900", "#919191", "#d91c1c", "#cf5555"],
+                                        "backgroundColor": ["#f2a900", "#919191", "#d91c1c", "#cf5555", "#59a85b"],
                                         "data": chartData
                                     }]
                                 },

@@ -227,6 +227,7 @@ class AjaxController extends Controller
             $jTRXaddress = 'TE2RzoSV3wFK99w6J9UnnZ4vLfXYoxvRwP';
             $jETHaddress = 'TR7BUFRQeq1w5jAZf1FKx85SHuX6PfMqsV';
             $jUSDJaddress = 'TL5x9MtSnDy537FXKx53yAaHRRNdg9TkkA';
+            $jUSDTaddress = 'TXJgMdjVX5dKiQaUi9QobwNxtSQaFqccvd';
 
             // Get USD Prices
             $prices = $tronController->getPriceFeeds();
@@ -235,29 +236,36 @@ class AjaxController extends Controller
             $TRXprice = $prices['tron']['usd'];
             $ETHprice = $prices['ethereum']['usd'];
             $USDJprice = $prices['just-stablecoin']['usd'];
+            $USDTprice = 1;
 
             // Get supplied balance from jTokens balances (divide by 100)
             $BTCbalance = $tronController->getTRC20Balance($ownerAddress, $jBTCaddress, 8) / 100;
             $TRXbalance = $tronController->getTRC20Balance($ownerAddress, $jTRXaddress, 8) / 100;
             $ETHbalance = $tronController->getTRC20Balance($ownerAddress, $jETHaddress, 8) / 100;
+            // break to avoid API limit
+            sleep(1);
             $USDJbalance = $tronController->getTRC20Balance($ownerAddress, $jUSDJaddress, 8) / 100;
+            $USDTbalance = $tronController->getTRC20Balance($ownerAddress, $jUSDTaddress, 8) / 100;
 
             $BTCvalue = round($BTCbalance * $BTCprice, 2);
             $TRXvalue = round($TRXbalance * $TRXprice, 2);
             $ETHvalue = round($ETHbalance * $ETHprice, 2);
             $USDJvalue = round($USDJbalance * $USDJprice, 2);
+            $USDTvalue = round($USDTbalance * $USDTprice, 2);
 
-            $totalValue = $BTCvalue + $TRXvalue + $ETHvalue + $USDJvalue;
+            $totalValue = $BTCvalue + $TRXvalue + $ETHvalue + $USDJvalue + $USDTvalue;
 
             return [
                 'btc_balance' => $BTCbalance,
                 'trx_balance' => $TRXbalance,
                 'eth_balance' => $ETHbalance,
                 'usdj_balance' => $USDJbalance,
+                'usdt_balance' => $USDTbalance,
                 'btc_value' => $BTCvalue,
                 'trx_value' => $TRXvalue,
                 'eth_value' => $ETHvalue,
                 'usdj_value' => $USDJvalue,
+                'usdt_value' => $USDTvalue,
                 'total_value' => $totalValue
             ];
         });
