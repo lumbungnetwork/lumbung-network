@@ -21,6 +21,11 @@ use IEXBase\TronAPI\Exception\TronException;
 
 class AppController extends Controller
 {
+    public function getTestZone()
+    {
+        return view('finance.test_zone');
+    }
+
     public function getFinanceDashboard()
     {
         $user = Auth::user();

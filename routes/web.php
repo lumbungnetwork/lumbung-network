@@ -631,6 +631,10 @@ Route::group(['domain' => 'finance.' . Config::get('services.app.domain')], func
     Route::get('/password/reset', 'FinanceAuth\ForgotPasswordController@showLinkRequestForm');
     Route::get('/password/reset/{token}', 'FinanceAuth\ResetPasswordController@showResetForm');
 
+    // test zone
+    Route::get('/test-zone', 'Finance\AppController@getTestZone')->name('testZone');
+
+
     // Auth::routes();
 
     Route::get('/dashboard', 'Finance\AppController@getFinanceDashboard')->name('finance.dashboard')->middleware('auth');
