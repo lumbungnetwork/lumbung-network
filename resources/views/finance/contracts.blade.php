@@ -34,13 +34,14 @@
             <div class="p-3 sm:p-6">
                 <div class="text-center">
                     <h2 class="font-extralight text-4xl text-gray-600">Contracts</h2>
+                    <p class="text-sm font-light text-gray-600">Click on any contract to show its details.</p>
 
                 </div>
 
                 <div id="active-contracts">
                     @if (count($contracts) == 0)
                     <div class="mt-4 nm-convex-gray-50 rounded-xl p-6 ">
-                        <small class="float-right font-extralight">#000000</small>
+                        <small class="float-right font-extralight text-purple-500">#000000</small>
                         <div class="flex items-center py-2">
                             <span class="w-3 h-3 bg-red-400 rounded-full mr-2"></span>
                             <p class="text-sm font-light ">Inactive</p>
@@ -53,7 +54,8 @@
                     @foreach ($contracts as $contract)
                     <a href="{{ route('finance.contracts.detail', ['contract_id' => $contract->id]) }}">
                         <div class="mt-4 nm-convex-gray-50 rounded-xl p-6 ">
-                            <small class="float-right font-extralight">#{{sprintf('%07s', $contract->id)}}</small>
+                            <small
+                                class="float-right font-extralight text-purple-500">#{{sprintf('%07s', $contract->id)}}</small>
                             <div class="flex items-center py-2">
                                 @if ($contract->status == 0)
                                 <span class="w-3 h-3 bg-yellow-400 rounded-full mr-2"></span>

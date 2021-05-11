@@ -5,6 +5,7 @@ namespace App\Jobs;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Model\Finance\Contract;
@@ -26,6 +27,12 @@ class GenerateContractYieldJob implements ShouldQueue
     public function __construct($contract_id)
     {
         $this->contract_id = $contract_id;
+    }
+
+    // Prevent Overlap
+    public function middleware()
+    {
+        return [(new WithoutOverlapping($this->contract_id))->dontRelease()];
     }
 
     /**

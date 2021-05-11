@@ -135,6 +135,22 @@ class AjaxController extends Controller
             ->with('balance', $creditBalance);
     }
 
+    public function getCreditActivate()
+    {
+        $user = Auth::user();
+        $modelCredit = new Credit;
+        $creditBalance = $modelCredit->getUserNetCreditBalance($user->id);
+
+        if ($creditBalance >= 100) {
+            $user->active_credits = 1;
+            $user->save();
+
+            return response()->json(['success' => true, 'message' => 'Credits Activated']);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Insufficient Credits']);
+        }
+    }
+
     public function getUSDTWithdraw()
     {
         $user = Auth::user();

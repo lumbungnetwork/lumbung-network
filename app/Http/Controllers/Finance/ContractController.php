@@ -51,9 +51,13 @@ class ContractController extends Controller
         $modelUSDTbalance = new USDTbalance;
         $USDTbalance = $modelUSDTbalance->getUserNetUSDTbalance($user->id);
 
+        $Credit = new Credit;
+        $creditBalance = $Credit->getUserNetCreditBalance($user->id);
+
         return view('finance.contracts.new')
             ->with('title', 'Open New Contract')
             ->with(compact('USDTbalance'))
+            ->with(compact('creditBalance'))
             ->with(compact('user'));
     }
 

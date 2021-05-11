@@ -6,6 +6,8 @@ use Illuminate\Console\Command;
 use App\Jobs\GenerateContractYieldJob;
 use App\Jobs\EndMatureContractJob;
 use App\Model\Finance\Contract;
+use App\Finance;
+use App\Jobs\GenerateActiveCreditsYield;
 
 class GenerateContractYield extends Command
 {
@@ -58,6 +60,14 @@ class GenerateContractYield extends Command
         if (count($maturedContracts) > 0) {
             foreach ($maturedContracts as $contract) {
                 EndMatureContractJob::dispatch($contract->id)->onQueue('mail');
+            }
+        }
+
+        // Checking User's with active credits 
+        $activeCreditsUsers = Finance::where('active_credits', 1)->select('id')->get();
+        if (count($activeCreditsUsers) > 0) {
+            foreach ($activeCreditsUsers as $user) {
+                GenerateActiveCreditsYield::dispatch($user->id)->onQueue('bonus');
             }
         }
 

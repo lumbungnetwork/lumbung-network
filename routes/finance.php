@@ -60,6 +60,7 @@ Route::group(['prefix' => 'ajax'], function () {
     Route::get('/convert-from-usdt', 'Finance\AjaxController@getConvertFromUSDT')->name('ajax.getConvertFromUSDT')->middleware('auth');
     Route::get('/convert-to-usdt', 'Finance\AjaxController@getConvertToUSDT')->name('ajax.getConvertToUSDT')->middleware('auth');
     Route::get('/credit/transfer', 'Finance\AjaxController@getCreditTransfer')->name('ajax.getCreditTransfer')->middleware('auth');
+    Route::get('/credit/activate', 'Finance\AjaxController@getCreditActivate')->name('ajax.getCreditActivate')->middleware('auth');
     Route::get('/usdt/withdraw', 'Finance\AjaxController@getUSDTWithdraw')->name('ajax.getUSDTWithdraw')->middleware('auth');
     Route::post('/usdt/withdraw', 'Finance\AppController@postUSDTWithdraw')->name('ajax.postUSDTWithdraw')->middleware('auth');
 

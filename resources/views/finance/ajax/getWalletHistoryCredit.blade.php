@@ -40,6 +40,10 @@
                         @if ($item->source == 4)
                         <strong class="text-green-500">+${{number_format($item->amount, 2)}}</strong> Convert from USDT
                         @endif
+                        @if ($item->source == 5)
+                        <strong class="text-green-500">+${{number_format($item->amount, 2)}}</strong> Daily Yield from
+                        Active Credits
+                        @endif
 
                         @else
                         @if ($item->source == 3)
