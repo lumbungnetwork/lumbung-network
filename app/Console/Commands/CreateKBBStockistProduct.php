@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\User;
-use App\Product;
+use App\Model\Member\Product;
 use Illuminate\Support\Facades\DB;
 
 class CreateKBBStockistProduct extends Command

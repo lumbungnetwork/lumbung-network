@@ -10,6 +10,6 @@ class Category extends Model
 
     public function product()
     {
-        return $this->belongsTo('App\Product', 'id', 'category_id');
+        return $this->belongsTo('App\Model\Member\Product', 'id', 'category_id');
     }
 }

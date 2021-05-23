@@ -43,7 +43,7 @@ class StockistNotification extends Notification
             // Optional recipient user id.
             ->to($notifiable->chat_id)
             // Markdown supported.
-            ->content("Ada pembeli di Stokis Anda!\nSilakan periksa dan konfirmasi pesanan berikut:
+            ->content("Ada pembeli di Toko Anda!\nSilakan periksa dan konfirmasi pesanan berikut:
             \nPembeli: " . $this->notification['buyer'] .
                 "\nTotal Belanja: " . $this->notification['price'] .
                 "\nMetode Pembayaran: " . $this->notification['payment']);

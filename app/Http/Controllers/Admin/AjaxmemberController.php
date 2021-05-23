@@ -19,7 +19,7 @@ use App\Model\Transaction;
 use App\Model\Sales;
 use App\Model\Bonussetting;
 use App\BonusRoyalty;
-use App\Product;
+use App\Model\Member\Product;
 use App\Category;
 use App\User;
 use App\SellerProfile;

@@ -103,7 +103,7 @@ class Bonus extends Model
             ->select('date', 'amount', 'hash')
             ->where('user_id', $id)
             ->where('type', 0)
-            ->get();
+            ->paginate(15);
     }
 
     public function getUserDividendHistory($id)

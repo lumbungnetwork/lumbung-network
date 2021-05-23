@@ -200,7 +200,7 @@ return [
                 'maxProcesses' => 2,
                 'balanceMaxShift' => 1,
                 'balanceCooldown' => 3,
-                'tries' => 4,
+                'tries' => 1,
             ],
             'supervisor-3' => [
                 'connection' => 'redis',
@@ -239,7 +239,7 @@ return [
                 'maxProcesses' => 10,
                 'balanceMaxShift' => 1,
                 'balanceCooldown' => 3,
-                'tries' => 4,
+                'tries' => 1,
             ],
             'supervisor-3' => [
                 'connection' => 'redis',

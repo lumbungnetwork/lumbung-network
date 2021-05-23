@@ -9,6 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use App\Model\Sales;
+use App\Model\Member\MasterSales;
 use App\User;
 use Illuminate\Support\Facades\Config;
 use IEXBase\TronAPI\Exception\TronException;
@@ -27,11 +28,9 @@ class ForwardShoppingPaymentJob implements ShouldQueue
      * @return void
      */
     protected $masterSalesID;
-    protected $sellerType;
-    public function __construct($masterSalesID, $sellerType)
+    public function __construct($masterSalesID)
     {
         $this->masterSalesID = $masterSalesID;
-        $this->sellerType = $sellerType;
     }
 
     // Prevent Overlap
@@ -48,32 +47,30 @@ class ForwardShoppingPaymentJob implements ShouldQueue
     public function handle()
     {
         //prepare Tron
-        $fuse = Config::get('services.telegram.test');
-
         $controller = new Controller;
         $tron = $controller->getTron();
-        $tron->setPrivateKey($fuse);
+        $tron->setPrivateKey(config('services.tron.eidr_hot'));
 
         //get Shopping Data
-        $modelSales = new Sales;
-        $shoppingData = $modelSales->getMasterSalesDataByType($this->masterSalesID, $this->sellerType);
+        $shoppingData = MasterSales::find($this->masterSalesID);
+
+        // check for duplicate trial
+        if ($shoppingData->tron != null) {
+            $this->delete();
+            return;
+        }
+
+        // check tx status
         if ($shoppingData->status != 2) {
+            $this->delete();
             return;
         } elseif ($shoppingData->status == 2) {
             $totalPrice = $shoppingData->total_price;
-            $royalti = 0;
-            $sellerTron = null;
-            if ($this->sellerType == 1) {
-                $royalti = $totalPrice * 2 / 100; //reduction from proposal #04
-                $seller = User::find($shoppingData->stockist_id);
-                $sellerTron = $seller->tron;
-                $lmbDiv = $royalti / 2; // 1% from sales
-            } elseif ($this->sellerType == 2) {
-                $royalti = $totalPrice * 2 / 100;
-                $seller = User::find($shoppingData->vendor_id);
-                $sellerTron = $seller->tron;
-                $lmbDiv = $royalti; // 2% of sales
-            }
+            $royalti = $totalPrice * 2 / 100;
+            $seller = User::find($shoppingData->stockist_id);
+            $sellerTron = $seller->tron;
+            $lmbDiv = $royalti / 2; // 1% from sales
+
             if ($sellerTron == null) {
                 Telegram::sendMessage([
                     'chat_id' => Config::get('services.telegram.overlord'),
@@ -81,7 +78,9 @@ class ForwardShoppingPaymentJob implements ShouldQueue
                     'parse_mode' => 'markdown'
                 ]);
                 $this->delete();
+                return;
             }
+
             $netPayment = $totalPrice - $royalti;
 
             $to = $sellerTron;
@@ -116,8 +115,12 @@ class ForwardShoppingPaymentJob implements ShouldQueue
             //cleanup
             if ($response['result'] == true) {
 
+                // record forward transfer to MasterSales
+                $shoppingData->tron = $response['txid'];
+                $shoppingData->save();
+
                 //fail check
-                sleep(5);
+                sleep(10);
                 try {
                     $tron->getTransaction($response['txid']);
                 } catch (TronException $e) {
@@ -131,14 +134,15 @@ class ForwardShoppingPaymentJob implements ShouldQueue
 
                 $eIDRbalance = $tron->getTokenBalance($tokenID, $from, $fromTron = false) / 100;
 
-                if ($eIDRbalance < 1500000) {
+                if ($eIDRbalance < 2500000) {
                     eIDRrebalanceJob::dispatch()->onQueue('tron');
                 }
 
+                // Add dividend to Dividend Pool
                 $modelBonus = new Bonus;
                 $modelBonus->insertLMBDividend([
                     'amount' => $lmbDiv,
-                    'type' => $this->sellerType,
+                    'type' => 1,
                     'status' => 1,
                     'source_id' => $this->masterSalesID,
                     'created_at' => date('Y-m-d H:i:s')

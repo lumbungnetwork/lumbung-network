@@ -61,7 +61,7 @@ namespace App{
  * @property int $royalty
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Product $product
+ * @property-read \App\Model\Member\Product $product
  * @method static \Illuminate\Database\Eloquent\Builder|Category newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Category newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Category query()
@@ -87,6 +87,7 @@ namespace App{
  * @property string|null $active_at
  * @property int $sponsor_id
  * @property string|null $tron
+ * @property int $active_credits
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null $remember_token
@@ -103,6 +104,7 @@ namespace App{
  * @method static \Illuminate\Database\Eloquent\Builder|Finance newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Finance query()
  * @method static \Illuminate\Database\Eloquent\Builder|Finance whereActiveAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Finance whereActiveCredits($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Finance whereChatId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Finance whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Finance whereEmail($value)
@@ -426,6 +428,163 @@ namespace App\Model{
 	class Member extends \Eloquent {}
 }
 
+namespace App\Model\Member{
+/**
+ * App\Model\Member\LMBreward
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property string $amount
+ * @property string|null $sales
+ * @property int $type 0 = claimed, 1 = credited
+ * @property string|null $hash
+ * @property string|null $date
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int $is_store 0 = Shopping Reward, 1 = Selling Reward
+ * @method static \Illuminate\Database\Eloquent\Builder|LMBreward newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|LMBreward newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|LMBreward query()
+ * @method static \Illuminate\Database\Eloquent\Builder|LMBreward whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LMBreward whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LMBreward whereDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LMBreward whereHash($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LMBreward whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LMBreward whereIsStore($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LMBreward whereSales($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LMBreward whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LMBreward whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LMBreward whereUserId($value)
+ */
+	class LMBreward extends \Eloquent {}
+}
+
+namespace App\Model\Member{
+/**
+ * App\Model\Member\MasterSales
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property int $stockist_id
+ * @property string $invoice
+ * @property string $total_price
+ * @property string $sale_date
+ * @property int $status 0 = belum, 1 = konfirmasi member, 2 = konfirmasi admin, 3 = batal
+ * @property string|null $reason
+ * @property int $buy_metode 1 = COD, 2 = Transfer Bank, 3 = Tron
+ * @property string|null $tron
+ * @property string|null $tron_transfer
+ * @property string|null $bank_name
+ * @property string|null $account_no
+ * @property string|null $account_name
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $deleted_at
+ * @method static \Illuminate\Database\Eloquent\Builder|MasterSales newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|MasterSales newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|MasterSales query()
+ * @method static \Illuminate\Database\Eloquent\Builder|MasterSales whereAccountName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MasterSales whereAccountNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MasterSales whereBankName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MasterSales whereBuyMetode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MasterSales whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MasterSales whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MasterSales whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MasterSales whereInvoice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MasterSales whereReason($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MasterSales whereSaleDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MasterSales whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MasterSales whereStockistId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MasterSales whereTotalPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MasterSales whereTron($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MasterSales whereTronTransfer($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MasterSales whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MasterSales whereUserId($value)
+ */
+	class MasterSales extends \Eloquent {}
+}
+
+namespace App\Model\Member{
+/**
+ * App\Model\Member\Product
+ *
+ * @property int $id
+ * @property int $type 1 = Stockist, 2 = Vendor
+ * @property int $seller_id
+ * @property string $name
+ * @property string $size
+ * @property string $price
+ * @property string|null $desc
+ * @property int $qty
+ * @property int $category_id
+ * @property string $image
+ * @property int $is_active
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Category|null $category
+ * @property-read \App\User $seller
+ * @method static \Illuminate\Database\Eloquent\Builder|Product newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Product newQuery()
+ * @method static \Illuminate\Database\Query\Builder|Product onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Product query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereDesc($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereImage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product wherePrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereQty($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereSellerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereSize($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|Product withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|Product withoutTrashed()
+ */
+	class Product extends \Eloquent {}
+}
+
+namespace App\Model\Member{
+/**
+ * App\Model\Member\Sales
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property int $stockist_id
+ * @property int $purchase_id
+ * @property string $invoice
+ * @property string $amount
+ * @property string $sale_price
+ * @property string $sale_date
+ * @property string|null $reason
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $deleted_at
+ * @property int|null $master_sales_id
+ * @method static \Illuminate\Database\Eloquent\Builder|Sales newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Sales newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Sales query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Sales whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sales whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sales whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sales whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sales whereInvoice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sales whereMasterSalesId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sales wherePurchaseId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sales whereReason($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sales whereSaleDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sales whereSalePrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sales whereStockistId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sales whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sales whereUserId($value)
+ */
+	class Sales extends \Eloquent {}
+}
+
 namespace App\Model{
 /**
  * App\Model\Memberpackage
@@ -517,6 +676,7 @@ namespace App\Model{
  * @property string $sale_date
  * @property string|null $reason
  * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null $deleted_at
  * @property int|null $master_sales_id
  * @method static \Illuminate\Database\Eloquent\Builder|Sales newModelQuery()
@@ -533,6 +693,7 @@ namespace App\Model{
  * @method static \Illuminate\Database\Eloquent\Builder|Sales whereSaleDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Sales whereSalePrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Sales whereStockistId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sales whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Sales whereUserId($value)
  */
 	class Sales extends \Eloquent {}
@@ -590,6 +751,7 @@ namespace App{
  * @property string|null $account_no
  * @property string|null $account_name
  * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null $deleted_at
  * @method static \Illuminate\Database\Eloquent\Builder|Order newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Order newQuery()
@@ -609,6 +771,7 @@ namespace App{
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereTotalPrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereTron($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereTronTransfer($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereUserId($value)
  */
 	class Order extends \Eloquent {}
@@ -628,10 +791,11 @@ namespace App{
  * @property string $sale_date
  * @property string|null $reason
  * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null $deleted_at
  * @property int|null $master_sales_id
  * @property-read \App\Order|null $order
- * @property-read \App\Product $product
+ * @property-read \App\Model\Member\Product $product
  * @method static \Illuminate\Database\Eloquent\Builder|OrderDetail newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|OrderDetail newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|OrderDetail query()
@@ -646,6 +810,7 @@ namespace App{
  * @method static \Illuminate\Database\Eloquent\Builder|OrderDetail whereSaleDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|OrderDetail whereSalePrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder|OrderDetail whereStockistId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderDetail whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|OrderDetail whereUserId($value)
  */
 	class OrderDetail extends \Eloquent {}
@@ -668,7 +833,7 @@ namespace App{
  * @property \Illuminate\Support\Carbon $created_at
  * @property string|null $deleted_at
  * @property-read \App\Order|null $order
- * @property-read \App\Product $product
+ * @property-read \App\Model\Member\Product $product
  * @method static \Illuminate\Database\Eloquent\Builder|OrderDetailVendor newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|OrderDetailVendor newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|OrderDetailVendor query()
@@ -803,52 +968,6 @@ namespace App{
 
 namespace App{
 /**
- * App\Product
- *
- * @property int $id
- * @property int $type 1 = Stockist, 2 = Vendor
- * @property int $seller_id
- * @property string $name
- * @property string $size
- * @property string $price
- * @property string|null $desc
- * @property int $qty
- * @property int $category_id
- * @property string $image
- * @property int $is_active
- * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Category|null $category
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderDetail[] $orderDetail
- * @property-read int|null $order_detail_count
- * @property-read \App\User $seller
- * @method static \Illuminate\Database\Eloquent\Builder|Product newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Product newQuery()
- * @method static \Illuminate\Database\Query\Builder|Product onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Product query()
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereCategoryId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereDesc($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereImage($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereIsActive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product wherePrice($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereQty($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereSellerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereSize($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|Product withTrashed()
- * @method static \Illuminate\Database\Query\Builder|Product withoutTrashed()
- */
-	class Product extends \Eloquent {}
-}
-
-namespace App{
-/**
  * App\ProductImages
  *
  * @property int $id
@@ -921,6 +1040,7 @@ namespace App{
  * @property int $is_login 0 = tidak aktif, 1 = aktif
  * @property int $is_active 0 = tidak aktif, 1 = aktif
  * @property int $user_type 1 = super admin, 2 = master admin, 3 = admin, 10 = member
+ * @property int $is_store
  * @property int $id_type Berhubungan dgn type manager. 1=> member biasa, 11 => TL, 12 => Asmen, 13 => M, 14 => SM, 15 => EM, 16 => SEM, 17 => GM
  * @property int|null $package_id jenis paket yg dibeli
  * @property int $member_type Berhubungan dgn order paket diawal setelah diaktifasi. 0 => belum pernah aktifasi pin, 1 =>  reseller, 2 => Agen, 3 => Stockist 4 => Master Stockist
@@ -967,7 +1087,7 @@ namespace App{
  * @property-read \App\LocalWallet|null $localWallet
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Product[] $products
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Model\Member\Product[] $products
  * @property-read int|null $products_count
  * @property-read \App\SellerProfile|null $sellerProfile
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
@@ -993,6 +1113,7 @@ namespace App{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereIsProfile($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereIsReferalLink($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereIsStockist($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereIsStore($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereIsTron($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereIsVendor($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereKananId($value)

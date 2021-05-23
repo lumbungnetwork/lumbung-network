@@ -8,8 +8,19 @@ use App\Model\Member\LMBreward;
 use Illuminate\Http\Request;
 use App\Jobs\Member\SendLMBRewardMarketplaceJob;
 use App\Model\Bonus;
+use App\User;
+use App\Model\Member\Product;
+use App\Model\Member\Sales;
+use App\Model\Member\MasterSales;
+use App\SellerProfile;
 use App\Jobs\UserClaimDividendJob;
 use Illuminate\Support\Facades\Cache;
+use App\Notifications\StockistNotification;
+use App\Jobs\ForwardShoppingPaymentJob;
+use App\Model\Member\EidrBalance;
+use App\Model\Member\Region;
+use Validator;
+use IEXBase\TronAPI\Exception\TronException;
 
 class AjaxController extends Controller
 {
@@ -256,5 +267,582 @@ class AjaxController extends Controller
                 return response()->json(['success' => false, 'message' => 'Not enough available dividend!']);
             }
         }
+    }
+
+    // Shopping AJAXes
+    public function getShopName(Request $request)
+    {
+        $shopNames = null;
+        if ($request->name != null) {
+            $shopNames = SellerProfile::where('shop_name', 'LIKE', '%' . $request->name . '%')
+                ->select('id', 'shop_name', 'seller_id')
+                ->orderBy('shop_name', 'ASC')
+                ->get();
+        }
+        return view('member.ajax.get_shop_name_autocomplete')
+            ->with('getData', $shopNames);
+    }
+
+    public function getProductByCategory(Request $request)
+    {
+        $getSellerProducts = Product::where('seller_id', $request->seller_id)
+            ->where('category_id', $request->category_id)
+            ->where('is_active', 1)
+            ->get();
+
+        if ($request->category_id == 0) {
+            $getSellerProducts = Product::where('seller_id', $request->seller_id)
+                ->where('is_active', 1)
+                ->get();
+        }
+
+        return view('member.ajax.product-by-category')
+            ->with('products', $getSellerProducts);
+    }
+
+    public function getProductById(Request $request)
+    {
+        $getProduct = Product::find($request->product_id);
+
+        return view('member.ajax.product-by-id')
+            ->with('product', $getProduct);
+    }
+
+    public function postAddToCart(Request $request)
+    {
+        $user = Auth::user();
+        $Product = Product::find($request->product_id);
+
+        $remaining = $Product->qty - $request->quantity;
+        if (
+            $remaining < 0
+        ) {
+            return response()->json(['success' => false, 'message' => 'Stock Produk tidak cukup!']);
+        }
+
+        if (isset($request->buyer_id)) {
+            \Cart::session($request->buyer_id)->add(array(
+                'id' => $Product->id,
+                'name' => $Product->name,
+                'price' => $Product->price,
+                'quantity' => $request->quantity,
+                'attributes' => array(),
+                'associatedModel' => $Product
+            ));
+        } else {
+            \Cart::session($user->id)->add(array(
+                'id' => $Product->id,
+                'name' => $Product->name,
+                'price' => $Product->price,
+                'quantity' => $request->quantity,
+                'attributes' => array(),
+                'associatedModel' => $Product
+            ));
+        }
+
+        return response()->json(['success' => true, 'message' => 'Produk berhasil ditambahkan ke keranjang!']);
+    }
+
+    public function getCartContents(Request $request)
+    {
+        \Cart::session($request->user_id);
+        $items = \Cart::getContent();
+
+        return view('member.ajax.get-cart-contents')
+            ->with('products', $items);
+    }
+
+    public function getDeleteCartItem(Request $request)
+    {
+        \Cart::session($request->user_id)->remove($request->product_id);
+        $items = \Cart::getContent();
+
+        return view('member.ajax.get-cart-contents')
+            ->with('products', $items);
+    }
+
+    public function getCartTotal(Request $request)
+    {
+        $getTotal = \Cart::session($request->user_id)->getSubTotal();
+        $total = number_format($getTotal);
+
+        return $total;
+    }
+
+    public function getCartCheckout(Request $request)
+    {
+        $user = Auth::user();
+        $seller = User::find($request->seller_id);
+
+        // Get data from Shopping Cart
+        $getTotal = \Cart::session($user->id)->getSubTotal();
+        $cartItems = \Cart::session($user->id)->getContent();
+        $itemsArray = $cartItems->toArray();
+
+        //check available stock
+        foreach ($itemsArray as $item) {
+            $stock = Product::find($item['id'])->qty;
+            $remaining = $stock - $item['quantity'];
+            if ($remaining < 0) {
+                $status = false;
+                return view('member.ajax.checkout')
+                    ->with('status', $status)
+                    ->with('name', $item['name'])
+                    ->with('stock', $item['associatedModel']['qty']);
+            }
+        }
+
+        // Use Atomic lock to prevent race condition
+        $lock = Cache::lock('checkout_' . $user->id, 10);
+
+        if ($lock->get()) {
+            $modelMasterSales = new MasterSales;
+            $invoice = $modelMasterSales->getCodeMasterSales($user->id);
+            $sale_date = date('Y-m-d');
+
+            // Insert Master Sales record
+            $masterSales = new MasterSales;
+            $masterSales->user_id = $user->id;
+            $masterSales->stockist_id = $seller->id;
+            $masterSales->invoice = $invoice;
+            $masterSales->total_price = $getTotal;
+            $masterSales->sale_date = $sale_date;
+            $masterSales->save();
+
+            // Insert Sales Record (Sold products details)
+            foreach ($itemsArray as $item) {
+                $sales = new Sales;
+                $sales->user_id = $user->id;
+                $sales->stockist_id = $seller->id;
+                $sales->purchase_id = $item['id'];
+                $sales->invoice = $invoice;
+                $sales->amount = $item['quantity'];
+                $sales->sale_price = $item['quantity'] * $item['price'];
+                $sales->sale_date = $sale_date;
+                $sales->master_sales_id = $masterSales->id;
+                $sales->save();
+            }
+
+            $status = true;
+
+            $lock->release();
+        }
+
+        return view('member.ajax.checkout')
+            ->with('status', $status)
+            ->with('masterSalesID', $masterSales->id);
+    }
+
+    public function getPosCartCheckout(Request $request)
+    {
+        $user = User::find($request->buyer_id);
+        $seller = Auth::user();
+        $sellerType = 1; // 1 = Stockist, 2 = Vendor
+        if ($seller->is_vendor == 1) {
+            $sellerType = 2;
+        }
+        $getTotal = \Cart::session($user->id)->getSubTotal();
+        $cartItems = \Cart::session($user->id)->getContent();
+        $itemsArray = $cartItems->toArray();
+
+        //check available stock
+
+        foreach ($itemsArray as $item) {
+            $product = Product::find($item['id']);
+            $stock = $product->qty;
+            $remaining = $stock - $item['quantity'];
+            if ($remaining < 0) {
+                $status = false;
+                return view('member.ajax.pos_checkout')
+                    ->with('status', $status)
+                    ->with('name', $item['name'])
+                    ->with('stock', $item['associatedModel']['qty']);
+            } else {
+                $product->update(['qty' => $remaining]);
+            }
+        }
+
+        $modelSales = new Sales;
+        $invoice = $modelSales->getCodeMasterSales($user->id);
+        $sale_date = date('Y-m-d');
+
+        if ($sellerType == 1) {
+
+            $dataInsertMasterSales = array(
+                'user_id' => $user->id,
+                'stockist_id' => $seller->id,
+                'invoice' => $invoice,
+                'total_price' => $getTotal,
+                'sale_date' => $sale_date,
+                'status' => 1,
+                'buy_metode' => 1,
+            );
+            $insertMasterSales = $modelSales->getInsertMasterSales($dataInsertMasterSales);
+
+            foreach ($itemsArray as $item) {
+                $dataInsert = array(
+                    'user_id' => $user->id,
+                    'stockist_id' => $seller->id,
+                    'purchase_id' => $item['id'],
+                    'invoice' => $invoice,
+                    'amount' => $item['quantity'],
+                    'sale_price' => $item['quantity'] * $item['price'],
+                    'sale_date' => $sale_date,
+                    'master_sales_id' => $insertMasterSales->lastID
+                );
+                $insertSales = $modelSales->getInsertSales($dataInsert);
+            }
+        } else if ($sellerType == 2) {
+
+            $dataInsertMasterSales = array(
+                'user_id' => $user->id,
+                'vendor_id' => $seller->id,
+                'invoice' => $invoice,
+                'total_price' => $getTotal,
+                'sale_date' => $sale_date,
+                'status' => 1,
+                'buy_metode' => 1,
+            );
+            $insertMasterSales = $modelSales->getInsertVMasterSales($dataInsertMasterSales);
+
+            foreach ($itemsArray as $item) {
+                $dataInsert = array(
+                    'user_id' => $user->id,
+                    'vendor_id' => $seller->id,
+                    'purchase_id' => $item['id'],
+                    'invoice' => $invoice,
+                    'amount' => $item['quantity'],
+                    'sale_price' => $item['quantity'] * $item['price'],
+                    'sale_date' => $sale_date,
+                    'vmaster_sales_id' => $insertMasterSales->lastID
+                );
+                $insertSales = $modelSales->getInsertVSales($dataInsert);
+            }
+        }
+        \Cart::session($user->id)->clear();
+        $status = true;
+        return view('member.ajax.pos_checkout')
+            ->with('status', $status)
+            ->with('sellerType', $sellerType)
+            ->with('masterSalesID', $insertMasterSales->lastID);
+    }
+
+    public function postCancelShoppingPaymentBuyer(Request $request)
+    {
+        try {
+            $data = MasterSales::find($request->masterSalesID);
+            $data->status = 10;
+            $data->reason = 'Dibatalkan oleh pembeli';
+            $data->save();
+        } catch (\Throwable $th) {
+            return response()->json(['success' => false]);
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+    public function postShoppingPaymentCash(Request $request)
+    {
+        $user = Auth::user();
+
+        try {
+            // Update MasterSales data
+            $data = MasterSales::find($request->masterSalesID);
+            $data->status = 1;
+            $data->buy_metode = 1;
+            $data->save();
+
+            // Get products and update stock amount
+            $products = Sales::where('master_sales_id', $request->masterSalesID)
+                ->select(['id', 'purchase_id', 'amount'])
+                ->get();
+
+            foreach ($products as $item) {
+                $product = Product::find($item->purchase_id);
+                $remaining = $product->qty - $item->amount;
+                $product->update(['qty' => $remaining]);
+                $product->save();
+            }
+
+            // Notify seller
+            if ($user->chat_id != null) {
+                User::find($user->id)->notify(new StockistNotification([
+                    'buyer' => $user->username,
+                    'price' => 'Rp' . number_format($data->total_price),
+                    'payment' => 'TUNAI'
+                ]));
+            }
+
+            return response()->json(['success' => true]);
+        } catch (\Throwable $th) {
+            return response()->json(['success' => false]);
+        }
+    }
+
+    public function postShoppingPaymentInternaleIDR(Request $request)
+    {
+        $user = Auth::user();
+
+        // Use Atomic lock to prevent race condition
+        $lock = Cache::lock('shopping_payment_' . $user->id, 50);
+
+        if ($lock->get()) {
+            // Get internal eIDR balance
+            $EidrBalance = new EidrBalance;
+            $balance = $EidrBalance->getUserNeteIDRBalance($user->id);
+            // get MasterSales data
+            $data = MasterSales::find($request->masterSalesID);
+            $salesAmount = $data->total_price;
+            $royalty = $salesAmount * (2 / 100);
+            $LMBdiv = $royalty / 2;
+            $shop = SellerProfile::where('seller_id', $data->stockist_id)->select('shop_name')->first();
+
+            // second check
+            $remaining = $balance - $salesAmount;
+            if ($remaining < 0) {
+                $lock->release();
+                return response()->json(['success' => false]);
+            }
+
+            // deduct user balance
+            $uBalance = new EidrBalance;
+            $uBalance->user_id = $user->id;
+            $uBalance->amount = $salesAmount;
+            $uBalance->type = 0;
+            $uBalance->source = 6;
+            $uBalance->tx_id = $data->id;
+            $uBalance->note = "Pembayaran Belanja di " . $shop->shop_name;
+            $uBalance->save();
+
+            // add seller balance minus royalty
+            $sBalance = new EidrBalance;
+            $sBalance->user_id = $data->stockist_id;
+            $sBalance->amount = round($salesAmount - $royalty, 2, PHP_ROUND_HALF_DOWN);
+            $sBalance->type = 1;
+            $sBalance->source = 6;
+            $sBalance->tx_id = $data->id;
+            $sBalance->note = "Pembayaran Belanja dari " . $user->username;
+            $sBalance->save();
+
+            // update MasterSales data
+            $data->buy_metode = 2;
+            $data->status = 2;
+            $data->save();
+
+            // Add dividend to Dividend Pool
+            $modelBonus = new Bonus;
+            $modelBonus->insertLMBDividend([
+                'amount' => $LMBdiv,
+                'type' => 1,
+                'status' => 1,
+                'source_id' => $data->id,
+                'created_at' => date('Y-m-d H:i:s')
+            ]);
+
+            $lock->release();
+            return response()->json(['success' => true]);
+        } else {
+            return response()->json(['success' => false]);
+        }
+    }
+
+    public function postShoppingPaymentExternaleIDR(Request $request)
+    {
+        $user = Auth::user();
+        $hash = $request->hash;
+        $receiver = 'TZHYx9bVa4vQz8VpVvZtjwMb4AHqkUChiQ';
+
+        // check if hash used
+        $check = MasterSales::where('tron_transfer', $hash)->exists();
+        if ($check) {
+            return response()->json(['success' => false, 'message' => 'Hash Transaksi Sudah terpakai!']);
+        }
+
+        // Use Atomic lock to prevent race condition
+        $lock = Cache::lock('shopping_payment_' . $user->id, 50);
+
+        if ($lock->get()) {
+            // get MasterSales data
+            $data = MasterSales::find($request->masterSalesID);
+
+            // get Tron instance and check hash to blockchain
+            $tron = $this->getTron();
+            $i = 1;
+            do {
+                try {
+                    sleep(1);
+                    $response = $tron->getTransaction($hash);
+                } catch (TronException $e) {
+                    $i++;
+                    continue;
+                }
+                break;
+            } while ($i < 23);
+
+            if ($i == 23) {
+                $lock->release();
+                return response()->json(['success' => false, 'message' => 'Hash Transaksi Bermasalah!']);
+            };
+
+            // parse the response
+            $hashReceiver = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['to_address']);
+            $hashAsset = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['asset_name']);
+            $hashAmount = $response['raw_data']['contract'][0]['parameter']['value']['amount'];
+
+            // check
+            if ($hashReceiver !== $receiver) {
+                $lock->release();
+                return response()->json(['success' => false, 'message' => 'Tujuan transfer salah!']);
+            }
+
+            if ($hashAsset !== '1002652') {
+                $lock->release();
+                return response()->json(['success' => false, 'message' => 'Bukan token eIDR yang benar!']);
+            }
+
+            if ($hashAmount != ($data->total_price * 100)) {
+                $lock->release();
+                return response()->json(['success' => false, 'message' => 'Jumlah transfer salah!']);
+            }
+
+            // update MasterSales record
+            $data->status = 2;
+            $data->buy_metode = 3;
+            $data->tron_transfer = $hash;
+            $data->save();
+
+            // Get products and update stock amount
+            $products = Sales::where('master_sales_id', $request->masterSalesID)
+                ->select(['id', 'purchase_id', 'amount'])
+                ->get();
+
+            foreach ($products as $item) {
+                $product = Product::find($item->purchase_id);
+                $remaining = $product->qty - $item->amount;
+                $product->update(['qty' => $remaining]);
+                $product->save();
+            }
+
+            // Notify seller
+            if ($user->chat_id != null) {
+                User::find($user->id)->notify(new StockistNotification([
+                    'buyer' => $user->username,
+                    'price' => 'Rp' . number_format($data->total_price),
+                    'payment' => 'eIDR Eksternal (Tuntas Otomatis)'
+                ]));
+            }
+
+            // Dispatch job to forward payment to Seller
+            ForwardShoppingPaymentJob::dispatch($request->masterSalesID)->onQueue('tron');
+
+            $lock->release();
+
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Transaksi duplikat']);
+    }
+
+    // Profile and Address Utility
+    public function getSearchAddressRegionByType($type, Request $request)
+    {
+        $Region = new Region;
+        $data = null;
+        if ($type == 'kota') {
+            if ($request->provinsi != 0) {
+                $data = $Region->getKabupatenKotaByProvinsi($request->provinsi);
+            }
+        }
+        if ($type == 'kecamatan') {
+            if ($request->kota != 0) {
+                $data = $Region->getKecamatanByKabupatenKota($request->kota);
+            }
+        }
+        if ($type == 'kelurahan') {
+            if ($request->kecamatan != 0) {
+                $data = $Region->getKelurahanByKecamatan($request->kecamatan);
+            }
+        }
+        return view('member.ajax.searchRegion')
+            ->with(compact('type'))
+            ->with(compact('data'));
+    }
+
+    public function postAddUserProfile(Request $request)
+    {
+        $user = Auth::user();
+        $validator = Validator::make($request->all(), [
+            'full_name' => 'required|regex:/^[\pL\s\-]+$/u',
+            'provinsi' => 'required|integer',
+            'kota' => 'required|integer',
+            'kecamatan' => 'required|integer',
+            'kelurahan' => 'required|integer',
+            'alamat' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => $validator->errors()->first()]);
+        }
+        if ($user->is_profile == 0) {
+            // Parse the region ID
+            $Region = new Region;
+            $provinsi = $Region->getProvinsiByID($request->provinsi);
+            $kota = $Region->getKabByID($request->kota);
+            $kecamatan = $Region->getKecByID($request->kecamatan);
+            $kelurahan = $Region->getKelByID($request->kelurahan);
+            if (!$provinsi || !$kota || !$kecamatan || !$kelurahan) {
+                return response()->json(['success' => false, 'message' => 'Alamat tidak valid']);
+            }
+
+            // record to User model
+            $user->full_name = $request->full_name;
+            $user->provinsi = $provinsi->nama;
+            $user->kota = $kota->nama;
+            $user->kecamatan = $kecamatan->nama;
+            $user->kelurahan = $kelurahan->nama;
+            $user->alamat = $request->alamat;
+            $user->is_profile = 1;
+            $user->profile_created_at = date('Y-m-d H:i:s');
+            $user->save();
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+    public function postEditUserProfile(Request $request)
+    {
+        $user = Auth::user();
+        $validator = Validator::make($request->all(), [
+            'provinsi' => 'required|integer',
+            'kota' => 'required|integer',
+            'kecamatan' => 'required|integer',
+            'kelurahan' => 'required|integer',
+            'alamat' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => $validator->errors()->first()]);
+        }
+        if ($user->is_profile == 1) {
+            // Parse the region ID
+            $Region = new Region;
+            $provinsi = $Region->getProvinsiByID($request->provinsi);
+            $kota = $Region->getKabByID($request->kota);
+            $kecamatan = $Region->getKecByID($request->kecamatan);
+            $kelurahan = $Region->getKelByID($request->kelurahan);
+            if (!$provinsi || !$kota || !$kecamatan || !$kelurahan) {
+                return response()->json(['success' => false, 'message' => 'Alamat tidak valid']);
+            }
+
+            // record to User model
+            $user->provinsi = $provinsi->nama;
+            $user->kota = $kota->nama;
+            $user->kecamatan = $kecamatan->nama;
+            $user->kelurahan = $kelurahan->nama;
+            $user->alamat = $request->alamat;
+            $user->save();
+        }
+
+        return response()->json(['success' => true]);
     }
 }

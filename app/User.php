@@ -44,7 +44,7 @@ class User extends Authenticatable
 
     public function products()
     {
-        return $this->hasMany('App\Product', 'seller_id');
+        return $this->hasMany('App\Model\Member\Product', 'seller_id');
     }
 
     public function localWallet()

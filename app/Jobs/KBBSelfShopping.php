@@ -8,7 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
-use App\Product;
+use App\Model\Member\Product;
 use App\Model\Sales;
 use App\Model\Bonus;
 use App\Http\Controllers\Controller;
