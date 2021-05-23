@@ -350,7 +350,7 @@
 
                     // var signedTx = await tronWeb.trx.sign(tx);
                     // var broastTx = await tronWeb.trx.sendRawTransaction(signedTx);
-                    if (tx.result) {
+                    if (tx.transaction.txID !== undefined) {
                         console.log(tx);
                         $('#hash').val(tx.transaction.txID);
                         $('#form-confirm').submit();

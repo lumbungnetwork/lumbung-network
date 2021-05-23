@@ -10,42 +10,13 @@ class Sales extends Model
 {
     use HasFactory;
 
-    public function getMemberSpending($user_id, $month, $year)
+    public function product()
     {
-        // Get UNIX timestamp from month and year, set to mySQL date
-        $range = strtotime($year . '-' . $month);
-        $date = (object) [
-            'startDay' => date('Y-m-01', $range),
-            'endDay' => date('Y-m-t', $range)
-        ];
-        // Query with date constraint
-        // Physical Products
-        $physical = DB::table('master_sales')
-            ->selectRaw('SUM(master_sales.total_price) AS total')
-            ->where('status', 2)
-            ->where('user_id', $user_id)
-            ->whereDate('sale_date', '>=', $date->startDay)
-            ->whereDate('sale_date', '<=', $date->endDay)
-            ->whereNull('deleted_at')
-            ->first();
+        return $this->belongsTo('App\Model\Member\Product', 'purchase_id', 'id');
+    }
 
-        // Digital Products
-        $digital = DB::table('ppob')
-            ->selectRaw('SUM(CASE WHEN type <= 2 THEN ppob_price ELSE 0 END) AS pulsaData,'
-                . 'SUM(CASE WHEN type > 2 THEN 2500 ELSE 0 END) AS payment')
-            ->where('status', 2)
-            ->where('user_id', $user_id)
-            ->whereDate('ppob_date', '>=', $date->startDay)
-            ->whereDate('ppob_date', '<=', $date->endDay)
-            ->whereNull('deleted_at')
-            ->first();
-        $totalDigital = $digital->pulsaData + $digital->payment;
-
-        // return object
-        return (object) [
-            'physical' => (float) $physical->total,
-            'digital' => (float) $totalDigital,
-            'total' => $physical->total + $totalDigital
-        ];
+    public function masterSales()
+    {
+        return $this->belongsTo('App\Model\Member\MasterSales', 'master_sales_id', 'id');
     }
 }

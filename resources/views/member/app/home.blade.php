@@ -125,10 +125,10 @@
                 $base = floor($spent / 1000);
                 $reward = number_format($base * $rate * $multiplier, 2);
                 @endphp
-                <h2 class="font-medium text-gray-600 text-xs">Akumulasi Belanja bulan ini:</h2>
+                <h2 class="text-gray-600 sm:text-xs" style="font-size: 10px">Akumulasi Belanja bulan ini:</h2>
                 <p class="font-extralight text-xl text-right">Rp{{ number_format($spent) }}</p>
                 <hr class="my-1 border-gray-50">
-                <h3 class="font-medium text-gray-600 text-xs">Estimasi Reward LMB:</h3>
+                <h3 class="text-gray-600 sm:text-xs" style="font-size: 10px">Estimasi Reward LMB:</h3>
                 <p class="font-extralight text-lg text-right">{{ $reward }} LMB</p>
             </div>
         </div>

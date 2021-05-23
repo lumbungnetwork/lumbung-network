@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Member;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Model\Member\Sales;
+use App\User;
+use App\Model\Member\MasterSales;
 use App\Model\Bonus;
 use App\Model\Member\LMBreward;
+use App\Model\Member\EidrBalance;
+use DB;
 
 class AppController extends Controller
 {
@@ -16,8 +19,8 @@ class AppController extends Controller
         $user = Auth::user();
 
         // get user's current month spending
-        $Sales = new Sales;
-        $spending = $Sales->getMemberSpending($user->id, date('m'), date('Y'));
+        $MasterSales = new MasterSales;
+        $spending = $MasterSales->getMemberSpending($user->id, date('m'), date('Y'));
 
         // get dividend pool and user's staked LMB
         $Bonus = new Bonus;
@@ -130,5 +133,67 @@ class AppController extends Controller
     {
         return view('member.app.shopping')
             ->with('title', 'Shopping');
+    }
+
+    public function getWallet()
+    {
+        $user = Auth::user();
+        $EidrBalance = new EidrBalance;
+        $netBalance = $EidrBalance->getUserNeteIDRBalance($user->id);
+        $history = EidrBalance::where('user_id', $user->id)
+            ->orderByDesc('created_at')
+            ->paginate(15);
+
+        return view('member.app.wallet')
+            ->with(compact('netBalance'))
+            ->with(compact('history'))
+            ->with('title', 'Wallet');
+    }
+
+    public function getAccount()
+    {
+        $user = Auth::user();
+        return view('member.app.account')
+            ->with(compact('user'))
+            ->with('title', 'Account');
+    }
+
+    public function getProfile()
+    {
+        $user = Auth::user();
+        $provinsi = DB::table('provinsi')->get();
+        return view('member.app.account.profile')
+            ->with(compact('user'))
+            ->with(compact('provinsi'))
+            ->with('title', 'Profile');
+    }
+
+    public function getEditProfile()
+    {
+        $user = Auth::user();
+        if ($user->is_profile == 0) {
+            return redirect()->route('member.profile');
+        }
+        $provinsi = DB::table('provinsi')->get();
+        return view('member.app.account.profile-edit')
+            ->with(compact('user'))
+            ->with(compact('provinsi'))
+            ->with('title', 'Ubah Alamat');
+    }
+
+    public function getSecurity()
+    {
+        $user = Auth::user();
+        return view('member.app.account.security')
+            ->with(compact('user'))
+            ->with('title', 'Security');
+    }
+
+    public function getTron()
+    {
+        $user = Auth::user();
+        return view('member.app.account.tron')
+            ->with(compact('user'))
+            ->with('title', 'TRON');
     }
 }

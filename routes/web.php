@@ -39,12 +39,30 @@ Route::domain('member.' . Config::get('services.app.url'))->group(function () {
     // New Member Routes
     Route::get('/home', 'Member\AppController@getHome')->name('member.home')->middleware('auth');
     Route::get('/stake', 'Member\AppController@getStake')->name('member.stake')->middleware('auth');
+    Route::get('/wallet', 'Member\AppController@getWallet')->name('member.wallet')->middleware('auth');
+    Route::get('/account', 'Member\AppController@getAccount')->name('member.account')->middleware('auth');
+    Route::get('/account/profile', 'Member\AppController@getProfile')->name('member.profile')->middleware('auth');
+    Route::get('/account/edit-profile', 'Member\AppController@getEditProfile')->name('member.editProfile')->middleware('auth');
+    Route::get('/account/security', 'Member\AppController@getSecurity')->name('member.security')->middleware('auth');
+    Route::post('/account/security/create-2fa', 'Member\SecurityController@postCreate2FA')->name('member.security.postCreate2FA')->middleware('auth');
+    Route::post('/account/security/edit-2fa', 'Member\SecurityController@postEdit2FA')->name('member.security.postEdit2FA')->middleware('auth');
+    Route::post('/account/security/change-password', 'Member\SecurityController@postChangePassword')->name('member.security.postChangePassword')->middleware('auth');
+    Route::get('/account/tron', 'Member\AppController@getTron')->name('member.tron')->middleware('auth');
+    Route::post('/account/tron/set-tron', 'Member\TronController@postSetTron')->name('member.tron.postSetTron')->middleware('auth');
+    Route::post('/account/tron/reset-tron', 'Member\TronController@postResetTron')->name('member.tron.postResetTron')->middleware('auth');
+
+    // Staking
     Route::get('/stake/history', 'Member\AppController@getStakeHistory')->name('member.stakeHistory')->middleware('auth');
     Route::get('/stake/claimed-div-history', 'Member\AppController@getStakeClaimedDivHistory')->name('member.stakeClaimedDivHistory')->middleware('auth');
     Route::get('/stake/div-history', 'Member\AppController@getStakeDivHistory')->name('member.stakeDivHistory')->middleware('auth');
     Route::get('/stake/leaderboard', 'Member\AppController@getStakeLeaderboard')->name('member.stakeLeaderboard')->middleware('auth');
 
+    // Shopping
     Route::get('/shopping', 'Member\AppController@getShopping')->name('member.shopping')->middleware('auth');
+    Route::get('/shop/{id}', 'Member\ShoppingController@getShop')->whereNumber('id')->name('member.shop')->middleware('auth');
+    Route::get('/shopping/payment/{masterSalesID}', 'Member\ShoppingController@getShoppingPayment')->whereNumber('masterSalesID')->name('member.shopping.payment')->middleware('auth');
+
+    Route::post('/shopping/checkout', 'Member\ShoppingController@postCheckout')->name('member.shopping.postCheckout')->middleware('auth');
 
 
     // Claims
@@ -62,7 +80,31 @@ Route::domain('member.' . Config::get('services.app.url'))->group(function () {
         Route::get('/stake/substract', 'Member\AjaxController@getStakeSubstract')->name('ajax.stake.substract')->middleware('auth');
         Route::post('/stake/confirm', 'Member\AjaxController@postStakeConfirm')->name('ajax.stake.confirm')->middleware('auth');
         Route::post('/stake/unstake', 'Member\AjaxController@postUnstake')->name('ajax.unstake')->middleware('auth');
+
+        // Shopping
+        Route::get('/shopping/get-product-by-id', 'Member\AjaxController@getProductById')->name('ajax.shopping.getProductById')->middleware('auth');
+        Route::get('/shopping/get-product-by-category', 'Member\AjaxController@getProductByCategory')->name('ajax.shopping.getProductByCategory')->middleware('auth');
+        Route::get('/shopping/get-shop-name', 'Member\AjaxController@getShopName')->name('ajax.shopping.getShopName')->middleware('auth');
+        Route::get('/shopping/get-cart-total', 'Member\AjaxController@getCartTotal')->name('ajax.shopping.getCartTotal')->middleware('auth');
+        Route::get('/shopping/get-cart-contents', 'Member\AjaxController@getCartContents')->name('ajax.shopping.getCartContents')->middleware('auth');
+        Route::get('/shopping/get-delete-cart-item', 'Member\AjaxController@getDeleteCartItem')->name('ajax.shopping.getDeleteCartItem')->middleware('auth');
+        Route::get('/shopping/get-cart-checkout', 'Member\AjaxController@getCartCheckout')->name('ajax.shopping.getCartCheckout')->middleware('auth');
+
+        Route::post('/shopping/post-add-to-cart', 'Member\AjaxController@postAddToCart')->name('ajax.shopping.postAddToCart')->middleware('auth');
+        Route::post('/shopping/post-cancel-payment-buyer', 'Member\AjaxController@postCancelShoppingPaymentBuyer')->name('ajax.shopping.postCancelShoppingPaymentBuyer')->middleware('auth');
+        Route::post('/shopping/post-shopping-payment-cash', 'Member\AjaxController@postShoppingPaymentCash')->name('ajax.shopping.postShoppingPaymentCash')->middleware('auth');
+        Route::post('/shopping/post-shopping-payment-int-eidr', 'Member\AjaxController@postShoppingPaymentInternaleIDR')->name('ajax.shopping.postShoppingPaymentInternaleIDR')->middleware('auth');
+        Route::post('/shopping/post-shopping-payment-ext-eidr', 'Member\AjaxController@postShoppingPaymentExternaleIDR')->name('ajax.shopping.postShoppingPaymentExternaleIDR')->middleware('auth');
+
+        // Regions
+        Route::get('/region/search-by-type/{type}', 'Member\AjaxController@getSearchAddressRegionByType')->where('type', '(kota|kecamatan|kelurahan)')->name('ajax.region.getSearchAddressRegionByType')->middleware('auth');
+        Route::post('/region/add-user-profile', 'Member\AjaxController@postAddUserProfile')->name('ajax.region.postAddUserProfile')->middleware('auth');
+        Route::post('/region/edit-user-profile', 'Member\AjaxController@postEditUserProfile')->name('ajax.region.postEditUserProfile')->middleware('auth');
     });
+
+
+
+    ////////////////////////
 
     Route::prefix('/')->group(function () {
 
@@ -462,7 +504,8 @@ Route::domain('member.' . Config::get('services.app.url'))->group(function () {
         Route::post('/m/ajax/pay-by-local-wallet', 'Admin\AjaxmemberController@postPayByLocalWallet')->middleware('auth');
         Route::post('/m/ajax/pay-by-local-wallet-vendor', 'Admin\AjaxmemberController@postPayByLocalWalletVendor')->middleware('auth');
         Route::post('/m/ajax/toggle-local-wallet', 'Admin\AjaxmemberController@postToggleLocalWallet')->middleware('auth');
-        Route::get('/m/ajax/get-shop-name', 'Admin\AjaxmemberController@getShopName')->middleware('auth');
+
+        Route::get('/m/ajax/get-shop-name', 'Admin\AjaxmemberController@getShopName')->name('member.ajax.getShopName')->middleware('auth');
 
 
 
@@ -669,8 +712,9 @@ Route::group(['domain' => 'finance.' . Config::get('services.app.domain')], func
 
 
 //main domain
+
 Route::get('/', function () {
-    return view('home')->with('title', 'Lumbung Network')->name('lumbung.network');
+    return view('home')->with('title', 'Lumbung Network');
 });
 Route::get('/about-core', function () {
     return view('about-core')->with('title', 'Tentang Lumbung Network');

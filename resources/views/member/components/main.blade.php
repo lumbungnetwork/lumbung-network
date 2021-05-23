@@ -33,6 +33,7 @@
         .swal2-popup {
             font-size: 0.8rem !important;
             border-radius: 25px !important;
+            padding: 10px 4px !important;
             background: linear-gradient(145deg, #FFFFFF, #CCD4DD) !important;
             box-shadow: 0.2em 0.2em calc(0.2em * 2) #AEBCC9, calc(0.2em * -1) calc(0.2em * -1) calc(0.2em * 2) #d3d3d3 !important;
         }
