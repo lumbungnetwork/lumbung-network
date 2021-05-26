@@ -196,4 +196,18 @@ class AppController extends Controller
             ->with(compact('user'))
             ->with('title', 'TRON');
     }
+
+    public function getBank()
+    {
+        $user = Auth::user();
+        // check if profile completed
+        if ($user->is_profile == 0) {
+            Alert::error('Oops', 'Untuk menggunakan fitur Bank, anda perlu melengkapi Data Profil terlebih dahulu')->persistent(true);
+            return redirect()->route('member.profile');
+        }
+
+        return view('member.app.account.bank')
+            ->with(compact('user'))
+            ->with('title', 'Bank');
+    }
 }

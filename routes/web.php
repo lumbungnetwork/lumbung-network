@@ -50,6 +50,23 @@ Route::domain('member.' . Config::get('services.app.url'))->group(function () {
     Route::get('/account/tron', 'Member\AppController@getTron')->name('member.tron')->middleware('auth');
     Route::post('/account/tron/set-tron', 'Member\TronController@postSetTron')->name('member.tron.postSetTron')->middleware('auth');
     Route::post('/account/tron/reset-tron', 'Member\TronController@postResetTron')->name('member.tron.postResetTron')->middleware('auth');
+    Route::post('/account/bank/set-bank', 'Member\TronController@postSetBank')->name('member.tron.postSetBank')->middleware('auth');
+    Route::post('/account/bank/reset-bank', 'Member\TronController@postResetBank')->name('member.tron.postResetBank')->middleware('auth');
+    Route::get('/account/bank', 'Member\AppController@getBank')->name('member.account.bank')->middleware('auth');
+
+    // Store
+    Route::get('/store/info', 'Member\StoreController@getStoreInfo')->name('member.store.info')->middleware('auth');
+    Route::get('/store/edit-info', 'Member\StoreController@getStoreEditInfo')->name('member.store.editInfo')->middleware('auth');
+    Route::post('/store/add-info', 'Member\StoreController@postStoreAddInfo')->name('member.store.postStoreAddInfo')->middleware('auth');
+    Route::post('/store/edit-info', 'Member\StoreController@postStoreEditInfo')->name('member.store.postStoreEditInfo')->middleware('auth');
+    Route::get('/store/inventory', 'Member\StoreController@getStoreInventory')->name('member.store.inventory')->middleware('auth');
+    Route::get('/store/add-product', 'Member\StoreController@getStoreAddProduct')->name('member.store.addProduct')->middleware('auth');
+    Route::post('/store/add-product', 'Member\StoreController@postStoreAddProduct')->name('member.store.postAddProduct')->middleware('auth');
+    Route::get('/store/edit-product/{product_id}', 'Member\StoreController@getStoreEditProduct')->whereNumber('product_id')->name('member.store.editProduct')->middleware('auth');
+    Route::post('/store/edit-product/{product_id}', 'Member\StoreController@postStoreEditProduct')->whereNumber('product_id')->name('member.store.postEditProduct')->middleware('auth');
+    Route::post('/store/delete-product/{product_id}', 'Member\StoreController@postStoreDeleteProduct')->whereNumber('product_id')->name('member.store.postDeleteProduct')->middleware('auth');
+    Route::get('/store/transactions', 'Member\StoreController@getStoreTransactions')->name('member.store.transactions')->middleware('auth');
+    Route::get('/store/confirm-physical-order/{masterSalesID}', 'Member\StoreController@getStoreConfirmPhysicalOrder')->whereNumber('masterSalesID')->name('member.store.confirmPhysicalOrder')->middleware('auth');
 
     // Staking
     Route::get('/stake/history', 'Member\AppController@getStakeHistory')->name('member.stakeHistory')->middleware('auth');
@@ -81,6 +98,11 @@ Route::domain('member.' . Config::get('services.app.url'))->group(function () {
         Route::post('/stake/confirm', 'Member\AjaxController@postStakeConfirm')->name('ajax.stake.confirm')->middleware('auth');
         Route::post('/stake/unstake', 'Member\AjaxController@postUnstake')->name('ajax.unstake')->middleware('auth');
 
+        // Store
+        Route::get('/shopping/get-product-image', 'Member\AjaxController@getSearchProductImage')->name('ajax.store.getSearchProductImage')->middleware('auth');
+        Route::post('/store/cancel-physical-order', 'Member\AjaxController@postStoreCancelPhysicalOrder')->name('ajax.store.postStoreCancelPhysicalOrder')->middleware('auth');
+        Route::post('/store/confirm-physical-order', 'Member\AjaxController@postStoreConfirmPhysicalOrder')->name('ajax.store.postStoreConfirmPhysicalOrder')->middleware('auth');
+
         // Shopping
         Route::get('/shopping/get-product-by-id', 'Member\AjaxController@getProductById')->name('ajax.shopping.getProductById')->middleware('auth');
         Route::get('/shopping/get-product-by-category', 'Member\AjaxController@getProductByCategory')->name('ajax.shopping.getProductByCategory')->middleware('auth');
@@ -100,6 +122,10 @@ Route::domain('member.' . Config::get('services.app.url'))->group(function () {
         Route::get('/region/search-by-type/{type}', 'Member\AjaxController@getSearchAddressRegionByType')->where('type', '(kota|kecamatan|kelurahan)')->name('ajax.region.getSearchAddressRegionByType')->middleware('auth');
         Route::post('/region/add-user-profile', 'Member\AjaxController@postAddUserProfile')->name('ajax.region.postAddUserProfile')->middleware('auth');
         Route::post('/region/edit-user-profile', 'Member\AjaxController@postEditUserProfile')->name('ajax.region.postEditUserProfile')->middleware('auth');
+
+        // Telegram
+        Route::get('/telegram/link', 'Member\AjaxController@getCreateTelegramLink')->name('ajax.telegram.link')->middleware('auth');
+        Route::get('/telegram/unlink', 'Member\AjaxController@getRemoveTelegramLink')->name('ajax.telegram.unlink')->middleware('auth');
     });
 
 

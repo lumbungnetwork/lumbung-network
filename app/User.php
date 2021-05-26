@@ -56,4 +56,9 @@ class User extends Authenticatable
     {
         return $this->chat_id;
     }
+
+    public function bank()
+    {
+        return $this->hasOne('App\Model\Member\Bank');
+    }
 }

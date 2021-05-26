@@ -83,5 +83,10 @@
             $('#reset-form').submit();
         }
     })
+
+    $(":submit").click( function () {
+        Swal.fire('Memproses...')
+        swal.showLoading();
+    })
 </script>
 @endsection

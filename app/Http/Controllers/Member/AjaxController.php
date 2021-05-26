@@ -12,7 +12,7 @@ use App\User;
 use App\Model\Member\Product;
 use App\Model\Member\Sales;
 use App\Model\Member\MasterSales;
-use App\SellerProfile;
+use App\Model\Member\SellerProfile;
 use App\Jobs\UserClaimDividendJob;
 use Illuminate\Support\Facades\Cache;
 use App\Notifications\StockistNotification;
@@ -552,18 +552,6 @@ class AjaxController extends Controller
             $data->buy_metode = 1;
             $data->save();
 
-            // Get products and update stock amount
-            $products = Sales::where('master_sales_id', $request->masterSalesID)
-                ->select(['id', 'purchase_id', 'amount'])
-                ->get();
-
-            foreach ($products as $item) {
-                $product = Product::find($item->purchase_id);
-                $remaining = $product->qty - $item->amount;
-                $product->update(['qty' => $remaining]);
-                $product->save();
-            }
-
             // Notify seller
             if ($user->chat_id != null) {
                 User::find($user->id)->notify(new StockistNotification([
@@ -844,5 +832,112 @@ class AjaxController extends Controller
         }
 
         return response()->json(['success' => true]);
+    }
+
+    // Telegram
+    public function getCreateTelegramLink()
+    {
+        $user = Auth::user();
+        $length = 10;
+        $linkCode = substr(str_shuffle('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'), 1, $length);
+        Cache::put($linkCode, $user->id, 600);
+        return response()->json(['success' => true, 'message' => $linkCode], 201);
+    }
+
+    public function getRemoveTelegramLink()
+    {
+        $user = Auth::user();
+        $user->chat_id = null;
+        $user->save();
+        return response()->json(['success' => true], 201);
+    }
+
+    // Store
+    public function getSearchProductImage(Request $request)
+    {
+        $getProductImage = null;
+        if ($request->name != null) {
+            $getProductImage = Product::where('image', 'LIKE', '%' . $request->name . '%')
+                ->select('image')
+                ->groupBy('image')
+                ->orderBy('image', 'ASC')
+                ->get();
+        }
+        return view('member.ajax.get_image_autocomplete')
+            ->with('productImages', $getProductImage);
+    }
+
+    public function postStoreCancelPhysicalOrder(Request $request)
+    {
+        $user = Auth::user();
+        $data = MasterSales::findOrFail($request->masterSalesID);
+        // check store authority
+        if ($data->stockist_id != $user->id || $data->status != 1) {
+            return response()->json(['success' => false]);
+        }
+
+        $data->status = 10;
+        $data->reason = "Dibatalkan oleh Penjual";
+        $data->save();
+
+        return response()->json(['success' => true], 201);
+    }
+
+    public function postStoreConfirmPhysicalOrder(Request $request)
+    {
+        $user = Auth::user();
+        $data = MasterSales::findOrFail($request->masterSalesID);
+        // check store authority
+        if ($data->stockist_id != $user->id || $data->status != 1) {
+            return response()->json(['success' => false]);
+        }
+
+        // Use Atomic Lock to prevent race condition
+        $lock = Cache::lock('store_payment_' . $user->id, 60);
+
+        if ($lock->get()) {
+            // Check internal eIDR balance
+            $EidrBalance = new EidrBalance;
+            $balance = $EidrBalance->getUserNeteIDRBalance($user->id);
+            $royalty = round($data->total_price * (2 / 100));
+            $remaining = $balance - $royalty;
+            if ($remaining < 0) {
+                $lock->release();
+                return response()->json(['success' => false]);
+            }
+
+            // Create negative balance record to Deduct seller's eIDR balance
+            $newBalance = new EidrBalance;
+            $newBalance->user_id = $user->id;
+            $newBalance->amount = $royalty;
+            $newBalance->type = 0;
+            $newBalance->source = 6;
+            $newBalance->tx_id = $data->id;
+            $newBalance->note = "Kontribusi Bagi Hasil Penjualan";
+            $newBalance->save();
+
+            // update masterSales data
+            $data->status = 2;
+            $data->save();
+
+            // update stock
+            $products = Sales::where(
+                'master_sales_id',
+                $data->id
+            )
+                ->select(['id', 'purchase_id', 'amount'])
+                ->get();
+
+            foreach ($products as $item) {
+                $product = Product::find($item->purchase_id);
+                $remaining = $product->qty - $item->amount;
+                $product->update(['qty' => $remaining]);
+                $product->save();
+            }
+
+            $lock->release();
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

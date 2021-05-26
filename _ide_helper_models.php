@@ -214,9 +214,23 @@ namespace App\Model{
 /**
  * App\Model\Bank
  *
+ * @property int $id
+ * @property int $user_id
+ * @property string $bank
+ * @property string $account_no
+ * @property string $name
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|Bank newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Bank newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Bank query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank whereAccountNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank whereBank($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank whereUserId($value)
  */
 	class Bank extends \Eloquent {}
 }
@@ -430,6 +444,61 @@ namespace App\Model{
 
 namespace App\Model\Member{
 /**
+ * App\Model\Member\Bank
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property string $bank
+ * @property string $account_no
+ * @property string $name
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank whereAccountNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank whereBank($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank whereUserId($value)
+ */
+	class Bank extends \Eloquent {}
+}
+
+namespace App\Model\Member{
+/**
+ * App\Model\Member\EidrBalance
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property string $amount
+ * @property int $type
+ * @property int $source 0 = outflow, 1 = LMBdiv, 2 = Sponsor, 3 = Binary, 4 = IDR deposit, 5 = eIDR deposit, 6 = Sales
+ * @property string|null $tx_id
+ * @property string|null $note
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|EidrBalance newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|EidrBalance newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|EidrBalance query()
+ * @method static \Illuminate\Database\Eloquent\Builder|EidrBalance whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EidrBalance whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EidrBalance whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EidrBalance whereNote($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EidrBalance whereSource($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EidrBalance whereTxId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EidrBalance whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EidrBalance whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EidrBalance whereUserId($value)
+ */
+	class EidrBalance extends \Eloquent {}
+}
+
+namespace App\Model\Member{
+/**
  * App\Model\Member\LMBreward
  *
  * @property int $id
@@ -480,6 +549,8 @@ namespace App\Model\Member{
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Model\Member\Sales[] $sales
+ * @property-read int|null $sales_count
  * @method static \Illuminate\Database\Eloquent\Builder|MasterSales newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|MasterSales newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|MasterSales query()
@@ -550,6 +621,17 @@ namespace App\Model\Member{
 
 namespace App\Model\Member{
 /**
+ * App\Model\Member\Region
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|Region newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Region newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Region query()
+ */
+	class Region extends \Eloquent {}
+}
+
+namespace App\Model\Member{
+/**
  * App\Model\Member\Sales
  *
  * @property int $id
@@ -565,6 +647,8 @@ namespace App\Model\Member{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null $deleted_at
  * @property int|null $master_sales_id
+ * @property-read \App\Model\Member\MasterSales|null $masterSales
+ * @property-read \App\Model\Member\Product $product
  * @method static \Illuminate\Database\Eloquent\Builder|Sales newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Sales newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Sales query()
@@ -1070,6 +1154,7 @@ namespace App{
  * @property string|null $placement_at
  * @property int $is_tron 0 = belum, 1 = sudah
  * @property string|null $tron
+ * @property int|null $bank_id
  * @property string|null $tron_at
  * @property string|null $kecamatan
  * @property string|null $kelurahan
@@ -1084,6 +1169,7 @@ namespace App{
  * @property int $affiliate
  * @property string|null $chat_id
  * @property int|null $invited_by
+ * @property-read \App\Model\Member\Bank|null $bank
  * @property-read \App\LocalWallet|null $localWallet
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
@@ -1097,6 +1183,7 @@ namespace App{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereActiveAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereAffiliate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereAlamat($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereBankId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereChatId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereDeletedAt($value)

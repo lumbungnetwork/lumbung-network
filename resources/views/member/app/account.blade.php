@@ -6,6 +6,7 @@
 
 {{-- Content wrapper --}}
 <div class="max-w-xs mx-auto">
+    {{-- Menus --}}
     <div class="p-4 flex flex-wrap justify-between space-x-1">
         <a href="{{ route('member.profile') }}"
             class="my-2 nm-convex-gray-100 w-14 h-14 p-1 rounded-lg flex flex-wrap justify-center items-center">
@@ -29,7 +30,8 @@
             </div>
             <div class="text-xs text-gray-500 font-extralight">TRON</div>
         </a>
-        <a href="#" class="my-2 nm-convex-gray-100 w-14 h-14 p-1 rounded-lg flex flex-wrap justify-center items-center">
+        <a href="{{ route('member.account.bank') }}"
+            class="my-2 nm-convex-gray-100 w-14 h-14 p-1 rounded-lg flex flex-wrap justify-center items-center">
             <div>
                 <svg class="w-6" viewBox="0 0 20 20">
                     <path fill="gray" d="M15.123,9.991c-0.944,0-1.71,0.766-1.71,1.71c0,0.945,0.766,1.711,1.71,1.711c0.945,0,1.711-0.766,1.711-1.711
@@ -54,7 +56,8 @@
             </div>
             <div class="text-xs text-gray-500 font-extralight">Security</div>
         </a>
-        <a href="#" class="my-2 nm-convex-gray-100 w-14 h-14 p-1 rounded-lg flex flex-wrap justify-center items-center">
+        <button id="telegram-btn"
+            class="my-2 nm-convex-gray-100 w-14 h-14 p-1 rounded-lg flex flex-wrap justify-center items-center focus:outline-none">
             <div class="relative">
                 <span id="telegram-badge" class="absolute top-0 -right-3 rounded-full w-2 h-2"></span>
                 <svg class="w-6" viewBox="0 0 240 240">
@@ -71,9 +74,102 @@
                 </svg>
             </div>
             <div class="text-xs text-gray-500 font-extralight">Telegram</div>
-        </a>
+        </button>
 
     </div>
+    <div class="p-4">
+        {{-- Starter --}}
+        @if ($user->user_type == 9)
+        <div class="nm-concave-gray-100 rounded-2xl p-2">
+            <div>
+                <h4 class="text-md text-gray-600 font-semibold tracking-wider">Starter</h4>
+                <div class="text-xs text-gray-500">Free Membership</div>
+            </div>
+            <div class="flex justify-end">
+                <div>
+                    <a href="#"
+                        class="rounded-lg py-1 px-2 h-10 bg-gradient-to-br from-green-200 to-purple-300 text-xs text-center font-medium text-gray-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Go
+                        Premium</a>
+                </div>
+            </div>
+        </div>
+        @endif
+        {{-- Premium --}}
+        @if ($user->user_type == 10)
+        <div class="bg-gradient-to-r from-green-100 to-yellow-300 opacity-90 shadow rounded-2xl p-2">
+            <div>
+                <h4 class="text-md text-gray-800 font-bold tracking-wider">Premium</h4>
+                <div class="text-xs text-gray-600">Full Membership</div>
+            </div>
+            <div class="mt-2 flex justify-end">
+                <div style="font-size: 10px" class="font-light text-gray-600 tracking-tight text-right">
+                    Expired at: {{ date('d-m-Y', strtotime($user->expired_at)) }} <br>
+                    Revert to Starter
+                </div>
+            </div>
+        </div>
+        @endif
+
+    </div>
+
+    @if ($user->is_store)
+    {{-- Store Menu --}}
+    <div class="px-2">
+        <div class="mt-4 p-3 border border-gray-400 border-solid rounded-xl">
+            <div class="-mt-7 w-12 text-lg font-bold text-gray-600 tracking-wider bg-gray-200">Toko</div>
+            <div class="mt-2 flex flex-wrap justify-around space-x-2">
+                {{-- Info Toko --}}
+                <a class="mt-1 mx-0.5 flex flex-col w-8 items-center" href="{{ route('member.store.info') }}">
+                    <div
+                        class="rounded-2xl bg-gradient-to-br from-blue-300 to-green-300 w-12 h-12 p-1 flex justify-center items-end">
+                        <svg class="w-8" viewBox="0 0 20 20">
+                            <path fill="gray"
+                                d="M18.121,9.88l-7.832-7.836c-0.155-0.158-0.428-0.155-0.584,0L1.842,9.913c-0.262,0.263-0.073,0.705,0.292,0.705h2.069v7.042c0,0.227,0.187,0.414,0.414,0.414h3.725c0.228,0,0.414-0.188,0.414-0.414v-3.313h2.483v3.313c0,0.227,0.187,0.414,0.413,0.414h3.726c0.229,0,0.414-0.188,0.414-0.414v-7.042h2.068h0.004C18.331,10.617,18.389,10.146,18.121,9.88 M14.963,17.245h-2.896v-3.313c0-0.229-0.186-0.415-0.414-0.415H8.342c-0.228,0-0.414,0.187-0.414,0.415v3.313H5.032v-6.628h9.931V17.245z M3.133,9.79l6.864-6.868l6.867,6.868H3.133z">
+                            </path>
+                        </svg>
+                    </div>
+                    <p style="font-size: 10px" class="font-light text-center text-gray-600">Info Toko</p>
+                </a>
+                {{-- Inventory --}}
+                <a class="mt-1 mx-0.5 flex flex-col w-8 items-center" href="{{ route('member.store.inventory') }}">
+                    <div
+                        class="rounded-2xl bg-gradient-to-br from-red-300 to-purple-200 w-12 h-12 p-1 flex justify-center items-end">
+                        <svg class="w-8" viewBox="0 0 20 20">
+                            <path fill="gray"
+                                d="M16.803,18.615h-4.535c-1,0-1.814-0.812-1.814-1.812v-4.535c0-1.002,0.814-1.814,1.814-1.814h4.535c1.001,0,1.813,0.812,1.813,1.814v4.535C18.616,17.803,17.804,18.615,16.803,18.615zM17.71,12.268c0-0.502-0.405-0.906-0.907-0.906h-4.535c-0.501,0-0.906,0.404-0.906,0.906v4.535c0,0.502,0.405,0.906,0.906,0.906h4.535c0.502,0,0.907-0.404,0.907-0.906V12.268z M16.803,9.546h-4.535c-1,0-1.814-0.812-1.814-1.814V3.198c0-1.002,0.814-1.814,1.814-1.814h4.535c1.001,0,1.813,0.812,1.813,1.814v4.534C18.616,8.734,17.804,9.546,16.803,9.546zM17.71,3.198c0-0.501-0.405-0.907-0.907-0.907h-4.535c-0.501,0-0.906,0.406-0.906,0.907v4.534c0,0.501,0.405,0.908,0.906,0.908h4.535c0.502,0,0.907-0.406,0.907-0.908V3.198z M7.733,18.615H3.198c-1.002,0-1.814-0.812-1.814-1.812v-4.535c0-1.002,0.812-1.814,1.814-1.814h4.535c1.002,0,1.814,0.812,1.814,1.814v4.535C9.547,17.803,8.735,18.615,7.733,18.615zM8.64,12.268c0-0.502-0.406-0.906-0.907-0.906H3.198c-0.501,0-0.907,0.404-0.907,0.906v4.535c0,0.502,0.406,0.906,0.907,0.906h4.535c0.501,0,0.907-0.404,0.907-0.906V12.268z M7.733,9.546H3.198c-1.002,0-1.814-0.812-1.814-1.814V3.198c0-1.002,0.812-1.814,1.814-1.814h4.535c1.002,0,1.814,0.812,1.814,1.814v4.534C9.547,8.734,8.735,9.546,7.733,9.546z M8.64,3.198c0-0.501-0.406-0.907-0.907-0.907H3.198c-0.501,0-0.907,0.406-0.907,0.907v4.534c0,0.501,0.406,0.908,0.907,0.908h4.535c0.501,0,0.907-0.406,0.907-0.908V3.198z">
+                            </path>
+                        </svg>
+                    </div>
+                    <p style="font-size: 10px" class="font-light text-center text-gray-600">Inventory</p>
+                </a>
+                {{-- P.O.S --}}
+                <a class="mt-1 mx-0.5 flex flex-col w-8 items-center" href="#">
+                    <div
+                        class="rounded-2xl bg-gradient-to-br from-purple-400 to-blue-200 w-12 h-12 p-1 flex justify-center items-end">
+                        <svg class="w-8" viewBox="0 0 20 20">
+                            <path fill="gray"
+                                d="M10.862,6.47H3.968v6.032h6.894V6.47z M10,11.641H4.83V7.332H10V11.641z M12.585,11.641h-0.861v0.861h0.861V11.641z M7.415,14.226h0.862v-0.862H7.415V14.226z M8.707,17.673h2.586c0.237,0,0.431-0.193,0.431-0.432c0-0.237-0.193-0.431-0.431-0.431H8.707c-0.237,0-0.431,0.193-0.431,0.431C8.276,17.479,8.47,17.673,8.707,17.673 M5.691,14.226h0.861v-0.862H5.691V14.226z M4.83,13.363H3.968v0.862H4.83V13.363z M16.895,4.746h-3.017V3.023h1.292c0.476,0,0.862-0.386,0.862-0.862V1.299c0-0.476-0.387-0.862-0.862-0.862H10c-0.476,0-0.862,0.386-0.862,0.862v0.862c0,0.476,0.386,0.862,0.862,0.862h1.293v1.723H3.106c-0.476,0-0.862,0.386-0.862,0.862v12.926c0,0.476,0.386,0.862,0.862,0.862h13.789c0.475,0,0.861-0.387,0.861-0.862V5.608C17.756,5.132,17.369,4.746,16.895,4.746 M10.862,2.161H10V1.299h0.862V2.161zM11.724,1.299h3.446v0.862h-3.446V1.299z M13.016,4.746h-0.861V3.023h0.861V4.746z M16.895,18.534H3.106v-2.585h13.789V18.534zM16.895,15.088H3.106v-9.48h13.789V15.088z M15.17,12.502h0.862v-0.861H15.17V12.502z M13.447,12.502h0.861v-0.861h-0.861V12.502zM15.17,10.778h0.862V9.917H15.17V10.778z M15.17,9.055h0.862V8.193H15.17V9.055z M16.032,6.47h-4.309v0.862h4.309V6.47zM14.309,8.193h-0.861v0.862h0.861V8.193z M12.585,8.193h-0.861v0.862h0.861V8.193z M13.447,14.226h2.585v-0.862h-2.585V14.226zM13.447,10.778h0.861V9.917h-0.861V10.778z M12.585,9.917h-0.861v0.861h0.861V9.917z">
+                            </path>
+                        </svg>
+                    </div>
+                    <p style="font-size: 10px" class="font-light text-center text-gray-600">P.O.S</p>
+                </a>
+                {{-- Transaksi --}}
+                <a class="mt-1 mx-0.5 flex flex-col w-8 items-center" href="{{ route('member.store.transactions') }}">
+                    <div
+                        class="rounded-2xl bg-gradient-to-br from-green-300 to-yellow-100 w-12 h-12 p-1 flex justify-center items-end">
+                        <svg class="w-8" viewBox="0 0 20 20">
+                            <path fill="gray"
+                                d="M2.25,12.584c-0.713,0-1.292,0.578-1.292,1.291s0.579,1.291,1.292,1.291c0.713,0,1.292-0.578,1.292-1.291S2.963,12.584,2.25,12.584z M2.25,14.307c-0.238,0-0.43-0.193-0.43-0.432s0.192-0.432,0.43-0.432c0.238,0,0.431,0.193,0.431,0.432S2.488,14.307,2.25,14.307z M5.694,6.555H18.61c0.237,0,0.431-0.191,0.431-0.43s-0.193-0.431-0.431-0.431H5.694c-0.238,0-0.43,0.192-0.43,0.431S5.457,6.555,5.694,6.555z M2.25,8.708c-0.713,0-1.292,0.578-1.292,1.291c0,0.715,0.579,1.292,1.292,1.292c0.713,0,1.292-0.577,1.292-1.292C3.542,9.287,2.963,8.708,2.25,8.708z M2.25,10.43c-0.238,0-0.43-0.192-0.43-0.431c0-0.237,0.192-0.43,0.43-0.43c0.238,0,0.431,0.192,0.431,0.43C2.681,10.238,2.488,10.43,2.25,10.43z M18.61,9.57H5.694c-0.238,0-0.43,0.192-0.43,0.43c0,0.238,0.192,0.431,0.43,0.431H18.61c0.237,0,0.431-0.192,0.431-0.431C19.041,9.762,18.848,9.57,18.61,9.57z M18.61,13.443H5.694c-0.238,0-0.43,0.193-0.43,0.432s0.192,0.432,0.43,0.432H18.61c0.237,0,0.431-0.193,0.431-0.432S18.848,13.443,18.61,13.443z M2.25,4.833c-0.713,0-1.292,0.578-1.292,1.292c0,0.713,0.579,1.291,1.292,1.291c0.713,0,1.292-0.578,1.292-1.291C3.542,5.412,2.963,4.833,2.25,4.833z M2.25,6.555c-0.238,0-0.43-0.191-0.43-0.43s0.192-0.431,0.43-0.431c0.238,0,0.431,0.192,0.431,0.431S2.488,6.555,2.25,6.555z">
+                            </path>
+                        </svg>
+                    </div>
+                    <p style="font-size: 10px" class="font-light text-center text-gray-600">Transaksi</p>
+                </a>
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
 
 
@@ -86,11 +182,74 @@
 <script>
     let tgActive = {{ ($user->chat_id == null) ? 0 : 1 }}
     $( function () {
-        if (tgActive > 0) {
+        if (tgActive) {
             $('#telegram-badge').addClass('bg-green-300');
         } else {
             $('#telegram-badge').addClass('bg-red-300');
         }
     })
+
+    $('#telegram-btn').click( function () {
+        if (tgActive) {
+            unlinkTelegram();
+        } else {
+            telegram()
+        }
+    })
+
+    function telegram() {
+        Swal.fire({
+            title: 'Tautkan Telegram?',
+            text: "Pastikan anda sudah memiliki Akun Telegram, anda akan diarahkan ke Telegram untuk Start/Mulai",
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, tautkan!',
+            cancelButtonText: 'Tidak usah'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire('Lanjutkan Proses di Aplikasi Telegram Anda, Klik START/MULAI');
+                Swal.showLoading();
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('ajax.telegram.link') }}",
+                    success: function(response){
+                        location.assign("https://t.me/LumbungNetworkBot?start=" + response.message);
+                    }
+                });
+            
+            }
+        })
+    }
+    
+    function unlinkTelegram() {
+        Swal.fire({
+            title: 'Hapus Telegram?',
+            text: "Yakin ingin memutuskan hubungan dengan akun Telegram yang terdaftar saat ini?",
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, putuskan!',
+            cancelButtonText: 'Jangan'
+        }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire('Memutuskan hubungan...');
+            Swal.showLoading();
+            $.ajax({
+                type: "GET",
+                url: "{{ route('ajax.telegram.unlink') }}",
+                success: function(response){
+                    if (response.success) {
+                        location.replace(window.location.href);
+                    }
+                
+                }
+            });
+            
+            }
+        })
+    }
 </script>
 @endsection

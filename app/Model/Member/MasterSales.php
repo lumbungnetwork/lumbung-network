@@ -15,6 +15,16 @@ class MasterSales extends Model
         return $this->hasMany('App\Model\Member\Sales', 'master_sales_id', 'id');
     }
 
+    public function seller()
+    {
+        return $this->belongsTo('App\User', 'stockist_id', 'id');
+    }
+
+    public function buyer()
+    {
+        return $this->belongsTo('App\User', 'user_id', 'id');
+    }
+
     public function getMemberSpending($user_id, $month, $year)
     {
         // Get UNIX timestamp from month and year, set to mySQL date

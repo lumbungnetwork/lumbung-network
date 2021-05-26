@@ -5,13 +5,14 @@ namespace App\Http\Controllers\Member;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\User;
-use App\SellerProfile;
+use App\Model\Member\SellerProfile;
 use App\Model\Member\Product;
 use App\Model\Member\MasterSales;
 use App\Model\Member\Sales;
 use App\Model\Member\EidrBalance;
-use App\Category;
+use App\Model\Member\Category;
 use Auth;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class ShoppingController extends Controller
 {
@@ -21,6 +22,10 @@ class ShoppingController extends Controller
 
         $sellerData = User::select('alamat')->where('id', $seller_id)->first();
         $sellerProfile = SellerProfile::where('seller_id', $seller_id)->first();
+        if (!$sellerProfile) {
+            Alert::error('Failed', 'Seller not found');
+            return redirect()->route('member.shopping');
+        }
         $products = Product::where('seller_id', $seller_id)->where('is_active', 1)->get();
         $categories = Category::select('id', 'name')->get();
 
@@ -47,7 +52,12 @@ class ShoppingController extends Controller
     {
         $user = Auth::user();
 
-        $masterSalesData = MasterSales::find($masterSalesID);
+        $masterSalesData = MasterSales::findOrFail($masterSalesID);
+        // prevent unauthorized user
+        if ($masterSalesData->user_id != $user->id) {
+            Alert::error('Failed', 'Access Denied');
+            return redirect()->back();
+        }
         $salesData = Sales::where('master_sales_id', $masterSalesID)->with('product:id,name,size,image')->get();
         $sellerProfile = SellerProfile::select('shop_name')->where('seller_id', $masterSalesData->stockist_id)->first();
         $EidrBalance = new EidrBalance;
