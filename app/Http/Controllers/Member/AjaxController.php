@@ -17,6 +17,7 @@ use App\Jobs\UserClaimDividendJob;
 use Illuminate\Support\Facades\Cache;
 use App\Notifications\StockistNotification;
 use App\Jobs\ForwardShoppingPaymentJob;
+use App\Model\Member\DigitalSale;
 use App\Model\Member\EidrBalance;
 use App\Model\Member\Region;
 use Validator;
@@ -109,13 +110,13 @@ class AjaxController extends Controller
 
     public function getStakeAdd(Request $request)
     {
-        return view('member.ajax.get_stake_add')
+        return view('member.app.ajax.get_stake_add')
             ->with('max', $request->max);
     }
 
     public function getStakeSubstract(Request $request)
     {
-        return view('member.ajax.get_stake_substract')
+        return view('member.app.ajax.get_stake_substract')
             ->with('max', $request->max);
     }
 
@@ -279,7 +280,7 @@ class AjaxController extends Controller
                 ->orderBy('shop_name', 'ASC')
                 ->get();
         }
-        return view('member.ajax.get_shop_name_autocomplete')
+        return view('member.app.ajax.get_shop_name_autocomplete')
             ->with('getData', $shopNames);
     }
 
@@ -296,7 +297,7 @@ class AjaxController extends Controller
                 ->get();
         }
 
-        return view('member.ajax.product-by-category')
+        return view('member.app.ajax.product-by-category')
             ->with('products', $getSellerProducts);
     }
 
@@ -304,7 +305,7 @@ class AjaxController extends Controller
     {
         $getProduct = Product::find($request->product_id);
 
-        return view('member.ajax.product-by-id')
+        return view('member.app.ajax.product-by-id')
             ->with('product', $getProduct);
     }
 
@@ -348,7 +349,7 @@ class AjaxController extends Controller
         \Cart::session($request->user_id);
         $items = \Cart::getContent();
 
-        return view('member.ajax.get-cart-contents')
+        return view('member.app.ajax.get-cart-contents')
             ->with('products', $items);
     }
 
@@ -357,7 +358,7 @@ class AjaxController extends Controller
         \Cart::session($request->user_id)->remove($request->product_id);
         $items = \Cart::getContent();
 
-        return view('member.ajax.get-cart-contents')
+        return view('member.app.ajax.get-cart-contents')
             ->with('products', $items);
     }
 
@@ -385,7 +386,7 @@ class AjaxController extends Controller
             $remaining = $stock - $item['quantity'];
             if ($remaining < 0) {
                 $status = false;
-                return view('member.ajax.checkout')
+                return view('member.app.ajax.checkout')
                     ->with('status', $status)
                     ->with('name', $item['name'])
                     ->with('stock', $item['associatedModel']['qty']);
@@ -428,7 +429,7 @@ class AjaxController extends Controller
             $lock->release();
         }
 
-        return view('member.ajax.checkout')
+        return view('member.app.ajax.checkout')
             ->with('status', $status)
             ->with('masterSalesID', $masterSales->id);
     }
@@ -453,7 +454,7 @@ class AjaxController extends Controller
             $remaining = $stock - $item['quantity'];
             if ($remaining < 0) {
                 $status = false;
-                return view('member.ajax.pos_checkout')
+                return view('member.app.ajax.pos_checkout')
                     ->with('status', $status)
                     ->with('name', $item['name'])
                     ->with('stock', $item['associatedModel']['qty']);
@@ -521,7 +522,7 @@ class AjaxController extends Controller
         }
         \Cart::session($user->id)->clear();
         $status = true;
-        return view('member.ajax.pos_checkout')
+        return view('member.app.ajax.pos_checkout')
             ->with('status', $status)
             ->with('sellerType', $sellerType)
             ->with('masterSalesID', $insertMasterSales->lastID);
@@ -751,7 +752,7 @@ class AjaxController extends Controller
                 $data = $Region->getKelurahanByKecamatan($request->kecamatan);
             }
         }
-        return view('member.ajax.searchRegion')
+        return view('member.app.ajax.searchRegion')
             ->with(compact('type'))
             ->with(compact('data'));
     }
@@ -863,7 +864,7 @@ class AjaxController extends Controller
                 ->orderBy('image', 'ASC')
                 ->get();
         }
-        return view('member.ajax.get_image_autocomplete')
+        return view('member.app.ajax.get_image_autocomplete')
             ->with('productImages', $getProductImage);
     }
 
@@ -877,6 +878,22 @@ class AjaxController extends Controller
         }
 
         $data->status = 10;
+        $data->reason = "Dibatalkan oleh Penjual";
+        $data->save();
+
+        return response()->json(['success' => true], 201);
+    }
+
+    public function postStoreCancelDigitalOrder(Request $request)
+    {
+        $user = Auth::user();
+        $data = DigitalSale::findOrFail($request->salesID);
+        // check store authority
+        if ($data->vendor_id != $user->id || $data->status != 1) {
+            return response()->json(['success' => false]);
+        }
+
+        $data->status = 3;
         $data->reason = "Dibatalkan oleh Penjual";
         $data->save();
 
