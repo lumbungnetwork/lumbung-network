@@ -29,6 +29,7 @@
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.15.2",
+        "sweetalert2": "^11.0.12",
         "tailwindcss-neumorphism": "^0.1.0"
     }
 }
