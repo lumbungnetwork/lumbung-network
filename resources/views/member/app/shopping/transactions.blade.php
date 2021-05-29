@@ -29,7 +29,8 @@
                         @if (count($physical_tx) > 0) @foreach ($physical_tx as $tx) <div
                             class="nm-flat-white rounded-lg p-2 flex justify-between space-x-2">
                             <div class="w-3/4">
-                                <div class="text-xs text-gray-700 font-medium">Buyer: {{ $tx->buyer->username }}</div>
+                                <div class="text-xs text-gray-700 font-medium">Seller:
+                                    {{ $tx->seller->sellerProfile->shop_name ?? '' }}</div>
                                 <div class="text-xs text-gray-600 font-light">Rp{{ number_format($tx->total_price, 0) }}
                                 </div>
                                 <div style="font-size: 10px" class="text-gray-600 font-light">
@@ -37,8 +38,7 @@
                             </div>
                             <div class="w-1/4 flex flex-col items-center">
 
-                                <a
-                                    href="{{ route('member.store.confirmPhysicalOrder', ['masterSalesID' => $tx->id]) }}">
+                                <a href="{{ route('member.shopping.payment', ['masterSalesID' => $tx->id]) }}">
                                     <button style="font-size: 10px"
                                         class="rounded-lg py-1 px-2 bg-gradient-to-br from-green-300 to-purple-300 text-gray-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Detail</button>
                                 </a>
@@ -81,7 +81,8 @@
                         @if (count($digital_tx) > 0) @foreach ($digital_tx as $tx) <div
                             class="nm-flat-white rounded-lg p-2 flex justify-between space-x-2">
                             <div class="w-3/4">
-                                <div class="text-xs text-gray-700 font-medium">Buyer: {{ $tx->buyer->username }}</div>
+                                <div class="text-xs text-gray-700 font-medium">Seller:
+                                    {{ $tx->seller->sellerProfile->shop_name ?? '' }}</div>
                                 <div class="text-xs text-gray-600 font-light">Rp{{ number_format($tx->ppob_price, 0) }}
                                 </div>
                                 <div class="text-xs text-gray-400 font-extralight tracking-tighter">
@@ -91,7 +92,7 @@
                             </div>
                             <div class="w-1/4 flex flex-col items-center">
 
-                                <a href="{{ route('member.store.confirmDigitalOrder', ['id' => $tx->id]) }}">
+                                <a href="{{ route('member.shopping.digitalPayment', ['sale_id' => $tx->id]) }}">
                                     <button style="font-size: 10px"
                                         class="rounded-lg py-1 px-2 bg-gradient-to-br from-green-300 to-purple-300 text-gray-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Detail</button>
                                 </a>

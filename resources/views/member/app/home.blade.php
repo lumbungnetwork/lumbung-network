@@ -149,7 +149,8 @@
             <p class="font-light text-xs text-center text-gray-600">Belanja</p>
         </a>
         {{-- Pulsa --}}
-        <a class="mt-1 mx-0.5 flex flex-col w-14 items-center" href="#">
+        <a class="mt-1 mx-0.5 flex flex-col w-14 items-center"
+            href="{{ route('member.shopping.operatorList', ['type' => 1]) }}">
             <div
                 class="rounded-2xl bg-gradient-to-br from-red-300 to-purple-200 w-12 h-12 p-1 flex justify-center items-end">
                 <svg class="w-8" viewBox="0 0 20 20">
@@ -161,7 +162,8 @@
             <p class="font-light text-xs text-center text-gray-600">Pulsa</p>
         </a>
         {{-- Paket Data --}}
-        <a class="mt-1 mx-0.5 flex flex-col w-14 items-center" href="#">
+        <a class="mt-1 mx-0.5 flex flex-col w-14 items-center"
+            href="{{ route('member.shopping.operatorList', ['type' => 2]) }}">
             <div
                 class="rounded-2xl bg-gradient-to-br from-purple-400 to-blue-200 w-12 h-12 p-1 flex justify-center items-end">
                 <svg class="w-8" viewBox="0 0 20 20">
@@ -173,7 +175,7 @@
             <p class="font-light text-xs text-center text-gray-600">Paket Data</p>
         </a>
         {{-- Token PLN --}}
-        <a class="mt-1 mx-0.5 flex flex-col w-14 items-center" href="#">
+        <a class="mt-1 mx-0.5 flex flex-col w-14 items-center" href="{{ route('member.shopping.plnPrepaid') }}">
             <div
                 class="rounded-2xl bg-gradient-to-br from-green-300 to-yellow-100 w-12 h-12 p-1 flex justify-center items-end">
                 <svg viewBox="0 0 64 64" class="w-8">
@@ -190,7 +192,7 @@
             <p class="font-light text-xs text-center text-gray-600">Token PLN</p>
         </a>
         {{-- e-Money --}}
-        <a class="mt-1 mx-0.5 flex flex-col w-14 items-center" href="#">
+        <a class="mt-1 mx-0.5 flex flex-col w-14 items-center" href="{{ route('member.shopping.emoney') }}">
             <div
                 class="rounded-2xl bg-gradient-to-br from-purple-300 to-green-200 w-12 h-12 p-1 flex justify-center items-end">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="gray" class="w-8" viewBox="0 0 16 16">
@@ -224,7 +226,7 @@
             <p class="font-light text-xs text-center text-gray-600">Aset Digital</p>
         </a>
         {{-- Riwayat --}}
-        <a class="mt-1 mx-0.5 flex flex-col w-14 items-center" href="#">
+        <a class="mt-1 mx-0.5 flex flex-col w-14 items-center" href="{{ route('member.shopping.transactions') }}">
             <div
                 class="rounded-2xl bg-gradient-to-br from-purple-400 to-green-200 w-12 h-12 p-1 flex justify-center items-end">
                 <svg class="w-8" fill="gray" viewBox="0 0 20 20">

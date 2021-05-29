@@ -8,6 +8,7 @@ use App\User;
 use Validator;
 use Illuminate\Http\Request;
 use Auth;
+use Illuminate\Support\Facades\Hash;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Model\Member\SellerProfile;
 use Intervention\Image\ImageManager;
@@ -16,6 +17,7 @@ use App\Model\Member\DigitalSale;
 use App\Model\Member\MasterSales;
 use App\Model\Member\EidrBalance;
 use App\Model\Member\Sales;
+use App\Jobs\FireDigiflazzTransactionJob;
 
 class StoreController extends Controller
 {
@@ -470,5 +472,107 @@ class StoreController extends Controller
             ->with(compact('masterSalesData'))
             ->with(compact('salesData'))
             ->with(compact('balance'));
+    }
+
+    public function getStoreConfirmDigitalOrder($id)
+    {
+        $user = Auth::user();
+        // Checking
+        if ($user->user_type != 10 || !$user->is_store) {
+            Alert::error('Oops', 'Access Denied');
+            return redirect()->back();
+        }
+
+        // get data
+        $data = DigitalSale::findOrFail($id);
+        if ($data->vendor_id != $user->id) {
+            Alert::error('Oops', 'Access Denied');
+            return redirect()->back();
+        }
+
+        // get internal eIDR balance
+        $EidrBalance = new EidrBalance;
+        $balance = $EidrBalance->getUserNeteIDRBalance($user->id);
+
+        return view('member.app.store.confirm_digital_payment')
+            ->with('title', 'Transaksi')
+            ->with(compact('data'))
+            ->with(compact('balance'));
+    }
+
+    public function postStoreConfirmDigitalOrder(Request $request)
+    {
+        $user = Auth::user();
+        // Checking
+        if ($user->user_type != 10 || !$user->is_store) {
+            Alert::error('Oops', 'Access Denied');
+            return redirect()->back();
+        }
+
+        // validate input
+        $validator = Validator::make($request->all(), [
+            'salesID' => 'required|integer|exists:ppob,id',
+            'password' => 'required|numeric|digits_between:4,9'
+        ]);
+
+        if ($validator->fails()) {
+            Alert::error('Error', $validator->errors()->first());
+            return redirect()->back();
+        }
+
+        // Check 2FA
+        $check = Hash::check($request->password, $user->{'2fa'});
+        if (!$check) {
+            Alert::error('Error', 'Pin 2FA yang anda masukkan salah!');
+            return redirect()->back();
+        }
+
+        // Use Atomic Lock to prevent race conditions
+        $lock = Cache::lock('shopping_digital_' . $user->id, 60);
+
+        if ($lock->get()) {
+            // Get Data and check auth
+            $data = DigitalSale::findOrFail($request->salesID);
+            if ($data->vendor_id != $user->id || $data->buy_metode != 1) {
+                $lock->release();
+                Alert::error('Error', 'Access Denied!');
+                return redirect()->back();
+            }
+
+            // Get seller's balance, check remaining and deduct
+            $EidrBalance = new EidrBalance;
+            $balance = $EidrBalance->getUserNeteIDRBalance($user->id);
+            $remaining = $balance - $data->harga_modal;
+            if ($remaining < 0) {
+                $lock->release();
+                Alert::error('Gagal', 'Saldo eIDR anda tidak cukup!');
+                return redirect()->back();
+            }
+
+            // create new negative balance to deduct
+            $newBalance = new EidrBalance;
+            $newBalance->user_id = $user->id;
+            $newBalance->amount = $data->harga_modal;
+            $newBalance->type = 0;
+            $newBalance->source = 6;
+            $newBalance->tx_id = $data->id;
+            $newBalance->note = 'Transaksi: ' . $data->buyer_code . ' ' . $data->product_name;
+            $newBalance->save();
+
+            // Dispatch job
+            FireDigiflazzTransactionJob::dispatch($data->id)->onQueue('digital');
+
+            // Update Sales Data status to processing
+            $data->status = 5;
+            $data->tx_id = $newBalance->id;
+            $data->save();
+
+            $lock->release();
+
+            Alert::success('Pembayaran Berhasil', 'Pesanan anda segera diproses!');
+            return redirect()->back();
+        }
+        Alert::error('Error', 'Access Denied!');
+        return redirect()->back();
     }
 }

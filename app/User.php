@@ -39,7 +39,7 @@ class User extends Authenticatable
 
     public function sellerProfile()
     {
-        return $this->hasOne('App\SellerProfile', 'seller_id', 'id');
+        return $this->hasOne('App\Model\Member\SellerProfile', 'seller_id', 'id');
     }
 
     public function products()

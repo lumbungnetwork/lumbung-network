@@ -16,6 +16,7 @@ use App\Model\Member\SellerProfile;
 use App\Jobs\UserClaimDividendJob;
 use Illuminate\Support\Facades\Cache;
 use App\Notifications\StockistNotification;
+use App\Notifications\VendorNotification;
 use App\Jobs\ForwardShoppingPaymentJob;
 use App\Model\Member\DigitalSale;
 use App\Model\Member\EidrBalance;
@@ -530,11 +531,30 @@ class AjaxController extends Controller
 
     public function postCancelShoppingPaymentBuyer(Request $request)
     {
+        $user = Auth::user();
         try {
             $data = MasterSales::find($request->masterSalesID);
-            $data->status = 10;
-            $data->reason = 'Dibatalkan oleh pembeli';
-            $data->save();
+            // check auth
+            if ($data->user_id != $user->id) {
+                return response()->json(['success' => false]);
+            }
+            $data->delete();
+        } catch (\Throwable $th) {
+            return response()->json(['success' => false]);
+        }
+
+        return response()->json(['success' => true]);
+    }
+    public function postCancelDigitalShoppingPaymentBuyer(Request $request)
+    {
+        $user = Auth::user();
+        try {
+            $data = DigitalSale::find($request->salesID);
+            // check auth
+            if ($data->user_id != $user->id) {
+                return response()->json(['success' => false]);
+            }
+            $data->delete();
         } catch (\Throwable $th) {
             return response()->json(['success' => false]);
         }
@@ -554,10 +574,50 @@ class AjaxController extends Controller
             $data->save();
 
             // Notify seller
-            if ($user->chat_id != null) {
-                User::find($user->id)->notify(new StockistNotification([
+            $seller = User::where('id', $data->stockist_id)->select('id', 'chat_id')->first();
+            if ($seller->chat_id != null) {
+                $seller->notify(new StockistNotification([
                     'buyer' => $user->username,
                     'price' => 'Rp' . number_format($data->total_price),
+                    'payment' => 'TUNAI'
+                ]));
+            }
+
+            return response()->json(['success' => true]);
+        } catch (\Throwable $th) {
+            return response()->json(['success' => false]);
+        }
+    }
+
+    public function postDigitalShoppingPaymentCash(Request $request)
+    {
+        $user = Auth::user();
+
+        // validate input
+        $validator = Validator::make($request->all(), [
+            'salesID' => 'required|integer|exists:ppob,id',
+            'seller_id' => 'required|integer|exists:seller_profiles,seller_id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false]);
+        }
+
+        try {
+            // Update Sale data
+            $data = DigitalSale::findOrFail($request->salesID);
+            $data->status = 1;
+            $data->vendor_id = $request->seller_id;
+            $data->buy_metode = 1;
+            $data->save();
+
+            // Notify seller
+            $seller = User::where('id', $data->vendor_id)->select('id', 'chat_id')->first();
+            if ($seller->chat_id != null) {
+                $seller->notify(new VendorNotification([
+                    'buyer' => $user->username,
+                    'product' => $data->message,
+                    'price' => 'Rp' . number_format($data->ppob_price),
                     'payment' => 'TUNAI'
                 ]));
             }
@@ -955,6 +1015,18 @@ class AjaxController extends Controller
             $lock->release();
             return response()->json(['success' => true]);
         }
-        return response()->json(['success' => false]);
+    }
+
+    public function getCheckDigitalOrderStatus(Request $request)
+    {
+        try {
+            $data = DigitalSale::findOrFail($request->salesID);
+            if ($data->status != 5) {
+                return response()->json(['success' => true]);
+            }
+            return response()->json(['success' => false]);
+        } catch (\Throwable $th) {
+            return response()->json(['success' => false]);
+        }
     }
 }

@@ -204,7 +204,7 @@ return [
             ],
             'supervisor-3' => [
                 'connection' => 'redis',
-                'queue' => ['mail', 'bonus'],
+                'queue' => ['mail', 'bonus', 'digital'],
                 'balance' => 'auto',
                 'minProcesses' => 1,
                 'maxProcesses' => 10,
@@ -243,7 +243,7 @@ return [
             ],
             'supervisor-3' => [
                 'connection' => 'redis',
-                'queue' => ['mail', 'bonus'],
+                'queue' => ['mail', 'bonus', 'digital'],
                 'balance' => 'auto',
                 'minProcesses' => 1,
                 'maxProcesses' => 10,

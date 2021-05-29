@@ -33,8 +33,11 @@ Route::domain('member.' . Config::get('services.app.url'))->group(function () {
     Route::get('/auth/passwd/{code}/{email}', 'FrontEnd\FrontEndController@getAuthPassword')->name('passwdauth');
     Route::post('/auth/passwd', 'FrontEnd\FrontEndController@postAuthPassword');
 
-    //telegram bot
-    Route::post('/zMbH9dshaPZqdGIJtgvQNfsj38MfPRizcDuNeGu5xyvOWJaswzhkhFJaoeHddWaW/webhook', 'TelegramBotController@handleRequest');
+    //telegram bot webhook
+    Route::post('/' . config('services.telegram.webhook') . '/webhook', 'TelegramBotController@handleRequest');
+    // Digiflazz webhook
+    Route::post('/' . config('services.digiflazz.webhook') . '/webhook', 'Member\DigiflazzController@handleRequest');
+
 
     // New Member Routes
     Route::get('/home', 'Member\AppController@getHome')->name('member.home')->middleware('auth');
@@ -67,6 +70,8 @@ Route::domain('member.' . Config::get('services.app.url'))->group(function () {
     Route::post('/store/delete-product/{product_id}', 'Member\StoreController@postStoreDeleteProduct')->whereNumber('product_id')->name('member.store.postDeleteProduct')->middleware('auth');
     Route::get('/store/transactions', 'Member\StoreController@getStoreTransactions')->name('member.store.transactions')->middleware('auth');
     Route::get('/store/confirm-physical-order/{masterSalesID}', 'Member\StoreController@getStoreConfirmPhysicalOrder')->whereNumber('masterSalesID')->name('member.store.confirmPhysicalOrder')->middleware('auth');
+    Route::get('/store/confirm-digital-order/{id}', 'Member\StoreController@getStoreConfirmDigitalOrder')->whereNumber('id')->name('member.store.confirmDigitalOrder')->middleware('auth');
+    Route::post('/store/confirm-digital-order', 'Member\StoreController@postStoreConfirmDigitalOrder')->name('member.store.postConfirmDigitalOrder')->middleware('auth');
 
     // Staking
     Route::get('/stake/history', 'Member\AppController@getStakeHistory')->name('member.stakeHistory')->middleware('auth');
@@ -78,8 +83,18 @@ Route::domain('member.' . Config::get('services.app.url'))->group(function () {
     Route::get('/shopping', 'Member\AppController@getShopping')->name('member.shopping')->middleware('auth');
     Route::get('/shop/{id}', 'Member\ShoppingController@getShop')->whereNumber('id')->name('member.shop')->middleware('auth');
     Route::get('/shopping/payment/{masterSalesID}', 'Member\ShoppingController@getShoppingPayment')->whereNumber('masterSalesID')->name('member.shopping.payment')->middleware('auth');
+    Route::get('/shopping/select-operators/{type}', 'Member\ShoppingController@getPhoneOperatorList')->where('type', '(1|2)')->name('member.shopping.operatorList')->middleware('auth');
+    Route::get('/shopping/pricelist/{operator_id}/{type_id}', 'Member\ShoppingController@getPrepaidPhoneCreditPricelist')->where('operator_id', '(1|2|3|4|5|6)')->where('type_id', '(1|2)')->name('member.shopping.prepaidPhonePricelist')->middleware('auth');
+    Route::get('/shopping/pln-prepaid', 'Member\ShoppingController@getPLNPrepaidPricelist')->name('member.shopping.plnPrepaid')->middleware('auth');
+    Route::get('/shopping/emoney', 'Member\ShoppingController@getEmoneyOperatorList')->name('member.shopping.emoney')->middleware('auth');
+    Route::get('/shopping/emoney/{operator_id}', 'Member\ShoppingController@getEmoneyPricelist')->where('operator_id', '(21|22|23|24|25|26|27|28)')->name('member.shopping.emoneyPricelist')->middleware('auth');
+    Route::get('/shopping/digital-payment/{sale_id}', 'Member\ShoppingController@getDigitalOrderPayment')->whereNumber('sale_id')->name('member.shopping.digitalPayment')->middleware('auth');
+    Route::get('/shopping/receipt/{sale_id}', 'Member\ShoppingController@getShoppingReceipt')->whereNumber('sale_id')->name('member.shopping.receipt')->middleware('auth');
+    Route::get('/shopping/transactions', 'Member\ShoppingController@getShoppingTransactions')->name('member.shopping.transactions')->middleware('auth');
 
     Route::post('/shopping/checkout', 'Member\ShoppingController@postCheckout')->name('member.shopping.postCheckout')->middleware('auth');
+    Route::post('/shopping/prepaid-order', 'Member\ShoppingController@postShoppingPrepaidOrder')->name('member.shopping.postShoppingPrepaidOrder')->middleware('auth');
+    Route::post('/shopping/confirm-digital-order', 'Member\ShoppingController@postShoppingConfirmDigitalOrderByEidr')->name('member.shopping.postShoppingConfirmDigitalOrderByEidr')->middleware('auth');
 
 
     // Claims
@@ -101,6 +116,7 @@ Route::domain('member.' . Config::get('services.app.url'))->group(function () {
         // Store
         Route::get('/shopping/get-product-image', 'Member\AjaxController@getSearchProductImage')->name('ajax.store.getSearchProductImage')->middleware('auth');
         Route::post('/store/cancel-physical-order', 'Member\AjaxController@postStoreCancelPhysicalOrder')->name('ajax.store.postStoreCancelPhysicalOrder')->middleware('auth');
+        Route::post('/store/cancel-digital-order', 'Member\AjaxController@postStoreCancelDigitalOrder')->name('ajax.store.postStoreCancelDigitalOrder')->middleware('auth');
         Route::post('/store/confirm-physical-order', 'Member\AjaxController@postStoreConfirmPhysicalOrder')->name('ajax.store.postStoreConfirmPhysicalOrder')->middleware('auth');
 
         // Shopping
@@ -111,10 +127,14 @@ Route::domain('member.' . Config::get('services.app.url'))->group(function () {
         Route::get('/shopping/get-cart-contents', 'Member\AjaxController@getCartContents')->name('ajax.shopping.getCartContents')->middleware('auth');
         Route::get('/shopping/get-delete-cart-item', 'Member\AjaxController@getDeleteCartItem')->name('ajax.shopping.getDeleteCartItem')->middleware('auth');
         Route::get('/shopping/get-cart-checkout', 'Member\AjaxController@getCartCheckout')->name('ajax.shopping.getCartCheckout')->middleware('auth');
+        Route::get('/shopping/get-random-digital-seller', 'Member\AjaxController@getRandomDigitalSellerBasedOnBalance')->name('ajax.shopping.getRandomDigitalSellerBasedOnBalance')->middleware('auth');
+        Route::get('/shopping/check-digital-order-status', 'Member\AjaxController@getCheckDigitalOrderStatus')->name('ajax.shopping.getCheckDigitalOrderStatus')->middleware('auth');
 
         Route::post('/shopping/post-add-to-cart', 'Member\AjaxController@postAddToCart')->name('ajax.shopping.postAddToCart')->middleware('auth');
         Route::post('/shopping/post-cancel-payment-buyer', 'Member\AjaxController@postCancelShoppingPaymentBuyer')->name('ajax.shopping.postCancelShoppingPaymentBuyer')->middleware('auth');
+        Route::post('/shopping/post-cancel-digital-payment-buyer', 'Member\AjaxController@postCancelDigitalShoppingPaymentBuyer')->name('ajax.shopping.postCancelDigitalShoppingPaymentBuyer')->middleware('auth');
         Route::post('/shopping/post-shopping-payment-cash', 'Member\AjaxController@postShoppingPaymentCash')->name('ajax.shopping.postShoppingPaymentCash')->middleware('auth');
+        Route::post('/shopping/post-digital-shopping-payment-cash', 'Member\AjaxController@postDigitalShoppingPaymentCash')->name('ajax.shopping.postDigitalShoppingPaymentCash')->middleware('auth');
         Route::post('/shopping/post-shopping-payment-int-eidr', 'Member\AjaxController@postShoppingPaymentInternaleIDR')->name('ajax.shopping.postShoppingPaymentInternaleIDR')->middleware('auth');
         Route::post('/shopping/post-shopping-payment-ext-eidr', 'Member\AjaxController@postShoppingPaymentExternaleIDR')->name('ajax.shopping.postShoppingPaymentExternaleIDR')->middleware('auth');
 

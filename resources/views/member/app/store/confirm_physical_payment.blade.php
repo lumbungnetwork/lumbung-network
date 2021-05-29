@@ -89,7 +89,7 @@
                 <div class="text-xs text-gray-500 font-medium">
                     Total Penjualan:
                 </div>
-                <div class="text-md text-gray-700 font-extralight">
+                <div class="text-sm text-gray-700 font-extralight">
                     Rp{{number_format($masterSalesData->total_price)}}
                 </div>
             </div>
@@ -100,7 +100,7 @@
                 @php
                 $royalty = $masterSalesData->total_price * (2/100);
                 @endphp
-                <div class="text-md text-gray-700 font-extralight">
+                <div class="text-lg text-gray-700 font-extralight">
                     Rp{{number_format($royalty)}}
                 </div>
             </div>

@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Model\Member\EidrBalance;
 
 class protest extends Command
 {
@@ -38,17 +40,34 @@ class protest extends Command
      */
     public function handle()
     {
-        $users = DB::table('users')->select('id', 'active_at', 'pin_activate_at')->where('is_active', 1)->get();
+        $c = new Controller;
+        // Get all old vendors
+        $vendors = DB::table('users')->where('is_vendor', 1)->select('id')->get();
 
-        foreach ($users as $user) {
-            if ($user->pin_activate_at == null) {
-                $expired = date('Y-m-d', strtotime('+ 365 days', strtotime($user->active_at)));
-                DB::table('users')->where('id', $user->id)->update(['expired_at' => $expired]);
-            } else {
-                $expired = date('Y-m-d', strtotime('+ 365 days', strtotime($user->pin_activate_at)));
-                DB::table('users')->where('id', $user->id)->update(['expired_at' => $expired]);
+        $totalBalanceMigrated = 0;
+        $totalVendorMigrated = 0;
+
+        foreach ($vendors as $vendor) {
+            // get old deposit
+            $deposit = $c->getVendorAvailableDeposit($vendor->id);
+
+            if ($deposit > 0) {
+                $totalBalanceMigrated += $deposit;
+                $totalVendorMigrated++;
+                // create new internal eIDR balance
+                $balance = new EidrBalance;
+                $balance->user_id = $vendor->id;
+                $balance->amount = $deposit;
+                $balance->type = 1;
+                $balance->source = 5;
+                $balance->note = "Migrasi Saldo dari Deposit Vendor lama";
+                $balance->save();
             }
         }
+
+        echo "Total Balance Migrated: " . $totalBalanceMigrated . chr(10);
+        echo "Total Vendor Migrated: " . $totalVendorMigrated . chr(10);
+
         return;
     }
 }
