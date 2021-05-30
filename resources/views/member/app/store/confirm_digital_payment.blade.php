@@ -98,7 +98,7 @@
         <h4 class="text-md text-yellow-600">Dalam Proses</h4>
         <div class="flex justify-center items-center p-4">
             <div>
-                <img src="/image/loading-optimized.gif" alt="loading">
+                @include('member.components.ellipsis_spinner')
             </div>
         </div>
 
