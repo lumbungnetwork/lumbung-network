@@ -1077,6 +1077,7 @@ class AjaxController extends Controller
 
         return view('member.app.ajax.postpaid_inquiry')
             ->with(compact('status'))
+            ->with('type', $request->type)
             ->with(compact('message'));
     }
 
