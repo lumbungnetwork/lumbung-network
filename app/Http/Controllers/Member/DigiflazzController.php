@@ -14,7 +14,7 @@ class DigiflazzController extends Controller
     public function handleRequest(Request $request)
     {
         $secret = config('services.digiflazz.webhook_secret');
-
+        \Log::info('webhook received');
         $post_data = file_get_contents('php://input');
         \Log::info($post_data);
         \Log::info(json_decode($request->getContent(), true));
@@ -102,10 +102,11 @@ class DigiflazzController extends Controller
         // Digiflazz Credentials
         $username = config('services.digiflazz.user');
         $apiKey = config('services.digiflazz.key');
-        $sign = md5($username . $apiKey . 'pricelist');
+
         // payload
         $DigitalSale = new DigitalSale;
         $ref_id = $DigitalSale->getCodeRef($type);
+        $sign = md5($username . $apiKey . $ref_id);
         $json = json_encode([
             'commands' => 'inq-pasca',
             'username' => $username,
