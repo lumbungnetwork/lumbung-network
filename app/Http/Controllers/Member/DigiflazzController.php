@@ -17,11 +17,12 @@ class DigiflazzController extends Controller
 
         $post_data = file_get_contents('php://input');
         \Log::info($post_data);
+        \Log::info(json_decode($request->getContent(), true));
         $signature = hash_hmac('sha1', $post_data, $secret);
         \Log::info($signature);
 
         if ($request->header('X-Hub-Signature') == 'sha1=' . $signature && $request->header('X-Digiflazz-Event') == 'update') {
-            \Log::info(json_decode($request->getContent(), true));
+
             $payload = json_decode($request->getContent(), true);
 
             if ($payload['data']['status'] == 'Gagal') {
