@@ -17,12 +17,13 @@ class HomeController extends Controller
 
     public function getFront()
     {
-        return redirect()->route('areaLogin');
+        return redirect()->route('member.login');
     }
 
     public function getAreaLogin()
     {
-        return view('member.login-member');
+        // return view('member.login-member');
+        return redirect()->route('member.login');
     }
 
     public function postAreaLogin(Request $request)
