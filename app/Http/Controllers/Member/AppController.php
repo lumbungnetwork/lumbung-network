@@ -6,10 +6,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\User;
+use Illuminate\Support\Facades\Validator;
 use App\Model\Member\MasterSales;
 use App\Model\Bonus;
 use App\Model\Member\LMBreward;
 use App\Model\Member\EidrBalance;
+use App\Model\Member\EidrBalanceTransaction;
+use App\Http\Controllers\TelegramBotController;
+use RealRashid\SweetAlert\Facades\Alert;
 use DB;
 
 class AppController extends Controller
@@ -209,5 +213,98 @@ class AppController extends Controller
         return view('member.app.account.bank')
             ->with(compact('user'))
             ->with('title', 'Bank');
+    }
+
+    public function getWalletDeposit()
+    {
+        $user = Auth::user();
+        $data = EidrBalanceTransaction::where('user_id', $user->id)->orderByDesc('created_at')->paginate(10);
+        return view('member.app.deposit')
+            ->with(compact('data'))
+            ->with('title', 'Deposit');
+    }
+
+    public function postWalletDeposit(Request $request)
+    {
+        $user = Auth::user();
+        // validate input
+        $validator = Validator::make($request->all(), [
+            'type' => 'required|integer|in:1,2',
+            'amount' => 'required|integer'
+        ]);
+
+        if ($validator->fails()) {
+            Alert::error('Oops', $validator->errors()->first());
+            return redirect()->back();
+        }
+
+        if ($request->type == 1) {
+            if ($request->amount < 10000) {
+                Alert::error('Oops', 'Minimal Rp10.000 untuk deposit via Bank');
+                return redirect()->back();
+            }
+        }
+        $unique_digits = rand(39, 148);
+        $check = EidrBalanceTransaction::where('created_at', '>=', date('Y-m-d 00:00:00', strtotime('Today')))->where('unique_digits', $unique_digits)->exists();
+        do {
+            $unique_digits = rand(39, 148);
+        } while ($check);
+
+        // create transaction record
+        $tx = new EidrBalanceTransaction;
+        $tx->user_id = $user->id;
+        $tx->amount = $request->amount;
+        $tx->unique_digits = $unique_digits;
+        $tx->type = 1;
+        $tx->status = 0;
+        $tx->method = $request->type;
+        $tx->save();
+
+        return redirect()->route('member.depositPayment', ['transaction_id' => $tx->id]);
+    }
+
+    public function getDepositPayment($transaction_id)
+    {
+        $user = Auth::user();
+        $data = EidrBalanceTransaction::findOrFail($transaction_id);
+        if ($data->user_id != $user->id) {
+            Alert::error('Oops', 'Access Denied!');
+            return redirect()->route('member.home');
+        }
+
+        return view('member.app.wallet.confirm_deposit')
+            ->with('title', 'Deposit')
+            ->with(compact('data'));
+    }
+
+    public function postDepositPayment(Request $request)
+    {
+        $user = Auth::user();
+        $data = EidrBalanceTransaction::findOrFail($request->transaction_id);
+        if ($data->user_id != $user->id || $data->status != 0) {
+            Alert::error('Oops', 'Access Denied!');
+            return redirect()->route('member.home');
+        }
+        $bankName = 'BCA';
+        if ($request->bank == 2) {
+            $bankName = 'BRI';
+        } elseif ($request->bank == 3) {
+            $bankName = 'Mandiri';
+        }
+
+        $data->tx_id = $bankName;
+        $data->status = 1;
+        $data->save();
+
+        $requestData = [
+            'username' => $user->username,
+            'bank' => $bankName,
+            'amount' => $data->amount + $data->unique_digits,
+            'request_id' => $data->id
+        ];
+        $telegramBotController = new TelegramBotController;
+        $telegramBotController->sendeIDRTopupRequest($requestData);
+
+        return redirect()->back();
     }
 }
