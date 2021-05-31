@@ -16,6 +16,7 @@ class DigiflazzController extends Controller
         $secret = config('services.digiflazz.webhook_secret');
 
         $post_data = file_get_contents('php://input');
+        \Log::info($post_data);
         $signature = hash_hmac('sha1', $post_data, $secret);
         \Log::info($signature);
 
