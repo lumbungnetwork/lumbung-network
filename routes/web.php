@@ -480,23 +480,23 @@ Route::domain('member.' . Config::get('services.app.url'))->group(function () {
         Route::post('/m/request/wd-royalti-eidr', 'Admin\BonusmemberController@postRequestWithdrawRoyaltieIDR')->middleware('auth');
         Route::get('/m/req/wd-eidr', 'Admin\BonusmemberController@getRequestWithdrawaleIDR')->name('m_requestWDeIDR')->middleware('auth');
         Route::post('/m/request/wd-eidr', 'Admin\BonusmemberController@postRequestWithdraweIDR')->middleware('auth');
-        Route::get('/m/req/claim-reward', 'Admin\BonusmemberController@getRequestClaimReward')->name('m_requestClaimReward')->middleware('auth');
-        Route::post('/m/request/claim-reward', 'Admin\BonusmemberController@postRequestClaimReward')->middleware('auth');
-        Route::get('/m/history/reward', 'Admin\BonusmemberController@getHistoryReward')->name('m_historyReward')->middleware('auth');
-        Route::get('/m/belanja-reward', 'Admin\BonusmemberController@getBelanjaReward')->name('m_BelanjaReward')->middleware('auth');
-        Route::post('/m/request/belanja-reward', 'Admin\BonusmemberController@postRequestBelanjaReward')->middleware('auth');
-        Route::get('/m/stockist/penjualan-reward', 'Admin\BonusmemberController@getPenjualanReward')->name('m_PenjualanReward')->middleware('auth');
-        Route::post('/m/request/penjualan-reward', 'Admin\BonusmemberController@postRequestPenjualanReward')->middleware('auth');
+        // Route::get('/m/req/claim-reward', 'Admin\BonusmemberController@getRequestClaimReward')->name('m_requestClaimReward')->middleware('auth');
+        // Route::post('/m/request/claim-reward', 'Admin\BonusmemberController@postRequestClaimReward')->middleware('auth');
+        // Route::get('/m/history/reward', 'Admin\BonusmemberController@getHistoryReward')->name('m_historyReward')->middleware('auth');
+        // Route::get('/m/belanja-reward', 'Admin\BonusmemberController@getBelanjaReward')->name('m_BelanjaReward')->middleware('auth');
+        // Route::post('/m/request/belanja-reward', 'Admin\BonusmemberController@postRequestBelanjaReward')->middleware('auth');
+        // Route::get('/m/stockist/penjualan-reward', 'Admin\BonusmemberController@getPenjualanReward')->name('m_PenjualanReward')->middleware('auth');
+        // Route::post('/m/request/penjualan-reward', 'Admin\BonusmemberController@postRequestPenjualanReward')->middleware('auth');
         Route::post('/m/request/topup-saldo', 'Admin\BonusmemberController@postRequestTopupSaldo')->middleware('auth');
         Route::get('/m/history/topup-saldo', 'Admin\BonusmemberController@getHistoryTopupSaldo')->name('m_historyTopupSaldo')->middleware('auth');
         Route::get('/m/topup/pembayaran/{id}', 'Admin\BonusmemberController@getMemberTopupPembayaran')->name('m_MemberTopupPembayaran')->middleware('auth');
         Route::post('/m/topup/pembayaran', 'Admin\BonusmemberController@postMemberTopupPembayaran')->middleware('auth');
         Route::post('/m/reject/topup', 'Admin\BonusmemberController@postRejectTopup')->middleware('auth');
         Route::get('/m/history/wd-eidr', 'Admin\BonusmemberController@getHistoryWithdrawaleIDR')->name('m_historyWDeIDR')->middleware('auth');
-        Route::get('/m/vbelanja-reward', 'Admin\BonusmemberController@getVBelanjaReward')->name('m_VBelanjaReward')->middleware('auth');
-        Route::post('/m/request/vbelanja-reward', 'Admin\BonusmemberController@postRequestVBelanjaReward')->middleware('auth');
-        Route::get('/m/vendor/penjualan-reward', 'Admin\BonusmemberController@getVendorPenjualanReward')->name('m_VPenjualanReward')->middleware('auth');
-        Route::post('/m/vendor/penjualan-reward', 'Admin\BonusmemberController@postVendorPenjualanReward')->middleware('auth');
+        // Route::get('/m/vbelanja-reward', 'Admin\BonusmemberController@getVBelanjaReward')->name('m_VBelanjaReward')->middleware('auth');
+        // Route::post('/m/request/vbelanja-reward', 'Admin\BonusmemberController@postRequestVBelanjaReward')->middleware('auth');
+        // Route::get('/m/vendor/penjualan-reward', 'Admin\BonusmemberController@getVendorPenjualanReward')->name('m_VPenjualanReward')->middleware('auth');
+        // Route::post('/m/vendor/penjualan-reward', 'Admin\BonusmemberController@postVendorPenjualanReward')->middleware('auth');
 
         //Belanja
         Route::get('/m/req/stockist', 'Admin\MemberController@getRequestMemberStockist')->name('m_reqMemberStockist')->middleware('auth');
