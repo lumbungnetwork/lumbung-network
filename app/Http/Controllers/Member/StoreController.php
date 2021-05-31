@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Member;
 use App\Http\Controllers\Controller;
 use App\Model\Member\Product;
 use App\User;
+use Illuminate\Support\Facades\Cache;
 use Validator;
 use Illuminate\Http\Request;
 use Auth;
