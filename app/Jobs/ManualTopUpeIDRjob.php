@@ -17,6 +17,8 @@ use App\Http\Controllers\Controller;
 use App\Jobs\eIDRrebalanceJob;
 use App\Notifications\eIDRNotification;
 use Telegram\Bot\Laravel\Facades\Telegram;
+use App\Model\Member\EidrBalance;
+use App\Model\Member\EidrBalanceTransaction;
 
 class ManualTopUpeIDRjob implements ShouldQueue
 {
@@ -44,120 +46,38 @@ class ManualTopUpeIDRjob implements ShouldQueue
      */
     public function handle()
     {
-        //prepare data
-        $modelBonus = new Bonus;
-        $dataUser = $modelBonus->getUserIdfromTopUpId($this->topup_id);
-        if ($dataUser == null) {
+        //prepare data and check
+        $data = EidrBalanceTransaction::find($this->topup_id);
+        if ($data == null || $data->status != 1) {
             $this->delete();
+            return;
         }
-
-        $getData = $modelBonus->getJobTopUpSaldoIDUserId($this->topup_id, $dataUser->user_id);
-        if ($getData == null) {
-            $this->delete();
-        }
-
-        $user = User::find($dataUser->user_id);
 
         if ($this->approval == 0) {
-            $dataUpdate = array(
-                'status' => 3,
-                'reason' => 'Rejected (TG)',
-                'deleted_at' => date('Y-m-d H:i:s'),
-                'submit_by' => $user->id,
-                'submit_at' => date('Y-m-d H:i:s'),
-            );
-            $modelBonus->getUpdateTopUp('id', $this->topup_id, $dataUpdate);
+            $data->status = 3;
+            $data->save();
             return;
-        } elseif ($this->approval == 1) {
-            //prepare TRON
-            $fuse = Config::get('services.telegram.test');
-
-            $controller = new Controller;
-            $tron = $controller->getTron();
-            $tron->setPrivateKey($fuse);
-
-            $to = $getData->tron;
-            $amount = $getData->nominal * 100;
-            $from = 'TWJtGQHBS8PfZTXvWAYhQEMrx36eX2F9Pc';
-            $tokenID = '1002652';
-
-            try {
-                $transaction = $tron->getTransactionBuilder()->sendToken($to, $amount, $tokenID, $from);
-                $signedTransaction = $tron->signTransaction($transaction);
-                $response = $tron->sendRawTransaction($signedTransaction);
-            } catch (TronException $e) {
-                Telegram::sendMessage([
-                    'chat_id' => Config::get('services.telegram.overlord'),
-                    'text' => 'ManualTopUpeIDR Fail, UserID: ' . $user->id . ' topup_id: ' . $this->topup_id . chr(10) . $e->getMessage(),
-                    'parse_mode' => 'markdown'
-                ]);
-                return;
-            }
-
-            if (!isset($response['result'])) {
-                $response = Telegram::sendMessage([
-                    'chat_id' => Config::get('services.telegram.overlord'),
-                    'text' => 'ManualTopUpeIDR Fail, UserID: ' . $user->id . ' topup_id: ' . $this->topup_id,
-                    'parse_mode' => 'markdown'
-                ]);
-                return;
-            }
-
-            if ($response['result'] == true) {
-                $txHash = $response['txid'];
-
-                // log to database
-                $dataUpdate = array(
-                    'status' => 2,
-                    'reason' => $txHash,
-                    'tuntas_at' => date('Y-m-d H:i:s'),
-                    'submit_by' => $getData->user_id,
-                    'submit_at' => date('Y-m-d H:i:s'),
-                );
-                $modelBonus->getUpdateTopUp('id', $getData->id, $dataUpdate);
-
-                //fail check
-                sleep(10);
-                try {
-                    $tron->getTransaction($txHash);
-                } catch (TronException $e) {
-                    $response = Telegram::sendMessage([
-                        'chat_id' => Config::get('services.telegram.overlord'),
-                        'text' => 'ManualTopUpeIDR Fail, UserID: ' . $user->id . ' topup_id: ' . $this->topup_id,
-                        'parse_mode' => 'markdown'
-                    ]);
-                    return;
-                }
-
-                // record to eIDR log
-                DB::table('eidr_logs')->insert([
-                    'amount' => $getData->nominal,
-                    'from' => $from,
-                    'to' => $to,
-                    'hash' => $txHash,
-                    'type' => 3,
-                    'detail' => 'Topup eIDR by: ' . $user->username,
-                    'created_at' => date('Y-m-d H:i:s')
-                ]);
-
-                $notification = [
-                    'amount' => $getData->nominal,
-                    'type' => 'Top-up eIDR',
-                    'hash' => $txHash
-                ];
-
-                if ($user->chat_id != null) {
-                    $user->notify(new eIDRNotification($notification));
-                }
-
-                $eIDRbalance = $tron->getTokenBalance($tokenID, $from, $fromTron = false) / 100;
-
-                if ($eIDRbalance < 2500000) {
-                    eIDRrebalanceJob::dispatch()->onQueue('tron');
-                }
-
-                return;
-            }
         }
+
+        $method = 'Bank ' . $data->tx_id;
+        if ($data->method == 2) {
+            $method = 'TRON';
+        }
+
+        // Create Internal eIDR balance
+        $balance = new EidrBalance;
+        $balance->user_id = $data->user_id;
+        $balance->amount = $data->amount;
+        $balance->type = 1;
+        $balance->source = 5;
+        $balance->tx_id = $data->id;
+        $balance->note = 'Deposit via ' . $method;
+        $balance->save();
+
+        $data->status = 2;
+        $data->save();
+
+
+        return;
     }
 }

@@ -37,23 +37,26 @@ class TelegramBotController extends Controller
                     if ($chat_id == Config::get('services.telegram.overlord')) {
                         if ($command == 'accept') {
 
-                            Telegram::answerCallbackQuery([
-                                'callback_query_id' => $callback_id,
-                                'text' => 'Request Approved!'
-                            ]);
+                            // use Atomic Lock to prevent overlap
+                            $lock = Cache::lock('topup_' . $callback_id, 60);
 
-                            $message_text .= chr(10) . '*APPROVED*';
-                            Telegram::editMessageText([
-                                'chat_id' => $chat_id,
-                                'message_id' => $message_id,
-                                'text' => $message_text,
-                                'parse_mode' => 'markdown'
-                            ]);
+                            if ($lock->get()) {
+                                Telegram::answerCallbackQuery([
+                                    'callback_query_id' => $callback_id,
+                                    'text' => 'Request Approved!'
+                                ]);
 
-                            // prevent double call
-                            sleep(15);
+                                $message_text .= chr(10) . '*APPROVED*';
+                                Telegram::editMessageText([
+                                    'chat_id' => $chat_id,
+                                    'message_id' => $message_id,
+                                    'text' => $message_text,
+                                    'parse_mode' => 'markdown'
+                                ]);
 
-                            ManualTopUpeIDRjob::dispatch(1, $request_id)->onQueue('tron');
+                                ManualTopUpeIDRjob::dispatch(1, $request_id)->onQueue('tron');
+                                $lock->release();
+                            }
 
                             return;
                         } elseif ($command == 'reject') {
