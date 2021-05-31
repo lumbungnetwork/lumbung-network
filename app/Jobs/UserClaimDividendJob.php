@@ -42,14 +42,6 @@ class UserClaimDividendJob implements ShouldQueue
     public function handle()
     {
         $modelBonus = new Bonus;
-<<<<<<< HEAD
-        $controller = new Controller;
-        $tron = $controller->getTron();
-        $tron->setPrivateKey(Config::get('services.telegram.test'));
-        $user = User::where('id', $this->user_id)->select('id', 'tron', 'username')->first();
-
-=======
->>>>>>> lumbung3
         $claim = DB::table('users_dividend')->select('hash', 'amount')->where('id', $this->div_id)->first();
 
         // check before execute
@@ -70,40 +62,6 @@ class UserClaimDividendJob implements ShouldQueue
                 'hash' => "Claimed to Internal eIDR Balance"
             ]);
 
-<<<<<<< HEAD
-            //fail check
-            sleep(10);
-            try {
-                $response = $tron->getTransaction($txHash);
-            } catch (TronException $e) {
-                Telegram::sendMessage([
-                    'chat_id' => Config::get('services.telegram.overlord'),
-                    'text' => 'UserClaimDividend Fail, UserID: ' . $this->user_id . ' div_id: ' . $this->div_id,
-                    'parse_mode' => 'markdown'
-                ]);
-            }
-
-            // record to eIDR log
-            DB::table('eidr_logs')->insert([
-                'amount' => $claim->amount,
-                'from' => $from,
-                'to' => $to,
-                'hash' => $txHash,
-                'type' => 2,
-                'detail' => 'Claim Staking LMB Dividend by: ' . $user->username,
-                'created_at' => date('Y-m-d H:i:s')
-            ]);
-
-            // Check remaining balance and rebalance if needed
-            $eIDRbalance = $tron->getTokenBalance($tokenID, $from, $fromTron = false) / 100;
-
-            if ($eIDRbalance < 2500000) {
-                eIDRrebalanceJob::dispatch()->onQueue('tron');
-            }
-
-
-=======
->>>>>>> lumbung3
             return;
         } else {
             $this->delete();
