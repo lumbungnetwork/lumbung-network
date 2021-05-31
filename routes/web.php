@@ -17,7 +17,12 @@ use Illuminate\Support\Facades\Config;
 */
 
 Route::domain('member.' . Config::get('services.app.url'))->group(function () {
-    Route::get('/', 'Admin\HomeController@getFront')->name('frontLogin');
+    Route::get('/', function () {
+        return view('member')->with('title', 'Join Lumbung Network');
+    });
+    Route::get('/login', 'Auth\LoginController@showLoginForm')->name('member.login');
+    Route::post('/login', 'Auth\LoginController@postLogin')->name('member.postLogin');
+    Route::post('/logout', 'Auth\LoginController@logout')->name('member.postLogout');
     Route::get('/area/login', 'Admin\HomeController@getAreaLogin')->name('areaLogin');
     Route::post('/area/login', 'Admin\HomeController@postAreaLogin');
     //referal link
@@ -28,10 +33,142 @@ Route::domain('member.' . Config::get('services.app.url'))->group(function () {
     Route::get('/auth/passwd/{code}/{email}', 'FrontEnd\FrontEndController@getAuthPassword')->name('passwdauth');
     Route::post('/auth/passwd', 'FrontEnd\FrontEndController@postAuthPassword');
 
-    //telegram bot
-    Route::post('/zMbH9dshaPZqdGIJtgvQNfsj38MfPRizcDuNeGu5xyvOWJaswzhkhFJaoeHddWaW/webhook', 'TelegramBotController@handleRequest');
+    //telegram bot webhook
+    Route::post('/' . config('services.telegram.webhook') . '/webhook', 'TelegramBotController@handleRequest');
+    // Digiflazz webhook
+    Route::post('/' . config('services.digiflazz.webhook') . '/webhook', 'Member\DigiflazzController@handleRequest');
 
-    Auth::routes();
+
+    // New Member Routes
+    Route::get('/home', 'Member\AppController@getHome')->name('member.home')->middleware('auth');
+    Route::get('/stake', 'Member\AppController@getStake')->name('member.stake')->middleware('auth');
+    Route::get('/wallet', 'Member\AppController@getWallet')->name('member.wallet')->middleware('auth');
+    Route::get('/wallet/deposit', 'Member\AppController@getWalletDeposit')->name('member.walletDeposit')->middleware('auth');
+    Route::post('/wallet/deposit', 'Member\AppController@postWalletDeposit')->name('member.postWalletDeposit')->middleware('auth');
+    Route::get('/wallet/deposit-payment/{transaction_id}', 'Member\AppController@getDepositPayment')->whereNumber('transaction_id')->name('member.depositPayment')->middleware('auth');
+    Route::post('/wallet/deposit-payment', 'Member\AppController@postDepositPayment')->name('member.postDepositPayment')->middleware('auth');
+
+
+    // Account
+    Route::get('/account', 'Member\AppController@getAccount')->name('member.account')->middleware('auth');
+    Route::get('/account/profile', 'Member\AppController@getProfile')->name('member.profile')->middleware('auth');
+    Route::get('/account/edit-profile', 'Member\AppController@getEditProfile')->name('member.editProfile')->middleware('auth');
+    Route::get('/account/security', 'Member\AppController@getSecurity')->name('member.security')->middleware('auth');
+    Route::post('/account/security/create-2fa', 'Member\SecurityController@postCreate2FA')->name('member.security.postCreate2FA')->middleware('auth');
+    Route::post('/account/security/edit-2fa', 'Member\SecurityController@postEdit2FA')->name('member.security.postEdit2FA')->middleware('auth');
+    Route::post('/account/security/change-password', 'Member\SecurityController@postChangePassword')->name('member.security.postChangePassword')->middleware('auth');
+    Route::get('/account/tron', 'Member\AppController@getTron')->name('member.tron')->middleware('auth');
+    Route::post('/account/tron/set-tron', 'Member\TronController@postSetTron')->name('member.tron.postSetTron')->middleware('auth');
+    Route::post('/account/tron/reset-tron', 'Member\TronController@postResetTron')->name('member.tron.postResetTron')->middleware('auth');
+    Route::post('/account/bank/set-bank', 'Member\TronController@postSetBank')->name('member.tron.postSetBank')->middleware('auth');
+    Route::post('/account/bank/reset-bank', 'Member\TronController@postResetBank')->name('member.tron.postResetBank')->middleware('auth');
+    Route::get('/account/bank', 'Member\AppController@getBank')->name('member.account.bank')->middleware('auth');
+
+    // Store
+    Route::get('/store/info', 'Member\StoreController@getStoreInfo')->name('member.store.info')->middleware('auth');
+    Route::get('/store/edit-info', 'Member\StoreController@getStoreEditInfo')->name('member.store.editInfo')->middleware('auth');
+    Route::post('/store/add-info', 'Member\StoreController@postStoreAddInfo')->name('member.store.postStoreAddInfo')->middleware('auth');
+    Route::post('/store/edit-info', 'Member\StoreController@postStoreEditInfo')->name('member.store.postStoreEditInfo')->middleware('auth');
+    Route::get('/store/inventory', 'Member\StoreController@getStoreInventory')->name('member.store.inventory')->middleware('auth');
+    Route::get('/store/add-product', 'Member\StoreController@getStoreAddProduct')->name('member.store.addProduct')->middleware('auth');
+    Route::post('/store/add-product', 'Member\StoreController@postStoreAddProduct')->name('member.store.postAddProduct')->middleware('auth');
+    Route::get('/store/edit-product/{product_id}', 'Member\StoreController@getStoreEditProduct')->whereNumber('product_id')->name('member.store.editProduct')->middleware('auth');
+    Route::post('/store/edit-product/{product_id}', 'Member\StoreController@postStoreEditProduct')->whereNumber('product_id')->name('member.store.postEditProduct')->middleware('auth');
+    Route::post('/store/delete-product/{product_id}', 'Member\StoreController@postStoreDeleteProduct')->whereNumber('product_id')->name('member.store.postDeleteProduct')->middleware('auth');
+    Route::get('/store/transactions', 'Member\StoreController@getStoreTransactions')->name('member.store.transactions')->middleware('auth');
+    Route::get('/store/confirm-physical-order/{masterSalesID}', 'Member\StoreController@getStoreConfirmPhysicalOrder')->whereNumber('masterSalesID')->name('member.store.confirmPhysicalOrder')->middleware('auth');
+    Route::get('/store/confirm-digital-order/{id}', 'Member\StoreController@getStoreConfirmDigitalOrder')->whereNumber('id')->name('member.store.confirmDigitalOrder')->middleware('auth');
+    Route::post('/store/confirm-digital-order', 'Member\StoreController@postStoreConfirmDigitalOrder')->name('member.store.postConfirmDigitalOrder')->middleware('auth');
+
+    // Staking
+    Route::get('/stake/history', 'Member\AppController@getStakeHistory')->name('member.stakeHistory')->middleware('auth');
+    Route::get('/stake/claimed-div-history', 'Member\AppController@getStakeClaimedDivHistory')->name('member.stakeClaimedDivHistory')->middleware('auth');
+    Route::get('/stake/div-history', 'Member\AppController@getStakeDivHistory')->name('member.stakeDivHistory')->middleware('auth');
+    Route::get('/stake/leaderboard', 'Member\AppController@getStakeLeaderboard')->name('member.stakeLeaderboard')->middleware('auth');
+
+    // Shopping
+    Route::get('/shopping', 'Member\AppController@getShopping')->name('member.shopping')->middleware('auth');
+    Route::get('/shop/{id}', 'Member\ShoppingController@getShop')->whereNumber('id')->name('member.shop')->middleware('auth');
+    Route::get('/shopping/payment/{masterSalesID}', 'Member\ShoppingController@getShoppingPayment')->whereNumber('masterSalesID')->name('member.shopping.payment')->middleware('auth');
+    Route::get('/shopping/select-operators/{type}', 'Member\ShoppingController@getPhoneOperatorList')->where('type', '(1|2)')->name('member.shopping.operatorList')->middleware('auth');
+    Route::get('/shopping/pricelist/{operator_id}/{type_id}', 'Member\ShoppingController@getPrepaidPhoneCreditPricelist')->where('operator_id', '(1|2|3|4|5|6)')->where('type_id', '(1|2)')->name('member.shopping.prepaidPhonePricelist')->middleware('auth');
+    Route::get('/shopping/pln-prepaid', 'Member\ShoppingController@getPLNPrepaidPricelist')->name('member.shopping.plnPrepaid')->middleware('auth');
+    Route::get('/shopping/emoney', 'Member\ShoppingController@getEmoneyOperatorList')->name('member.shopping.emoney')->middleware('auth');
+    Route::get('/shopping/emoney/{operator_id}', 'Member\ShoppingController@getEmoneyPricelist')->where('operator_id', '(21|22|23|24|25|26|27|28)')->name('member.shopping.emoneyPricelist')->middleware('auth');
+    Route::get('/shopping/digital-payment/{sale_id}', 'Member\ShoppingController@getDigitalOrderPayment')->whereNumber('sale_id')->name('member.shopping.digitalPayment')->middleware('auth');
+    Route::get('/shopping/receipt/{sale_id}', 'Member\ShoppingController@getShoppingReceipt')->whereNumber('sale_id')->name('member.shopping.receipt')->middleware('auth');
+    Route::get('/shopping/transactions', 'Member\ShoppingController@getShoppingTransactions')->name('member.shopping.transactions')->middleware('auth');
+    Route::get('/shopping/postpaid', 'Member\ShoppingController@getPostpaidList')->name('member.shopping.postpaid')->middleware('auth');
+    Route::get('/shopping/postpaid/{type}', 'Member\ShoppingController@getPostpaidCheckCustomerNo')->where('type', '(4|5|6|7|8|9)')->name('member.shopping.postpaidCheck')->middleware('auth');
+    Route::get('/shopping/hp-postpaid', 'Member\ShoppingController@getHPPostpaidList')->name('member.shopping.hpPostpaid')->middleware('auth');
+    Route::get('/shopping/hp-postpaid/{buyer_sku_code}', 'Member\ShoppingController@getHPPostpaidCheckCustomerNo')->where('buyer_sku_code', '(HALO|MATRIX|SMARTPOST|TRIPOST|XLPOST)')->name('member.shopping.hpPostpaidCheck')->middleware('auth');
+
+    Route::post('/shopping/checkout', 'Member\ShoppingController@postCheckout')->name('member.shopping.postCheckout')->middleware('auth');
+    Route::post('/shopping/digital-order', 'Member\ShoppingController@postShoppingDigitalOrder')->name('member.shopping.postShoppingDigitalOrder')->middleware('auth');
+    Route::post('/shopping/digital-order-quickbuy', 'Member\ShoppingController@postShoppingStoreQuickbuy')->name('member.shopping.postShoppingStoreQuickbuy')->middleware('auth');
+    Route::post('/shopping/confirm-digital-order', 'Member\ShoppingController@postShoppingConfirmDigitalOrderByEidr')->name('member.shopping.postShoppingConfirmDigitalOrderByEidr')->middleware('auth');
+
+
+    // Claims
+    Route::get('/claim/shopping-reward', 'Member\AppController@getClaimShoppingReward')->name('member.claim.shoppingReward')->middleware('auth');
+
+    // AJAX
+    Route::group(['prefix' => 'ajax'], function () {
+        // Reward Claims
+        Route::post('/claim/shopping-reward', 'Member\AjaxController@postClaimShoppingReward')->name('ajax.claim.shoppingReward')->middleware('auth');
+        Route::post('/claim/staking-dividend', 'Member\AjaxController@postClaimStakingDividend')->name('ajax.claim.stakingDividend')->middleware('auth');
+        Route::post('/stake/shopping-reward', 'Member\AjaxController@postStakeShoppingReward')->name('ajax.stake.shoppingReward')->middleware('auth');
+
+        // Staking
+        Route::get('/stake/add', 'Member\AjaxController@getStakeAdd')->name('ajax.stake.add')->middleware('auth');
+        Route::get('/stake/substract', 'Member\AjaxController@getStakeSubstract')->name('ajax.stake.substract')->middleware('auth');
+        Route::post('/stake/confirm', 'Member\AjaxController@postStakeConfirm')->name('ajax.stake.confirm')->middleware('auth');
+        Route::post('/stake/unstake', 'Member\AjaxController@postUnstake')->name('ajax.unstake')->middleware('auth');
+
+        // Store
+        Route::get('/shopping/get-product-image', 'Member\AjaxController@getSearchProductImage')->name('ajax.store.getSearchProductImage')->middleware('auth');
+        Route::post('/store/cancel-physical-order', 'Member\AjaxController@postStoreCancelPhysicalOrder')->name('ajax.store.postStoreCancelPhysicalOrder')->middleware('auth');
+        Route::post('/store/cancel-digital-order', 'Member\AjaxController@postStoreCancelDigitalOrder')->name('ajax.store.postStoreCancelDigitalOrder')->middleware('auth');
+        Route::post('/store/confirm-physical-order', 'Member\AjaxController@postStoreConfirmPhysicalOrder')->name('ajax.store.postStoreConfirmPhysicalOrder')->middleware('auth');
+        Route::post('/store/change-buyer-quickbuy', 'Member\AjaxController@postChangeBuyerQuickbuy')->name('ajax.store.postChangeBuyerQuickbuy')->middleware('auth');
+
+        // Shopping
+        Route::get('/shopping/get-product-by-id', 'Member\AjaxController@getProductById')->name('ajax.shopping.getProductById')->middleware('auth');
+        Route::get('/shopping/get-product-by-category', 'Member\AjaxController@getProductByCategory')->name('ajax.shopping.getProductByCategory')->middleware('auth');
+        Route::get('/shopping/get-shop-name', 'Member\AjaxController@getShopName')->name('ajax.shopping.getShopName')->middleware('auth');
+        Route::get('/shopping/get-username', 'Member\AjaxController@getUserName')->name('ajax.shopping.getUsername')->middleware('auth');
+        Route::get('/shopping/get-cart-total', 'Member\AjaxController@getCartTotal')->name('ajax.shopping.getCartTotal')->middleware('auth');
+        Route::get('/shopping/get-cart-contents', 'Member\AjaxController@getCartContents')->name('ajax.shopping.getCartContents')->middleware('auth');
+        Route::get('/shopping/get-delete-cart-item', 'Member\AjaxController@getDeleteCartItem')->name('ajax.shopping.getDeleteCartItem')->middleware('auth');
+        Route::get('/shopping/get-cart-checkout', 'Member\AjaxController@getCartCheckout')->name('ajax.shopping.getCartCheckout')->middleware('auth');
+        Route::get('/shopping/get-random-digital-seller', 'Member\AjaxController@getRandomDigitalSellerBasedOnBalance')->name('ajax.shopping.getRandomDigitalSellerBasedOnBalance')->middleware('auth');
+        Route::get('/shopping/check-digital-order-status', 'Member\AjaxController@getCheckDigitalOrderStatus')->name('ajax.shopping.getCheckDigitalOrderStatus')->middleware('auth');
+        Route::get('/shopping/postpaid-check', 'Member\AjaxController@getCheckPostpaidCustomerNo')->name('ajax.shopping.getCheckPostpaidCustomerNo')->middleware('auth');
+
+        Route::post('/shopping/post-add-to-cart', 'Member\AjaxController@postAddToCart')->name('ajax.shopping.postAddToCart')->middleware('auth');
+        Route::post('/shopping/post-cancel-payment-buyer', 'Member\AjaxController@postCancelShoppingPaymentBuyer')->name('ajax.shopping.postCancelShoppingPaymentBuyer')->middleware('auth');
+        Route::post('/shopping/post-cancel-digital-payment-buyer', 'Member\AjaxController@postCancelDigitalShoppingPaymentBuyer')->name('ajax.shopping.postCancelDigitalShoppingPaymentBuyer')->middleware('auth');
+        Route::post('/shopping/post-shopping-payment-cash', 'Member\AjaxController@postShoppingPaymentCash')->name('ajax.shopping.postShoppingPaymentCash')->middleware('auth');
+        Route::post('/shopping/post-digital-shopping-payment-cash', 'Member\AjaxController@postDigitalShoppingPaymentCash')->name('ajax.shopping.postDigitalShoppingPaymentCash')->middleware('auth');
+        Route::post('/shopping/post-shopping-payment-int-eidr', 'Member\AjaxController@postShoppingPaymentInternaleIDR')->name('ajax.shopping.postShoppingPaymentInternaleIDR')->middleware('auth');
+        Route::post('/shopping/post-shopping-payment-ext-eidr', 'Member\AjaxController@postShoppingPaymentExternaleIDR')->name('ajax.shopping.postShoppingPaymentExternaleIDR')->middleware('auth');
+
+        // Regions
+        Route::get('/region/search-by-type/{type}', 'Member\AjaxController@getSearchAddressRegionByType')->where('type', '(kota|kecamatan|kelurahan)')->name('ajax.region.getSearchAddressRegionByType')->middleware('auth');
+        Route::post('/region/add-user-profile', 'Member\AjaxController@postAddUserProfile')->name('ajax.region.postAddUserProfile')->middleware('auth');
+        Route::post('/region/edit-user-profile', 'Member\AjaxController@postEditUserProfile')->name('ajax.region.postEditUserProfile')->middleware('auth');
+
+        // Internal eIDR
+        Route::post('/wallet/cancel-deposit', 'Member\AjaxController@postCancelDepositTransaction')->name('ajax.postCancelDepositTransaction')->middleware('auth');
+
+        // Telegram
+        Route::get('/telegram/link', 'Member\AjaxController@getCreateTelegramLink')->name('ajax.telegram.link')->middleware('auth');
+        Route::get('/telegram/unlink', 'Member\AjaxController@getRemoveTelegramLink')->name('ajax.telegram.unlink')->middleware('auth');
+    });
+
+
+
+    ////////////////////////
 
     Route::prefix('/')->group(function () {
 
@@ -431,7 +568,8 @@ Route::domain('member.' . Config::get('services.app.url'))->group(function () {
         Route::post('/m/ajax/pay-by-local-wallet', 'Admin\AjaxmemberController@postPayByLocalWallet')->middleware('auth');
         Route::post('/m/ajax/pay-by-local-wallet-vendor', 'Admin\AjaxmemberController@postPayByLocalWalletVendor')->middleware('auth');
         Route::post('/m/ajax/toggle-local-wallet', 'Admin\AjaxmemberController@postToggleLocalWallet')->middleware('auth');
-        Route::get('/m/ajax/get-shop-name', 'Admin\AjaxmemberController@getShopName')->middleware('auth');
+
+        Route::get('/m/ajax/get-shop-name', 'Admin\AjaxmemberController@getShopName')->name('member.ajax.getShopName')->middleware('auth');
 
 
 
@@ -642,6 +780,7 @@ Route::group(['domain' => 'finance.' . Config::get('services.app.domain')], func
 
 
 //main domain
+
 Route::get('/', function () {
     return view('home')->with('title', 'Lumbung Network');
 });

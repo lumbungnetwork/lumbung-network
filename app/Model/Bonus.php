@@ -4,10 +4,19 @@ namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use Throwable;
 
 class Bonus extends Model
 {
+    public function checkUsedHashExist($hash, $table, $column)
+    {
+        $sql = DB::table($table)
+            ->where($column, $hash)
+            ->exists();
+        return $sql;
+    }
+
     public function insertLMBDividend($data)
     {
         try {
@@ -22,18 +31,21 @@ class Bonus extends Model
 
     public function getLMBDividendPool()
     {
-        try {
-            $div = DB::table('lmb_dividend')->selectRaw('
+        $pool = Cache::remember('lmb_div_pool', 900, function () {
+            try {
+                $div = DB::table('lmb_dividend')->selectRaw('
 		sum(case when status = 0 then amount else 0 end) as debits,
 		sum(case when status = 1 then amount else 0 end) as credits
                     ')
-                ->first();
-            $result = $div->credits - $div->debits;
-        } catch (Throwable $ex) {
-            $message = $ex->getMessage();
-            $result = 0;
-        }
-        return $result;
+                    ->first();
+                $result = $div->credits - $div->debits;
+            } catch (Throwable $ex) {
+                $result = 0;
+            }
+            return $result;
+        });
+
+        return $pool;
     }
 
     public function insertUserDividend($data)
@@ -91,7 +103,7 @@ class Bonus extends Model
             ->select('date', 'amount', 'hash')
             ->where('user_id', $id)
             ->where('type', 0)
-            ->get();
+            ->paginate(15);
     }
 
     public function getUserDividendHistory($id)
@@ -100,7 +112,7 @@ class Bonus extends Model
             ->select('date', 'amount', 'type')
             ->where('user_id', $id)
             ->orderByDesc('date')
-            ->get();
+            ->paginate(10);
     }
 
     public function insertUserStake($data)
@@ -230,7 +242,7 @@ class Bonus extends Model
             ')
             ->groupBy('staking.user_id')
             ->orderBy('net', 'DESC')
-            ->get();
+            ->paginate();
     }
 
     public function getInsertBonusMember($data)

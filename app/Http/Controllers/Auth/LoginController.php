@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Auth;
+use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -25,7 +28,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    // protected $redirectTo = '/home';
+    protected $redirectTo = '/home';
 
     /**
      * Create a new controller instance.
@@ -34,7 +37,28 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest')->except('logout');
-        $this->middleware('guest:fi_user')->except('logout');
+    }
+
+    /**
+     * Show the application's login form.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showLoginForm()
+    {
+        return view('member.auth.login')
+            ->with('title', 'Login');
+    }
+
+    public function postLogin(Request $request)
+    {
+        $credentials = $request->only('username', 'password');
+        if ($this->guard()->attempt($credentials)) {
+            Auth::logoutOtherDevices($request->password);
+            return redirect()->intended($this->redirectPath());
+        }
+
+        Alert::error('Oops!', 'Login failed, wrong username or password!');
+        return redirect()->route('member.login');
     }
 }

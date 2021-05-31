@@ -39,12 +39,12 @@ class User extends Authenticatable
 
     public function sellerProfile()
     {
-        return $this->hasOne('App\SellerProfile', 'seller_id', 'id');
+        return $this->hasOne('App\Model\Member\SellerProfile', 'seller_id', 'id');
     }
 
     public function products()
     {
-        return $this->hasMany('App\Product', 'seller_id');
+        return $this->hasMany('App\Model\Member\Product', 'seller_id');
     }
 
     public function localWallet()
@@ -55,5 +55,10 @@ class User extends Authenticatable
     public function routeNotificationForTelegram()
     {
         return $this->chat_id;
+    }
+
+    public function bank()
+    {
+        return $this->hasOne('App\Model\Member\Bank');
     }
 }

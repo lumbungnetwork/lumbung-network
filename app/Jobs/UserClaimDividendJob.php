@@ -9,12 +9,8 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Model\Bonus;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Config;
-use Telegram\Bot\Laravel\Facades\Telegram;
-use App\User;
 use Illuminate\Support\Facades\DB;
-use IEXBase\TronAPI\Exception\TronException;
+use App\Model\Member\EidrBalance;
 
 class UserClaimDividendJob implements ShouldQueue
 {
@@ -46,50 +42,35 @@ class UserClaimDividendJob implements ShouldQueue
     public function handle()
     {
         $modelBonus = new Bonus;
+<<<<<<< HEAD
         $controller = new Controller;
         $tron = $controller->getTron();
         $tron->setPrivateKey(Config::get('services.telegram.test'));
         $user = User::where('id', $this->user_id)->select('id', 'tron', 'username')->first();
 
+=======
+>>>>>>> lumbung3
         $claim = DB::table('users_dividend')->select('hash', 'amount')->where('id', $this->div_id)->first();
 
+        // check before execute
         if ($claim->hash == null) {
-            $to = $user->tron;
-            $amount = $claim->amount * 100;
-            $tokenID = '1002652';
-            $from = 'TWJtGQHBS8PfZTXvWAYhQEMrx36eX2F9Pc';
-            //send eIDR
-            try {
-                $transaction = $tron->getTransactionBuilder()->sendToken($to, $amount, $tokenID, $from);
-                $signedTransaction = $tron->signTransaction($transaction);
-                $response = $tron->sendRawTransaction($signedTransaction);
-            } catch (TronException $e) {
-                $response = Telegram::sendMessage([
-                    'chat_id' => Config::get('services.telegram.overlord'),
-                    'text' => 'UserClaimDividend Fail, UserID: ' . $this->user_id . ' div_id: ' . $this->div_id,
-                    'parse_mode' => 'markdown'
-                ]);
 
-                return;
-            }
+            // create EidrBalance
+            $balance = new EidrBalance;
+            $balance->user_id = $this->user_id;
+            $balance->amount = $claim->amount;
+            $balance->type = 1;
+            $balance->source = 1;
+            $balance->note = "Claim Dividend from LMB Stake";
+            $balance->save();
 
-            if (!isset($response['result'])) {
-                $response = Telegram::sendMessage([
-                    'chat_id' => Config::get('services.telegram.overlord'),
-                    'text' => 'UserClaimDividend Fail, UserID: ' . $this->user_id . ' div_id: ' . $this->div_id,
-                    'parse_mode' => 'markdown'
-                ]);
-
-                return;
-            }
-
-            $txHash = $response['txid'];
 
             // update claim record with hash
             $modelBonus->updateUserDividend('id', $this->div_id, [
-                'hash' => $txHash
+                'hash' => "Claimed to Internal eIDR Balance"
             ]);
 
+<<<<<<< HEAD
             //fail check
             sleep(10);
             try {
@@ -121,7 +102,11 @@ class UserClaimDividendJob implements ShouldQueue
             }
 
 
+=======
+>>>>>>> lumbung3
             return;
+        } else {
+            $this->delete();
         }
     }
 }

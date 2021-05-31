@@ -12,7 +12,7 @@ class OrderDetailVendor extends Model
 
     public function product()
     {
-        return $this->belongsTo('App\Product', 'purchase_id', 'id');
+        return $this->belongsTo('App\Model\Member\Product', 'purchase_id', 'id');
     }
 
     public function order()

@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use App\User;
-use App\Product;
+use App\Model\Member\Product;
 use App\Jobs\KBBSelfShopping;
 
 class StartKBBSelfShopping extends Command

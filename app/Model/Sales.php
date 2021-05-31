@@ -4,7 +4,7 @@ namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use App\Product;
+use App\Model\Member\Product;
 use Throwable;
 
 class Sales extends Model

@@ -33,6 +33,8 @@ return [
     'digiflazz' => [
         'user' => env('DF_U'),
         'key' => env('DF_AK'),
+        'webhook' => env('DIGIFLAZZ_WEBHOOK_URI'),
+        'webhook_secret' => env('DIGIFLAZZ_WEBHOOK_SECRET')
     ],
 
     'eidr' => [
@@ -50,6 +52,7 @@ return [
         'retest' => env('DLMB') . env('ALMB'),
         'delegates' => env('TELEGRAM_DELEGATES_CHAT_ID'),
         'overlord' => env('TELEGRAM_OVERLORD_CHAT_ID'),
+        'webhook' => env('TELEGRAM_WEBHOOK_URL')
 
     ],
 
@@ -59,6 +62,7 @@ return [
 
     'tron' => [
         'lmb_staking' => env('LMBSTAKING'),
+        'lmb_distributor' => env('DLMB') . env('CLMB'),
         'eidr_hot' => env('CEIDR') . env('AEIDR')
     ],
 
