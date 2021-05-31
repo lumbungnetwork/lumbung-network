@@ -9,7 +9,37 @@
     <div class="px-2 my-1">
         {{-- Order Info --}}
         <div class="mt-4 nm-flat-gray-200 rounded-2xl p-4">
+
+            @if ($quickbuy && $data->status == 1)
+            <h4 class="text-xs font-light text-gray-500"><span class="text-sm font-light text-gray-600" id="buyer">Beli
+                    Putus (Quickbuy)</span></h4>
+            <div style="font-size: 10px" class="font-light text-gray-500" id="buyer-info">Penjual akan mendapatkan
+                benefit sebagai pembeli sekaligus sebagai penjual.</div>
+            <div class="flex justify-end">
+                <button id="change-buyer" style="font-size: 10px"
+                    class="rounded-lg py-1 px-2 h-6 bg-gradient-to-br from-red-400 to-purple-300 text-gray-800 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Beli
+                    untuk User lain?</button>
+                {{-- Change Buyer --}}
+                <div id="change-buyer-div" class="hidden mt-2 mb-8">
+                    <div style="font-size: 10px" class="text-gray-400 font-light">Ketikkan 3-4 huruf awal
+                        username pembeli, akan tampil list nama, silakan klik username yang diinginkan.</div>
+                    <div class="mt-2 nm-inset-gray-200 p-2 rounded-2xl">
+                        <input class="ml-2 bg-transparent focus:outline-none w-full" type="text" name="input_toko"
+                            id="get_id" placeholder="cari username..." autocomplete="off">
+                    </div>
+                    <div class="px-2">
+                        <input type="hidden" id="id_get_id">
+                        <ul class="text-sm font-light max-h-32 overflow-auto border border-solid border-gray-200 w-full hidden"
+                            id="get_id-box"></ul>
+                    </div>
+                </div>
+            </div>
+            @else
+
             <h4 class="text-sm font-light text-gray-600">Pembeli: {{ $data->buyer->username }}</h4>
+
+            @endif
+
             <div class="text-xs font-extralight text-gray-500">{{ $data->ppob_code }}</div>
             <div class="text-xs font-extralight text-gray-500">Date:
                 {{ date('d-M-y', strtotime($data->created_at)) }}</div>
@@ -53,7 +83,7 @@
             @php
             $returnData = json_decode($data->return_buy, true);
             @endphp
-            <p class="text-xs font-light text-gray-600">{{ $returnData['data']['message'] }}</p>
+            <p class="text-xs font-light text-gray-600">{{ $returnData['data']['message'] ?? ''}}</p>
         </div>
         @endif
 
@@ -74,10 +104,10 @@
             <p class="text-xs font-light text-gray-600">Metode Pembayaran: {{ $payment }}</p>
 
             @if ($data->type < 3 || $data->type > 20)
-                <div class="text-xs font-light text-gray-600">SN: {{ $returnData['data']['sn'] }}</div>
+                <div class="text-xs font-light text-gray-600">SN: {{ $returnData['data']['sn'] ?? ''}}</div>
                 @endif
                 @if ($data->type == 3)
-                <div class="text-xs font-light text-gray-600">Token: {{ $returnData['data']['sn'] }}</div>
+                <div class="text-xs font-light text-gray-600">Token: {{ $returnData['data']['sn'] ?? ''}}</div>
                 @endif
         </div>
 
@@ -263,6 +293,48 @@
                         
                     }
                 })
+        })
+
+        // Change Buyer
+        $(document).ready(function(){
+            $("#get_id").keyup(function(){
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('ajax.shopping.getUsername') }}" + "?name=" + $(this).val() ,
+                    success: function(data){
+                        $("#get_id-box").show();
+                        $("#get_id-box").html(data);
+                    }
+                });
+            });
+        });
+        function selectUsername(val) {
+            var valNew = val.split("___");
+            $("#buyer").html(valNew[1]);
+            $("#get_id").val(valNew[1]);
+            $("#get_id-box").hide();
+            $('#change-buyer-div').hide();
+            $('#change-buyer').show();
+            $('#buyer-info').html('Anda membelikan untuk User lain.');
+
+            $.ajax({
+                type: "POST",
+                url: "{{ route('ajax.store.postChangeBuyerQuickbuy') }}",
+                data: {
+                    salesID:salesID,
+                    user_id:valNew[0],
+                    _token:_token
+                },
+                success: function(data){
+                    Swal.fire('Berhasil','Anda mengganti pembeli menjadi ' + valNew[1], 'success');
+                }
+            });
+
+        }
+
+        $('#change-buyer').click( function () {
+            $('#change-buyer-div').show();
+            $('#change-buyer').hide();
         })
 
     

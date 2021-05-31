@@ -19,6 +19,11 @@ $pricelistTitle = 'e-Money';
 break;
 
 }
+
+$formRoute = route('member.shopping.postShoppingDigitalOrder');
+if ($quickbuy) {
+$formRoute = route('member.shopping.postShoppingStoreQuickbuy');
+}
 @endphp
 
 {{-- Content wrapper --}}
@@ -29,7 +34,7 @@ break;
             <div class="my-2 text-xs text-gray-500">Masukkan No. Tujuan</div>
             <div class="nm-inset-gray-200 rounded-lg p-1">
                 {{-- Order Form --}}
-                <form action="{{ route('member.shopping.postShoppingPrepaidOrder') }}" method="POST" id="order-form">
+                <form action="{{ $formRoute }}" method="POST" id="order-form">
                     @csrf
                     <input type="hidden" name="type" value="{{ $type }}">
                     <input type="hidden" name="buyer_sku_code" id="buyer_sku_code">
@@ -40,9 +45,18 @@ break;
                 </form>
 
             </div>
+            @if ($type == 3)
+            <div class="mt-3 flex justify-end">
+                <button onclick="check_no()"
+                    class="rounded-lg py-1 px-2 h-8 bg-gradient-to-br from-green-400 to-purple-300 text-xs font-medium text-gray-700 focus:outline-none outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Cek
+                    No Pelanggan</button>
+            </div>
+            @endif
         </div>
         {{-- Pricelist --}}
-        <div class="mt-8 p-3 border border-gray-400 border-solid rounded-xl">
+        <div class=" @if ($type == 3)
+            hidden
+        @endif mt-8 p-3 border border-gray-400 border-solid rounded-xl" id="pricelist">
             <div class="-mt-7 w-14 text-lg text-center font-bold text-gray-600 tracking-wider bg-gray-200">
                 {{ $pricelistTitle }}</div>
             <div class="mt-2 space-y-2">
@@ -119,6 +133,61 @@ break;
             }
         });
     }
+
+    @if ($type == 3)
+        function check_no() {
+            let customer_no = $('#customer_no').val();
+            if (!customer_no) {
+                Swal.fire('Oops', 'Anda belum memasukkan nomor tujuan', 'error');
+                return false;
+            }
+            $.ajax({
+                type: "GET",
+                url: "{{ route('ajax.shopping.getCheckPostpaidCustomerNo') }}",
+                data: {
+                    customer_no:customer_no,
+                },
+                success: function(response){
+                    if ($response.success) {
+                        Swal.fire({
+                            html: `<div class="text-md text-gray-500">Data Pelanggan</div>
+                            <div class="mt-3 text-left p-1">
+                                
+                                <div class="text-xs text-gray-400">No. Pelanggan:</div>
+                                <div class="nm-inset-gray-200 rounded-lg p-2">
+                                    <div class="ml-1 text-xs text-gray-600 font-light">${customer_no}</div>
+                                </div>
+                                <div class="text-xs text-gray-400">Nama Pelanggan:</div>
+                                <div class="mb-3 nm-inset-gray-200 rounded-lg p-2">
+                                    <div class="ml-1 text-xs text-gray-600 font-light">${response.name}</div>
+                                </div>
+                                <div class="text-xs text-gray-400">Type/Daya:</div>
+                                <div class="mb-3 nm-inset-gray-200 rounded-lg p-2">
+                                    <div class="ml-1 text-xs text-gray-600 font-light">${response.segment_power}</div>
+                                </div>
+                            
+                            </div>`,
+                            showCloseButton: false,
+                            showCancelButton: true,
+                            cancelButtonText: 'Batal',
+                            confirmButtonText: 'Beli Token',
+                            focusConfirm: false,
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                $('#pricelist').show()
+                                Swal.close();
+                            }
+                        });
+                    } else {
+                        Swal.fire('Oops', 'Ada yang salah dari nomor yang anda masukkan', 'error');
+                    }
+                
+                }
+            });
+            
+            
+        }
+    @endif
 
     $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {
         $(this).val($(this).val().replace(/[^\d].+/, ""));

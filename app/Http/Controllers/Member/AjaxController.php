@@ -21,6 +21,8 @@ use App\Jobs\ForwardShoppingPaymentJob;
 use App\Model\Member\DigitalSale;
 use App\Model\Member\EidrBalance;
 use App\Model\Member\Region;
+use App\Http\Controllers\Member\DigiflazzController;
+use App\Model\Member\EidrBalanceTransaction;
 use Validator;
 use IEXBase\TronAPI\Exception\TronException;
 
@@ -283,6 +285,31 @@ class AjaxController extends Controller
         }
         return view('member.app.ajax.get_shop_name_autocomplete')
             ->with('getData', $shopNames);
+    }
+
+    public function getUserName(Request $request)
+    {
+        $usernames = null;
+        if ($request->name != null) {
+            $usernames = User::where('username', 'LIKE', '%' . $request->name . '%')
+                ->select('id', 'username')
+                ->orderBy('username', 'ASC')
+                ->get();
+        }
+        return view('member.app.ajax.get_username_autocomplete')
+            ->with(compact('usernames'));
+    }
+
+    public function postChangeBuyerQuickbuy(Request $request)
+    {
+        $user = Auth::user();
+        $data = DigitalSale::findOrFail($request->salesID);
+        if ($data->vendor_id != $user->id) {
+            return response()->json(['success' => false]);
+        }
+        $data->user_id = $request->user_id;
+        $data->save();
+        return response()->json(['success' => true], 201);
     }
 
     public function getProductByCategory(Request $request)
@@ -1028,5 +1055,50 @@ class AjaxController extends Controller
         } catch (\Throwable $th) {
             return response()->json(['success' => false]);
         }
+    }
+
+    public function getCheckPostpaidCustomerNo(Request $request)
+    {
+        $DFcontroller = new DigiflazzController;
+        $status = true;
+        $message = '';
+        $response = $DFcontroller->postpaidInquiry($request->buyer_sku_code, $request->customer_no, $request->type);
+        if ($response == null) {
+            $message = 'Periksa kembali nomor pelanggan yang anda masukkan';
+            $status = false;
+        }
+        if ($response['data']['rc'] != '00') {
+            $message = $response['data']['message'];
+            $status = false;
+        }
+        if ($status) {
+            Cache::put($request->customer_no, $response, now()->addMinutes(80));
+        }
+
+        return view('member.app.ajax.postpaid_inquiry')
+            ->with(compact('status'))
+            ->with(compact('message'));
+    }
+
+    public function getCheckPrepaidPLNCustomerNo(Request $request)
+    {
+        $DFcontroller = new DigiflazzController;
+        $response = $DFcontroller->prepaidPLNInquiry($request->customer_no);
+        if ($response == null) {
+            return response()->json(['success' => false]);
+        } else {
+            return response()->json(['success' => true, 'name' => $response['data']['name'], 'segment_power' => $response['data']['segment_power']]);
+        }
+    }
+
+    public function postCancelDepositTransaction(Request $request)
+    {
+        $user = Auth::user();
+        $data = EidrBalanceTransaction::findOrFail($request->transaction_id);
+        if ($data->user_id != $user->id) {
+            return response()->json(['success' => false]);
+        }
+        $data->delete();
+        return response()->json(['success' => true]);
     }
 }

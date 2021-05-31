@@ -203,7 +203,7 @@
             <p class="font-light text-xs text-center text-gray-600">e-Money</p>
         </a>
         {{-- Pascabayar --}}
-        <a class="mt-1 mx-0.5 flex flex-col w-14 items-center" href="#">
+        <a class="mt-1 mx-0.5 flex flex-col w-14 items-center" href="{{ route('member.shopping.postpaid') }}">
             <div
                 class="rounded-2xl bg-gradient-to-br from-yellow-300 to-blue-200 w-12 h-12 p-1 flex justify-center items-end">
                 <svg class="w-8" viewBox="0 0 20 20">

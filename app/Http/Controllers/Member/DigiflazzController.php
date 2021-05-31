@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Model\Member\DigitalSale;
 use App\Model\Member\EidrBalance;
+use GuzzleHttp\Client;
 use App\Model\Bonus;
 
 class DigiflazzController extends Controller
@@ -91,5 +92,57 @@ class DigiflazzController extends Controller
         }
 
         return;
+    }
+
+
+    public function postpaidInquiry($buyer_sku_code, $customer_no, $type)
+    {
+        // Digiflazz Credentials
+        $username = config('services.digiflazz.user');
+        $apiKey = config('services.digiflazz.key');
+        $sign = md5($username . $apiKey . 'pricelist');
+        // payload
+        $DigitalSale = new DigitalSale;
+        $ref_id = $DigitalSale->getCodeRef($type);
+        $json = json_encode([
+            'commands' => 'inq-pasca',
+            'username' => $username,
+            'buyer_sku_code' => $buyer_sku_code,
+            'customer_no' => $customer_no,
+            'ref_id' => $ref_id,
+            'sign' => $sign,
+        ]);
+        // endpoint
+        $url = 'https://api.digiflazz.com/v1/transaction';
+
+        // use Guzzle Client
+        $client = new Client;
+        $response = $client->post($url, [
+            'headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json'],
+            'body'    => $json
+        ]);
+
+        return json_decode($response->getBody(), true);
+    }
+
+    public function prepaidPLNInquiry($customer_no)
+    {
+
+        // payload
+        $json = json_encode([
+            'commands' => 'pln-subscribe',
+            'customer_no' => $customer_no
+        ]);
+        // endpoint
+        $url = 'https://api.digiflazz.com/v1/transaction';
+
+        // use Guzzle Client
+        $client = new Client;
+        $response = $client->post($url, [
+            'headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json'],
+            'body'    => $json
+        ]);
+
+        return json_decode($response->getBody(), true);
     }
 }

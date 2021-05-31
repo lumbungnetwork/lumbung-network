@@ -373,7 +373,7 @@
                                     'Order belanja telah dibatalkan',
                                     'info'
                                 )
-                                setTimeout(window.location.replace(href), 3000);
+                                setTimeout(window.location.replace({{ route('member.home') }}), 3000);
                                 
                             } else {
                                 Swal.fire(

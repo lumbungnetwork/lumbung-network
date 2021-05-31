@@ -184,12 +184,73 @@ class ShoppingController extends Controller
             $seller_price = $price - 500;
         }
 
+        $DigitalSale = new DigitalSale;
+
         $product = (object) array(
             'buyer_sku_code' => $productArr['buyer_sku_code'],
             'desc' => $productArr['desc'],
             'seller_price' => $seller_price,
             'price' => $price,
-            'product_name' => $productArr['product_name']
+            'product_name' => $productArr['product_name'],
+            'ref_id' => $DigitalSale->getCodeRef($type)
+        );
+
+        return $product;
+    }
+
+    public function getFilteredPostpaidProductArray($type, $customer_no)
+    {
+        // Get data from cache
+        $data = Cache::pull($customer_no);
+
+        if ($data = null) {
+            return false;
+        }
+
+        $data_price = $data['data']['selling_price'];
+
+        //BPJS
+        if ($type == 4) {
+            $price = $data_price;
+            $seller_price = $data_price - 700;
+        }
+
+        //PLN
+        if ($type == 5) {
+            $price = $data_price + 500;
+            $seller_price = $data_price - 800;
+        }
+
+        //HP & Telkom
+        if ($type == 6 || $type == 7) {
+            $price = $data_price + 1000;
+            $seller_price = $data_price - 100;
+        }
+
+        //PDAM
+        if ($type == 8) {
+            $price = $data_price + 800;
+            $seller_price = $data_price;
+        }
+
+        //PGN
+        if ($type == 9) {
+            $price = $data_price + 1000;
+            $seller_price = $data_price;
+        }
+
+        //Multifinance
+        if ($type == 10) {
+            $price = $data_price + 5000;
+            $seller_price = $data_price - 1600;
+        }
+
+        $product = (object) array(
+            'buyer_sku_code' => $data['data']['buyer_sku_code'],
+            'desc' => $data['data']['buyer_sku_code'],
+            'seller_price' => $seller_price,
+            'price' => $price,
+            'ref_id' => $data['data']['ref_id']
         );
 
         return $product;
@@ -210,6 +271,12 @@ class ShoppingController extends Controller
 
     public function getPrepaidPhoneCreditPricelist($operator_id, $type_id)
     {
+        // get user and check if is_store for quickbuy
+        $user = Auth::user();
+        $quickbuy = false;
+        if ($user->is_store) {
+            $quickbuy = true;
+        }
         // switch operators
         $operator = 'TELKOMSEL';
         switch ($operator_id) {
@@ -330,11 +397,18 @@ class ShoppingController extends Controller
             ->with('title', 'Isi Pulsa/Data')
             ->with(compact('pricelist'))
             ->with(compact('pricelistCall'))
+            ->with(compact('quickbuy'))
             ->with('type', $type_id);
     }
 
     public function getEmoneyPricelist($operator_id)
     {
+        // get user and check if is_store for quickbuy
+        $user = Auth::user();
+        $quickbuy = false;
+        if ($user->is_store) {
+            $quickbuy = true;
+        }
         // switch operators
         $operator = 'GO PAY';
         switch ($operator_id) {
@@ -402,11 +476,18 @@ class ShoppingController extends Controller
             ->with('title', 'Isi Emoney')
             ->with(compact('pricelist'))
             ->with(compact('pricelistCall'))
+            ->with(compact('quickbuy'))
             ->with('type', $operator_id);
     }
 
     public function getPLNPrepaidPricelist()
     {
+        // get user and check if is_store for quickbuy
+        $user = Auth::user();
+        $quickbuy = false;
+        if ($user->is_store) {
+            $quickbuy = true;
+        }
         $priceArr = [];
         // get all Prepaid Pricelist data from Cache if available or fresh fetch from API
         $prepaidPricelist = $this->getAllPrepaidPricelist();
@@ -456,10 +537,11 @@ class ShoppingController extends Controller
             ->with('title', 'Token PLN')
             ->with(compact('pricelist'))
             ->with(compact('pricelistCall'))
+            ->with(compact('quickbuy'))
             ->with('type', 3);
     }
 
-    public function postShoppingPrepaidOrder(Request $request)
+    public function postShoppingDigitalOrder(Request $request)
     {
         $user = Auth::user();
 
@@ -475,8 +557,19 @@ class ShoppingController extends Controller
             return redirect()->back();
         }
 
+        $type = $request->type;
+
         // Get Product object from buyer_sku_code
-        $product = $this->getFilteredPrepaidProductArray($request->type, $request->buyer_sku_code);
+        if ($type >= 1 && $type < 4 || $type >= 21 && $type < 29) {
+            $product = $this->getFilteredPrepaidProductArray($request->type, $request->buyer_sku_code);
+        } elseif ($type >= 4 && $type < 11) {
+            if (Cache::has($request->customer_no)) {
+                $product = $this->getFilteredPostpaidProductArray($request->type, $request->customer_no);
+            } else {
+                Alert::error('Error', 'Order Expired, silakan ulangi order anda');
+                return redirect()->back();
+            }
+        }
         if (!$product) {
             Alert::error('Oops', 'Ada yang salah dengan order anda, sila ulangi kembali');
             return redirect()->route('member.home');
@@ -486,7 +579,7 @@ class ShoppingController extends Controller
         $sale = new DigitalSale;
         $sale->user_id = $user->id;
         $sale->vendor_id = 5;
-        $sale->ppob_code = $sale->getCodeRef($request->type);
+        $sale->ppob_code = $product->ref_id;
         $sale->type = $request->type;
         $sale->ppob_price = $product->price;
         $sale->ppob_date = date('Y-m-d');
@@ -498,6 +591,64 @@ class ShoppingController extends Controller
 
         // Redirect to payment page
         return redirect()->route('member.shopping.digitalPayment', ['sale_id' => $sale->id]);
+    }
+
+    public function postShoppingStoreQuickbuy(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user->is_store) {
+            Alert::error('Error', 'Access Denied!');
+            return redirect()->back();
+        }
+
+        // validate input
+        $validator = Validator::make($request->all(), [
+            'type' => ['required', 'integer', 'min:1', 'max:40'],
+            'buyer_sku_code' => ['required', 'string', 'min:1', 'max:30'],
+            'customer_no' => ['required', 'numeric', 'digits_between:4,20'],
+        ]);
+
+        if ($validator->fails()) {
+            Alert::error('Oops', $validator->errors()->first());
+            return redirect()->back();
+        }
+
+        $type = $request->type;
+
+        // Get Product object from buyer_sku_code
+        if ($type >= 1 && $type < 4 || $type >= 21 && $type < 29) {
+            $product = $this->getFilteredPrepaidProductArray($request->type, $request->buyer_sku_code);
+        } elseif ($type >= 4 && $type < 11) {
+            if (Cache::has($request->customer_no)) {
+                $product = $this->getFilteredPostpaidProductArray($request->type, $request->customer_no);
+            } else {
+                Alert::error('Error', 'Order Expired, silakan ulangi order anda');
+                return redirect()->back();
+            }
+        }
+        if (!$product) {
+            Alert::error('Oops', 'Ada yang salah dengan order anda, sila ulangi kembali');
+            return redirect()->route('member.home');
+        }
+
+        // Create new quickbuy record for the order
+        $sale = new DigitalSale;
+        $sale->user_id = $user->id;
+        $sale->vendor_id = $user->id;
+        $sale->ppob_code = $product->ref_id;
+        $sale->status = 1;
+        $sale->buy_metode = 1;
+        $sale->type = $request->type;
+        $sale->ppob_price = $product->price;
+        $sale->ppob_date = date('Y-m-d');
+        $sale->buyer_code = $product->buyer_sku_code;
+        $sale->product_name = $request->customer_no;
+        $sale->message = $product->desc;
+        $sale->harga_modal = $product->seller_price;
+        $sale->save();
+
+        // Redirect to payment page
+        return redirect()->route('member.store.confirmDigitalOrder', ['id' => $sale->id]);
     }
 
     public function getDigitalOrderPayment($sale_id)
@@ -655,5 +806,52 @@ class ShoppingController extends Controller
             ->with('title', 'Riwayat Transaksi')
             ->with(compact('physical_tx'))
             ->with(compact('digital_tx'));
+    }
+
+    public function getPostpaidList()
+    {
+        return view('member.app.shopping.postpaid_list')
+            ->with('title', 'Pascabayar');
+    }
+
+    public function getHPPostpaidList()
+    {
+        return view('member.app.shopping.hp_postpaid_list')
+            ->with('title', 'HP Pascabayar');
+    }
+
+    public function getHPPostpaidCheckCustomerNo($buyer_sku_code)
+    {
+        // get user and check if is_store for quickbuy
+        $user = Auth::user();
+        $quickbuy = false;
+        if ($user->is_store) {
+            $quickbuy = true;
+        }
+        return view('member.app.shopping.postpaid_check_no')
+            ->with('type', 6)
+            ->with(compact('buyer_sku_code'))
+            ->with(compact('quickbuy'))
+            ->with('title', 'HP Pascabayar');
+    }
+
+    public function getPostpaidCheckCustomerNo($type)
+    {
+        $buyer_sku_code = 'BPJS';
+        switch ($type) {
+            case 5:
+                $buyer_sku_code = 'PLNPOST';
+                break;
+            case 7:
+                $buyer_sku_code = 'TELKOM';
+                break;
+            case 9:
+                $buyer_sku_code = 'PGN';
+                break;
+        }
+        return view('member.app.shopping.postpaid_check_no')
+            ->with(compact('type'))
+            ->with(compact('buyer_sku_code'))
+            ->with('title', 'Pascabayar');
     }
 }

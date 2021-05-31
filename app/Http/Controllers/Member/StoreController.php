@@ -477,6 +477,8 @@ class StoreController extends Controller
     public function getStoreConfirmDigitalOrder($id)
     {
         $user = Auth::user();
+        $quickbuy = false;
+
         // Checking
         if ($user->user_type != 10 || !$user->is_store) {
             Alert::error('Oops', 'Access Denied');
@@ -490,6 +492,11 @@ class StoreController extends Controller
             return redirect()->back();
         }
 
+        // check quickbuy
+        if ($data->user_id == $user->id) {
+            $quickbuy = true;
+        }
+
         // get internal eIDR balance
         $EidrBalance = new EidrBalance;
         $balance = $EidrBalance->getUserNeteIDRBalance($user->id);
@@ -497,6 +504,7 @@ class StoreController extends Controller
         return view('member.app.store.confirm_digital_payment')
             ->with('title', 'Transaksi')
             ->with(compact('data'))
+            ->with(compact('quickbuy'))
             ->with(compact('balance'));
     }
 
