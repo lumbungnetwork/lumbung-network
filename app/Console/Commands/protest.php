@@ -62,6 +62,14 @@ class protest extends Command
                 $balance->source = 5;
                 $balance->note = "Migrasi Saldo dari Deposit Vendor lama";
                 $balance->save();
+
+                // deduct old deposit
+                DB::table('member_deposito')->insert([
+                    'user_id' => $vendor->id,
+                    'total_deposito' => $deposit,
+                    'transaction_code' => 'Migrated to internal eIDR balance',
+                    'deposito_status' => 1
+                ]);
             }
         }
 
