@@ -203,7 +203,7 @@ class ShoppingController extends Controller
         // Get data from cache
         $data = Cache::get($customer_no);
 
-        if ($data = null) {
+        if ($data == null) {
             return false;
         }
 
@@ -564,7 +564,7 @@ class ShoppingController extends Controller
             $product = $this->getFilteredPrepaidProductArray($request->type, $request->buyer_sku_code);
         } elseif ($type >= 4 && $type < 11) {
             if (Cache::has($request->customer_no)) {
-                $product = $this->getFilteredPostpaidProductArray($request->type, $request->customer_no);
+                $product = $this->getFilteredPostpaidProductArray($type, $request->customer_no);
             } else {
                 Alert::error('Error', 'Order Expired, silakan ulangi order anda');
                 return redirect()->back();
