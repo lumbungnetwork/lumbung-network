@@ -201,7 +201,7 @@ class ShoppingController extends Controller
     public function getFilteredPostpaidProductArray($type, $customer_no)
     {
         // Get data from cache
-        $data = Cache::pull($customer_no);
+        $data = Cache::get($customer_no);
 
         if ($data = null) {
             return false;
