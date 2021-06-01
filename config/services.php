@@ -33,6 +33,7 @@ return [
     'digiflazz' => [
         'user' => env('DF_U'),
         'key' => env('DF_AK'),
+        'dev-key' => env('DF_DEVKEY'),
         'webhook' => env('DIGIFLAZZ_WEBHOOK_URI'),
         'webhook_secret' => env('DIGIFLAZZ_WEBHOOK_SECRET')
     ],
