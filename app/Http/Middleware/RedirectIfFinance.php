@@ -18,7 +18,7 @@ class RedirectIfFinance
 	public function handle($request, Closure $next, $guard = 'finance')
 	{
 		if (Auth::guard($guard)->check()) {
-			return redirect('/dashboard');
+			return redirect()->route('finance.dashboard');
 		}
 
 		return $next($request);
