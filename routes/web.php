@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Config;
 |
 */
 
-Route::domain('member.' . Config::get('services.app.url'))->group(function () {
+Route::domain('member.' . config('services.app.domain'))->group(function () {
     Route::get('/', function () {
         return view('member')->with('title', 'Join Lumbung Network');
     });
@@ -750,7 +750,7 @@ Route::domain('member.' . Config::get('services.app.url'))->group(function () {
     });
 });
 
-Route::group(['domain' => 'finance.' . Config::get('services.app.domain')], function () {
+Route::group(['domain' => 'finance.' . config('services.app.domain')], function () {
     Route::get('/', function () {
         return view('lumbung_finance')->with('title', 'Lumbung Finance');
     });
