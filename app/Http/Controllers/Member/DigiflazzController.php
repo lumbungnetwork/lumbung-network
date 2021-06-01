@@ -8,6 +8,7 @@ use App\Model\Member\DigitalSale;
 use App\Model\Member\EidrBalance;
 use GuzzleHttp\Client;
 use App\Model\Bonus;
+use Telegram\Bot\Laravel\Facades\Telegram;
 
 class DigiflazzController extends Controller
 {
@@ -18,6 +19,11 @@ class DigiflazzController extends Controller
         $post_data = file_get_contents('php://input');
         \Log::info($post_data);
         \Log::info(json_decode($request->getContent(), true));
+        Telegram::sendMessage([
+            'chat_id' => config('services.telegram.overlord'),
+            'text' => json_decode($request->getContent(), true),
+            'parse_mode' => 'markdown'
+        ]);
         $signature = hash_hmac('sha1', $post_data, $secret);
         \Log::info($signature);
 

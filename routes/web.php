@@ -36,7 +36,7 @@ Route::domain('member.' . config('services.app.domain'))->group(function () {
     //telegram bot webhook
     Route::post('/' . config('services.telegram.webhook') . '/webhook', 'TelegramBotController@handleRequest');
     // Digiflazz webhook
-    Route::post('/' . config('services.digiflazz.webhook') . '/webhook', 'Member\DigiflazzController@handleRequest');
+    Route::post('/digiflazz/webhook', 'Member\DigiflazzController@handleRequest');
 
 
     // New Member Routes
