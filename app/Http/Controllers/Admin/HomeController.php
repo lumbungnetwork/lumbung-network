@@ -22,7 +22,8 @@ class HomeController extends Controller
 
     public function getAreaLogin()
     {
-        return view('member.login-member');
+        // return view('member.login-member');
+        return redirect()->route('member.login');
     }
 
     public function postAreaLogin(Request $request)
