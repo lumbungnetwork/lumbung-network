@@ -540,7 +540,7 @@ Route::domain('member.' . Config::get('services.app.url'))->group(function () {
 
         //New Member Shopping
         Route::get('/m/shopping/{seller_id}', 'Admin\MemberController@getShopping')->name('m_Shopping')->middleware('auth');
-        Route::get('/m/getpos', 'Admin\MemberController@getPos')->name('m_Pos')->middleware('auth');
+        Route::get('/m/getpos', 'Admin\MemberController@getPos')->name('m_getPos')->middleware('auth');
         Route::get('/m/pos', 'Admin\MemberController@getPosShopping')->name('m_Pos')->middleware('auth');
 
         Route::post('/m/settlement', 'Admin\MemberController@postSettlement')->name('m_Settlement')->middleware('auth');
