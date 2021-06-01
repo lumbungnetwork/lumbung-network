@@ -13,6 +13,6 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         '/zMbH9dshaPZqdGIJtgvQNfsj38MfPRizcDuNeGu5xyvOWJaswzhkhFJaoeHddWaW/webhook',
-        '/hok0zyfi75ale6zm080wovqo9gdy559y5lpwfxagca8hepu1tovfkf8u8dl9ypnlk2zznkjzdxtl3bgt/webhook',
+        '/digiflazz/webhook',
     ];
 }

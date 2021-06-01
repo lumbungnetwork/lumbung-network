@@ -15,7 +15,6 @@ class DigiflazzController extends Controller
     public function handleRequest(Request $request)
     {
         $secret = config('services.digiflazz.webhook_secret');
-        \Log::info('webhook received');
         $post_data = file_get_contents('php://input');
         \Log::info($post_data);
         \Log::info(json_decode($request->getContent(), true));
