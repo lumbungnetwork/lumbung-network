@@ -40,24 +40,30 @@ class DigiflazzTestCase extends Command
     {
         $no = $this->argument('no');
 
+        // Prepare Digiflazz Credentials
+        $username = config('services.digiflazz.user');
+        $apiKey = config('services.digiflazz.key');
+        $ref_id = 'ref_1_007_2021060110dk2p' . rand(11, 79);
+        $sign = md5($username . $apiKey . $ref_id);
+
         if ($no == 1) {
             // Prepaid Sukses 
             $json = json_encode([
-                'username' => 'username',
+                'username' => $username,
                 'buyer_sku_code' => 'xld10',
                 'customer_no' => '087800001230',
-                'ref_id' => 'test1',
+                'ref_id' => $ref_id,
                 'testing' => true,
-                'sign' => '740b00a1b8784e028cc8078edf66d12b',
+                'sign' => $sign,
             ]);
         } elseif ($no == 2) {
             // Prepaid Gagal
             $json = json_encode([
-                'username' => 'username',
+                'username' => $username,
                 'buyer_sku_code' => 'xld10',
                 'customer_no' => '087800001232',
-                'ref_id' => 'test2',
-                'sign' => '740b00a1b8784e028cc8078edf66d12b',
+                'ref_id' => $ref_id,
+                'sign' => $sign,
             ]);
         }
 
