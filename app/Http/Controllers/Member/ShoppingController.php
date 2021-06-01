@@ -693,7 +693,7 @@ class ShoppingController extends Controller
             if ($balance >= 10000) {
                 $sellerArr[] = [
                     'id' => $seller->id,
-                    'shop_name' => $seller->sellerProfile->shop_name,
+                    'shop_name' => $seller->sellerProfile->shop_name ?? $seller->username,
                     'balance' => $balance
                 ];
             }
