@@ -42,6 +42,11 @@ break;
 
 
 }
+// Quickbuy route
+$formRoute = route('member.shopping.postShoppingDigitalOrder');
+if ($quickbuy) {
+$formRoute = route('member.shopping.postShoppingStoreQuickbuy');
+}
 @endphp
 
 {{-- Content wrapper --}}
@@ -52,7 +57,7 @@ break;
             <div class="my-2 text-xs text-gray-500">Masukkan No. Tujuan</div>
             <div class="nm-inset-gray-200 rounded-lg p-1">
                 {{-- Order Form --}}
-                <form action="{{ route('member.shopping.postShoppingDigitalOrder') }}" method="POST" id="order-form">
+                <form action="{{ $formRoute }}" method="POST" id="order-form">
                     @csrf
                     <input type="hidden" name="buyer_sku_code" id="buyer_sku_code" value="{{ $buyer_sku_code }}">
                     <input type="hidden" name="type" id="type" value="{{ $type }}">

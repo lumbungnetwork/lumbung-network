@@ -43,7 +43,7 @@
         src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js">
     </script>
     <script src="{{ asset('asset_new/js/sidebar.js') }}"></script>
-    <script src="{{ asset('vendor/sweetalert/sweetalert.all.js') }}"></script>
+    <script src="{{ asset('vendor/sweetalert/sweetalert2.all.min.js') }}"></script>
 
     @yield('javascript')
 

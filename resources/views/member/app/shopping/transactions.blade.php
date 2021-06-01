@@ -30,7 +30,7 @@
                             class="nm-flat-white rounded-lg p-2 flex justify-between space-x-2">
                             <div class="w-3/4">
                                 <div class="text-xs text-gray-700 font-medium">Seller:
-                                    {{ $tx->seller->sellerProfile->shop_name ?? '' }}</div>
+                                    {{ $tx->seller->sellerProfile->shop_name ?? $tx->seller->username }}</div>
                                 <div class="text-xs text-gray-600 font-light">Rp{{ number_format($tx->total_price, 0) }}
                                 </div>
                                 <div style="font-size: 10px" class="text-gray-600 font-light">
@@ -82,7 +82,7 @@
                             class="nm-flat-white rounded-lg p-2 flex justify-between space-x-2">
                             <div class="w-3/4">
                                 <div class="text-xs text-gray-700 font-medium">Seller:
-                                    {{ $tx->seller->sellerProfile->shop_name ?? '' }}</div>
+                                    {{ $tx->seller->sellerProfile->shop_name ?? $tx->seller->username }}</div>
                                 <div class="text-xs text-gray-600 font-light">Rp{{ number_format($tx->ppob_price, 0) }}
                                 </div>
                                 <div class="text-xs text-gray-400 font-extralight tracking-tighter">

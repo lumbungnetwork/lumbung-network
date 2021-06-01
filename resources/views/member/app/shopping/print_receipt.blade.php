@@ -62,7 +62,7 @@
                     </td>
                     <td style="text-align:right">
 
-                        Seller: {{$data->seller->sellerProfile->shop_name}}
+                        Seller: {{$data->seller->sellerProfile->shop_name ?? $data->seller->username}}
                         <br>
                         Buyer: {{$data->buyer->username}}
                     </td>

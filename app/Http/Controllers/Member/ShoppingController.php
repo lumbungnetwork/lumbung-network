@@ -666,7 +666,7 @@ class ShoppingController extends Controller
         if ($data->status == 0) {
             $sellerArr = $this->getRandomDigitalSellerBasedOnBalance();
         } else {
-            $sellerArr = ['shop_name' => $data->seller->sellerProfile->shop_name];
+            $sellerArr = ['shop_name' => $data->seller->sellerProfile->shop_name ?? $data->seller->username];
         }
 
 
@@ -680,9 +680,9 @@ class ShoppingController extends Controller
     public function getRandomDigitalSellerBasedOnBalance()
     {
         $user = Auth::user();
-        $sellers = User::where('is_store', 1)->where('provinsi', $user->provinsi)->select('id')->with('sellerProfile:id,seller_id,shop_name')->get();
-        if (!$sellers) {
-            $sellers = User::where('is_store', 1)->select('id')->with('sellerProfile:id,seller_id,shop_name')->get();
+        $sellers = User::where('is_store', 1)->where('provinsi', $user->provinsi)->with('sellerProfile:id,seller_id,shop_name')->get();
+        if (count($sellers) < 1) {
+            $sellers = User::where('is_store', 1)->with('sellerProfile:id,seller_id,shop_name')->get();
         }
 
         $EidrBalance = new EidrBalance;
