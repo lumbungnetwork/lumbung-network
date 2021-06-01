@@ -17,6 +17,13 @@ class DigiflazzController extends Controller
         $secret = config('services.digiflazz.webhook_secret');
         $post_data = file_get_contents('php://input');
         \Log::info($post_data);
+        if ($post_data) {
+            Telegram::sendMessage([
+                'chat_id' => config('services.telegram.overlord'),
+                'text' => 'post data hit',
+                'parse_mode' => 'markdown'
+            ]);
+        }
         \Log::info(json_decode($request->getContent(), true));
         Telegram::sendMessage([
             'chat_id' => config('services.telegram.overlord'),
