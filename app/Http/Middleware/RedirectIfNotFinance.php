@@ -18,7 +18,7 @@ class RedirectIfNotFinance
 	public function handle($request, Closure $next, $guard = 'finance')
 	{
 		if (!Auth::guard($guard)->check()) {
-			return redirect()->route('finance.login');
+			return redirect()->intended(route('finance.login'));
 		}
 
 		return $next($request);
