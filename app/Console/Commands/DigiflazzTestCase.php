@@ -43,7 +43,7 @@ class DigiflazzTestCase extends Command
         // Prepare Digiflazz Credentials
         $username = config('services.digiflazz.user');
         $apiKey = config('services.digiflazz.dev-key');
-        $ref_id = 'test' . rand(23, 99);
+        $ref_id = 'test326';
         $sign = md5($username . $apiKey . $ref_id);
 
         if ($no == 1) {
