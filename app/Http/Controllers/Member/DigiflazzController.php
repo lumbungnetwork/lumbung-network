@@ -21,6 +21,7 @@ class DigiflazzController extends Controller
             \Log::info($secret);
             \Log::info($post_data);
             \Log::info($signature);
+            \Log::info($request->header('X-Hub-Signature') ?? '');
         }
 
 

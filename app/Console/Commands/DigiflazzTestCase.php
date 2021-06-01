@@ -47,22 +47,23 @@ class DigiflazzTestCase extends Command
         $sign = md5($username . $apiKey . $ref_id);
 
         if ($no == 1) {
-            // Prepaid Sukses 
+            // Prepaid Pending lalu callback Sukses 
             $json = json_encode([
                 'username' => $username,
                 'buyer_sku_code' => 'xld10',
-                'customer_no' => '087800001230',
+                'customer_no' => '087800001233',
                 'ref_id' => $ref_id,
                 'testing' => true,
                 'sign' => $sign,
             ]);
         } elseif ($no == 2) {
-            // Prepaid Gagal
+            // Prepaid Pending lalu callback Gagal
             $json = json_encode([
                 'username' => $username,
                 'buyer_sku_code' => 'xld10',
-                'customer_no' => '087800001232',
+                'customer_no' => '087800001234',
                 'ref_id' => $ref_id,
+                'testing' => true,
                 'sign' => $sign,
             ]);
         }
