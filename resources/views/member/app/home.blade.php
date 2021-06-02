@@ -81,7 +81,7 @@
         </div>
     </div>
     {{-- Search box --}}
-    <div class="mt-3 mb-2">
+    {{-- <div class="mt-3 mb-2">
         <div class="border border-gray-300 rounded-full py-1 px-2 w-full flex">
             <svg class="w-6" viewBox="0 0 20 20">
                 <path fill="gray"
@@ -94,7 +94,7 @@
                     placeholder="cari beras, gula, minyak...">
             </form>
         </div>
-    </div>
+    </div> --}}
 </div>
 
 {{-- Content wrapper --}}
