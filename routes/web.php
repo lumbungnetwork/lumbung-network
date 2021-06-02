@@ -47,6 +47,7 @@ Route::domain('member.' . config('services.app.domain'))->group(function () {
     Route::post('/wallet/deposit', 'Member\AppController@postWalletDeposit')->name('member.postWalletDeposit')->middleware('auth');
     Route::get('/wallet/deposit-payment/{transaction_id}', 'Member\AppController@getDepositPayment')->whereNumber('transaction_id')->name('member.depositPayment')->middleware('auth');
     Route::post('/wallet/deposit-payment', 'Member\AppController@postDepositPayment')->name('member.postDepositPayment')->middleware('auth');
+    Route::post('/wallet/deposit-payment-tron', 'Member\AppController@postDepositPaymentTron')->name('member.postDepositPaymentTron')->middleware('auth');
 
 
     // Account
@@ -57,7 +58,7 @@ Route::domain('member.' . config('services.app.domain'))->group(function () {
     Route::post('/account/security/create-2fa', 'Member\SecurityController@postCreate2FA')->name('member.security.postCreate2FA')->middleware('auth');
     Route::post('/account/security/edit-2fa', 'Member\SecurityController@postEdit2FA')->name('member.security.postEdit2FA')->middleware('auth');
     Route::post('/account/security/change-password', 'Member\SecurityController@postChangePassword')->name('member.security.postChangePassword')->middleware('auth');
-    Route::get('/account/tron', 'Member\AppController@getTron')->name('member.tron')->middleware('auth');
+    Route::get('/account/tron', 'Member\AppController@getAccountTron')->name('member.tron')->middleware('auth');
     Route::post('/account/tron/set-tron', 'Member\TronController@postSetTron')->name('member.tron.postSetTron')->middleware('auth');
     Route::post('/account/tron/reset-tron', 'Member\TronController@postResetTron')->name('member.tron.postResetTron')->middleware('auth');
     Route::post('/account/bank/set-bank', 'Member\TronController@postSetBank')->name('member.tron.postSetBank')->middleware('auth');

@@ -16,6 +16,7 @@ use App\Model\Member\EidrBalanceTransaction;
 use App\Http\Controllers\TelegramBotController;
 use RealRashid\SweetAlert\Facades\Alert;
 use DB;
+use IEXBase\TronAPI\Exception\TronException;
 
 class AppController extends Controller
 {
@@ -194,7 +195,7 @@ class AppController extends Controller
             ->with('title', 'Security');
     }
 
-    public function getTron()
+    public function getAccountTron()
     {
         $user = Auth::user();
         return view('member.app.account.tron')
@@ -245,6 +246,7 @@ class AppController extends Controller
                 return redirect()->back();
             }
         }
+
         $unique_digits = rand(39, 148);
         $check = EidrBalanceTransaction::where('created_at', '>=', date('Y-m-d 00:00:00', strtotime('Today')))->where('unique_digits', $unique_digits)->exists();
         do {
@@ -307,5 +309,101 @@ class AppController extends Controller
         $telegramBotController->sendeIDRTopupRequest($requestData);
 
         return redirect()->back();
+    }
+
+    public function postDepositPaymentTron(Request $request)
+    {
+        $user = Auth::user();
+        $data = EidrBalanceTransaction::findOrFail($request->transaction_id);
+        if ($data->user_id != $user->id || $data->status != 0) {
+            Alert::error('Oops', 'Access Denied!');
+            return redirect()->route('member.home');
+        }
+
+        // validate input
+        $validator = Validator::make($request->all(), [
+            'transaction_id' => 'required|integer|exists:eidr_balance_transactions,id',
+            'hash' => 'required|string|size:64|unique:deposit_transaction,tron_transfer|unique:eidr_balance_transactions,tx_id'
+        ]);
+
+        if ($validator->fails()) {
+            Alert::error('Oops', $validator->errors()->first());
+            return redirect()->back();
+        }
+
+        // use Atomic lock to prevent race condition
+        $lock = Cache::lock('deposit_' . $user->id, 60);
+
+        if ($lock->get()) {
+            $hash = $request->hash;
+
+            $amount = $data->amount + $data->unique_digits;
+
+            $tron = $this->getTron();
+            $i = 1;
+            do {
+                try {
+                    sleep(1);
+                    $response = $tron->getTransaction($hash);
+                } catch (TronException $e) {
+                    $i++;
+                    continue;
+                }
+                break;
+            } while ($i < 23);
+
+            if ($i == 23) {
+                $lock->release();
+                Alert::error('Gagal', 'Hash Transaksi Bermasalah!');
+                return redirect()->back();
+            };
+
+            // Parse from response
+
+            $hashReceiver = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['to_address']);
+            $hashAsset = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['asset_name']);
+            $hashAmount = $response['raw_data']['contract'][0]['parameter']['value']['amount'];
+
+            // Checking
+            if ($hashReceiver != 'TC1o89VSHMSPno2FE6SgoCsuy8i4mVSWge') {
+                $lock->release();
+                Alert::error('Gagal', 'Alamat tujuan salah!');
+                return redirect()->back();
+            }
+
+            if ($hashAsset != '1002652') {
+                $lock->release();
+                Alert::error('Gagal', 'Bukan token eIDR yang benar!');
+                return redirect()->back();
+            }
+
+            if ($hashAmount != ($amount * 100)) {
+                $lock->release();
+                Alert::error('Gagal', 'Jumlah transfer tidak tepat!');
+                return redirect()->back();
+            }
+
+            // Create EidrBalance
+            $balance = new EidrBalance;
+            $balance->user_id = $user->id;
+            $balance->amount = $amount;
+            $balance->type = 1;
+            $balance->source = 5;
+            $balance->tx_id = $data->id;
+            $balance->note = 'Deposit via eIDR TRON';
+            $balance->save();
+
+            // Update transaction record
+            $data->status = 2;
+            $data->tx_id = $hash;
+            $data->save();
+
+            $lock->release();
+
+            Alert::success('Berhasil', 'Deposit eIDR telah berhasil!');
+            return redirect()->route('member.wallet');
+        }
+        Alert::error('Failed', 'Access Denied');
+        return redirect()->route('member.wallet');
     }
 }

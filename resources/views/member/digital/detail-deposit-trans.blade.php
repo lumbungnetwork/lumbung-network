@@ -352,13 +352,8 @@
 
                     // var signedTx = await tronWeb.trx.sign(tx);
                     // var broastTx = await tronWeb.trx.sendRawTransaction(signedTx);
-<<<<<<< HEAD
-                    console.log(tx)
-                    if (tx.result) {;
-=======
                     if (tx.transaction.txID !== undefined) {
                         console.log(tx);
->>>>>>> lumbung3
                         $('#hash').val(tx.transaction.txID);
                         $('#form-confirm').submit();
                         Swal.fire('Sedang Memproses');
