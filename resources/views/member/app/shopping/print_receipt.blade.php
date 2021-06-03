@@ -187,9 +187,9 @@
                                 <br>
                                 Alamat: {{$return_buy['data']['desc']['alamat'] ?? ''}}
                                 <br>
-                                Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan']} ?? ''}
+                                Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan'] ?? ''}}
                                 <br>
-                                Jumlah Peserta: {{$return_buy['data']['desc']['jumlah_peserta']} ?? ''}
+                                Jumlah Peserta: {{$return_buy['data']['desc']['jumlah_peserta'] ?? ''}}
 
                                 @endif
 
@@ -214,58 +214,58 @@
                 </td>
                 <td style="text-align:right">
                     Rp {{$data->ppob_price - 2500}}
-                    </td>
-                </tr>
-                <tr class="item last">
-                    <td>
-                        Biaya Admin
-                    </td>
-                    <td style="text-align:right">
-                        Rp 2500
-                    </td>
-                </tr>
-                <tr class="total">
+                </td>
+            </tr>
+            <tr class="item last">
+                <td>
+                    Biaya Admin
+                </td>
+                <td style="text-align:right">
+                    Rp 2500
+                </td>
+            </tr>
+            <tr class="total">
 
-                    <td style="text-align:right" colspan="2">
-                        <strong style="font-size: 14px;">Total: Rp {{$data->ppob_price}}</strong>
-                    </td>
-                </tr>
+                <td style="text-align:right" colspan="2">
+                    <strong style="font-size: 14px;">Total: Rp {{$data->ppob_price}}</strong>
+                </td>
+            </tr>
 
-                <tr class="information">
-                    <td colspan="2">
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        @if ($data->type != 3)
-                                        No Ref/SN:
-                                        <br>
-                                        {{$return_buy['data']['sn'] ?? ''}}
-                                        @endif
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-                <tr class="top">
-                    <td colspan="2">
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <p class="centered" style="font-size: 11px;margin: 0;"><span
-                                                style="border-bottom: 1px dotted;">Struk ini merupakan bukti pembayaran
-                                                yang sah.</span></p>
-                                        <p class="centered" style="font-size: 14px;margin: 0;">Terima Kasih</p>
-                                        <p class="centered" style="font-size: 12px;margin: 0;">https://lumbung.network/
-                                        </p>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
+            <tr class="information">
+                <td colspan="2">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    @if ($data->type != 3)
+                                    No Ref/SN:
+                                    <br>
+                                    {{$return_buy['data']['sn'] ?? ''}}
+                                    @endif
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr class="top">
+                <td colspan="2">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <p class="centered" style="font-size: 11px;margin: 0;"><span
+                                            style="border-bottom: 1px dotted;">Struk ini merupakan bukti pembayaran
+                                            yang sah.</span></p>
+                                    <p class="centered" style="font-size: 14px;margin: 0;">Terima Kasih</p>
+                                    <p class="centered" style="font-size: 12px;margin: 0;">https://lumbung.network/
+                                    </p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
             </tbody>
         </table>
     </div>
