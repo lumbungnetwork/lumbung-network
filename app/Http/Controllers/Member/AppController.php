@@ -13,9 +13,11 @@ use App\Model\Bonus;
 use App\Model\Member\LMBreward;
 use App\Model\Member\EidrBalance;
 use App\Model\Member\EidrBalanceTransaction;
-use App\Http\Controllers\TelegramBotController;
+use Telegram\Bot\Laravel\Facades\Telegram;
+use App\Jobs\WithdrawInternalEidrViaTronJob;
 use RealRashid\SweetAlert\Facades\Alert;
 use DB;
+use Illuminate\Support\Facades\Hash;
 use IEXBase\TronAPI\Exception\TronException;
 
 class AppController extends Controller
@@ -220,10 +222,22 @@ class AppController extends Controller
     public function getWalletDeposit()
     {
         $user = Auth::user();
-        $data = EidrBalanceTransaction::where('user_id', $user->id)->orderByDesc('created_at')->paginate(10);
+        $data = EidrBalanceTransaction::where('user_id', $user->id)->where('type', 1)->orderByDesc('created_at')->paginate(10);
         return view('member.app.deposit')
             ->with(compact('data'))
             ->with('title', 'Deposit');
+    }
+
+    public function getWalletWithdraw()
+    {
+        $user = Auth::user();
+        $EidrBalance = new EidrBalance;
+        $netBalance = $EidrBalance->getUserNeteIDRBalance($user->id);
+        $data = EidrBalanceTransaction::where('user_id', $user->id)->where('type', 0)->orderByDesc('created_at')->paginate(10);
+        return view('member.app.wallet.withdraw')
+            ->with(compact('data'))
+            ->with(compact('netBalance'))
+            ->with('title', 'Withdraw');
     }
 
     public function postWalletDeposit(Request $request)
@@ -264,6 +278,103 @@ class AppController extends Controller
         $tx->save();
 
         return redirect()->route('member.depositPayment', ['transaction_id' => $tx->id]);
+    }
+
+    public function postWalletWithdraw(Request $request)
+    {
+        $user = Auth::user();
+        $EidrBalance = new EidrBalance;
+        $netBalance = $EidrBalance->getUserNeteIDRBalance($user->id);
+
+        if ($request->method == 1 && $user->bank == null) {
+            Alert::error('Error', 'Anda belum mengisi data bank, silakan melengkapinya terlebih dulu');
+            return redirect()->route('member.account.bank');
+        }
+
+        if ($request->method == 2 && $user->tron == null) {
+            Alert::error('Error', 'Anda belum mengisi alamat TRON, silakan melengkapinya terlebih dulu');
+            return redirect()->route('member.tron');
+        }
+
+        // validate input
+        $validator = Validator::make($request->all(), [
+            'method' => 'required|integer|in:1,2',
+            'amount' => "required|integer|max:$netBalance",
+            'password' => 'required|numeric|digits_between:4,9'
+        ]);
+
+        if ($validator->fails()) {
+            Alert::error('Error', $validator->errors()->first());
+            return redirect()->back();
+        }
+
+        // Check 2FA
+        $check = Hash::check($request->password, $user->{'2fa'});
+        if (!$check) {
+            Alert::error('Error', 'Pin 2FA yang anda masukkan salah!');
+            return redirect()->back();
+        }
+
+        // check minimum for Bank transfer method
+        if ($request->method == 1 && $request->amount < 10000) {
+            Alert::error('Error', 'Minimum Withdraw adalah Rp10.000,-');
+            return redirect()->back();
+        }
+
+        // double check balance
+        $remaining = $netBalance - $request->amount;
+        if ($remaining < 0) {
+            Alert::error('Error', 'Saldo tidak mencukupi');
+            return redirect()->back();
+        }
+
+        // create record
+        $data = new EidrBalanceTransaction;
+        $data->user_id = $user->id;
+        $data->amount = $request->amount;
+        $data->unique_digits = 0;
+        $data->type = 0;
+        $data->status = 1;
+        $data->method = $request->method;
+        $data->save();
+
+        // Deduct balance
+        $method = 'via Bank';
+        if ($request->method == 2) {
+            $method = 'via TRON';
+        }
+        $balance = new EidrBalance;
+        $balance->user_id = $user->id;
+        $balance->amount = $request->amount;
+        $balance->type = 0;
+        $balance->source = 5;
+        $balance->tx_id = $data->id;
+        $balance->note = 'Withdraw ' . $method;
+        $balance->save();
+
+        if ($request->method == 1) {
+            $sendAmount = $request->amount - 5500;
+            $text = 'Lumbung Network Withdraw Request' . chr(10);
+            $text .= 'Name: ' . $user->bank->name . chr(10);
+            $text .= 'Bank: ' . $user->bank->bank . chr(10);
+            $text .= 'Acc No: ' . $user->bank->account_no . chr(10);
+            $text .= 'Amount: ' . $sendAmount . chr(10) . chr(10);
+            $text .= 'transaction_id: ' . $data->id;
+
+            Telegram::sendMessage([
+                'chat_id' => config('services.telegram.overlord'),
+                'text' => $text
+            ]);
+
+            Alert::success('Berhasil', 'Permintaan anda sedang diproses, akan masuk dalam beberapa jam ke depan');
+            return redirect()->back();
+        } else {
+            WithdrawInternalEidrViaTronJob::dispatch($data->id)->onQueue('tron');
+            sleep(2);
+
+            Alert::success('Berhasil', 'Saldo eIDR telah berhasil ditarik ke alamat TRON anda');
+            return redirect()->back();
+        }
     }
 
     public function getDepositPayment($transaction_id)

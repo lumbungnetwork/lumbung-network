@@ -6,6 +6,16 @@
 
 {{-- Content wrapper --}}
 <div class="max-w-xs mx-auto">
+    {{-- Balance Card --}}
+    <div class="p-4">
+        <div class="mt-3 bg-gradient-to-r from-green-100 to-yellow-300 opacity-80 rounded-2xl p-2">
+            <div class="p-2 text-2xl font-extralight text-gray-700 text-center">
+                {{ number_format($netBalance, 0) }} eIDR
+            </div>
+
+        </div>
+    </div>
+
     {{-- Select Method Tab --}}
     <div class="px-4 py-2" x-data="{ tab: 'bank' }">
 
@@ -23,12 +33,13 @@
             <div x-show="tab === 'bank'">
                 {{-- Bank --}}
                 <div class="px-2">
-                    <div class="my-2 text-xs text-gray-500">Jumlah Deposit (Rp)</div>
+                    <div class="my-2 text-xs text-gray-500">Jumlah Withdraw (Rp)</div>
                     <div class="nm-inset-gray-200 rounded-lg p-1">
                         {{-- Order Form --}}
-                        <form action="{{ route('member.postWalletDeposit') }}" method="POST" id="order-form-1">
+                        <form action="{{ route('member.postWalletWithdraw') }}" method="POST" id="order-form-1">
                             @csrf
-                            <input type="hidden" name="type" value="1">
+                            <input type="hidden" name="method" value="1">
+                            <input type="hidden" name="password" class="password">
                             <input type="text"
                                 class="bg-transparent text-xs font-light ml-1 focus:outline-none allownumericwithoutdecimal"
                                 inputmode="numeric" pattern="[0-9]*" name="amount" id="amount-1"
@@ -36,9 +47,10 @@
                         </form>
 
                     </div>
+                    <div class="mt-2 text-xs text-purple-600">Biaya transfer: Rp5.500,- per penarikan.</div>
                     <div class="mt-3 flex justify-end">
                         <button onclick="submit(1)"
-                            class="rounded-lg py-1 px-2 h-8 bg-gradient-to-br from-green-400 to-purple-300 text-xs font-medium text-gray-700 focus:outline-none outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Deposit</button>
+                            class="rounded-lg py-1 px-2 h-8 bg-gradient-to-br from-green-400 to-purple-300 text-xs font-medium text-gray-700 focus:outline-none outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Withdraw</button>
                     </div>
                 </div>
 
@@ -49,12 +61,13 @@
             <div x-show="tab === 'tron'">
                 {{-- TRON --}}
                 <div class="px-2">
-                    <div class="my-2 text-xs text-gray-500">Jumlah Deposit (Rp)</div>
+                    <div class="my-2 text-xs text-gray-500">Jumlah Withdraw (Rp)</div>
                     <div class="nm-inset-gray-200 rounded-lg p-1">
                         {{-- Order Form --}}
-                        <form action="{{ route('member.postWalletDeposit') }}" method="POST" id="order-form-2">
+                        <form action="{{ route('member.postWalletWithdraw') }}" method="POST" id="order-form-2">
                             @csrf
-                            <input type="hidden" name="type" value="2">
+                            <input type="hidden" name="method" value="2">
+                            <input type="hidden" name="password" class="password">
                             <input type="text"
                                 class="bg-transparent text-xs font-light ml-1 focus:outline-none allownumericwithoutdecimal"
                                 inputmode="numeric" pattern="[0-9]*" name="amount" id="amount-2"
@@ -64,7 +77,7 @@
                     </div>
                     <div class="mt-3 flex justify-end">
                         <button onclick="submit(2)"
-                            class="rounded-lg py-1 px-2 h-8 bg-gradient-to-br from-green-400 to-purple-300 text-xs font-medium text-gray-700 focus:outline-none outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Deposit</button>
+                            class="rounded-lg py-1 px-2 h-8 bg-gradient-to-br from-green-400 to-purple-300 text-xs font-medium text-gray-700 focus:outline-none outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Withdraw</button>
                     </div>
                 </div>
             </div>
@@ -76,7 +89,7 @@
                 Riwayat</div>
             <div class="mt-2 space-y-2">
                 @if (count($data) < 1) <div class="text-sm text-gray-500 text-center">Anda belum memiliki Riwayat
-                    Transaksi Deposit</div>
+                    Transaksi Withdraw</div>
             @else
             @foreach ($data as $item)
             <div class="nm-flat-gray-50 p-1 rounded-lg">
@@ -93,12 +106,7 @@
                 @endphp
                 <div style="font-size: 10px" class="text-gray-400 font-extralight">Status: {{ $status }}
                 </div>
-                <div class="flex justify-end">
-                    <a href="{{ route('member.depositPayment', ['transaction_id' => $item->id]) }}">
-                        <button
-                            class="rounded-lg py-1 px-2 bg-gradient-to-br from-green-400 to-purple-300 text-xs font-medium text-gray-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Detail</button>
-                    </a>
-                </div>
+
             </div>
 
             @endforeach
@@ -131,24 +139,42 @@
         let form_id = '#order-form-' + type;
         let val_id = '#amount-' +type;
         if ($(val_id).val() == '') {
-            Swal.fire('Oops', 'Anda belum mengisi jumlah Deposit', 'error');
+            Swal.fire('Oops', 'Anda belum mengisi jumlah Withdraw', 'error');
             return false;
         }
         if (type == 1 && $(val_id).val() < 10000) {
-            Swal.fire('Oops', 'Minimum Deposit via Bank adalah Rp10.000,-', 'error');
+            Swal.fire('Oops', 'Minimum Withdraw via Bank adalah Rp10.000,-', 'error');
             return false;
         }
         Swal.fire({
-            title: 'Deposit',
-            text: "Anda yakin ingin melakukan deposit?",
+            title: 'Withdraw',
+            text: "Anda yakin ingin melakukan withdraw?",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Ya!'
-        }).then((result) => {
+        }).then( async (result) => {
             if (result.isConfirmed) {
-                $(form_id).submit();
+                const { value: password } = await Swal.fire({
+                    title: 'Verifikasi 2FA',
+                    input: 'number',
+                    inputLabel: 'Masukkan Pin 2FA anda',
+                    inputPlaceholder: 'Pin 2FA',
+                    showCancelButton: true,
+                    inputAttributes: {
+                        maxlength: 10,
+                        autocapitalize: 'off',
+                        autocorrect: 'off'
+                    }
+                })
+                
+                if (password) {
+                    Swal.fire('Memproses...')
+                    swal.showLoading();
+                    $('.password').val(password);
+                    $(form_id).submit();
+                }
             }
         })
     }

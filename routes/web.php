@@ -43,11 +43,13 @@ Route::domain('member.' . config('services.app.domain'))->group(function () {
     Route::get('/home', 'Member\AppController@getHome')->name('member.home')->middleware('auth');
     Route::get('/stake', 'Member\AppController@getStake')->name('member.stake')->middleware('auth');
     Route::get('/wallet', 'Member\AppController@getWallet')->name('member.wallet')->middleware('auth');
-    Route::get('/wallet/deposit', 'Member\AppController@getWalletDeposit')->name('member.walletDeposit')->middleware('auth');
+    Route::get('/wallet/deposit', 'Member\AppController@getWalletDeposit')->name('member.wallet.deposit')->middleware('auth');
     Route::post('/wallet/deposit', 'Member\AppController@postWalletDeposit')->name('member.postWalletDeposit')->middleware('auth');
     Route::get('/wallet/deposit-payment/{transaction_id}', 'Member\AppController@getDepositPayment')->whereNumber('transaction_id')->name('member.depositPayment')->middleware('auth');
     Route::post('/wallet/deposit-payment', 'Member\AppController@postDepositPayment')->name('member.postDepositPayment')->middleware('auth');
     Route::post('/wallet/deposit-payment-tron', 'Member\AppController@postDepositPaymentTron')->name('member.postDepositPaymentTron')->middleware('auth');
+    Route::get('/wallet/withdraw', 'Member\AppController@getWalletWithdraw')->name('member.wallet.withdraw')->middleware('auth');
+    Route::post('/wallet/withdraw', 'Member\AppController@postWalletWithdraw')->name('member.postWalletWithdraw')->middleware('auth');
 
 
     // Account

@@ -13,11 +13,11 @@
                 {{ number_format($netBalance, 0) }} eIDR
             </div>
             <div class="flex justify-center space-x-1 items-center">
-                <a href="{{ route('member.walletDeposit') }}">
+                <a href="{{ route('member.wallet.deposit') }}">
                     <button
                         class="rounded-lg py-1 px-2 h-8 bg-gradient-to-br from-green-400 to-purple-300 text-xs font-medium text-gray-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Deposit</button>
                 </a>
-                <a href="">
+                <a href="{{ route('member.wallet.withdraw') }}">
                     <button
                         class="rounded-lg py-1 px-2 h-8 bg-gradient-to-br from-red-400 to-purple-300 text-xs font-medium text-gray-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Withdraw</button>
                 </a>
