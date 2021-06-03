@@ -78,14 +78,14 @@
                         ID Pel: {{$data->product_name}}
                         @if($data->type != 3)
                         <br>
-                        a/n: {{$return_buy['data']['customer_name']}}
+                        a/n: {{$return_buy['data']['customer_name'] ?? ''}}
                         @endif
 
                         {{-- PDAM & PLN Pasca --}}
                         @if ($data->type == 8)
                         <br>
                         @if(isset($return_buy['data']['desc']['alamat']))
-                        Alamat: {{$return_buy['data']['desc']['alamat']}}
+                        Alamat: {{$return_buy['data']['desc']['alamat'] ?? ''}}
                         @endif
                         @endif
                         @if ($data->type == 8 || $data->type == 5)
@@ -93,22 +93,18 @@
                         <br>
                         Detail:
                         <br>
-                        Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan']}}
+                        Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan'] ?? ''}}
                         <br>
                         @if (isset($return_buy['data']['desc']['detail']))
                         @foreach ($return_buy['data']['desc']['detail'] as $detail)
                         <br>
-                        Periode Tagihan: {{$detail['periode']}}
-                        @if ( !empty($detail['meter_awal']) && !empty($detail['meter_akhir']))
+                        Periode Tagihan: {{$detail['periode'] ?? ''}}
                         <br>
-                        Meter Awal: {{$detail['meter_awal']}}
+                        Meter Awal: {{$detail['meter_awal']  ?? ''}}
                         <br>
-                        Meter Akhir: {{$detail['meter_akhir']}}
-                        @endif
-                        @if (!empty($detail['denda']))
+                        Meter Akhir: {{$detail['meter_akhir']  ?? ''}}
                         <br>
-                        Denda: {{$detail['denda']}}
-                        @endif
+                        Denda: {{$detail['denda']  ?? ''}}
                         <br>
 
                         @endforeach
@@ -140,22 +136,22 @@
                         {{-- Telkom (was BPJS  <2021) --}}
                         @if ($data->type == 7)
                         @if ($data->created_at < '2021-01-01 00:00:00' ) {{-- was BPJS --}} <br>
-                            Alamat: {{$return_buy['data']['desc']['alamat']}}
+                            Alamat: {{$return_buy['data']['desc']['alamat']  ?? ''}}
                             <br>
-                            Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan']}}
+                            Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan']  ?? ''}}
                             <br>
-                            Jumlah Peserta: {{$return_buy['data']['desc']['jumlah_peserta']}}
+                            Jumlah Peserta: {{$return_buy['data']['desc']['jumlah_peserta']  ?? ''}}
 
                             {{-- Change to Telkom --}}
                             @else
                             <br>
                             Detail:
                             <br>
-                            Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan']}}
+                            Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan']  ?? ''}}
                             <br>
                             @foreach ($return_buy['data']['desc']['detail'] as $detail)
                             <br>
-                            Periode Tagihan: {{$detail['periode']}}
+                            Periode Tagihan: {{$detail['periode']  ?? ''}}
                             <br>
                             Nilai Tagihan: Rp{{number_format($detail['nilai_tagihan'] + 1000)}}
                             <br>
@@ -174,26 +170,26 @@
                                 <br>
                                 Detail:
                                 <br>
-                                Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan']}}
+                                Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan'] ?? ''}}
                                 <br>
                                 @foreach ($return_buy['data']['desc']['detail'] as $detail)
                                 <br>
-                                Periode Tagihan: {{$detail['periode']}}
+                                Periode Tagihan: {{$detail['periode'] ?? ''}}
                                 <br>
                                 Nilai Tagihan: Rp{{number_format($detail['nilai_tagihan'] + 1000)}}
                                 <br>
-                                Admin: Rp{{number_format($detail['admin'])}}
+                                Admin: Rp{{number_format($detail['admin'] ?? '')}}
                                 <br>
                                 @endforeach
 
                                 {{-- Change to BPJS --}}
                                 @else
                                 <br>
-                                Alamat: {{$return_buy['data']['desc']['alamat']}}
+                                Alamat: {{$return_buy['data']['desc']['alamat'] ?? ''}}
                                 <br>
-                                Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan']}}
+                                Lembar Tagihan: {{$return_buy['data']['desc']['lembar_tagihan']} ?? ''}
                                 <br>
-                                Jumlah Peserta: {{$return_buy['data']['desc']['jumlah_peserta']}}
+                                Jumlah Peserta: {{$return_buy['data']['desc']['jumlah_peserta']} ?? ''}
 
                                 @endif
 
@@ -218,58 +214,58 @@
                 </td>
                 <td style="text-align:right">
                     Rp {{$data->ppob_price - 2500}}
-                </td>
-            </tr>
-            <tr class="item last">
-                <td>
-                    Biaya Admin
-                </td>
-                <td style="text-align:right">
-                    Rp 2500
-                </td>
-            </tr>
-            <tr class="total">
+                    </td>
+                </tr>
+                <tr class="item last">
+                    <td>
+                        Biaya Admin
+                    </td>
+                    <td style="text-align:right">
+                        Rp 2500
+                    </td>
+                </tr>
+                <tr class="total">
 
-                <td style="text-align:right" colspan="2">
-                    <strong style="font-size: 14px;">Total: Rp {{$data->ppob_price}}</strong>
-                </td>
-            </tr>
+                    <td style="text-align:right" colspan="2">
+                        <strong style="font-size: 14px;">Total: Rp {{$data->ppob_price}}</strong>
+                    </td>
+                </tr>
 
-            <tr class="information">
-                <td colspan="2">
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    @if ($data->type != 3)
-                                    No Ref/SN:
-                                    <br>
-                                    {{$return_buy['data']['sn']}}
-                                    @endif
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-            <tr class="top">
-                <td colspan="2">
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <p class="centered" style="font-size: 11px;margin: 0;"><span
-                                            style="border-bottom: 1px dotted;">Struk ini merupakan bukti pembayaran
-                                            yang sah.</span></p>
-                                    <p class="centered" style="font-size: 14px;margin: 0;">Terima Kasih</p>
-                                    <p class="centered" style="font-size: 12px;margin: 0;">https://lumbung.network/
-                                    </p>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
+                <tr class="information">
+                    <td colspan="2">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        @if ($data->type != 3)
+                                        No Ref/SN:
+                                        <br>
+                                        {{$return_buy['data']['sn'] ?? ''}}
+                                        @endif
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr class="top">
+                    <td colspan="2">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <p class="centered" style="font-size: 11px;margin: 0;"><span
+                                                style="border-bottom: 1px dotted;">Struk ini merupakan bukti pembayaran
+                                                yang sah.</span></p>
+                                        <p class="centered" style="font-size: 14px;margin: 0;">Terima Kasih</p>
+                                        <p class="centered" style="font-size: 12px;margin: 0;">https://lumbung.network/
+                                        </p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
