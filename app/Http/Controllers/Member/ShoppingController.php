@@ -837,6 +837,11 @@ class ShoppingController extends Controller
 
     public function getPostpaidCheckCustomerNo($type)
     {
+        $user = Auth::user();
+        $quickbuy = false;
+        if ($user->is_store) {
+            $quickbuy = true;
+        }
         $buyer_sku_code = 'BPJS';
         switch ($type) {
             case 5:
@@ -851,6 +856,7 @@ class ShoppingController extends Controller
         }
         return view('member.app.shopping.postpaid_check_no')
             ->with(compact('type'))
+            ->with(compact('quickbuy'))
             ->with(compact('buyer_sku_code'))
             ->with('title', 'Pascabayar');
     }
