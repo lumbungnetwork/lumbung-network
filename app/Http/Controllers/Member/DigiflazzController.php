@@ -128,13 +128,13 @@ class DigiflazzController extends Controller
         return json_decode($response->getBody(), true);
     }
 
-    public function prepaidPLNInquiry($customer_no)
+    public function prepaidPLNInquiry(Request $request)
     {
 
         // payload
         $json = json_encode([
             'commands' => 'pln-subscribe',
-            'customer_no' => $customer_no
+            'customer_no' => $request->customer_no
         ]);
         // endpoint
         $url = 'https://api.digiflazz.com/v1/transaction';
@@ -146,6 +146,12 @@ class DigiflazzController extends Controller
             'body'    => $json
         ]);
 
-        return json_decode($response->getBody(), true);
+        $res = json_decode($response->getBody(), true);
+        return response()->json([
+            'success' => true,
+            'customer_no' => $res['data']['customer_no'],
+            'name' => $res['data']['name'],
+            'segment_power' => $res['data']['segment_power']
+        ]);
     }
 }

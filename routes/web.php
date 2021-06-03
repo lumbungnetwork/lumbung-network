@@ -144,6 +144,7 @@ Route::domain('member.' . config('services.app.domain'))->group(function () {
         Route::get('/shopping/get-cart-checkout', 'Member\AjaxController@getCartCheckout')->name('ajax.shopping.getCartCheckout')->middleware('auth');
         Route::get('/shopping/check-digital-order-status', 'Member\AjaxController@getCheckDigitalOrderStatus')->name('ajax.shopping.getCheckDigitalOrderStatus')->middleware('auth');
         Route::get('/shopping/postpaid-check', 'Member\AjaxController@getCheckPostpaidCustomerNo')->name('ajax.shopping.getCheckPostpaidCustomerNo')->middleware('auth');
+        Route::get('/shopping/pln-prepaid-inquiry', 'Member\DigiflazzController@prepaidPLNInquiry')->name('ajax.shopping.prepaidPLNInquiry')->middleware('auth');
 
         Route::post('/shopping/post-add-to-cart', 'Member\AjaxController@postAddToCart')->name('ajax.shopping.postAddToCart')->middleware('auth');
         Route::post('/shopping/post-cancel-payment-buyer', 'Member\AjaxController@postCancelShoppingPaymentBuyer')->name('ajax.shopping.postCancelShoppingPaymentBuyer')->middleware('auth');

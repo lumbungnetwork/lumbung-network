@@ -143,19 +143,19 @@ $formRoute = route('member.shopping.postShoppingStoreQuickbuy');
             }
             $.ajax({
                 type: "GET",
-                url: "{{ route('ajax.shopping.getCheckPostpaidCustomerNo') }}",
-                data: {
-                    customer_no:customer_no,
+                url: "{{ route('ajax.shopping.prepaidPLNInquiry') }}",
+                data:{
+                    customer_no:customer_no
                 },
                 success: function(response){
-                    if ($response.success) {
+                    if (response.success) {
                         Swal.fire({
                             html: `<div class="text-md text-gray-500">Data Pelanggan</div>
-                            <div class="mt-3 text-left p-1">
+                            <div class="mt-3 p-1">
                                 
                                 <div class="text-xs text-gray-400">No. Pelanggan:</div>
                                 <div class="nm-inset-gray-200 rounded-lg p-2">
-                                    <div class="ml-1 text-xs text-gray-600 font-light">${customer_no}</div>
+                                    <div class="ml-1 text-xs text-gray-600 font-light">${response.customer_no}</div>
                                 </div>
                                 <div class="text-xs text-gray-400">Nama Pelanggan:</div>
                                 <div class="mb-3 nm-inset-gray-200 rounded-lg p-2">
