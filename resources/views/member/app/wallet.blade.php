@@ -41,7 +41,7 @@
                     @php
                     $href = "";
                     if ($row->source == 6) {
-                    $href = route('member.shopping.digitalPayment', ['masterSalesID' => $row->tx_id]);
+                    $href = route('member.shopping.digitalPayment', ['sale_id' => $row->tx_id]);
                     }
                     @endphp
 
