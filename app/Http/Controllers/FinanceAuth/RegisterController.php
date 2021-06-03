@@ -80,7 +80,7 @@ class RegisterController extends Controller
     {
         $validated = $request->validate([
             'username' => 'required|unique:finances|max:32|alpha_dash',
-            'email' => 'required|email:filter',
+            'email' => 'required|email:filter|unique:finances,email',
             'password' => 'required|confirmed|max:125',
             'g-recaptcha-response' => 'required|captcha'
         ]);
