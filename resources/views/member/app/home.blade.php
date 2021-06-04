@@ -4,7 +4,7 @@
 {{-- Top bar --}}
 <div class="bg-white px-4 py-2">
     <div x-data="{ open: false }">
-        <div class="mt-2 flex justify-between max-h-5">
+        <div class="mt-2 flex justify-between max-h-full">
             {{-- Profile --}}
             <div class="flex justify-start items-center focus:outline-none cursor-pointer">
                 <div>

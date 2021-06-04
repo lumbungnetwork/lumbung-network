@@ -112,11 +112,7 @@ class SendLMBRewardMarketplaceJob implements ShouldQueue
 
             // Send Notification to User's Telegram and Telegram Channel
 
-            $rewardType = 'Reward Belanja';
-            if ($reward->is_store == 1) {
-                $rewardType = 'Reward Penjualan';
-            }
-
+            $rewardType = 'Reward Jual/Beli';
             $shortenHash = substr($txHash, 0, 5) . '...' . substr($txHash, -5);
 
             $notification = [
