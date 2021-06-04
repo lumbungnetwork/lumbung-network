@@ -44,31 +44,66 @@
         <div class="nm-inset-gray-100 rounded-2xl p-2 overflow-x-scroll">
             <div x-show="tab === 'rewarded'">
                 {{-- Rewarded --}}
-                <table class="table table-auto text-xs font-extralight ">
-                    <thead>
-                        <tr>
-                            <th class="py-1 px-2">Periode</th>
-                            <th class="py-1 px-2">Belanja</th>
-                            <th class="py-1 px-2">Reward</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($rewardHistory as $row)
-                        @if ($row->type == 1)
-                        <tr>
-                            <td class="py-1 px-2">{{date('Y-m', strtotime($row->date))}}</td>
-                            <td class="py-1 px-2">Rp{{ number_format($row->sales) }}</td>
-                            <td class="py-1 px-2">{{ number_format($row->amount, 2) }} LMB</td>
-                        </tr>
-                        @endif
+                @if (count($rewardHistory) > 0)
+                <div id="buy-reward">
+                    <table class="table table-auto text-xs font-extralight ">
+                        <thead>
+                            <tr>
+                                <th class="py-1 px-2">Periode</th>
+                                <th class="py-1 px-2">Belanja</th>
+                                <th class="py-1 px-2">Reward</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($rewardHistory as $row)
+                            @if ($row->type == 1 && $row->is_store == 0)
+                            <tr>
+                                <td class="py-1 px-2">{{$row->date}}</td>
+                                <td class="py-1 px-2">Rp{{ number_format($row->sales) }}</td>
+                                <td class="py-1 px-2">{{ number_format($row->amount, 2) }} LMB</td>
+                            </tr>
+                            @endif
 
-                        @endforeach
+                            @endforeach
 
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
+                @if ($user->is_store)
+                <div class="hidden" id="sell-reward">
+                    <table class="table table-auto text-xs font-extralight">
+                        <thead>
+                            <tr>
+                                <th class="py-1 px-2">Periode</th>
+                                <th class="py-1 px-2">Penjualan</th>
+                                <th class="py-1 px-2">Reward</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($rewardHistory as $row)
+                            @if ($row->type == 1 && $row->is_store == 1)
+                            <tr>
+                                <td class="py-1 px-2">{{$row->date}}</td>
+                                <td class="py-1 px-2">Rp{{ number_format($row->sales) }}</td>
+                                <td class="py-1 px-2">{{ number_format($row->amount, 2) }} LMB</td>
+                            </tr>
+                            @endif
+
+                            @endforeach
+
+                        </tbody>
+                    </table>
+                </div>
+                @endif
+                @else
+                <div class="my-3 text-sm text-gray-600 text-center">
+                    Anda belum memiliki Riwayat Reward LMB
+                </div>
+                @endif
             </div>
             <div x-show="tab === 'claimed'">
                 {{-- Claimed --}}
+                @if (count($rewardHistory) > 0)
                 <table class="table table-auto text-xs font-extralight ">
                     <thead>
                         <tr>
@@ -106,9 +141,25 @@
 
                     </tbody>
                 </table>
+                @else
+                <div class="my-3 text-sm text-gray-600 text-center">
+                    Anda belum memiliki Riwayat Claim Reward LMB
+                </div>
+                @endif
+
             </div>
 
         </div>
+
+        @if ($user->is_store)
+        <div class="mt-3 flex justify-center">
+            <button id="switch-btn"
+                class="rounded-lg py-1 px-2 bg-gradient-to-br from-green-400 to-purple-300 text-xs text-gray-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">
+                Tunjukkan Reward Penjualan
+            </button>
+        </div>
+        @endif
+
     </div>
 
 
@@ -133,6 +184,16 @@
 
 @section('scripts')
 <script>
+    @if ($user->is_store)
+        $('#switch-btn').click( function () {
+            let text = $('#switch-btn').text().trim() == 'Tunjukkan Reward Penjualan' ? 'Tunjukkan Reward Belanja' : 'Tunjukkan Reward Penjualan';
+            
+            $('#buy-reward').toggle();
+            $('#sell-reward').toggle();
+            $('#switch-btn').text(text);
+        })
+    @endif
+
     let _token = '{{ csrf_token() }}';
     // Claim Button
     $('#claim-btn').click( function () {

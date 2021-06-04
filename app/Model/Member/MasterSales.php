@@ -25,8 +25,15 @@ class MasterSales extends Model
         return $this->belongsTo('App\User', 'user_id', 'id');
     }
 
-    public function getMemberSpending($user_id, $month, $year)
+    public function getMemberSpending($type, $user_id, $month, $year)
     {
+        // set selector for Buyer or Seller
+        $physical_column = 'user_id';
+        $digital_column = 'user_id';
+        if ($type == 2) {
+            $physical_column = 'stockist_id';
+            $digital_column = 'vendor_id';
+        }
         // Get UNIX timestamp from month and year, set to mySQL date
         $range = strtotime($year . '-' . $month);
         $date = (object) [
@@ -38,7 +45,7 @@ class MasterSales extends Model
         $physical = DB::table('master_sales')
             ->selectRaw('SUM(master_sales.total_price) AS total')
             ->where('status', 2)
-            ->where('user_id', $user_id)
+            ->where($physical_column, $user_id)
             ->whereDate('sale_date', '>=', $date->startDay)
             ->whereDate('sale_date', '<=', $date->endDay)
             ->whereNull('deleted_at')
@@ -49,7 +56,7 @@ class MasterSales extends Model
             ->selectRaw('SUM(CASE WHEN type <= 2 THEN ppob_price ELSE 0 END) AS pulsaData,'
                 . 'SUM(CASE WHEN type > 2 THEN 2500 ELSE 0 END) AS payment')
             ->where('status', 2)
-            ->where('user_id', $user_id)
+            ->where($digital_column, $user_id)
             ->whereDate('ppob_date', '>=', $date->startDay)
             ->whereDate('ppob_date', '<=', $date->endDay)
             ->whereNull('deleted_at')

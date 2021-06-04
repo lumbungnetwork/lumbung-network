@@ -28,7 +28,7 @@ class AppController extends Controller
 
         // get user's current month spending
         $MasterSales = new MasterSales;
-        $spending = $MasterSales->getMemberSpending($user->id, date('m'), date('Y'));
+        $spending = $MasterSales->getMemberSpending(1, $user->id, date('m'), date('Y'));
 
         // get dividend pool and user's staked LMB
         $Bonus = new Bonus;
@@ -49,7 +49,7 @@ class AppController extends Controller
 
         // Get Net LMB Reward ($is_store = 0 for Shopping Reward)
         $LMBreward = new LMBreward;
-        $netLMBReward = $LMBreward->getUserNetLMBReward($user->id, 0);
+        $netLMBReward = $LMBreward->getUserNetLMBReward($user->id);
         // Get Reward History (both credit and claimed)
         $rewardHistory = LMBreward::where('user_id', $user->id)->get();
 

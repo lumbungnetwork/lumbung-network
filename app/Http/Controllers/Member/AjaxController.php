@@ -43,7 +43,7 @@ class AjaxController extends Controller
         if ($lock->get()) {
             // Get Net LMB Reward ($is_store = 0 for Shopping Reward)
             $LMBreward = new LMBreward;
-            $netLMBReward = $LMBreward->getUserNetLMBReward($user->id, 0);
+            $netLMBReward = $LMBreward->getUserNetLMBReward($user->id);
 
             if ($netLMBReward > 0) {
                 // Create negative LMBreward model record
@@ -80,7 +80,7 @@ class AjaxController extends Controller
         if ($lock->get()) {
             // Get Net LMB Reward ($is_store = 0 for Shopping Reward)
             $LMBreward = new LMBreward;
-            $netLMBReward = $LMBreward->getUserNetLMBReward($user->id, 0);
+            $netLMBReward = $LMBreward->getUserNetLMBReward($user->id);
 
             if ($netLMBReward > 0) {
                 // Create negative LMBreward model record

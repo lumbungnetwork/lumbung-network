@@ -21,7 +21,7 @@ class CreateLMBrewardsTable extends Migration
             $table->tinyInteger('type')->default(1)->comment('0 = claimed, 1 = credited');
             $table->tinyInteger('is_store')->default(0)->comment('0 = Shopping Reward, 1 = Selling Reward');
             $table->string('hash', 64)->nullable();
-            $table->timestamp('date')->nullable();
+            $table->string('date', 7)->nullable();
             $table->timestamps();
         });
     }

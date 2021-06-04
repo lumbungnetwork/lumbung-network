@@ -21,14 +21,13 @@ class LMBreward extends Model
     | @param $user_id
     | @param $is_store (0 = Shopping Reward, 1 = Selling Reward)
     */
-    public function getUserNetLMBReward($user_id, $is_store)
+    public function getUserNetLMBReward($user_id)
     {
         try {
             $balance = DB::table('lmb_rewards')->selectRaw('
                 sum(case when type = 0 then amount else 0 end) as debit,
                 sum(case when type = 1 then amount else 0 end) as credit
             ')->where('user_id', $user_id)
-                ->where('is_store', $is_store)
                 ->first();
             $net = round($balance->credit - $balance->debit, 2, PHP_ROUND_HALF_DOWN);
         } catch (Throwable $ex) {
