@@ -90,6 +90,14 @@ class DigiflazzController extends Controller
                         'created_at' => date('Y-m-d H:i:s')
                     ]);
                 }
+
+                //low balance notif
+                if ($payload['data']['buyer_last_saldo'] < 1500000) {
+                    Telegram::sendMessage([
+                        'chat_id' => config('services.telegram.overlord'),
+                        'text' => 'Digiflazz balance left: Rp' . number_format($payload['data']['buyer_last_saldo'], 0)
+                    ]);
+                }
             }
         }
 
