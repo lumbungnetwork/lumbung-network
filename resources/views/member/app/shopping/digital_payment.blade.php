@@ -460,24 +460,25 @@
                     if (result.isConfirmed) {
                         const { value: password } = await Swal.fire({
                             title: 'Verifikasi 2FA',
-                            input: 'number',
-                            inputLabel: 'Masukkan Pin 2FA anda',
-                            inputPlaceholder: 'Pin 2FA',
+                            html: '<input id="swal-input1" class="w-3/4 h-12 text-lg py-2 text-center justify-center bg-gray-200" inputmode="numeric" pattern="[0-9]*">',
+                            focusConfirm: false,
                             showCancelButton: true,
-                            inputAttributes: {
-                                maxlength: 10,
-                                autocapitalize: 'off',
-                                autocorrect: 'off'
+                            preConfirm: () => {
+                                return [
+                                    document.getElementById('swal-input1').value,
+                                ]
                             }
+                        
                         })
 
                         if (password) {
+                            let pw = JSON.stringify(password);
+                            let pass = pw.replace(/[""\[\]]/g, '');
+                            Swal.fire('Memproses...')
                             swal.showLoading();
-                            $('#password').val(password);
+                            $('#password').val(pass);
                             $('#eidr-payment-form').submit();
                         }
-                    
-                        
                     }
                 })
             }
