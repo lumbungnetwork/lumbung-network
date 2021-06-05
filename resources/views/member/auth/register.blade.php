@@ -1,12 +1,10 @@
 @extends('member.components.main')
 @section('content')
 
-<div class="mt-10 flex flex-col justify-center px-6">
+<div class="mt-10 flex flex-col justify-center px-3">
     <div class="relative w-full max-w-md mx-auto">
-        <div
-            class="absolute inset-0 -mr-2 bg-gradient-to-r from-green-100 to-yellow-300 shadow-lg transform skew-y-0 rotate-3 rounded-3xl">
-        </div>
-        <div class="relative nm-flat-gray-100 rounded-3xl">
+
+        <div class="relative nm-flat-gray-200 rounded-3xl">
 
             <div class="flex items-center justify-start pt-6 pl-6">
                 <span class="w-3 h-3 bg-red-400 rounded-full mr-2"></span>
@@ -14,7 +12,7 @@
                 <span class="w-3 h-3 bg-green-400 rounded-full mr-2"></span>
             </div>
 
-            <div class="px-10 lg:px-20 py-6">
+            <div class="px-3 lg:px-20 py-6">
 
                 <div class="mt-8">
                     <img class="object-contain w-full max-h-32" src="/image/icon_lumbung_4x.png"

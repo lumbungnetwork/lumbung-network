@@ -215,7 +215,7 @@
                 </li>
             </ul>
             <div class="flex justify-center">
-                <a href="#"
+                <a href="{{ route('member.register') }}"
                     class="px-4 py-2 rounded-lg font-light tracking-wide bg-gradient-to-r from-yellow-100 to-yellow-200 text-gray-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">
                     Daftar Gratis
                 </a>
@@ -283,9 +283,9 @@
 
             </ul>
             <div class="flex justify-center">
-                <a href="#"
+                <a href="{{ route('member.register') }}"
                     class="px-4 py-2 rounded-lg font-light tracking-wide bg-gradient-to-r from-yellow-100 to-yellow-200 text-gray-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">
-                    Pilih Sponsor
+                    Buat Akun
                 </a>
             </div>
         </div>
