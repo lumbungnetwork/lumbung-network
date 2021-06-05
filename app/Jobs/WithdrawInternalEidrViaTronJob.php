@@ -77,8 +77,7 @@ class WithdrawInternalEidrViaTronJob implements ShouldQueue
         } catch (TronException $e) {
             Telegram::sendMessage([
                 'chat_id' => config('services.telegram.overlord'),
-                'text' => 'WithdrawEidrByTron Fail, UserID: ' . $user->id . ' transaction_id: ' . $this->transaction_id,
-                'parse_mode' => 'markdown'
+                'text' => 'WithdrawEidrByTron Fail, transaction_id: ' . $this->transaction_id,
             ]);
             return;
         }
@@ -86,8 +85,7 @@ class WithdrawInternalEidrViaTronJob implements ShouldQueue
         if (!isset($response['result'])) {
             $response = Telegram::sendMessage([
                 'chat_id' => config('services.telegram.overlord'),
-                'text' => 'WithdrawEidrByTron Fail, UserID: ' . $user->id . ' transaction_id: ' . $this->transaction_id,
-                'parse_mode' => 'markdown'
+                'text' => 'WithdrawEidrByTron Fail, transaction_id: ' . $this->transaction_id,
             ]);
             return;
         }
@@ -107,8 +105,7 @@ class WithdrawInternalEidrViaTronJob implements ShouldQueue
             } catch (TronException $e) {
                 $response = Telegram::sendMessage([
                     'chat_id' => config('services.telegram.overlord'),
-                    'text' => 'WithdrawEidrByTron Fail, UserID: ' . $user->id . ' transaction_id: ' . $this->transaction_id,
-                    'parse_mode' => 'markdown'
+                    'text' => 'WithdrawEidrByTron Fail, transaction_id: ' . $this->transaction_id,
                 ]);
                 return;
             }
