@@ -1,4 +1,4 @@
-@extends('finance.layout.app')
+@extends('member.components.main')
 @section('content')
 
 <div class="mt-10 flex flex-col justify-center px-6">
@@ -17,19 +17,20 @@
             <div class="px-10 lg:px-20 py-6">
 
                 <div class="mt-8">
-                    <img class="object-contain w-full max-h-32" src="/image/lumbung-finance_3.png"
-                        alt="lumbung finance">
+                    <img class="object-contain w-full max-h-32" src="/image/icon_lumbung_4x.png"
+                        alt="logo lumbung network">
                 </div>
 
                 <!-- Layout  -->
                 <h1 class="text-3xl font-medium mb-2">Register</h1>
-                <p class="text-sm">Fill this form to register new account.</p>
-                <form class="mt-5" action="/register" method="POST" id="register-form">
+                <p class="text-sm">Isi formulir ini untuk mendaftarkan akun anda.</p>
+                <form class="mt-5" action="{{ route('member.postRegister') }}" method="POST" id="register-form"
+                    autocomplete="off">
                     @csrf
                     <label for="username" class="text-gray-500">Username</label>
                     <div class="mt-2 nm-inset-gray-50 rounded-xl p-2 ">
                         <input type="text" class="w-full focus:outline-none bg-transparent" name="username"
-                            placeholder="no" id="username" required>
+                            id="username" required>
                     </div>
                     @error('username')
                     <div class="text-red-600">{{ $message }}</div>
@@ -51,13 +52,13 @@
                     @error('password')
                     <div class="text-red-600">{{ $message }}</div>
                     @enderror
-                    <label for="password_confirmation" class="text-gray-500">Re-type Password</label>
+                    <label for="password_confirmation" class="text-gray-500">Ulangi Password</label>
                     <div class="mt-2 nm-inset-gray-50 rounded-xl p-2 ">
                         <input type="password" class="w-full focus:outline-none bg-transparent"
                             name="password_confirmation" id="password_confirmation" required>
                     </div>
                     @if (isset($referral))
-                    <label for="referral" class="text-gray-600">Invited by: {{$referral->username}}</label>
+                    <label for="referral" class="text-gray-600">Diundang oleh: {{$referral->username}}</label>
                     <input type="hidden" name="referral" id="referral" value="{{$referral->id}}" />
                     @endif
 
@@ -71,14 +72,13 @@
 
                     <button type="submit"
                         class="mt-3 focus:outline-none focus:bg-yellow-400 text-center w-full bg-yellow-300 rounded-full text-black  py-3 font-medium">Register
-                        Account</button>
+                        Akun</button>
 
                 </form>
 
                 <!-- Footer -->
-                <p class="mt-2">...or, you may <a href="/login" class="text-blue-700 font-medium">log in</a> to
-                    existing
-                    account.</p>
+                <p class="mt-2">...atau, anda bisa <a href="{{ route('member.login') }}"
+                        class="text-blue-700 font-medium">log in</a> ke akun anda.</p>
             </div>
 
         </div>

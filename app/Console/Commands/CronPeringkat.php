@@ -10,35 +10,37 @@ use App\Model\Member;
 use App\Model\Bonussetting;
 
 
-class CronPeringkat extends Command {
+class CronPeringkat extends Command
+{
 
     protected $signature = 'peringkat {ke}';
     protected $description = 'Cron Change User Peringkat';
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
     }
 
-    public function handle() {
-        ini_set("memory_limit",-1);
+    public function handle()
+    {
+        ini_set("memory_limit", -1);
         ini_set('max_execution_time', 1500);
-        $modelMember = New Member;
+        $modelMember = new Member;
         $ke = $this->argument('ke');
         $cek = array();
         $date = date('Y-m-d H:i:s');
         $maxTotalSponsorHave = 4;
-        
-        if($ke == 1){
+
+        if ($ke == 1) {
             $memberType = 1;
             $upgradeMemberType  = 10;
             $getData = $modelMember->getAllMemberHasMoreSponsor($memberType, $maxTotalSponsorHave);
-            if($getData != null){
-                foreach($getData as $row){
+            if ($getData != null) {
+                foreach ($getData as $row) {
                     $getCounttype = $modelMember->getCountMemberHasSponsorFirst($row->id);
-                    if($getCounttype >= $maxTotalSponsorHave){
+                    if ($getCounttype >= $maxTotalSponsorHave) {
                         $getUpdate = array(
                             'member_type' => $upgradeMemberType,
-                            'member_status_at' => $date
                         );
                         $modelMember->getUpdateUsers('id', $row->id, $getUpdate);
                         $dataHistory = array(
@@ -51,20 +53,19 @@ class CronPeringkat extends Command {
                     }
                 }
             }
-            dd('done type '.$ke);
+            dd('done type ' . $ke);
         }
-        
-        if($ke == 2){
+
+        if ($ke == 2) {
             $memberType = 10;
             $upgradeMemberType  = 11;
             $getData = $modelMember->getAllMemberHasMoreSponsor($memberType, $maxTotalSponsorHave);
-            if($getData != null){
-                foreach($getData as $row){
+            if ($getData != null) {
+                foreach ($getData as $row) {
                     $getCounttype = $modelMember->getCountMemberHasSponsorMemberType($row->id, $memberType);
-                    if($getCounttype >= $maxTotalSponsorHave){
+                    if ($getCounttype >= $maxTotalSponsorHave) {
                         $getUpdate = array(
                             'member_type' => $upgradeMemberType,
-                            'member_status_at' => $date
                         );
                         $modelMember->getUpdateUsers('id', $row->id, $getUpdate);
                         $dataHistory = array(
@@ -77,20 +78,19 @@ class CronPeringkat extends Command {
                     }
                 }
             }
-            dd('done type '.$ke);
+            dd('done type ' . $ke);
         }
-        
-        if($ke == 3){
+
+        if ($ke == 3) {
             $memberType = 11;
             $upgradeMemberType  = 12;
             $getData = $modelMember->getAllMemberHasMoreSponsor($memberType, $maxTotalSponsorHave);
-            if($getData != null){
-                foreach($getData as $row){
+            if ($getData != null) {
+                foreach ($getData as $row) {
                     $getCounttype = $modelMember->getCountMemberHasSponsorMemberType($row->id, $memberType);
-                    if($getCounttype >= $maxTotalSponsorHave){
+                    if ($getCounttype >= $maxTotalSponsorHave) {
                         $getUpdate = array(
                             'member_type' => $upgradeMemberType,
-                            'member_status_at' => $date
                         );
                         $modelMember->getUpdateUsers('id', $row->id, $getUpdate);
                         $dataHistory = array(
@@ -103,20 +103,19 @@ class CronPeringkat extends Command {
                     }
                 }
             }
-            dd('done type '.$ke);
+            dd('done type ' . $ke);
         }
-        
-        if($ke == 4){
+
+        if ($ke == 4) {
             $memberType = 12;
             $upgradeMemberType  = 13;
             $getData = $modelMember->getAllMemberHasMoreSponsor($memberType, $maxTotalSponsorHave);
-            if($getData != null){
-                foreach($getData as $row){
+            if ($getData != null) {
+                foreach ($getData as $row) {
                     $getCounttype = $modelMember->getCountMemberHasSponsorMemberType($row->id, $memberType);
-                    if($getCounttype >= $maxTotalSponsorHave){
+                    if ($getCounttype >= $maxTotalSponsorHave) {
                         $getUpdate = array(
                             'member_type' => $upgradeMemberType,
-                            'member_status_at' => $date
                         );
                         $modelMember->getUpdateUsers('id', $row->id, $getUpdate);
                         $dataHistory = array(
@@ -129,20 +128,19 @@ class CronPeringkat extends Command {
                     }
                 }
             }
-            dd('done type '.$ke);
+            dd('done type ' . $ke);
         }
-        
-        if($ke == 5){
+
+        if ($ke == 5) {
             $memberType = 13;
             $upgradeMemberType  = 14;
             $getData = $modelMember->getAllMemberHasMoreSponsor($memberType, $maxTotalSponsorHave);
-            if($getData != null){
-                foreach($getData as $row){
+            if ($getData != null) {
+                foreach ($getData as $row) {
                     $getCounttype = $modelMember->getCountMemberHasSponsorMemberType($row->id, $memberType);
-                    if($getCounttype >= $maxTotalSponsorHave){
+                    if ($getCounttype >= $maxTotalSponsorHave) {
                         $getUpdate = array(
                             'member_type' => $upgradeMemberType,
-                            'member_status_at' => $date
                         );
                         $modelMember->getUpdateUsers('id', $row->id, $getUpdate);
                         $dataHistory = array(
@@ -155,20 +153,19 @@ class CronPeringkat extends Command {
                     }
                 }
             }
-            dd('done type '.$ke);
+            dd('done type ' . $ke);
         }
-        
-        if($ke == 5){
+
+        if ($ke == 5) {
             $memberType = 14;
             $upgradeMemberType  = 15;
             $getData = $modelMember->getAllMemberHasMoreSponsor($memberType, $maxTotalSponsorHave);
-            if($getData != null){
-                foreach($getData as $row){
+            if ($getData != null) {
+                foreach ($getData as $row) {
                     $getCounttype = $modelMember->getCountMemberHasSponsorMemberType($row->id, $memberType);
-                    if($getCounttype >= $maxTotalSponsorHave){
+                    if ($getCounttype >= $maxTotalSponsorHave) {
                         $getUpdate = array(
                             'member_type' => $upgradeMemberType,
-                            'member_status_at' => $date
                         );
                         $modelMember->getUpdateUsers('id', $row->id, $getUpdate);
                         $dataHistory = array(
@@ -181,20 +178,19 @@ class CronPeringkat extends Command {
                     }
                 }
             }
-            dd('done type '.$ke);
+            dd('done type ' . $ke);
         }
-        
-        if($ke == 6){
+
+        if ($ke == 6) {
             $memberType = 15;
             $upgradeMemberType  = 16;
             $getData = $modelMember->getAllMemberHasMoreSponsor($memberType, $maxTotalSponsorHave);
-            if($getData != null){
-                foreach($getData as $row){
+            if ($getData != null) {
+                foreach ($getData as $row) {
                     $getCounttype = $modelMember->getCountMemberHasSponsorMemberType($row->id, $memberType);
-                    if($getCounttype >= $maxTotalSponsorHave){
+                    if ($getCounttype >= $maxTotalSponsorHave) {
                         $getUpdate = array(
                             'member_type' => $upgradeMemberType,
-                            'member_status_at' => $date
                         );
                         $modelMember->getUpdateUsers('id', $row->id, $getUpdate);
                         $dataHistory = array(
@@ -207,20 +203,19 @@ class CronPeringkat extends Command {
                     }
                 }
             }
-            dd('done type '.$ke);
+            dd('done type ' . $ke);
         }
-        
-        if($ke == 7){
+
+        if ($ke == 7) {
             $memberType = 16;
             $upgradeMemberType  = 17;
             $getData = $modelMember->getAllMemberHasMoreSponsor($memberType, $maxTotalSponsorHave);
-            if($getData != null){
-                foreach($getData as $row){
+            if ($getData != null) {
+                foreach ($getData as $row) {
                     $getCounttype = $modelMember->getCountMemberHasSponsorMemberType($row->id, $memberType);
-                    if($getCounttype >= $maxTotalSponsorHave){
+                    if ($getCounttype >= $maxTotalSponsorHave) {
                         $getUpdate = array(
                             'member_type' => $upgradeMemberType,
-                            'member_status_at' => $date
                         );
                         $modelMember->getUpdateUsers('id', $row->id, $getUpdate);
                         $dataHistory = array(
@@ -233,10 +228,9 @@ class CronPeringkat extends Command {
                     }
                 }
             }
-            dd('done type '.$ke);
+            dd('done type ' . $ke);
         }
-        
+
         dd('done');
-        
     }
 }

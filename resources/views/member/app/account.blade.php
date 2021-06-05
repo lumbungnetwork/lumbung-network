@@ -87,8 +87,8 @@
             </div>
             <div class="flex justify-end">
                 <div>
-                    <a href="#"
-                        class="rounded-lg py-1 px-2 h-10 bg-gradient-to-br from-green-200 to-purple-300 text-xs text-center font-medium text-gray-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Go
+                    <a href="{{ route('member.account.membership') }}"
+                        class="rounded-lg py-1 px-2 bg-gradient-to-br from-green-200 to-purple-300 text-sm text-center font-bold text-purple-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Go
                         Premium</a>
                 </div>
             </div>

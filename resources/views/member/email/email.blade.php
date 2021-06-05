@@ -292,18 +292,7 @@
                                                                     </span>
                                                                 </td>
                                                             </tr>
-                                                            <tr>
-                                                                <th>
-                                                                    No. Handphone
-                                                                </th>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    <span>
-                                                                        {{$hp}}
-                                                                    </span>
-                                                                </td>
-                                                            </tr>
+
                                                             <tr>
                                                                 <th>
                                                                     Username

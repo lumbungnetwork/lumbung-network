@@ -1,9 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-use Telegram\Bot\Laravel\Facades\Telegram;
-use Illuminate\Support\Facades\Config;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,9 +22,12 @@ Route::domain('member.' . config('services.app.domain'))->group(function () {
     Route::post('/logout', 'Auth\LoginController@logout')->name('member.postLogout');
     Route::get('/area/login', 'Admin\HomeController@getAreaLogin')->name('areaLogin');
     Route::post('/area/login', 'Admin\HomeController@postAreaLogin');
-    //referal link
-    Route::get('/ref/{code_referal}', 'FrontEnd\ReferalController@getAddReferalLink')->name('referalLink');
-    Route::post('/ref', 'FrontEnd\ReferalController@postAddReferalLink');
+
+    // Register
+    Route::get('/register', 'Auth\RegisterController@showRegistrationForm')->name('member.register');
+    Route::post('/register', 'Auth\RegisterController@postRegister')->name('member.postRegister');
+    Route::get('/ref/{ref}', 'Auth\RegisterController@getRegisterRef')->where(['ref' => '^[\w-]+$'])->name('member.registerRef');
+
     Route::get('/forgot/passwd', 'FrontEnd\FrontEndController@getForgotPassword')->name('forgotPasswd');
     Route::post('/forgot/passwd', 'FrontEnd\FrontEndController@postForgotPassword');
     Route::get('/auth/passwd/{code}/{email}', 'FrontEnd\FrontEndController@getAuthPassword')->name('passwdauth');
@@ -66,6 +66,8 @@ Route::domain('member.' . config('services.app.domain'))->group(function () {
     Route::post('/account/bank/set-bank', 'Member\TronController@postSetBank')->name('member.tron.postSetBank')->middleware('auth');
     Route::post('/account/bank/reset-bank', 'Member\TronController@postResetBank')->name('member.tron.postResetBank')->middleware('auth');
     Route::get('/account/bank', 'Member\AppController@getBank')->name('member.account.bank')->middleware('auth');
+    Route::get('/account/premium-membership', 'Member\MembershipController@getUpgradeMembership')->name('member.account.membership')->middleware('auth');
+    Route::post('/account/premium-membership', 'Member\MembershipController@postUpgradeMembership')->name('member.account.postMembership')->middleware('auth');
 
     // Store
     Route::get('/store/info', 'Member\StoreController@getStoreInfo')->name('member.store.info')->middleware('auth');

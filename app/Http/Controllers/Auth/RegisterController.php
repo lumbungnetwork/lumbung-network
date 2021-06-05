@@ -7,6 +7,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use App\Jobs\SendRegistrationEmailJob;
+use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
@@ -41,32 +44,59 @@ class RegisterController extends Controller
     }
 
     /**
-     * Get a validator for an incoming registration request.
+     * Show the application registration form.
      *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
+     * @return \Illuminate\Http\Response
      */
-    protected function validator(array $data)
+    public function showRegistrationForm()
     {
-        return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:6', 'confirmed'],
-        ]);
+        return view('member.auth.register')
+            ->with('title', 'Register');
     }
 
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return \App\User
-     */
-    protected function create(array $data)
+    public function getRegisterRef($ref)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+        $referral = User::where('username', $ref)->select('id', 'username')->first();
+        if ($referral == null) {
+            return redirect()->to('page-not-found');
+        }
+        return view('member.auth.register')
+            ->with(compact('referral'))
+            ->with('title', 'Register');
+    }
+
+    public function postRegister(Request $request)
+    {
+        $validated = $request->validate([
+            'username' => 'required|unique:users,username|max:32|alpha_dash',
+            'email' => 'required|email:filter',
+            'password' => 'required|confirmed|max:125',
+            'g-recaptcha-response' => 'required|captcha'
         ]);
+
+        $sponsor_id = 5;
+
+        if (isset($request->referral)) {
+            $sponsor_id = $request->referral;
+        }
+
+        User::create([
+            'name' => $validated['username'],
+            'username' => $validated['username'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'sponsor_id' => $sponsor_id
+        ]);
+
+        $dataEmail = [
+            'username' => $validated['username'],
+            'email' => $validated['email'],
+            'password' => $validated['password']
+        ];
+
+        SendRegistrationEmailJob::dispatch($dataEmail, $validated['email'])->onQueue('mail');
+
+        Alert::success('Selamat Datang!', 'Akun anda telah didaftarkan, silakan login dengan username dan password anda')->persistent(true);
+        return redirect()->route('member.login');
     }
 }
