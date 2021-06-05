@@ -19,6 +19,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 use DB;
 use Illuminate\Support\Facades\Hash;
 use IEXBase\TronAPI\Exception\TronException;
+use App\Http\Controllers\TelegramBotController;
 
 class AppController extends Controller
 {
