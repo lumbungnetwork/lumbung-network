@@ -30,8 +30,10 @@ class DigiflazzController extends Controller
                     $salesData->save();
 
                     // Refund by deleting EidrBalance payment record
-                    $balance = EidrBalance::findOrFail($salesData->tx_id);
-                    $balance->delete();
+                    $balance = EidrBalance::find($salesData->tx_id);
+                    if ($balance != null) {
+                        $balance->delete();
+                    }
                 }
             }
 
