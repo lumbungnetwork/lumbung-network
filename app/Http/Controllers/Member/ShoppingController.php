@@ -105,6 +105,33 @@ class ShoppingController extends Controller
         });
     }
 
+    public function getAllPostpaidPricelist()
+    {
+        return Cache::remember('postpaid_pricelist', 3600, function () {
+            // Digiflazz Credentials
+            $username = config('services.digiflazz.user');
+            $apiKey = config('services.digiflazz.key');
+            $sign = md5($username . $apiKey . 'pricelist');
+            // payload
+            $json = json_encode([
+                'cmd' => 'pasca',
+                'username' => $username,
+                'sign' => $sign
+            ]);
+            // endpoint
+            $url = 'https://api.digiflazz.com/v1/price-list';
+
+            // use Guzzle Client
+            $client = new Client;
+            $response = $client->post($url, [
+                'headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json'],
+                'body'    => $json
+            ]);
+
+            return json_decode($response->getBody(), true);
+        });
+    }
+
     public function getFilteredPrepaidProductArray($type, $buyer_sku_code)
     {
         // Get Product array from buyer_sku_code
@@ -218,19 +245,19 @@ class ShoppingController extends Controller
         //PLN
         if ($type == 5) {
             $price = $data_price + 500;
-            $seller_price = $data_price - 800;
+            $seller_price = $data_price - 700;
         }
 
         //HP & Telkom
         if ($type == 6 || $type == 7) {
             $price = $data_price + 1000;
-            $seller_price = $data_price - 100;
+            $seller_price = $data_price;
         }
 
         //PDAM
         if ($type == 8) {
             $price = $data_price + 800;
-            $seller_price = $data_price;
+            $seller_price = $data_price + 100;
         }
 
         //PGN
@@ -241,8 +268,8 @@ class ShoppingController extends Controller
 
         //Multifinance
         if ($type == 10) {
-            $price = $data_price + 5000;
-            $seller_price = $data_price - 1600;
+            $price = $data_price + 2500;
+            $seller_price = $data_price;
         }
 
         $product = (object) array(
@@ -859,5 +886,55 @@ class ShoppingController extends Controller
             ->with(compact('quickbuy'))
             ->with(compact('buyer_sku_code'))
             ->with('title', 'Pascabayar');
+    }
+
+    public function getPDAMCheckCustomerNo()
+    {
+        $user = Auth::user();
+        $quickbuy = false;
+        if ($user->is_store) {
+            $quickbuy = true;
+        }
+        $postpaidPricelist = $this->getAllPostpaidPricelist();
+        $areaArray = [];
+        foreach ($postpaidPricelist['data'] as $row) {
+            if ($row['brand'] == 'PDAM') {
+                $areaArray[] = [
+                    'product_name' => $row['product_name'],
+                    'buyer_sku_code' => $row['buyer_sku_code']
+                ];
+            }
+        }
+        $areaArray = collect($areaArray)->sortBy('product_name')->toArray();
+
+        return view('member.app.shopping.pdam_postpaid_check_no')
+            ->with(compact('quickbuy'))
+            ->with(compact('areaArray'))
+            ->with('title', 'PDAM');
+    }
+
+    public function getMultifinanceCheckCustomerNo()
+    {
+        $user = Auth::user();
+        $quickbuy = false;
+        if ($user->is_store) {
+            $quickbuy = true;
+        }
+        $postpaidPricelist = $this->getAllPostpaidPricelist();
+        $priceArray = [];
+        foreach ($postpaidPricelist['data'] as $row) {
+            if ($row['brand'] == 'MULTIFINANCE') {
+                $priceArray[] = [
+                    'product_name' => $row['product_name'],
+                    'buyer_sku_code' => $row['buyer_sku_code']
+                ];
+            }
+        }
+        $priceArray = collect($priceArray)->sortBy('product_name')->toArray();
+
+        return view('member.app.shopping.multifinance_postpaid_check_no')
+            ->with(compact('quickbuy'))
+            ->with(compact('priceArray'))
+            ->with('title', 'PDAM');
     }
 }

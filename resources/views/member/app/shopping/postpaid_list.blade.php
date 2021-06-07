@@ -106,7 +106,7 @@
             </a>
 
             {{-- Multifinance --}}
-            <a class="mt-1 mx-0.5 flex flex-col w-14 items-center" href="{{ route('member.shopping.emoney') }}">
+            <a class="mt-1 mx-0.5 flex flex-col w-14 items-center" href="{{ route('member.shopping.multifinance') }}">
                 <div
                     class="rounded-2xl bg-gradient-to-br from-purple-300 to-green-200 w-12 h-12 p-1 flex justify-center items-end">
                     <svg class="w-8" viewBox="0 0 20 20">
@@ -118,7 +118,7 @@
                 <p class="font-light text-xs text-center text-gray-600">Multifinance</p>
             </a>
             {{-- PDAM --}}
-            <a class="mt-1 mx-0.5 flex flex-col w-14 items-center" href="{{ route('member.shopping') }}">
+            <a class="mt-1 mx-0.5 flex flex-col w-14 items-center" href="{{ route('member.shopping.pdam') }}">
                 <div
                     class="rounded-2xl bg-gradient-to-br from-blue-300 to-green-300 w-12 h-12 p-1 flex justify-center items-end">
                     <svg class="w-8" viewBox="0 0 20 20">

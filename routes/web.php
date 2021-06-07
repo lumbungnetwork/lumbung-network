@@ -107,6 +107,8 @@ Route::domain('member.' . config('services.app.domain'))->group(function () {
     Route::get('/shopping/postpaid/{type}', 'Member\ShoppingController@getPostpaidCheckCustomerNo')->where('type', '(4|5|6|7|8|9)')->name('member.shopping.postpaidCheck')->middleware('auth');
     Route::get('/shopping/hp-postpaid', 'Member\ShoppingController@getHPPostpaidList')->name('member.shopping.hpPostpaid')->middleware('auth');
     Route::get('/shopping/hp-postpaid/{buyer_sku_code}', 'Member\ShoppingController@getHPPostpaidCheckCustomerNo')->where('buyer_sku_code', '(HALO|MATRIX|SMARTPOST|TRIPOST|XLPOST)')->name('member.shopping.hpPostpaidCheck')->middleware('auth');
+    Route::get('/shopping/pdam', 'Member\ShoppingController@getPDAMCheckCustomerNo')->name('member.shopping.pdam')->middleware('auth');
+    Route::get('/shopping/multifinance', 'Member\ShoppingController@getMultifinanceCheckCustomerNo')->name('member.shopping.multifinance')->middleware('auth');
 
     Route::post('/shopping/checkout', 'Member\ShoppingController@postCheckout')->name('member.shopping.postCheckout')->middleware('auth');
     Route::post('/shopping/digital-order', 'Member\ShoppingController@postShoppingDigitalOrder')->name('member.shopping.postShoppingDigitalOrder')->middleware('auth');

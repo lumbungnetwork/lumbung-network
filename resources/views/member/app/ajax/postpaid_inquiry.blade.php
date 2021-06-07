@@ -18,15 +18,15 @@ $selling_price = $data['selling_price'] + 1000;
 }
 if($type == 8){
 $nama = 'PDAM';
-$selling_price = $data['selling_price'] + 650;
+$selling_price = $data['selling_price'] + 800;
 }
 if($type == 9){
 $nama = 'PGN';
-$selling_price = $data['selling_price'] + 800;
+$selling_price = $data['selling_price'] + 1000;
 }
 if($type == 10){
 $nama = 'Multifinance';
-$selling_price = $data['selling_price'] + 5000;
+$selling_price = $data['selling_price'] + 2500;
 }
 @endphp
 <div class="-mx-4">
