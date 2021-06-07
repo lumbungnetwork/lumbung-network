@@ -28,6 +28,73 @@ use IEXBase\TronAPI\Exception\TronException;
 
 class AjaxController extends Controller
 {
+    // Resubscribe
+    public function postResubscribeConfirm(Request $request)
+    {
+        $user = Auth::user();
+
+        if ($user->member_type == 0) {
+            return response()->json(['success' => false, 'message' => 'Anda belum berhak untuk Resubscribe!']);
+        }
+
+        $Bonus = new Bonus;
+        $hash = $request->hash;
+        $check = $Bonus->checkUsedHashExist($hash, 'resubscribe', 'hash');
+        if ($check) {
+            return response()->json(['success' => false, 'message' => 'Hash Transaksi sudah pernah digunakan pada transaksi sebelumnya']);
+        }
+        $receiver = 'TLsV52sRDL79HXGGm9yzwKibb6BeruhUzy';
+        $amount = $request->amount;
+
+        // Use Atomic lock to prevent race condition
+        $lock = Cache::lock('resubscribe_' . $user->id, 20);
+
+        if ($lock->get()) {
+            $tron = $this->getTron();
+            $i = 1;
+            do {
+                try {
+                    sleep(1);
+                    $response = $tron->getTransaction($hash);
+                } catch (TronException $e) {
+                    $i++;
+                    continue;
+                }
+                break;
+            } while (
+                $i < 23
+            );
+
+            if ($i == 23) {
+                $lock->release();
+                return response()->json(['success' => false, 'message' => 'Hash Transaksi Bermasalah!']);
+            };
+
+            $hashReceiver = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['to_address']);
+            $hashAsset = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['asset_name']);
+            $hashAmount = $response['raw_data']['contract'][0]['parameter']['value']['amount'];
+
+            if ($hashReceiver != $receiver) {
+                $lock->release();
+                return response()->json(['success' => false, 'message' => 'Alamat Tujuan Transfer Salah!']);
+            }
+            if ($hashAsset != '1002640') {
+                $lock->release();
+                return response()->json(['success' => false, 'message' => 'Bukan token LMB yang benar!']);
+            }
+            if ($hashAmount != 100000000) {
+                $lock->release();
+                return response()->json(['success' => false, 'message' => 'Jumlah transfer salah!']);
+            }
+
+            $user->user_type = 10;
+            $user->expired_at = date('Y-m-d 00:00:00', strtotime('+365 days'));
+            $user->save();
+
+            $lock->release();
+            return response()->json(['success' => true]);
+        }
+    }
     //LMB Rewards
     public function postClaimShoppingReward()
     {

@@ -121,6 +121,9 @@ Route::domain('member.' . config('services.app.domain'))->group(function () {
 
     // AJAX
     Route::group(['prefix' => 'ajax'], function () {
+        // Membership
+        Route::post('membership/resubscsribe', 'Member\AjaxController@postResubscribeConfirm')->name('ajax.postResubscribeConfirm')->middleware('auth');
+
         // Reward Claims
         Route::post('/claim/shopping-reward', 'Member\AjaxController@postClaimShoppingReward')->name('ajax.claim.shoppingReward')->middleware('auth');
         Route::post('/claim/staking-dividend', 'Member\AjaxController@postClaimStakingDividend')->name('ajax.claim.stakingDividend')->middleware('auth');
