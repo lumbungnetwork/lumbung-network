@@ -72,6 +72,10 @@ class AppController extends Controller
         $userDividend = $modelBonus->getUserDividend($user->id);
         $userUnstaking = $modelBonus->getUserUnstakeProgress($user->id);
 
+        if ($user->user_type == 9) {
+            Alert::warning('Membership Limitation', 'Untuk menerima Dividen harian dari Staking LMB, anda memerlukan Premium Membership')->persistent(true);
+        }
+
         return view('member.app.stake')
             ->with('title', 'Staking')
             ->with(compact('LMBDividendPool'))
