@@ -90,16 +90,14 @@ class APIController extends Controller
                     'data' => $data
                 ], 200);
             } else if ($name == 'dividend') {
-                $membershipRevenue = $modelAPI->getAllTimeActivations();
                 $stockistContribution = $modelAPI->getAllTimeStockistSales();
                 $profitSharingPool = $modelAPI->getAllTimeProfitSharingPool();
                 return response()->json([
                     'data' => [
-                        'membership_revenue' => $membershipRevenue['total'] * 20000,
                         'profit_share' => $profitSharingPool['total'] * 80 / 100,
                         'profit_share_details' => $profitSharingPool['detail'],
                         'stockist_contribution' => $stockistContribution['total'] * 1 / 100,
-                        'total' => ($membershipRevenue['total'] * 20000) + ($profitSharingPool['total'] * 80 / 100) + ($stockistContribution['total'] * 1 / 100)
+                        'total' => ($profitSharingPool['total'] * 80 / 100) + ($stockistContribution['total'] * 1 / 100)
                     ]
                 ], 200);
             } elseif ($name == 'network-bonus') {
@@ -119,16 +117,14 @@ class APIController extends Controller
                     'data' => $data
                 ], 200);
             } elseif ($name == 'dividend') {
-                $membershipRevenue = $modelAPI->getActivations($last_month);
                 $stockistContribution = $modelAPI->getStockistSales($last_month);
                 $profitSharingPool = $modelAPI->getProfitSharingPool($last_month);
                 return response()->json([
                     'data' => [
-                        'membership_revenue' => $membershipRevenue['total'] * 20000,
                         'profit_share' => $profitSharingPool['total'] * 70 / 100,
                         'profit_share_details' => $profitSharingPool['detail'],
                         'stockist_contribution' => $stockistContribution['total'] * 1 / 100,
-                        'total' => ($membershipRevenue['total'] * 20000) + ($profitSharingPool['total'] * 70 / 100) + ($stockistContribution['total'] * 1 / 100)
+                        'total' => ($profitSharingPool['total'] * 70 / 100) + ($stockistContribution['total'] * 1 / 100)
                     ]
                 ], 200);
             } elseif ($name == 'vendor-sales') {
