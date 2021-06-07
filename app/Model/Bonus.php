@@ -179,7 +179,7 @@ class Bonus extends Model
         return DB::table('staking')
             ->selectRaw('DATE_FORMAT(created_at, "%M - %Y") as date, amount, type, hash')
             ->where('user_id', $id)
-            ->get();
+            ->paginate(10);
     }
 
     public function getUserUnstakeProgress($id)

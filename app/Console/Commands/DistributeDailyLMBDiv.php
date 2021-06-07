@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Model\Bonus;
+use App\User;
 use Illuminate\Support\Facades\DB;
 
 class DistributeDailyLMBDiv extends Command
@@ -55,8 +56,9 @@ class DistributeDailyLMBDiv extends Command
 
         foreach ($stakers as $staker) {
             $netStakedLMB = $staker->net;
+            $premiumMembership = User::where('id', $staker->user_id)->where('user_type', 10)->exists();
 
-            if ($netStakedLMB > 0) {
+            if ($netStakedLMB > 0 && $premiumMembership) {
                 $dividend = round($netStakedLMB * $dividendPerLMB, 2, PHP_ROUND_HALF_DOWN);
                 $modelBonus->insertUserDividend([
                     'user_id' => $staker->user_id,

@@ -64,16 +64,6 @@ class AppController extends Controller
     public function getStake()
     {
         $user = Auth::user();
-        $onlyUser  = array(10);
-        if (!in_array($user->user_type, $onlyUser)) {
-            Alert::error('Oops!', 'Fitur Staking hanya untuk Premium Member!');
-            return redirect()->route('member.home');
-        }
-
-        if ($user->expired_at < date('Y-m-d', strtotime('Today +1 minute'))) {
-            Alert::error('Oops!', 'Keanggotaan anda sudah EXPIRED!');
-            return redirect()->route('member.home');
-        }
 
         $modelBonus = new Bonus;
         $LMBDividendPool = $modelBonus->getLMBDividendPool();
