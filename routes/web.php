@@ -115,6 +115,8 @@ Route::domain('member.' . config('services.app.domain'))->group(function () {
     Route::post('/shopping/digital-order-quickbuy', 'Member\ShoppingController@postShoppingStoreQuickbuy')->name('member.shopping.postShoppingStoreQuickbuy')->middleware('auth');
     Route::post('/shopping/confirm-digital-order', 'Member\ShoppingController@postShoppingConfirmDigitalOrderByEidr')->name('member.shopping.postShoppingConfirmDigitalOrderByEidr')->middleware('auth');
 
+    // Network
+    Route::get('/network', 'Member\NetworkController@getNetwork')->name('member.network')->middleware('auth');
 
     // Claims
     Route::get('/claim/shopping-reward', 'Member\AppController@getClaimShoppingReward')->name('member.claim.shoppingReward')->middleware('auth');
