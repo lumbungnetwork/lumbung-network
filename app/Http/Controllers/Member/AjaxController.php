@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Jobs\Member\SendLMBRewardMarketplaceJob;
 use App\Model\Bonus;
 use App\User;
+use Hash;
 use App\Model\Member\Product;
 use App\Model\Member\Sales;
 use App\Model\Member\MasterSales;
@@ -1060,7 +1061,13 @@ class AjaxController extends Controller
         $data = MasterSales::findOrFail($request->masterSalesID);
         // check store authority
         if ($data->stockist_id != $user->id || $data->status != 1) {
-            return response()->json(['success' => false]);
+            return response()->json(['success' => false, 'message' => 'Access Denied']);
+        }
+
+        // Check 2FA
+        $check = Hash::check($request->password, $user->{'2fa'});
+        if (!$check) {
+            return response()->json(['success' => false, 'message' => 'Pin 2FA salah']);
         }
 
         // Use Atomic Lock to prevent race condition
@@ -1074,7 +1081,7 @@ class AjaxController extends Controller
             $remaining = $balance - $royalty;
             if ($remaining < 0) {
                 $lock->release();
-                return response()->json(['success' => false]);
+                return response()->json(['success' => false, 'message' => 'Saldo eIDR tidak mencukupi']);
             }
 
             // Create negative balance record to Deduct seller's eIDR balance

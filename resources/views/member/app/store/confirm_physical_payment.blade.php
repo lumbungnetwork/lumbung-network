@@ -220,37 +220,57 @@
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Ya!',
                 cancelButtonText: 'Batal'
-            }).then((result) => {
+            }).then( async (result) => {
                 if (result.isConfirmed) {
-                
-                    Swal.fire('Sedang Memproses...');
-                    Swal.showLoading();
-                    $.ajax({
-                        type: "POST",
-                        url: "{{ route('ajax.store.postStoreConfirmPhysicalOrder') }}",
-                        data: {
-                        masterSalesID:masterSalesID,
-                        _token:_token
-                        },
-                        success: function(response){
-                            if(response.success) {
-                                Swal.fire(
-                                'Berhasil',
-                                'Pembayaran berhasil, proses belanja telah tuntas!',
-                                'info'
-                                )
-                                setTimeout(window.location.replace(href), 3000);
-                            
-                            } else {
-                                Swal.fire(
-                                'Gagal',
-                                'Ada yang salah, coba sesaat lagi.',
-                                'error'
-                                )
-                                setTimeout(window.location.replace(href), 3000);
-                            }
+
+                    const { value: password } = await Swal.fire({
+                        title: 'Verifikasi 2FA',
+                        html: '<input id="swal-input1" class="w-3/4 h-12 text-lg py-2 text-center justify-center bg-gray-200" inputmode="numeric" pattern="[0-9]*">',
+                        focusConfirm: false,
+                        showCancelButton: true,
+                        preConfirm: () => {
+                            return [
+                                document.getElementById('swal-input1').value,
+                            ]
                         }
+                    
                     })
+                    
+                    if (password) {
+                        let pw = JSON.stringify(password);
+                        let pass = pw.replace(/[""\[\]]/g, '');
+                        Swal.fire('Sedang Memproses...');
+                        Swal.showLoading();
+                        $.ajax({
+                            type: "POST",
+                            url: "{{ route('ajax.store.postStoreConfirmPhysicalOrder') }}",
+                            data: {
+                            masterSalesID:masterSalesID,
+                            password:pass,
+                            _token:_token
+                            },
+                            success: function(response){
+                                if(response.success) {
+                                    Swal.fire(
+                                    'Berhasil',
+                                    'Pembayaran berhasil, proses belanja telah tuntas!',
+                                    'info'
+                                    )
+                                    setTimeout(window.location.replace(href), 3000);
+                                
+                                } else {
+                                    Swal.fire(
+                                    'Gagal',
+                                    response.message,
+                                    'error'
+                                    )
+                                    setTimeout(window.location.replace(href), 3000);
+                                }
+                            }
+                        })
+                    }
+                
+                    
                 }
             })
         })

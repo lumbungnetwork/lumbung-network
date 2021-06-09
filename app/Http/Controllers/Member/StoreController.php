@@ -456,6 +456,11 @@ class StoreController extends Controller
             return redirect()->back();
         }
 
+        if ($user->{'2fa'} == null) {
+            Alert::warning('2FA dibutuhkan', 'Silakan buat Pin 2FA anda terlebih dahulu');
+            return redirect()->route('member.security');
+        }
+
         // get masterSales data
         $masterSalesData = MasterSales::findOrFail($masterSalesID);
         $salesData = Sales::where('master_sales_id', $masterSalesID)->get();
@@ -484,6 +489,11 @@ class StoreController extends Controller
         if ($user->user_type != 10 || !$user->is_store) {
             Alert::error('Oops', 'Access Denied');
             return redirect()->back();
+        }
+
+        if ($user->{'2fa'} == null) {
+            Alert::warning('2FA dibutuhkan', 'Silakan buat Pin 2FA anda terlebih dahulu');
+            return redirect()->route('member.security');
         }
 
         // get data
