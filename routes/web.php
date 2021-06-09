@@ -42,6 +42,7 @@ Route::domain('member.' . config('services.app.domain'))->group(function () {
     // New Member Routes
     Route::get('/home', 'Member\AppController@getHome')->name('member.home')->middleware('auth');
     Route::get('/stake', 'Member\AppController@getStake')->name('member.stake')->middleware('auth');
+    Route::get('/notifications', 'Member\AppController@getNotifications')->name('member.notifications')->middleware('auth');
     Route::get('/wallet', 'Member\AppController@getWallet')->name('member.wallet')->middleware('auth');
     Route::get('/wallet/deposit', 'Member\AppController@getWalletDeposit')->name('member.wallet.deposit')->middleware('auth');
     Route::post('/wallet/deposit', 'Member\AppController@postWalletDeposit')->name('member.postWalletDeposit')->middleware('auth');

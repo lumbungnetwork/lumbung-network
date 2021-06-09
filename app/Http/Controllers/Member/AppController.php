@@ -9,6 +9,7 @@ use App\User;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 use App\Model\Member\MasterSales;
+use App\Model\Member\DigitalSale;
 use App\Model\Bonus;
 use App\Model\Member\LMBreward;
 use App\Model\Member\EidrBalance;
@@ -35,13 +36,71 @@ class AppController extends Controller
         $Bonus = new Bonus;
         $LMBDividendPool = $Bonus->getLMBDividendPool();
         $userStakedLMB = $Bonus->getUserStakedLMB($user->id);
+        $total_notifs = 0;
+
+        // if user is_store check relevant unconfirmed transactions
+        if ($user->is_store) {
+            // Physical goods
+            $physical_tx = MasterSales::where('stockist_id', $user->id)
+                ->where('status', 1)
+                ->where('buy_metode', 1)
+                ->count();
+
+            // Digital goods
+            $digital_tx = DigitalSale::where('vendor_id', $user->id)
+                ->where('status', 1)
+                ->where('buy_metode', 1)
+                ->count();
+
+            $sum = $physical_tx + $digital_tx;
+
+            // Total notifications
+            if ($sum > 0) {
+                $total_notifs = $sum;
+
+                // Alert about notifs once per session
+                if (!session()->has('notif')) {
+                    Alert::info('Ada Notifikasi baru!', 'Silakan cek Notifikasi anda dengan klik ikon lonceng di kanan atas');
+                }
+                session(['notif' => $sum]);
+            }
+        }
 
         return view('member.app.home')
             ->with('title', 'Home')
             ->with(compact('user'))
             ->with(compact('LMBDividendPool'))
             ->with(compact('userStakedLMB'))
+            ->with(compact('total_notifs'))
             ->with(compact('spending'));
+    }
+
+    public function getNotifications()
+    {
+        $user = Auth::user();
+        $physical_tx = null;
+        $digital_tx = null;
+
+        if ($user->is_store) {
+            // Physical goods
+            $physical_tx = MasterSales::where('stockist_id', $user->id)
+                ->where('status', 1)
+                ->where('buy_metode', 1)
+                ->with('buyer')
+                ->get();
+
+            // Digital goods
+            $digital_tx = DigitalSale::where('vendor_id', $user->id)
+                ->where('status', 1)
+                ->where('buy_metode', 1)
+                ->with('buyer')
+                ->get();
+        }
+
+        return view('member.app.notifications')
+            ->with(compact('physical_tx'))
+            ->with(compact('digital_tx'))
+            ->with('title', 'Notifikasi');
     }
 
     public function getClaimShoppingReward()
