@@ -44,7 +44,7 @@
     @include('sweetalert::alert')
     @yield('content')
 
-    <script src="{{Config::get('services.app.protocol_url')}}/asset_member/js/jquery.min.js"></script>
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
     <script src="{{Config::get('services.app.protocol_url')}}/vendor/sweetalert/sweetalert2.all.min.js"></script>
     @yield('scripts')
 </body>

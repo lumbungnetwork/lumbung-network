@@ -368,6 +368,25 @@ class AjaxController extends Controller
             ->with(compact('usernames'));
     }
 
+    public function getDownlineUsername(Request $request)
+    {
+        $user = Auth::user();
+        $usernames = null;
+        $uplines = $user->upline_detail . ',[' . $user->id . ']';
+        if (!$user->upline_detail) {
+            $uplines = '[' . $user->id . ']';
+        }
+        if ($request->name) {
+            $usernames = User::where('username', 'LIKE', '%' . $request->name . '%')
+                ->where('upline_detail', 'LIKE', $uplines . '%')
+                ->select('id', 'username')
+                ->orderBy('username', 'ASC')
+                ->get();
+        }
+        return view('member.app.ajax.get_username_autocomplete')
+            ->with(compact('usernames'));
+    }
+
     public function postChangeBuyerQuickbuy(Request $request)
     {
         $user = Auth::user();

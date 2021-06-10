@@ -1226,50 +1226,28 @@ namespace App{
  * @property string $password
  * @property string|null $2fa
  * @property string|null $username
- * @property int $is_login 0 = tidak aktif, 1 = aktif
- * @property int $is_active 0 = tidak aktif, 1 = aktif
  * @property int $user_type 1 = super admin, 2 = master admin, 3 = admin, 10 = member
  * @property int $is_store
- * @property int $id_type Berhubungan dgn type manager. 1=> member biasa, 11 => TL, 12 => Asmen, 13 => M, 14 => SM, 15 => EM, 16 => SEM, 17 => GM
- * @property int|null $package_id jenis paket yg dibeli
  * @property int $member_type Berhubungan dgn order paket diawal setelah diaktifasi. 0 => belum pernah aktifasi pin, 1 =>  reseller, 2 => Agen, 3 => Stockist 4 => Master Stockist
- * @property int $member_status Berhubungan dgn pembelian total pin. 0 => belum pernah beli pin, 1 =>  member biasa (pebelian pin 1-99)  2=> Director Stockist (Pebelian pin >= 100 pin)
  * @property int|null $sponsor_id
  * @property int $total_sponsor
  * @property int|null $upline_id
- * @property int|null $kiri_id
- * @property int|null $kanan_id
+ * @property int|null $left_id
+ * @property int|null $right_id
  * @property string|null $upline_detail
- * @property int $is_referal_link 0 = bukan, 1 = iya
  * @property string|null $full_name buat di account_name bank
  * @property string|null $alamat
  * @property string|null $provinsi
  * @property string|null $kota
- * @property int|null $gender 1 = laki-laki, 2 = perempuan
  * @property int $is_profile 0 = belum, 1 = sudah
- * @property string|null $active_at
- * @property string|null $package_id_at
- * @property string|null $member_status_at
- * @property string|null $profile_created_at
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string|null $deleted_at
  * @property string|null $expired_at
  * @property string|null $remember_token
  * @property string|null $placement_at
- * @property int $is_tron 0 = belum, 1 = sudah
  * @property string|null $tron
- * @property string|null $tron_at
  * @property string|null $kecamatan
  * @property string|null $kelurahan
- * @property int $is_stockist
- * @property string|null $stockist_at
- * @property string|null $kode_daerah
- * @property int $pin_activate
- * @property string|null $pin_activate_at
- * @property string|null $permission
- * @property int $is_vendor
- * @property string|null $vendor_at
  * @property int $affiliate
  * @property string|null $chat_id
  * @property int|null $invited_by
@@ -1284,59 +1262,37 @@ namespace App{
  * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User query()
  * @method static \Illuminate\Database\Eloquent\Builder|User where2fa($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereActiveAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereAffiliate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereAlamat($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereChatId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereExpiredAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereFullName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereGender($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereHp($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereIdType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereInvitedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereIsActive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereIsLogin($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereIsProfile($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereIsReferalLink($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereIsStockist($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereIsStore($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereIsTron($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereIsVendor($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereKananId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereKecamatan($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereKelurahan($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereKiriId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereKodeDaerah($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereKota($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereMemberStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereMemberStatusAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereLeftId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereMemberType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User wherePackageId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User wherePackageIdAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User wherePassword($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User wherePermission($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User wherePinActivate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User wherePinActivateAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User wherePlacementAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereProfileCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereProvinsi($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereRememberToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereRightId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereSponsorId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereStockistAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereTotalSponsor($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereTron($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereTronAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUplineDetail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUplineId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUserType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUsername($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereVendorAt($value)
  */
 	class User extends \Eloquent {}
 }

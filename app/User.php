@@ -61,4 +61,43 @@ class User extends Authenticatable
     {
         return $this->hasOne('App\Model\Member\Bank');
     }
+
+    /**
+     * This is a function to get binary tree data under a user_id.
+     * Using member_type > 0 as a constraint to query only premium Member (or Premiumed)
+     *
+     * @var User id
+     */
+    public function getBinary($user_id)
+    {
+        $node1 = $this->where('id', $user_id)->where('member_type', '>', 0)->first();
+        $node2 = $node3 = $node4 = $node5 = $node6 = $node7 = null;
+
+        // 1st level
+        if ($node1->left_id) {
+            $node2 = $this->where('id', $node1->left_id)->where('member_type', '>', 0)->first();
+        }
+
+        if ($node1->right_id) {
+            $node3 = $this->where('id', $node1->right_id)->where('member_type', '>', 0)->first();
+        }
+
+        // 2nd level
+        if ($node2 && $node2->left_id) {
+            $node4 = $this->where('id', $node2->left_id)->where('member_type', '>', 0)->first();
+        }
+
+        if ($node2 && $node2->right_id) {
+            $node5 = $this->where('id', $node2->right_id)->where('member_type', '>', 0)->first();
+        }
+        if ($node3 && $node3->left_id) {
+            $node6 = $this->where('id', $node3->left_id)->where('member_type', '>', 0)->first();
+        }
+
+        if ($node3 && $node3->right_id) {
+            $node7 = $this->where('id', $node3->right_id)->where('member_type', '>', 0)->first();
+        }
+
+        return [$node1, $node2, $node3, $node4, $node5, $node6, $node7];
+    }
 }

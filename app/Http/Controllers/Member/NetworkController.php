@@ -57,8 +57,38 @@ class NetworkController extends Controller
             ->with('title', 'Network');
     }
 
-    public function getRankQualification($user_id)
+    public function getBinaryTree(Request $request)
     {
-        $user = User::find($user_id);
+        $user = Auth::user();
+        // set default node1 to session's user
+        $node1 = $user;
+        // enable back button on tree when node1 != session's user
+        $back = false;
+        // uplines detail as search downline constrain
+        $uplines = $user->upline_detail . ',[' . $user->id . ']';
+        if (!$user->upline_detail) {
+            $uplines = '[' . $user->id . ']';
+        }
+        // handle request if this function called from search form
+        if ($request->user_id && $request->user_id != $user->id) {
+            $back = true;
+            $node1 = User::where('id', $request->user_id)
+                ->where('member_type', '>', 0)
+                ->where('upline_detail', 'LIKE', $uplines . '%')
+                ->first();
+        }
+        if (!$node1) {
+            $node1 = $user;
+        }
+        // get binary data
+        $modelUser = new User;
+        $binary = $modelUser->getBinary($node1->id);
+
+        return view('member.app.network.binary')
+            ->with('title', 'Binary Tree')
+            ->with(compact('user'))
+            ->with(compact('node1'))
+            ->with(compact('back'))
+            ->with(compact('binary'));
     }
 }
