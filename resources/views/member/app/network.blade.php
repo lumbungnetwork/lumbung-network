@@ -129,12 +129,12 @@
     <div class="mt-6">
         <div class="mb-3 text-lg font-bold tracking-wider text-gray-600">Tim Anda:</div>
         <div class="nm-inset-gray-100 rounded-2xl p-2">
-            <table class="table table-auto overflow-x-scroll">
+            <table class="table table-fixed overflow-x-scroll">
                 <thead class="text-sm">
                     <tr>
-                        <th class="py-2">Username</th>
-                        <th class="py-2">Peringkat</th>
-                        <th class="py-2">Referrals</th>
+                        <th class="text-left py-2 w-5/12">Username</th>
+                        <th class="text-left py-2 w-4/12">Peringkat</th>
+                        <th class="py-2 w-3/12">Referrals</th>
                     </tr>
                 </thead>
                 <tbody class="text-xs">
