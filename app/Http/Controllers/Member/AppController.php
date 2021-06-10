@@ -370,8 +370,8 @@ class AppController extends Controller
         }
 
         // check minimum for Bank transfer method
-        if ($request->method == 1 && $request->amount < 10000) {
-            Alert::error('Error', 'Minimum Withdraw adalah Rp10.000,-');
+        if ($request->method == 1 && $request->amount < 20000) {
+            Alert::error('Error', 'Minimum Withdraw adalah Rp20.000,-');
             return redirect()->back();
         }
 

@@ -43,7 +43,7 @@
                             <input type="text"
                                 class="bg-transparent text-xs font-light ml-1 focus:outline-none allownumericwithoutdecimal"
                                 inputmode="numeric" pattern="[0-9]*" name="amount" id="amount-1"
-                                placeholder="Min. Rp10,000" autocomplete="off">
+                                placeholder="Min. Rp20,000" autocomplete="off">
                         </form>
 
                     </div>
@@ -142,8 +142,8 @@
             Swal.fire('Oops', 'Anda belum mengisi jumlah Withdraw', 'error');
             return false;
         }
-        if (type == 1 && $(val_id).val() < 10000) {
-            Swal.fire('Oops', 'Minimum Withdraw via Bank adalah Rp10.000,-', 'error');
+        if (type == 1 && $(val_id).val() < 20000) {
+            Swal.fire('Oops', 'Minimum Withdraw via Bank adalah Rp20.000,-', 'error');
             return false;
         }
         Swal.fire({
