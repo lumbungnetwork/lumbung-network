@@ -502,13 +502,8 @@
                                         sendAmount,
                                         "1002640"
                                     );
-<<<<<<< HEAD
-                                    if (tx.txid !== undefined) {
-                                        $('#hash').val(tx.txid);
-=======
                                     if (tx.transaction.txID !== undefined) {
                                         $('#hash').val(tx.transaction.txID);
->>>>>>> lumbung3
                                         $('#trc10-confirm-form').submit();
                                         Swal.fire('Verifying...');
                                         Swal.showLoading();
