@@ -15,6 +15,7 @@ use App\Http\Controllers\Controller;
 use Telegram\Bot\Laravel\Facades\Telegram;
 use IEXBase\TronAPI\Exception\TronException;
 use App\Notifications\LMBNotification;
+use GuzzleHttp\Client;
 
 class SendLMBRewardMarketplaceJob implements ShouldQueue
 {
@@ -47,6 +48,9 @@ class SendLMBRewardMarketplaceJob implements ShouldQueue
         // Get the reward data
         $reward = LMBreward::find($this->reward_id);
 
+        // Get minimum timestamp for failcheck
+        $minTimestamp = time() * 1000;
+
         // Check the hash, if exist or if Type != 0 delete this job,
         if ($reward->hash !== null || $reward->type !== 0) {
             $this->delete();
@@ -72,21 +76,12 @@ class SendLMBRewardMarketplaceJob implements ShouldQueue
             $signedTransaction = $tron->signTransaction($transaction);
             $response = $tron->sendRawTransaction($signedTransaction);
         } catch (TronException $e) {
-            $response = Telegram::sendMessage([
-                'chat_id' => config('services.telegram.overlord'),
-                'text' => 'SendLMBRewardMarketplace Fail, UserID: ' . $user->id . ' reward_id: ' . $this->reward_id,
-                'parse_mode' => 'markdown'
-            ]);
-            return;
+            // jump to Cleanup section to check from API if the transaction actually went thru
+            goto Cleanup;
         }
 
         if (!isset($response['result'])) {
-            $response = Telegram::sendMessage([
-                'chat_id' => config('services.telegram.overlord'),
-                'text' => 'SendLMBRewardMarketplace Fail, UserID: ' . $user->id . ' reward_id: ' . $this->reward_id,
-                'parse_mode' => 'markdown'
-            ]);
-            return;
+            goto Cleanup;
         }
 
         if ($response['result'] == true) {
@@ -102,10 +97,36 @@ class SendLMBRewardMarketplaceJob implements ShouldQueue
             try {
                 $tron->getTransaction($txHash);
             } catch (TronException $e) {
+                Cleanup:
+                sleep(10);
+                // Trongrid API to check recent transactions
+                $url = 'https://api.trongrid.io/v1/accounts/' . $from . '/transactions?only_confirmed=true&only_from=true&limit=5&min_timestamp=' . $minTimestamp;
+
+                // use Guzzle Client
+                $client = new Client;
+                $res = $client->get($url, [
+                    'headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json']
+                ]);
+
+                $response = json_decode($res->getBody(), true);
+                $done = false;
+                foreach ($response['data'] as $data) {
+                    if ($data['raw_data']['contract'][0]['parameter']['value']['to_address'] == $tron->toHex($to) && $data['raw_data']['contract'][0]['parameter']['value']['amount'] == $amount) {
+                        $done = true;
+                    }
+                }
+                // If transaction not found, this job fails
+                if (!$done) {
+                    Telegram::sendMessage([
+                        'chat_id' => config('services.telegram.overlord'),
+                        'text' => 'SendLMBRewardMarketplace Fail on FAILCHECK, UserID: ' . $user->id . ',tron addr: ' . $to . ', reward id: ' . $this->reward_id
+                    ]);
+                    $this->fail();
+                }
+
                 Telegram::sendMessage([
                     'chat_id' => config('services.telegram.overlord'),
-                    'text' => 'SendLMBRewardMarketplace Fail on FAILCHECK, UserID: ' . $user->id . ' reward_id: ' . $this->reward_id,
-                    'parse_mode' => 'markdown'
+                    'text' => 'SendLMBRewardMarketplace failcheck jump anomaly, user: ' . $user->id . ',tron addr: ' . $to . ', reward id: ' . $this->reward_id
                 ]);
                 return;
             }

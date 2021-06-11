@@ -15,6 +15,7 @@ use Illuminate\Queue\SerializesModels;
 use IEXBase\TronAPI\Exception\TronException;
 use Telegram\Bot\Laravel\Facades\Telegram;
 use App\Notifications\LMBNotification;
+use GuzzleHttp\Client;
 
 class ClaimNetworkRewardJob implements ShouldQueue
 {
@@ -48,8 +49,11 @@ class ClaimNetworkRewardJob implements ShouldQueue
         $data = DB::table('claim_reward')->where('id', $this->claimRewardID)->first();
         if ($data->status) {
             $this->delete();
-            return;
         }
+
+        // Get minimum timestamp for failcheck
+        $minTimestamp = time() * 1000;
+
         // Get reward model
         $reward = DB::table('bonus_reward2')->where('id', $data->reward_id)->first();
 
@@ -73,19 +77,11 @@ class ClaimNetworkRewardJob implements ShouldQueue
             $signedTransaction = $tron->signTransaction($transaction);
             $response = $tron->sendRawTransaction($signedTransaction);
         } catch (TronException $e) {
-            Telegram::sendMessage([
-                'chat_id' => config('services.telegram.overlord'),
-                'text' => 'ClaimNetworkRewardJob Fail, user tron: ' . $user->tron . ' reward id: ' . $this->claimRewardID
-            ]);
-            return;
+            goto Cleanup;
         }
 
         if (!isset($response['result'])) {
-            Telegram::sendMessage([
-                'chat_id' => config('services.telegram.overlord'),
-                'text' => 'ClaimNetworkRewardJob Fail, user tron: ' . $user->tron . ' reward id: ' . $this->claimRewardID
-            ]);
-            return;
+            goto Cleanup;
         }
 
         if ($response['result'] == true) {
@@ -104,9 +100,36 @@ class ClaimNetworkRewardJob implements ShouldQueue
             try {
                 $tron->getTransaction($txHash);
             } catch (TronException $e) {
+                Cleanup:
+                sleep(10);
+                // Trongrid API to check recent transactions
+                $url = 'https://api.trongrid.io/v1/accounts/' . $from . '/transactions?only_confirmed=true&only_from=true&limit=5&min_timestamp=' . $minTimestamp;
+
+                // use Guzzle Client
+                $client = new Client;
+                $res = $client->get($url, [
+                    'headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json']
+                ]);
+
+                $response = json_decode($res->getBody(), true);
+                $done = false;
+                foreach ($response['data'] as $data) {
+                    if ($data['raw_data']['contract'][0]['parameter']['value']['to_address'] == $tron->toHex($to) && $data['raw_data']['contract'][0]['parameter']['value']['amount'] == $amount) {
+                        $done = true;
+                    }
+                }
+                // If transaction not found, this job fails
+                if (!$done) {
+                    Telegram::sendMessage([
+                        'chat_id' => config('services.telegram.overlord'),
+                        'text' => 'ClaimNetworkRewardJob Fail on FAILCHECK, UserID: ' . $user->id . ',tron addr: ' . $to . ', reward id: ' . $this->claimRewardID
+                    ]);
+                    $this->fail();
+                }
+
                 Telegram::sendMessage([
                     'chat_id' => config('services.telegram.overlord'),
-                    'text' => 'ClaimNetworkRewardJob Fail on FAILCHECK, user tron: ' . $user->tron . ' reward id: ' . $this->claimRewardID
+                    'text' => 'ClaimNetworkRewardJob failcheck jump anomaly, UserID: ' . $user->id . ',tron addr: ' . $to . ', reward id: ' . $this->claimRewardID
                 ]);
                 return;
             }

@@ -13,6 +13,8 @@ use Telegram\Bot\Laravel\Facades\Telegram;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Config;
 use App\Model\Bonus;
+use IEXBase\TronAPI\Exception\TronException;
+use GuzzleHttp\Client;
 
 class SendUnstakedLMBJob implements ShouldQueue
 {
@@ -46,6 +48,9 @@ class SendUnstakedLMBJob implements ShouldQueue
      */
     public function handle()
     {
+        // Get minimum timestamp for failcheck
+        $minTimestamp = time() * 1000;
+
         $getUserTronAddress = User::where('id', $this->user_id)->select('tron')->first();
         $sendAmount = $this->amount * 1000000;
 
@@ -63,16 +68,11 @@ class SendUnstakedLMBJob implements ShouldQueue
             $signedTransaction = $tron->signTransaction($transaction);
             $response = $tron->sendRawTransaction($signedTransaction);
         } catch (TronException $e) {
-            die($e->getMessage());
+            goto Cleanup;
         }
 
         if (!isset($response['result'])) {
-            $response = Telegram::sendMessage([
-                'chat_id' => Config::get('services.telegram.overlord'),
-                'text' => 'SendUnstakedLMB Fail, UserID: ' . $this->user_id . ' staking_id: ' . $this->staking_id,
-                'parse_mode' => 'markdown'
-            ]);
-            return;
+            goto Cleanup;
         }
 
 
@@ -83,10 +83,36 @@ class SendUnstakedLMBJob implements ShouldQueue
             try {
                 $tron->getTransaction($txHash);
             } catch (TronException $e) {
-                $response = Telegram::sendMessage([
-                    'chat_id' => Config::get('services.telegram.overlord'),
-                    'text' => 'SendUnstakedLMB Fail, UserID: ' . $this->user_id . ' staking_id: ' . $this->staking_id,
-                    'parse_mode' => 'markdown'
+                Cleanup:
+                sleep(10);
+                // Trongrid API to check recent transactions
+                $url = 'https://api.trongrid.io/v1/accounts/' . $from . '/transactions?only_confirmed=true&only_from=true&limit=5&min_timestamp=' . $minTimestamp;
+
+                // use Guzzle Client
+                $client = new Client;
+                $res = $client->get($url, [
+                    'headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json']
+                ]);
+
+                $response = json_decode($res->getBody(), true);
+                $done = false;
+                foreach ($response['data'] as $data) {
+                    if ($data['raw_data']['contract'][0]['parameter']['value']['to_address'] == $tron->toHex($to) && $data['raw_data']['contract'][0]['parameter']['value']['amount'] == $sendAmount) {
+                        $done = true;
+                    }
+                }
+                // If transaction not found, this job fails
+                if (!$done) {
+                    Telegram::sendMessage([
+                        'chat_id' => config('services.telegram.overlord'),
+                        'text' => 'SendUnstakedLMB Fail on FAILCHECK, UserID: ' . $this->user_id . ',tron addr: ' . $to . ', staking id: ' . $this->staking_id
+                    ]);
+                    $this->fail();
+                }
+
+                Telegram::sendMessage([
+                    'chat_id' => config('services.telegram.overlord'),
+                    'text' => 'SendUnstakedLMB failcheck jump anomaly, UserID: ' . $this->user_id . ',tron addr: ' . $to . ', staking id: ' . $this->staking_id
                 ]);
                 return;
             }
