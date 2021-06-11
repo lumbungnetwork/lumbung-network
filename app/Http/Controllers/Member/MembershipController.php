@@ -94,6 +94,7 @@ class MembershipController extends Controller
             $user->sponsor_id = $sponsor_id;
             $user->member_type = 1;
             $user->user_type = 10;
+            $user->premium_at = date('Y-m-d H:i:s');
             $user->expired_at = date('Y-m-d 00:00:00', strtotime('+365 days'));
             $user->save();
 
@@ -107,6 +108,11 @@ class MembershipController extends Controller
                 $bonus->tx_id = $user->id;
                 $bonus->note = 'Bonus Sponsor dari ' . $user->username;
                 $bonus->save();
+
+                // Add sponsors count
+                $sponsor = User::find($sponsor_id);
+                $sponsor->total_sponsor += 1;
+                $sponsor->save();
             }
 
             // Send dividend to LMB Div Pool
