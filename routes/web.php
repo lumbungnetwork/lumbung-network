@@ -120,6 +120,8 @@ Route::domain('member.' . config('services.app.domain'))->group(function () {
     Route::get('/network', 'Member\NetworkController@getNetwork')->name('member.network')->middleware('auth');
     Route::get('/network/binary-tree', 'Member\NetworkController@getBinaryTree')->name('member.network.binaryTree')->middleware('auth');
 
+    Route::post('/network/claim-reward', 'Member\NetworkController@postClaimNetworkReward')->name('member.network.postClaimNetworkReward')->middleware('auth');
+
     // Claims
     Route::get('/claim/shopping-reward', 'Member\AppController@getClaimShoppingReward')->name('member.claim.shoppingReward')->middleware('auth');
 

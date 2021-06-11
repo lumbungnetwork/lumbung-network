@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Member;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\ClaimNetworkRewardJob;
 use App\User;
 use Illuminate\Http\Request;
 use Auth;
+use Cache;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\DB;
 
@@ -55,6 +57,64 @@ class NetworkController extends Controller
             ->with(compact('currentRank'))
             ->with(compact('directs'))
             ->with('title', 'Network');
+    }
+
+    public function postClaimNetworkReward()
+    {
+        $user = Auth::user();
+        if ($user->member_type < 1) {
+            Alert::error('Oops', 'Access Denied');
+            return redirect()->back();
+        }
+        if (!$user->tron) {
+            Alert::warning('Alamat TRON dibutuhkan', 'Anda belum melengkapi data alamat TRON anda, silakan melengkapiya sebelum claim reward');
+            return redirect()->route('member.tron');
+        }
+
+        // Recheck qualification (minimum 4 downline with same member_type)
+        $qualifiedDirects = User::where('sponsor_id', $user->id)->where('member_type', $user->member_type)->count();
+        if ($qualifiedDirects < 4) {
+            Alert::error('Oops', 'Tidak memenuhi syarat kualifikasi');
+            return redirect()->back();
+        }
+
+        // use Atomic Lock to prevent race condition
+        $lock = Cache::lock('claim_reward_' . $user->id, 60);
+
+        if ($lock->get()) {
+            // get Reward  and double check from DB
+            // reward_id 1 = Silver III (100), 2 = Silver II (200), 3 = Silver I (500), 4 = Gold III (2000)
+            // member_type 1 = New Member, 10 = Silver III, 11 = Silver II, 12 = Silver I, 13 = Gold III
+            $reward = DB::table('bonus_reward2')->where('member_type', $user->member_type)->first();
+            $check = DB::table('claim_reward')->where('user_id', $user->id)->where('reward_id', $reward->id)->exists();
+            if ($check) {
+                $lock->release();
+                Alert::info('Claimed', 'Reward telah diklaim');
+                return redirect()->back();
+            }
+            // create claim_reward record
+            $claimRewardID = DB::table('claim_reward')->insertGetId([
+                'user_id' => $user->id,
+                'reward_id' => $reward->id,
+                'claim_date' => date('Y-m-d'),
+                'created_at' => date('Y-m-d H:i:s')
+            ]);
+
+            // Dispatch job to process TRON transfer
+            ClaimNetworkRewardJob::dispatch($claimRewardID)->onQueue('tron');
+            sleep(3);
+
+            // Update user's member_type to next rank
+            $user->member_type = $reward->type;
+            $user->save();
+
+            $lock->release();
+            Alert::success('Berhasil', 'Reward ' . $reward->name . ' telah di-claim, ' . $reward->reward_detail . ' LMB akan segera masuk ke alamat TRON anda.');
+            return redirect()->back();
+        }
+
+        Alert::error('Oops', 'Access Denied');
+        return redirect()->back();
     }
 
     public function getBinaryTree(Request $request)

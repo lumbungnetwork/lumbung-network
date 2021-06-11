@@ -40,11 +40,12 @@
             @if ($reward->id < 5) <div class="object-contain flex flex-col items-center justify-center">
                 <img class="h-16 my-1" src="/image/koin_lmb.png" alt="koin LMB">
                 <div class="my-2 text-md text-center font-bold">{{ $reward->reward_detail }} LMB</div>
-                <form action="" method="POST">
+                <form action="{{ route('member.network.postClaimNetworkReward') }}" method="POST" id="claim-form">
                     @csrf
-                    <button
-                        class="rounded-lg py-1 px-2 h-8 bg-gradient-to-br from-green-400 to-purple-300 text-xs font-medium text-gray-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Claim</button>
+
                 </form>
+                <button id="claim-btn"
+                    class="rounded-lg py-1 px-2 h-8 bg-gradient-to-br from-green-400 to-purple-300 text-xs font-medium text-gray-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Claim</button>
         </div>
         @endif
     </div>
@@ -193,7 +194,24 @@
 
 @section('scripts')
 <script>
-
+    $('#claim-btn').click( function () {
+        Swal.fire({
+            title: 'Claim Reward',
+            text: "Anda ingin Claim Reward ini?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya!',
+            cancelButtonText: 'Nanti!'
+        }).then( async (result) => {
+            if (result.isConfirmed) {
+                Swal.fire('Proses Claim Reward');
+                Swal.showLoading();
+                $('#claim-form').submit();
+            }
+        })
+    })
 </script>
 @include('finance.layout.copy')
 @endsection
