@@ -1196,4 +1196,40 @@ class AjaxController extends Controller
         $data->delete();
         return response()->json(['success' => true]);
     }
+
+    // Network AJAXes
+    /*
+    * Check Placing Request on an empty node
+    * @var Request upline_id = user id, position = 0| 1 bool
+    * position is linked to User's column name: left_id and right_id
+    */
+    public function getCheckPlacing(Request $request)
+    {
+        $user = Auth::user();
+        $status = true;
+        $upline = User::find($request->upline_id);
+        if (!$upline || !$upline->member_type) {
+            $status = false;
+        }
+        // Get position and check
+        $position = 'left_id';
+        if ($request->position) {
+            $position = 'right_id';
+        }
+        if ($upline->$position) {
+            $status = false;
+        }
+        // Get direct downlines yet to place
+        $downlines = User::where('sponsor_id', $user->id)
+            ->where('member_type', '>', 0)
+            ->whereNull('upline_id')
+            ->select('id', 'username')
+            ->get();
+
+        return view('member.app.ajax.get_placing_detail')
+            ->with(compact('status'))
+            ->with('upline_id', $upline->id)
+            ->with(compact('position'))
+            ->with(compact('downlines'));
+    }
 }

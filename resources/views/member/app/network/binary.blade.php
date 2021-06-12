@@ -43,13 +43,14 @@
 
         <div class="mt-4 p-1 flex justify-start space-x-1">
             @if ($back)
-            <a href="{{ route('member.network.binaryTree') }}">
+            <a href="{{ route('member.network.binaryTree', ['placing' => $placing]) }}">
                 <button
                     class="rounded-lg py-1 px-2 bg-gradient-to-br from-red-300 to-purple-300 text-xs font-medium text-gray-700 focus:outline-none outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Back</button>
             </a>
             @endif
             @if ($user->id != $binary[0]->id)
-            <a href="{{ route('member.network.binaryTree') }}?user_id={{$binary[0]->upline_id}}">
+            <a
+                href="{{ route('member.network.binaryTree', ['placing' => $placing]) }}?user_id={{$binary[0]->upline_id}}">
                 <button
                     class="rounded-lg py-1 px-2 bg-gradient-to-br from-blue-300 to-purple-300 text-xs font-medium text-gray-700 focus:outline-none outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Back
                     1 Level Up</button>
@@ -93,7 +94,7 @@
                                                 @if($binary[1])
                                                 <div class="binary-node-single-item user-block user-9">
                                                     <div class="images_wrapper" style="font-size: 40px;margin: 11px 0;">
-                                                        <a href="{{ route('member.network.binaryTree') }}?user_id={{$binary[1]->id}}"
+                                                        <a href="{{ route('member.network.binaryTree', ['placing' => $placing]) }}?user_id={{$binary[1]->id}}"
                                                             class="object-contain flex justify-center -mb-2">
                                                             <div>
                                                                 @include('member.components.user-icon-svg')
@@ -105,7 +106,14 @@
                                                 </div>
                                                 @else
                                                 <div class="binary-node-single-item user-block user-13">
-
+                                                    @if ($placing)
+                                                    <a onclick="check('{{$binary[0]->id}}', 0)"
+                                                        class="object-contain flex justify-center">
+                                                        <div class="text-green-500 text-3xl font-black">
+                                                            &#65291;
+                                                        </div>
+                                                    </a>
+                                                    @endif
                                                 </div>
 
                                                 @endif
@@ -121,7 +129,7 @@
                                                     <div class="binary-node-single-item user-block user-9">
                                                         <div class="images_wrapper"
                                                             style="font-size: 40px;margin: 11px 0;">
-                                                            <a href="{{ route('member.network.binaryTree') }}?user_id={{$binary[3]->id}}"
+                                                            <a href="{{ route('member.network.binaryTree', ['placing' => $placing]) }}?user_id={{$binary[3]->id}}"
                                                                 class="object-contain flex justify-center -mb-2">
                                                                 <div>
                                                                     @include('member.components.user-icon-svg')
@@ -133,7 +141,14 @@
                                                     </div>
                                                     @else
                                                     <div class="binary-node-single-item user-block user-13">
-
+                                                        @if ($placing)
+                                                        <a onclick="check('{{$binary[1]->id}}', 0)"
+                                                            class="object-contain flex justify-center">
+                                                            <div class="text-green-500 text-3xl font-black">
+                                                                &#65291;
+                                                            </div>
+                                                        </a>
+                                                        @endif
                                                     </div>
                                                     <div class="last_level_user"></div>
                                                     @endif
@@ -147,7 +162,7 @@
                                                     <div class="binary-node-single-item user-block user-10">
                                                         <div class="images_wrapper"
                                                             style="font-size: 40px;margin: 11px 0;">
-                                                            <a href="{{ route('member.network.binaryTree') }}?user_id={{$binary[4]->id}}"
+                                                            <a href="{{ route('member.network.binaryTree', ['placing' => $placing]) }}?user_id={{$binary[4]->id}}"
                                                                 class="object-contain flex justify-center -mb-2">
                                                                 <div>
                                                                     @include('member.components.user-icon-svg')
@@ -159,7 +174,14 @@
                                                     </div>
                                                     @else
                                                     <div class="binary-node-single-item user-block user-13">
-
+                                                        @if ($placing)
+                                                        <a onclick="check('{{$binary[1]->id}}', 1)"
+                                                            class="object-contain flex justify-center">
+                                                            <div class="text-green-500 text-3xl font-black">
+                                                                &#65291;
+                                                            </div>
+                                                        </a>
+                                                        @endif
                                                     </div>
                                                     <div class="last_level_user"></div>
                                                     @endif
@@ -182,7 +204,7 @@
                                                 @if($binary[2])
                                                 <div class="binary-node-single-item user-block user-10">
                                                     <div class="images_wrapper" style="font-size: 40px;margin: 11px 0;">
-                                                        <a href="{{ route('member.network.binaryTree') }}?user_id={{$binary[2]->id}}"
+                                                        <a href="{{ route('member.network.binaryTree', ['placing' => $placing]) }}?user_id={{$binary[2]->id}}"
                                                             class="object-contain flex justify-center -mb-2">
                                                             <div>
                                                                 @include('member.components.user-icon-svg')
@@ -194,7 +216,14 @@
                                                 </div>
                                                 @else
                                                 <div class="binary-node-single-item user-block user-13">
-
+                                                    @if ($placing)
+                                                    <a onclick="check('{{$binary[0]->id}}', 1)"
+                                                        class="object-contain flex justify-center">
+                                                        <div class="text-green-500 text-3xl font-black">
+                                                            &#65291;
+                                                        </div>
+                                                    </a>
+                                                    @endif
                                                 </div>
 
                                                 @endif
@@ -210,7 +239,7 @@
                                                     <div class="binary-node-single-item user-block user-9">
                                                         <div class="images_wrapper"
                                                             style="font-size: 40px;margin: 11px 0;">
-                                                            <a href="{{ route('member.network.binaryTree') }}?user_id={{$binary[5]->id}}"
+                                                            <a href="{{ route('member.network.binaryTree', ['placing' => $placing]) }}?user_id={{$binary[5]->id}}"
                                                                 class="object-contain flex justify-center -mb-2">
                                                                 <div>
                                                                     @include('member.components.user-icon-svg')
@@ -222,7 +251,14 @@
                                                     </div>
                                                     @else
                                                     <div class="binary-node-single-item user-block user-13">
-
+                                                        @if ($placing)
+                                                        <a onclick="check('{{$binary[2]->id}}', 0)"
+                                                            class="object-contain flex justify-center">
+                                                            <div class="text-green-500 text-3xl font-black">
+                                                                &#65291;
+                                                            </div>
+                                                        </a>
+                                                        @endif
                                                     </div>
                                                     <div class="last_level_user"></div>
                                                     @endif
@@ -236,7 +272,7 @@
                                                     <div class="binary-node-single-item user-block user-10">
                                                         <div class="images_wrapper"
                                                             style="font-size: 40px;margin: 11px 0;">
-                                                            <a href="{{ route('member.network.binaryTree') }}?user_id={{$binary[6]->id}}"
+                                                            <a href="{{ route('member.network.binaryTree', ['placing' => $placing]) }}?user_id={{$binary[6]->id}}"
                                                                 class="object-contain flex justify-center -mb-2">
                                                                 <div>
                                                                     @include('member.components.user-icon-svg')
@@ -248,7 +284,14 @@
                                                     </div>
                                                     @else
                                                     <div class="binary-node-single-item user-block user-13">
-
+                                                        @if ($placing)
+                                                        <a onclick="check('{{$binary[2]->id}}', 1)"
+                                                            class="object-contain flex justify-center">
+                                                            <div class="text-green-500 text-3xl font-black">
+                                                                &#65291;
+                                                            </div>
+                                                        </a>
+                                                        @endif
                                                     </div>
                                                     <div class="last_level_user"></div>
                                                     @endif
@@ -280,6 +323,7 @@
 
 @section('scripts')
 <script>
+    // Check/Search/Jump to downline's node using username
     $(document).ready(function(){
         $("#get_id").keyup(function(){
             $.ajax({
@@ -305,5 +349,26 @@
         $('#search-div').removeClass('hidden');
         $(this).remove();
     })
+
+    @if ($placing)
+        // Check Placement
+        function check(upline_id, position) {
+            $.ajax({
+                type: "GET",
+                url: "{{ route('ajax.network.getCheckPlacing') }}",
+                data: {
+                    upline_id:upline_id,
+                    position:position
+                },
+                success: function(html){
+                    Swal.fire({
+                        html: html,
+                        showCancelButton: false,
+                        showConfirmButton: false
+                    });
+                }
+            });
+        }
+    @endif
 </script>
 @endsection

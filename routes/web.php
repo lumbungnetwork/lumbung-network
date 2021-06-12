@@ -118,9 +118,10 @@ Route::domain('member.' . config('services.app.domain'))->group(function () {
 
     // Network
     Route::get('/network', 'Member\NetworkController@getNetwork')->name('member.network')->middleware('auth');
-    Route::get('/network/binary-tree', 'Member\NetworkController@getBinaryTree')->name('member.network.binaryTree')->middleware('auth');
+    Route::get('/network/binary-tree/{placing}', 'Member\NetworkController@getBinaryTree')->where('placing', '(0|1)')->name('member.network.binaryTree')->middleware('auth');
 
     Route::post('/network/claim-reward', 'Member\NetworkController@postClaimNetworkReward')->name('member.network.postClaimNetworkReward')->middleware('auth');
+    Route::post('/network/binary-placement', 'Member\NetworkController@postBinaryPlacement')->name('member.network.postBinaryPlacement')->middleware('auth');
 
     // Claims
     Route::get('/claim/shopping-reward', 'Member\AppController@getClaimShoppingReward')->name('member.claim.shoppingReward')->middleware('auth');
@@ -129,6 +130,7 @@ Route::domain('member.' . config('services.app.domain'))->group(function () {
     Route::group(['prefix' => 'ajax'], function () {
         // Network
         Route::get('/network/search-downline-by-username', 'Member\AjaxController@getDownlineUsername')->name('ajax.network.getDownlineUsername')->middleware('auth');
+        Route::get('/network/check-placing', 'Member\AjaxController@getCheckPlacing')->name('ajax.network.getCheckPlacing')->middleware('auth');
 
         // Membership
         Route::post('membership/resubscsribe', 'Member\AjaxController@postResubscribeConfirm')->name('ajax.postResubscribeConfirm')->middleware('auth');

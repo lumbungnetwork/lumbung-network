@@ -53,7 +53,7 @@
 
     <div class="mt-6">
         <div class="p-4 flex flex-wrap justify-between space-x-1">
-            <a href="{{ route('member.network.binaryTree') }}"
+            <a href="{{ route('member.network.binaryTree', ['placing' => 0]) }}"
                 class="my-2 nm-convex-gray-100 w-14 h-14 p-1 rounded-lg flex flex-wrap justify-center items-center">
                 <div>
                     <svg viewBox="0 0 511.998 511.998" class="w-6">
@@ -73,7 +73,7 @@
                 </div>
                 <div class="text-xs text-gray-700">Sponsor</div>
             </a>
-            <a href="#"
+            <a href="{{ route('member.network.binaryTree', ['placing' => 1]) }}"
                 class="my-2 nm-convex-gray-100 w-14 h-14 p-1 rounded-lg flex flex-wrap justify-center items-center">
                 <div>
                     <svg class="w-6" viewBox="0 0 20 20">

@@ -117,7 +117,7 @@ class NetworkController extends Controller
         return redirect()->back();
     }
 
-    public function getBinaryTree(Request $request)
+    public function getBinaryTree($placing, Request $request)
     {
         $user = Auth::user();
         // set default node1 to session's user
@@ -128,6 +128,19 @@ class NetworkController extends Controller
         $uplines = $user->upline_detail . ',[' . $user->id . ']';
         if (!$user->upline_detail) {
             $uplines = '[' . $user->id . ']';
+        }
+        // handle if no downlines available to place
+        if ($placing) {
+            // Get direct downlines yet to place
+            $downlines = User::where('sponsor_id', $user->id)
+                ->where('member_type', '>', 0)
+                ->whereNull('upline_id')
+                ->select('id', 'username')
+                ->count();
+            if ($downlines < 1) {
+                $placing = 0;
+                Alert::info('Placing', 'Belum ada downline yang perlu di-placement saat ini.');
+            }
         }
         // handle request if this function called from search form
         if ($request->user_id && $request->user_id != $user->id) {
@@ -145,10 +158,46 @@ class NetworkController extends Controller
         $binary = $modelUser->getBinary($node1->id);
 
         return view('member.app.network.binary')
-            ->with('title', 'Binary Tree')
+            ->with('title', ($placing ? 'Placing Binary' : 'Binary Tree'))
             ->with(compact('user'))
             ->with(compact('node1'))
             ->with(compact('back'))
+            ->with(compact('placing'))
             ->with(compact('binary'));
+    }
+
+    public function postBinaryPlacement(Request $request)
+    {
+        $user = Auth::user();
+        // Double check upline and position
+        $upline = User::find($request->upline_id);
+        if (!$upline || !$upline->member_type) {
+            Alert::error('Oops', 'Access Denied');
+            return redirect()->route('member.home');
+        }
+        $position = $request->position;
+        if ($upline->$position) {
+            Alert::error('Oops', 'Access Denied');
+            return redirect()->route('member.home');
+        }
+        // Double check the downline
+        $downline = User::find($request->downline_id);
+        if (!$downline || !$downline->member_type || $downline->upline_id) {
+            Alert::error('Oops', 'Access Denied');
+            return redirect()->route('member.home');
+        }
+
+        // Update downline placement data
+        $downline->upline_id = $upline->id;
+        $downline->upline_detail = $upline->upline_detail . ',[' . $upline->id . ']';
+        $downline->placement_at = date('Y-m-d H:i:s');
+        $downline->save();
+
+        // Update upline binary data
+        $upline->$position = $downline->id;
+        $upline->save();
+
+        Alert::success('Berhasil', 'Downline telah di-placement di pohon binary');
+        return redirect()->route('member.network.binaryTree', ['placing' => 0]);
     }
 }
