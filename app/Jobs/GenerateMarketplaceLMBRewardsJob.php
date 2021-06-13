@@ -44,7 +44,7 @@ class GenerateMarketplaceLMBRewardsJob implements ShouldQueue
     {
         $MasterSales = new MasterSales;
 
-        // get user's current month spending
+        // get user's last month spending
         // params: ($type = 1 Buyer, 2 Seller)
         $spending = $MasterSales->getMemberSpending(1, $this->user_id, date('m', strtotime('last month')), date('Y', strtotime('last month')));
         $spent = $spending->total;

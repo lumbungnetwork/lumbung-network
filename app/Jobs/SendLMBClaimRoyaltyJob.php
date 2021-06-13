@@ -10,7 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use App\User;
 use App\Model\Bonus;
-use App\BonusRoyalty;
+use App\Model\Member\BonusRoyalty;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Config;
 use Telegram\Bot\Laravel\Facades\Telegram;

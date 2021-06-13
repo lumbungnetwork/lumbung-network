@@ -25,6 +25,10 @@ class MasterSales extends Model
         return $this->belongsTo('App\User', 'user_id', 'id');
     }
 
+    /*
+    * Get Member Spending or Selling on a monthly basis
+    * @var $type 1 = Buying, 2 = Selling
+    */
     public function getMemberSpending($type, $user_id, $month, $year)
     {
         // set selector for Buyer or Seller

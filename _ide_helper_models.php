@@ -23,37 +23,6 @@ namespace App{
 
 namespace App{
 /**
- * App\BonusRoyalty
- *
- * @property int $id
- * @property int $user_id
- * @property int|null $from_user_id
- * @property int $amount
- * @property int|null $level_id
- * @property int $status
- * @property string|null $hash
- * @property string $bonus_date
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|BonusRoyalty newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BonusRoyalty newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BonusRoyalty query()
- * @method static \Illuminate\Database\Eloquent\Builder|BonusRoyalty whereAmount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BonusRoyalty whereBonusDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BonusRoyalty whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BonusRoyalty whereFromUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BonusRoyalty whereHash($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BonusRoyalty whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BonusRoyalty whereLevelId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BonusRoyalty whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BonusRoyalty whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BonusRoyalty whereUserId($value)
- */
-	class BonusRoyalty extends \Eloquent {}
-}
-
-namespace App{
-/**
  * App\Finance
  *
  * @property int $id
@@ -444,6 +413,37 @@ namespace App\Model\Member{
  * @method static \Illuminate\Database\Eloquent\Builder|Bank whereUserId($value)
  */
 	class Bank extends \Eloquent {}
+}
+
+namespace App\Model\Member{
+/**
+ * App\Model\Member\BonusRoyalty
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property int|null $from_user_id
+ * @property int $amount
+ * @property int|null $level_id
+ * @property int $status
+ * @property string|null $hash
+ * @property string $bonus_date
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|BonusRoyalty newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|BonusRoyalty newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|BonusRoyalty query()
+ * @method static \Illuminate\Database\Eloquent\Builder|BonusRoyalty whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BonusRoyalty whereBonusDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BonusRoyalty whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BonusRoyalty whereFromUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BonusRoyalty whereHash($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BonusRoyalty whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BonusRoyalty whereLevelId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BonusRoyalty whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BonusRoyalty whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BonusRoyalty whereUserId($value)
+ */
+	class BonusRoyalty extends \Eloquent {}
 }
 
 namespace App\Model\Member{
@@ -1251,6 +1251,7 @@ namespace App{
  * @property int $affiliate
  * @property string|null $chat_id
  * @property int|null $invited_by
+ * @property string|null $premium_at
  * @property-read \App\Model\Member\Bank|null $bank
  * @property-read \App\LocalWallet|null $localWallet
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
@@ -1282,6 +1283,7 @@ namespace App{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User wherePlacementAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User wherePremiumAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereProvinsi($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereRightId($value)
