@@ -119,6 +119,7 @@ Route::domain('member.' . config('services.app.domain'))->group(function () {
     // Network
     Route::get('/network', 'Member\NetworkController@getNetwork')->name('member.network')->middleware('auth');
     Route::get('/network/binary-tree/{placing}', 'Member\NetworkController@getBinaryTree')->where('placing', '(0|1)')->name('member.network.binaryTree')->middleware('auth');
+    Route::get('/network/sponsor-tree', 'Member\NetworkController@getSponsorTree')->name('member.network.sponsorTree')->middleware('auth');
 
     Route::post('/network/claim-reward', 'Member\NetworkController@postClaimNetworkReward')->name('member.network.postClaimNetworkReward')->middleware('auth');
     Route::post('/network/binary-placement', 'Member\NetworkController@postBinaryPlacement')->name('member.network.postBinaryPlacement')->middleware('auth');

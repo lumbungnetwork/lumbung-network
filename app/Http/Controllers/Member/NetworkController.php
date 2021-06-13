@@ -200,4 +200,31 @@ class NetworkController extends Controller
         Alert::success('Berhasil', 'Downline telah di-placement di pohon binary');
         return redirect()->route('member.network.binaryTree', ['placing' => 0]);
     }
+
+    public function getSponsorTree(Request $request)
+    {
+        $user = Auth::user();
+        // set default node1 to session's user
+        $node1 = $user;
+        // handle request if this function called from search form
+        if ($request->user_id && $request->user_id != $user->id) {
+            $node1 = User::where('id', $request->user_id)
+                ->where('member_type', '>', 0)
+                ->where('id', '>', $user->id)
+                ->first();
+        }
+        if (!$node1) {
+            $node1 = $user;
+        }
+        // get directs
+        $directs = User::where('sponsor_id', $node1->id)
+            ->where('member_type', '>', 0)
+            ->get();
+
+        return view('member.app.network.sponsor_tree')
+            ->with('title', 'Sponsor Tree')
+            ->with(compact('user'))
+            ->with(compact('node1'))
+            ->with(compact('directs'));
+    }
 }
