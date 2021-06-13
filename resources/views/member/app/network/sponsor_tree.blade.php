@@ -47,7 +47,7 @@
                 <button
                     class="rounded-lg py-1 px-2 bg-gradient-to-br from-red-300 to-purple-300 text-xs font-medium text-gray-700 focus:outline-none outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Back</button>
             </a>
-            <a href="{{ route('member.network.sponsorTree') }}?user_id={{$node1->upline_id}}">
+            <a href="{{ route('member.network.sponsorTree') }}?user_id={{$node1->sponsor_id}}">
                 <button
                     class="rounded-lg py-1 px-2 bg-gradient-to-br from-blue-300 to-purple-300 text-xs font-medium text-gray-700 focus:outline-none outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Back
                     1 Level Up</button>
