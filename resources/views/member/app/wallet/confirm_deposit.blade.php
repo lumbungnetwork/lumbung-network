@@ -185,7 +185,7 @@
             }
             @endphp
             @if ($data->method == 1)
-            <p class="text-xs font-light text-gray-600">via Bank {{ $$data->tx_id }}</p>
+            <p class="text-xs font-light text-gray-600">via Bank {{ $data->tx_id }}</p>
             @else
             <p class="text-xs text-gray-500">via Tron: <a class="text-purple-500 underline"
                     href="https://tronscan.org/#/transaction/{{ $data->tx_id }}">{{ $short_tx_id }}</a></p>
