@@ -965,7 +965,6 @@ class AjaxController extends Controller
             $user->kelurahan = $kelurahan->nama;
             $user->alamat = $request->alamat;
             $user->is_profile = 1;
-            $user->profile_created_at = date('Y-m-d H:i:s');
             $user->save();
         }
 
