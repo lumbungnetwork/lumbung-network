@@ -102,7 +102,7 @@ class MembershipController extends Controller
                 // Send Referral Bonus
                 $bonus = new EidrBalance;
                 $bonus->user_id = $sponsor_id;
-                $bonus->amount = 19100; //after tax
+                $bonus->amount = 19750; //after tax
                 $bonus->type = 1;
                 $bonus->source = 2;
                 $bonus->tx_id = $user->id;
