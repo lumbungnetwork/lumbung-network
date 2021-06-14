@@ -38,17 +38,22 @@ class ProcessRoyaltiBonusJob implements ShouldQueue
         $modelBonusRoyalty = new BonusRoyalty;
 
         $threshold = 100000; // Spending threshold to be eligible for this bonus
-        $amount = 1; // 1 LMB per node
-        // Get all 7 levels sponsor above this user
+        $amount = 0.1; // 0.1 LMB per node from Starter Member
+        $premium = User::where('id', $this->user_id)->where('user_type', 10)->exists();
+        if ($premium) {
+            $amount = 1; // 1 LMB per node from Premium Member
+        }
+        // Get all 7 levels sponsors above this user
         $sponsors = $modelUser->get7LevelsSponsors($this->user_id);
         foreach ($sponsors as $sponsor) {
             if ($sponsor->id) {
-                // Check this sponsor spending
+                // Check this sponsor last month spending
                 $spending = $modelMasterSales->getMemberSpending(1, $sponsor->id, date('m', strtotime('last month')), date('Y', strtotime('last month')));
                 if ($spending->total > $threshold) {
-                    // Check this sponsor Matrix Limit
+                    // Check this sponsor Matrix Limit pow(base4)
                     $check = $modelBonusRoyalty->CheckBonusRoyaltyMatrixLimit($sponsor->id, $sponsor->level);
                     if ($check && $sponsor->user_type == 10) {
+                        // Create the model record
                         BonusRoyalty::create([
                             'user_id' => $sponsor->id,
                             'from_user_id' => $this->user_id,
