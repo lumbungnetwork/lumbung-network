@@ -133,7 +133,7 @@ class Controller extends BaseController
 
         // Check Lv.1
         $check1 = $modelContract->getUserTotalLiquidity($lv1->id);
-        if ($check1 >= 100) {
+        if ($check1 >= 100 && $amount1 > 0) {
             try {
                 // Create tx_id
                 $tx_id = $this->createCreditTxId($amount1, 1, 1, $user_id);
@@ -153,7 +153,7 @@ class Controller extends BaseController
         }
         // Check Lv.2
         $check2 = $modelContract->getUserTotalLiquidity($lv2->id);
-        if ($check2 >= 100) {
+        if ($check2 >= 100 && $amount2 > 0) {
             try {
                 // Create tx_id
                 $tx_id = $this->createCreditTxId($amount2, 1, 1, $user_id);
@@ -173,7 +173,7 @@ class Controller extends BaseController
         }
         // Check Lv.3
         $check3 = $modelContract->getUserTotalLiquidity($lv3->id);
-        if ($check3 >= 100) {
+        if ($check3 >= 100 && $amount3 > 0) {
             try {
                 // Create tx_id
                 $tx_id = $this->createCreditTxId($amount3, 1, 1, $user_id);
@@ -193,7 +193,7 @@ class Controller extends BaseController
         }
         // Check Lv.4
         $check4 = $modelContract->getUserTotalLiquidity($lv4->id);
-        if ($check4 >= 100) {
+        if ($check4 >= 100 && $amount4 > 0) {
             try {
                 // Create tx_id
                 $tx_id = $this->createCreditTxId($amount4, 1, 1, $user_id);
