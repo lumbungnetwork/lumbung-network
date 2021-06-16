@@ -315,10 +315,13 @@ class AppController extends Controller
             }
         }
 
-        $unique_digits = rand(39, 148);
-        $check = EidrBalanceTransaction::where('created_at', '>=', date('Y-m-d 00:00:00', strtotime('Today')))->where('unique_digits', $unique_digits)->exists();
         do {
             $unique_digits = rand(39, 148);
+            $check = EidrBalanceTransaction::where('created_at', '>=', date('Y-m-d 00:00:00'))
+                ->where('unique_digits', $unique_digits)
+                ->where('amount', $request->amount)
+                ->where('method', $request->type)
+                ->exists();
         } while ($check);
 
         // create transaction record
