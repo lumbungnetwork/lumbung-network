@@ -34,6 +34,20 @@
         @endforeach
 
         @endif
+
+        @if (count($placement) > 0)
+        @foreach ($placement as $item)
+        <div class="my-3 nm-flat-white rounded-2xl p-2 flex justify-between items-center">
+            <div class="text-sm text-gray-600">Downline baru perlu di placement: {{ $item->username }}
+            </div>
+            <a href="{{ route('member.network.binaryTree', ['placing' => 1]) }}">
+                <button style="font-size: 10px"
+                    class="rounded-lg py-1 px-2 bg-gradient-to-br from-green-300 to-purple-300 text-gray-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Placing</button>
+            </a>
+        </div>
+        @endforeach
+
+        @endif
     </div>
 </div>
 

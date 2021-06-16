@@ -56,15 +56,24 @@ class AppController extends Controller
 
             // Total notifications
             if ($sum > 0) {
-                $total_notifs = $sum;
-
-                // Alert about notifs once per session
-                if (!session()->has('notif')) {
-                    Alert::info('Ada Notifikasi baru!', 'Silakan cek Notifikasi anda dengan klik ikon lonceng di kanan atas');
-                }
-                session(['notif' => $sum]);
+                $total_notifs += $sum;
             }
         }
+
+        // Check for new premium member waiting for placement
+        $waitingUsers = User::where('sponsor_id', $user->id)
+            ->where('member_type', '>', 0)
+            ->whereNull('upline_id')
+            ->count();
+        if ($waitingUsers > 0) {
+            $total_notifs += $waitingUsers;
+        }
+
+        // Alert about notifs once per session
+        if (!session()->has('notif')) {
+            Alert::info('Ada Notifikasi baru!', 'Silakan cek Notifikasi anda dengan klik ikon lonceng di kanan atas');
+        }
+        session(['notif' => $total_notifs]);
 
         return view('member.app.home')
             ->with('title', 'Home')
@@ -80,6 +89,10 @@ class AppController extends Controller
         $user = Auth::user();
         $physical_tx = null;
         $digital_tx = null;
+        $placement = User::where('sponsor_id', $user->id)
+            ->where('member_type', '>', 0)
+            ->whereNull('upline_id')
+            ->get();
 
         if ($user->is_store) {
             // Physical goods
@@ -100,6 +113,7 @@ class AppController extends Controller
         return view('member.app.notifications')
             ->with(compact('physical_tx'))
             ->with(compact('digital_tx'))
+            ->with(compact('placement'))
             ->with('title', 'Notifikasi');
     }
 
