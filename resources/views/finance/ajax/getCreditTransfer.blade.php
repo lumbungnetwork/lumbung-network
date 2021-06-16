@@ -11,8 +11,8 @@
         <p class="mt-4 text-md font-light">Enter amount:</p>
 
         <div class="my-2 nm-inset-gray-50 rounded-xl">
-            <input type="text" inputmode="decimal" pattern="[0-9]*" class="p-2 focus:outline-none bg-transparent w-full"
-                name="amount">
+            <input type="text" inputmode="decimal" pattern="^[1-9]\d*(,\d+)?$"
+                class="p-2 focus:outline-none bg-transparent w-full" name="amount">
         </div>
         <small id="totalDebit" class="text-sm font-extralight" hidden>Total Debit: $0</small><br>
         <p class="mt-4 text-md font-light">Confirm your password:</p>
