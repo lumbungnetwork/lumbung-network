@@ -70,10 +70,10 @@ class AppController extends Controller
         }
 
         // Alert about notifs once per session
-        if (!session()->has('notif')) {
+        if (!session()->has('notif') && $total_notifs > 0) {
             Alert::info('Ada Notifikasi baru!', 'Silakan cek Notifikasi anda dengan klik ikon lonceng di kanan atas');
+            session(['notif' => $total_notifs]);
         }
-        session(['notif' => $total_notifs]);
 
         return view('member.app.home')
             ->with('title', 'Home')
@@ -207,7 +207,9 @@ class AppController extends Controller
 
     public function getShopping()
     {
+        $user = Auth::user();
         return view('member.app.shopping')
+            ->with(compact('user'))
             ->with('title', 'Shopping');
     }
 

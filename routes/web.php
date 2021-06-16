@@ -71,6 +71,8 @@ Route::domain('member.' . config('services.app.domain'))->group(function () {
     Route::post('/account/premium-membership', 'Member\MembershipController@postUpgradeMembership')->name('member.account.postMembership')->middleware('auth');
 
     // Store
+    Route::get('/store/apply', 'Member\StoreController@getApplyStore')->name('member.store.apply')->middleware('auth');
+    Route::post('/store/apply', 'Member\StoreController@postApplyStore')->name('member.store.postApplyStore')->middleware('auth');
     Route::get('/store/info', 'Member\StoreController@getStoreInfo')->name('member.store.info')->middleware('auth');
     Route::get('/store/edit-info', 'Member\StoreController@getStoreEditInfo')->name('member.store.editInfo')->middleware('auth');
     Route::post('/store/add-info', 'Member\StoreController@postStoreAddInfo')->name('member.store.postStoreAddInfo')->middleware('auth');

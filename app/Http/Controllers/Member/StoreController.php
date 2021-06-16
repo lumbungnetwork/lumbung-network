@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Member;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\TelegramBotController;
 use App\Model\Member\Product;
 use App\User;
 use Illuminate\Support\Facades\Cache;
@@ -19,6 +20,7 @@ use App\Model\Member\MasterSales;
 use App\Model\Member\EidrBalance;
 use App\Model\Member\Sales;
 use App\Jobs\FireDigiflazzTransactionJob;
+use DB;
 
 class StoreController extends Controller
 {
@@ -593,5 +595,97 @@ class StoreController extends Controller
         }
         Alert::error('Error', 'Access Denied!');
         return redirect()->back();
+    }
+
+    public function getApplyStore()
+    {
+        $user = Auth::user();
+        // Check profile
+        if (!$user->is_profile) {
+            Alert::warning('Oops', 'Anda perlu melengkapi data pribadi sebelum mengajukan jadi Toko!');
+            return redirect()->route('member.profile');
+        }
+        // Check if already applied
+        $applied = DB::table('stockist_request')->where('user_id', $user->id)->where('status', 0)->exists();
+        // Get active delegates
+        $delegates = DB::table('delegates')->select('name')->get();
+        return view('member.app.store.apply')
+            ->with(compact('user'))
+            ->with(compact('delegates'))
+            ->with(compact('applied'))
+            ->with('title', 'Pengajuan Toko Baru');
+    }
+
+    public function postApplyStore(Request $request)
+    {
+        $user = Auth::user();
+        // validate input
+        $validator = Validator::make($request->all(), [
+            'hash' => 'required|string|size:64|unique:stockist_request,hash|unique:resubscribe,hash',
+            'delegate' => 'required|exists:delegates,name'
+        ]);
+
+        if ($validator->fails()) {
+            Alert::error('Error', $validator->errors()->first());
+            return redirect()->back();
+        }
+
+        $hash = $request->hash;
+        $receiver = 'TLsV52sRDL79HXGGm9yzwKibb6BeruhUzy';
+        $amount = 100 * 1000000;
+        // Check transaction by hash
+        $tron = $this->getTron();
+        $i = 1;
+        do {
+            try {
+                sleep(3);
+                $response = $tron->getTransaction($hash);
+            } catch (\Throwable $e) {
+                $i++;
+                continue;
+            }
+            break;
+        } while ($i < 23);
+
+        if ($i == 23) {
+            Alert::error('Oops', 'Hash transaksi bermasalah');
+            return redirect()->back();
+        };
+
+        $hashReceiver = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['to_address']);
+        $hashAsset = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['asset_name']);
+        $hashAmount = $response['raw_data']['contract'][0]['parameter']['value']['amount'];
+
+        // Checking
+        if ($hashReceiver != $receiver) {
+            Alert::error('Oops', 'Tujuan transfer salah');
+            return redirect()->back();
+        }
+        if ($hashAsset != '1002640') {
+            Alert::error('Oops', 'Bukan token LMB yang benar');
+            return redirect()->back();
+        }
+        if ($hashAmount != $amount) {
+            Alert::error('Oops', 'Jumlah transfer tidak tepat');
+            return redirect()->back();
+        }
+
+        // Insert record to DB
+        $request_id = DB::table('stockist_request')->insertGetId([
+            'user_id' => $user->id,
+            'usernames' => $user->username,
+            'delegate' => $request->delegate,
+            'hash' => $hash
+        ]);
+        // Send request to Delegates Telegram
+        $telegramBotController = new TelegramBotController;
+        $telegramBotController->sendApplyStoreRequest([
+            'nama1' => $user->full_name,
+            'username1' => $user->username,
+            'delegate' => $request->delegate,
+            'request_id' => $request_id,
+        ]);
+        Alert::success('Berhasil', 'Aplikasi Pengajuan Stockist telah diajukan ke Tim Delegasi, hubungi Delegasi anda untuk progress moderasi.');
+        return redirect()->route('member.home');
     }
 }

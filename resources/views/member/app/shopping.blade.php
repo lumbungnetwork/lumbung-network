@@ -67,7 +67,30 @@
             </div>
 
         </div>
+
     </div>
+
+    @if (!$user->is_store)
+    <div class="px-4 py-2">
+        <div class="nm-concave-gray-100 rounded-2xl p-3 ">
+            <div class="flex justify-between items-end">
+                <div class="w-3/4 justify-center">
+                    <div class="text-md text-gray-600 text-center">Ingin menjadi Toko?</div>
+
+                </div>
+                <div class="w-1/4 justify-center">
+                    <a href="{{ route('member.store.apply') }}">
+                        <button
+                            class="rounded-lg py-1 px-2 h-8 bg-gradient-to-br from-green-400 to-purple-300 text-xs font-medium text-gray-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Apply</button>
+                    </a>
+                </div>
+            </div>
+
+            <div class="my-2 text-xs text-gray-500">Dapatkan reward LMB dari penjualan anda dan dividen eIDR dari Pool
+                Bagi Hasil global.</div>
+        </div>
+    </div>
+    @endif
 
 
 </div>
