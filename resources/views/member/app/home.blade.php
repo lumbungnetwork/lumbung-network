@@ -259,12 +259,14 @@
     {{-- LMB Dividend and Stake --}}
     <div class="mt-2 px-2 flex justify-center">
         <div class="nm-convex-gray-100 rounded-2xl py-3 w-full flex justify-between text-center">
-            <div class="w-7/12 space-y-1">
-                <h3 class="font-medium text-gray-600 text-xs">LMB Dividend Pool</h3>
-                <p class="font-extralight text-xl">Rp{{ number_format($LMBDividendPool) }}</p>
-                <p class="font-light text-xs">Next dist:
-                    <span>Rp{{ number_format($LMBDividendPool * 2/100) }}</span>
-                </p>
+            <div class="w-7/12">
+                <a href="{{ route('member.stakeDivPoolHistory') }}" class="space-y-1">
+                    <h3 class="font-medium text-gray-600 text-xs">LMB Dividend Pool</h3>
+                    <p class="font-extralight text-xl">Rp{{ number_format($LMBDividendPool) }}</p>
+                    <p class="font-light text-xs">Next dist:
+                        <span>Rp{{ number_format($LMBDividendPool * 2/100) }}</span>
+                    </p>
+                </a>
             </div>
             <div class="w-5/12 space-y-1">
                 <h4 class="font-medium text-gray-600 text-xs">Your Stake</h4>

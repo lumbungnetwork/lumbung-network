@@ -159,13 +159,21 @@ class AppController extends Controller
             ->with(compact('user'));
     }
 
+    public function getDividendHistory()
+    {
+        $data = DB::table('lmb_dividend')->where('status', 1)->orderByDesc('created_at')->paginate();
+        return view('member.app.stake.dividend_history')
+            ->with('title', 'Dividend Pool History')
+            ->with(compact('data'));
+    }
+
     public function getStakeHistory()
     {
         $user = Auth::user();
         $Bonus = new Bonus;
         $data = $Bonus->getUserStakingHistory($user->id);
 
-        return view('member.app.stake_history')
+        return view('member.app.stake.history')
             ->with('title', 'Stake History')
             ->with(compact('data'));
     }
@@ -176,7 +184,7 @@ class AppController extends Controller
         $Bonus = new Bonus;
         $data = $Bonus->getUserDividendHistory($user->id);
 
-        return view('member.app.stake_div_history')
+        return view('member.app.stake.div_history')
             ->with('title', 'Dividend History')
             ->with(compact('data'));
     }
@@ -187,7 +195,7 @@ class AppController extends Controller
         $Bonus = new Bonus;
         $data = $Bonus->getUserClaimedDividend($user->id);
 
-        return view('member.app.stake_history')
+        return view('member.app.stake.history')
             ->with('title', 'Claimed Dividend')
             ->with(compact('data'));
     }
@@ -199,7 +207,7 @@ class AppController extends Controller
         $totalStakedLMB = $Bonus->getStakedLMB();
         $stakers = $Bonus->getAllStakersLeaderboard();
 
-        return view('member.app.stake_leaderboard')
+        return view('member.app.stake.leaderboard')
             ->with('title', 'Staking Leaderboard')
             ->with(compact('totalStakedLMB'))
             ->with(compact('stakers'));

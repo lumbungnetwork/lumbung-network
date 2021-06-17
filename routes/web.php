@@ -92,6 +92,7 @@ Route::domain('member.' . config('services.app.domain'))->group(function () {
     Route::get('/stake/history', 'Member\AppController@getStakeHistory')->name('member.stakeHistory')->middleware('auth');
     Route::get('/stake/claimed-div-history', 'Member\AppController@getStakeClaimedDivHistory')->name('member.stakeClaimedDivHistory')->middleware('auth');
     Route::get('/stake/div-history', 'Member\AppController@getStakeDivHistory')->name('member.stakeDivHistory')->middleware('auth');
+    Route::get('/stake/div-pool-history', 'Member\AppController@getDividendHistory')->name('member.stakeDivPoolHistory')->middleware('auth');
     Route::get('/stake/leaderboard', 'Member\AppController@getStakeLeaderboard')->name('member.stakeLeaderboard')->middleware('auth');
 
     // Shopping

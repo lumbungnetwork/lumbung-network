@@ -30,13 +30,16 @@
 
     {{-- Dividend Pool --}}
     <div class="mt-1 py-2 px-4">
-        <div class="nm-inset-gray-100 rounded-2xl py-3 w-full text-center">
-            <h3 class="font-medium text-gray-600 text-xs">LMB Dividend Pool</h3>
-            <p class="font-light text-yellow-400 text-xl">Rp{{ number_format($LMBDividendPool) }}</p>
-            <p class="font-light text-xs">Next dist:
-                <span>Rp{{ number_format($LMBDividendPool * 2/100) }}</span>
-            </p>
-        </div>
+        <a href="{{ route('member.stakeDivPoolHistory') }}">
+            <div class="nm-inset-gray-100 rounded-2xl py-3 w-full text-center">
+                <h3 class="font-medium text-gray-600 text-xs">LMB Dividend Pool</h3>
+                <p class="font-light text-yellow-400 text-xl">Rp{{ number_format($LMBDividendPool) }}</p>
+                <p class="font-light text-xs">Next dist:
+                    <span>Rp{{ number_format($LMBDividendPool * 2/100) }}</span>
+                </p>
+            </div>
+        </a>
+
     </div>
 
     <div class="mt-1 py-2 px-4">
