@@ -45,12 +45,12 @@ class GenerateRoyaltyBonus extends Command
         // Get Users with spending from last month, using updated_at as time constrain (when transaction
         // actually finalized)
         $users = DB::table('master_sales')
-            ->selectRaw('master_sales.user_id as id, sum(master_sales.total_price) as spent')
-            ->where('master_sales.status', 2)
-            ->whereDate('master_sales.updated_at', '>=', $startDate)
-            ->whereDate('master_sales.updated_at', '<=', $endDate)
-            ->whereNull('master_sales.deleted_at')
-            ->groupBy('master_sales.user_id')
+            ->selectRaw('user_id as id, sum(total_price) as spent')
+            ->where('status', 2)
+            ->whereDate('created_at', '>=', $startDate)
+            ->whereDate('created_at', '<=', $endDate)
+            ->whereNull('deleted_at')
+            ->groupBy('user_id')
             ->get();
         // Set spending threshold (IDR)
         $threshold = 100000;
