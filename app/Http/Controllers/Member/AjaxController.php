@@ -23,8 +23,11 @@ use App\Model\Member\DigitalSale;
 use App\Model\Member\EidrBalance;
 use App\Model\Member\Region;
 use App\Http\Controllers\Member\DigiflazzController;
+use App\Jobs\SendLMBClaimRoyaltyJob;
+use App\Model\Member\BonusRoyalty;
 use App\Model\Member\EidrBalanceTransaction;
 use App\Model\Member\LMBdividend;
+use App\Model\Member\Staking;
 use Validator;
 use IEXBase\TronAPI\Exception\TronException;
 
@@ -135,6 +138,42 @@ class AjaxController extends Controller
         return response()->json(['success' => false, 'message' => 'Something is wrong, try again later']);
     }
 
+    public function postClaimRoyalty()
+    {
+        $user = Auth::user();
+
+        if ($user->tron == null) {
+            return response()->json(['success' => false, 'message' => 'Anda belum mengatur alamat TRON anda']);
+        }
+
+        // Use Atomic lock to prevent race condition
+        $lock = Cache::lock('claim_' . $user->id, 20);
+
+        if ($lock->get()) {
+            // Get bonus data
+            $BonusRoyalty = new BonusRoyalty;
+            $bonus = $BonusRoyalty->getTotalBonusRoyalti($user->id);
+
+            if ($bonus->net > 0) {
+                $claim = new BonusRoyalty;
+                $claim->user_id = $user->id;
+                $claim->amount = $bonus->net;
+                $claim->status = 1;
+                $claim->bonus_date = date('Y-m-d H:i:s');
+                $claim->save();
+
+                // Dispatch job
+                SendLMBClaimRoyaltyJob::dispatch($claim->id)->onQueue('tron');
+
+                $lock->release();
+
+                return response()->json(['success' => true, 'message' => 'Reward Claimed']);
+            }
+        }
+
+        return response()->json(['success' => false, 'message' => 'Something is wrong, try again later']);
+    }
+
     public function postStakeShoppingReward()
     {
         $user = Auth::user();
@@ -174,6 +213,47 @@ class AjaxController extends Controller
                 $lock->release();
 
                 return response()->json(['success' => true, 'message' => 'Reward Staked']);
+            }
+        }
+
+        return response()->json(['success' => false, 'message' => 'Something is wrong, try again later']);
+    }
+
+    public function postStakeRoyalty()
+    {
+        $user = Auth::user();
+
+        if ($user->tron == null) {
+            return response()->json(['success' => false, 'message' => 'Anda belum mengatur alamat TRON anda']);
+        }
+
+        // Use Atomic lock to prevent race condition
+        $lock = Cache::lock('stake_' . $user->id, 20);
+
+        if ($lock->get()) {
+            // Get bonus data
+            $BonusRoyalty = new BonusRoyalty;
+            $bonus = $BonusRoyalty->getTotalBonusRoyalti($user->id);
+
+            if ($bonus->net > 0) {
+                $claim = new BonusRoyalty;
+                $claim->user_id = $user->id;
+                $claim->amount = $bonus->net;
+                $claim->status = 1;
+                $claim->bonus_date = date('Y-m-d H:i:s');
+                $claim->save();
+
+                // Add Stake
+                $stake = new Staking;
+                $stake->user_id = $user->id;
+                $stake->type = 1;
+                $stake->amount = $bonus->net;
+                $stake->hash = 'Stake dari Bonus Royalty';
+                $stake->save();
+
+                $lock->release();
+
+                return response()->json(['success' => true, 'message' => 'Bonus Staked']);
             }
         }
 

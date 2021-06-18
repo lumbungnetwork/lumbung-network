@@ -8,6 +8,11 @@ class BonusRoyalty extends Model
 {
     protected $fillable = ['user_id', 'from_user_id', 'amount', 'level_id', 'bonus_date', 'status', 'hash'];
 
+    public function from()
+    {
+        return $this->hasOne('App\User', 'id', 'from_user_id');
+    }
+
     /*
     * Check Matrix Limit on Bonus Royalty for a sponsor (user)
     * Base = 4

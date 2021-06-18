@@ -123,6 +123,8 @@ Route::domain('member.' . config('services.app.domain'))->group(function () {
     Route::get('/network', 'Member\NetworkController@getNetwork')->name('member.network')->middleware('auth');
     Route::get('/network/binary-tree/{placing}', 'Member\NetworkController@getBinaryTree')->where('placing', '(0|1)')->name('member.network.binaryTree')->middleware('auth');
     Route::get('/network/sponsor-tree', 'Member\NetworkController@getSponsorTree')->name('member.network.sponsorTree')->middleware('auth');
+    Route::get('/network/royalty', 'Member\NetworkController@getRoyalty')->name('member.network.royalty')->middleware('auth');
+    Route::get('/network/affiliate-register/{affiliate_code}', 'Member\NetworkController@getAffiliateRegister')->where('affiliate_code', '(3|6)')->name('member.network.affiliateRegister')->middleware('auth');
 
     Route::post('/network/claim-reward', 'Member\NetworkController@postClaimNetworkReward')->name('member.network.postClaimNetworkReward')->middleware('auth');
     Route::post('/network/binary-placement', 'Member\NetworkController@postBinaryPlacement')->name('member.network.postBinaryPlacement')->middleware('auth');
@@ -142,7 +144,9 @@ Route::domain('member.' . config('services.app.domain'))->group(function () {
         // Reward Claims
         Route::post('/claim/shopping-reward', 'Member\AjaxController@postClaimShoppingReward')->name('ajax.claim.shoppingReward')->middleware('auth');
         Route::post('/claim/staking-dividend', 'Member\AjaxController@postClaimStakingDividend')->name('ajax.claim.stakingDividend')->middleware('auth');
+        Route::post('/claim/bonus-royalty', 'Member\AjaxController@postClaimRoyalty')->name('ajax.claim.royalty')->middleware('auth');
         Route::post('/stake/shopping-reward', 'Member\AjaxController@postStakeShoppingReward')->name('ajax.stake.shoppingReward')->middleware('auth');
+        Route::post('/stake/bonus-royalty', 'Member\AjaxController@postStakeRoyalty')->name('ajax.stake.royalty')->middleware('auth');
 
         // Staking
         Route::get('/stake/add', 'Member\AjaxController@getStakeAdd')->name('ajax.stake.add')->middleware('auth');

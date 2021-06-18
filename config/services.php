@@ -73,6 +73,13 @@ return [
         'protocol_url' => env('APP_URL')
     ],
 
+    'affiliate' => [
+        'ksga' => [
+            'password' => env('KSGA_PASSWORD'),
+            '2fa' => env('KSGA_2FA')
+        ],
+    ],
+
     'stripe' => [
         'model' => App\User::class,
         'key' => env('STRIPE_KEY'),

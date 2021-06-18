@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Member;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\ClaimNetworkRewardJob;
+use App\Model\Member\BonusRoyalty;
 use App\User;
 use Illuminate\Http\Request;
 use Auth;
@@ -226,5 +227,83 @@ class NetworkController extends Controller
             ->with(compact('user'))
             ->with(compact('node1'))
             ->with(compact('directs'));
+    }
+
+    public function getAffiliateRegister($affiliate_code)
+    {
+        $user = Auth::user();
+        if ($user->affiliate != $affiliate_code) {
+            Alert::error('Oops', 'Access Denied');
+            return redirect()->route('member.home');
+        }
+        if ($affiliate_code == 6 && $user->id != 4541) {
+            Alert::error('Oops', 'Access Denied');
+            return redirect()->route('member.home');
+        }
+        $view = '';
+        switch ($affiliate_code) {
+            case 6:
+                $view = 'member.auth.ksga_register';
+        }
+        return view($view);
+    }
+
+    public function postAffiliateRegister($affiliate_code, Request $request)
+    {
+        if ($affiliate_code == 6) {
+            $validated = $request->validate([
+                'username' => 'required|unique:users,username|max:32|alpha_dash',
+                'g-recaptcha-response' => 'required|captcha'
+            ]);
+
+            $sponsor_id = 5;
+            $email = 'koperasisedanagiriayung@gmail.com';
+            $password = config('services.affiliate.ksga.password');
+            $pin2fa = config('services.affiliate.ksga.2fa');
+
+            User::create([
+                'name' => $validated['username'],
+                'username' => $validated['username'],
+                'email' => $email,
+                'password' => Hash::make($password),
+                '2fa' => Hash::make($pin2fa),
+                'sponsor_id' => $sponsor_id
+            ]);
+
+            $dataEmail = [
+                'username' => $validated['username'],
+                'email' => $email,
+                'password' => $password
+            ];
+
+            SendRegistrationEmailJob::dispatch($dataEmail, $email)->onQueue('mail');
+        }
+
+
+        Alert::success('Berhasil!', 'Akun ' . $validated['username'] . ' telah didaftarkan, silakan login setelah logout dari akun ini')->persistent(true);
+        return redirect()->route('member.network');
+    }
+
+    public function getRoyalty()
+    {
+        $user = Auth::user();
+        $BonusRoyalty = new BonusRoyalty;
+        $bonus = $BonusRoyalty->getTotalBonusRoyalti($user->id);
+        $rewardedHistory = BonusRoyalty::where('user_id', $user->id)
+            ->where('status', 0)
+            ->orderByDesc('bonus_date')
+            ->orderBy('level_id')
+            ->paginate(20);
+        $claimedHistory = BonusRoyalty::where('user_id', $user->id)
+            ->where('status', 1)
+            ->orderByDesc('created_at')
+            ->paginate(20);
+
+        return view('member.app.network.royalty')
+            ->with('title', 'Bonus Royalty')
+            ->with(compact('user'))
+            ->with(compact('bonus'))
+            ->with(compact('rewardedHistory'))
+            ->with(compact('claimedHistory'));
     }
 }

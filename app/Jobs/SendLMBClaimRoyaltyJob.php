@@ -12,9 +12,9 @@ use App\User;
 use App\Model\Bonus;
 use App\Model\Member\BonusRoyalty;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Config;
 use Telegram\Bot\Laravel\Facades\Telegram;
 use App\Notifications\LMBNotification;
+use IEXBase\TronAPI\Exception\TronException;
 
 class SendLMBClaimRoyaltyJob implements ShouldQueue
 {
@@ -25,11 +25,9 @@ class SendLMBClaimRoyaltyJob implements ShouldQueue
      *
      * @return void
      */
-    protected $user_id;
     protected $bonus_id;
-    public function __construct($user_id, $bonus_id)
+    public function __construct($bonus_id)
     {
-        $this->user_id = $user_id;
         $this->bonus_id = $bonus_id;
     }
 
@@ -51,7 +49,7 @@ class SendLMBClaimRoyaltyJob implements ShouldQueue
         $bonus = BonusRoyalty::find($this->bonus_id);
 
         // Get User's
-        $user = User::select('id', 'tron', 'username')->where('id', $this->user_id)->first();
+        $user = User::select('id', 'tron', 'username')->where('id', $bonus->user_id)->first();
 
         // Verify bonus balance
         $bonusRoyalty = $modelBonus->getTotalBonusRoyalti($user->id);
@@ -60,7 +58,7 @@ class SendLMBClaimRoyaltyJob implements ShouldQueue
         }
 
         $tron = $controller->getTron();
-        $tron->setPrivateKey(Config::get('services.telegram.rebuild'));
+        $tron->setPrivateKey(config('services.tron.lmb_distributor'));
 
         $to = $user->tron;
         $amount = $bonus->amount * 1000000;
@@ -68,25 +66,23 @@ class SendLMBClaimRoyaltyJob implements ShouldQueue
         $from = 'TSqTD8gsnGBKxgqFJkGLAupWwF3JbHGjz8';
         $tokenID = '1002640';
 
-        //send eIDR
+        //send LMB
         try {
             $transaction = $tron->getTransactionBuilder()->sendToken($to, $amount, $tokenID, $from);
             $signedTransaction = $tron->signTransaction($transaction);
             $response = $tron->sendRawTransaction($signedTransaction);
         } catch (TronException $e) {
-            $response = Telegram::sendMessage([
-                'chat_id' => Config::get('services.telegram.overlord'),
-                'text' => 'SendLMBClaimRoyalty Fail, UserID: ' . $user->id,
-                'parse_mode' => 'markdown'
+            Telegram::sendMessage([
+                'chat_id' => config('services.telegram.overlord'),
+                'text' => 'SendLMBClaimRoyalty Fail, UserID: ' . $user->id . ' to: ' . $to
             ]);
             return;
         }
 
         if (!isset($response['result'])) {
-            $response = Telegram::sendMessage([
-                'chat_id' => Config::get('services.telegram.overlord'),
-                'text' => 'SendLMBClaimRoyalty Fail, UserID: ' . $user->id,
-                'parse_mode' => 'markdown'
+            Telegram::sendMessage([
+                'chat_id' => config('services.telegram.overlord'),
+                'text' => 'SendLMBClaimRoyalty Fail, UserID: ' . $user->id . ' to: ' . $to
             ]);
             return;
         }
@@ -128,7 +124,7 @@ class SendLMBClaimRoyaltyJob implements ShouldQueue
                 //Notify admin
 
                 Telegram::sendMessage([
-                    'chat_id' => Config::get('services.telegram.overlord'),
+                    'chat_id' => config('services.telegram.overlord'),
                     'text' => $LMBbalance . ' LMB left in Distribution account',
                     'parse_mode' => 'markdown'
                 ]);
@@ -139,10 +135,9 @@ class SendLMBClaimRoyaltyJob implements ShouldQueue
             try {
                 $tron->getTransaction($txHash);
             } catch (TronException $e) {
-                $response = Telegram::sendMessage([
-                    'chat_id' => Config::get('services.telegram.overlord'),
-                    'text' => 'SendLMBClaimRoyalty Fail, UserID: ' . $user->id,
-                    'parse_mode' => 'markdown'
+                Telegram::sendMessage([
+                    'chat_id' => config('services.telegram.overlord'),
+                    'text' => 'SendLMBClaimRoyalty Fail on FAILCHECK, UserID: ' . $user->id . ' to: ' . $to
                 ]);
                 return;
             }
