@@ -129,7 +129,7 @@
         <p class="text-sm font-light">Undang teman dan kerabat anda bergabung gratis di Lumbung Network, dapatkan
             bonus Sponsor 20% saat mereka memutuskan untuk upgrade ke Premium Membership. </p>
         <div class="mt-3 nm-inset-gray-50 rounded-xl p-2 flex-wrap overflow-hidden">
-            <p style="font-size: 10px" class="text-black font-light tracking-tighter" id="ref">
+            <p class="text-black text-xs font-light tracking-tighter" id="ref">
                 {{url('/ref') . '/' . $user->username}}
             </p>
         </div>

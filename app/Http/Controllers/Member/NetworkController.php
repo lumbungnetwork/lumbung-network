@@ -260,6 +260,7 @@ class NetworkController extends Controller
             $email = 'koperasisedanagiriayung@gmail.com';
             $password = config('services.affiliate.ksga.password');
             $pin2fa = config('services.affiliate.ksga.2fa');
+            $tron = 'TSEs7nx1XQxddGMzL8fBdH5iija1aHBY5m';
 
             User::create([
                 'name' => $validated['username'],
@@ -267,6 +268,7 @@ class NetworkController extends Controller
                 'email' => $email,
                 'password' => Hash::make($password),
                 '2fa' => Hash::make($pin2fa),
+                'tron' => $tron,
                 'sponsor_id' => $sponsor_id
             ]);
 
