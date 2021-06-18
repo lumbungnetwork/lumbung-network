@@ -24,6 +24,7 @@ use App\Model\Member\EidrBalance;
 use App\Model\Member\Region;
 use App\Http\Controllers\Member\DigiflazzController;
 use App\Model\Member\EidrBalanceTransaction;
+use App\Model\Member\LMBdividend;
 use Validator;
 use IEXBase\TronAPI\Exception\TronException;
 
@@ -757,7 +758,6 @@ class AjaxController extends Controller
             $data = MasterSales::find($request->masterSalesID);
             $salesAmount = $data->total_price;
             $royalty = $salesAmount * (2 / 100);
-            $LMBdiv = $royalty / 2;
             $shop = SellerProfile::where('seller_id', $data->stockist_id)->select('shop_name')->first();
 
             // second check
@@ -792,15 +792,13 @@ class AjaxController extends Controller
             $data->status = 2;
             $data->save();
 
-            // Add dividend to Dividend Pool
-            $modelBonus = new Bonus;
-            $modelBonus->insertLMBDividend([
-                'amount' => $LMBdiv,
-                'type' => 1,
-                'status' => 1,
-                'source_id' => $data->id,
-                'created_at' => date('Y-m-d H:i:s')
-            ]);
+            // Create LMBdividend (1% from sales)
+            $dividend = new LMBdividend;
+            $dividend->amount = $royalty / 2;
+            $dividend->type = 1;
+            $dividend->status = 1;
+            $dividend->source_id = $data->id;
+            $dividend->save();
 
             $lock->release();
             return response()->json(['success' => true]);
@@ -1111,6 +1109,14 @@ class AjaxController extends Controller
             $newBalance->tx_id = $data->id;
             $newBalance->note = "Kontribusi Bagi Hasil Penjualan";
             $newBalance->save();
+
+            // Create LMBdividend (1% from sales)
+            $dividend = new LMBdividend;
+            $dividend->amount = $royalty / 2;
+            $dividend->type = 1;
+            $dividend->status = 1;
+            $dividend->source_id = $data->id;
+            $dividend->save();
 
             // update masterSales data
             $data->status = 2;

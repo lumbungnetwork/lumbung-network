@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Member;
 
 use App\Http\Controllers\Controller;
-use App\Model\Bonus;
+use App\Model\Member\LMBdividend;
 use Illuminate\Http\Request;
 use App\Model\Member\EidrBalance;
 use App\User;
@@ -115,15 +115,13 @@ class MembershipController extends Controller
                 $sponsor->save();
             }
 
-            // Send dividend to LMB Div Pool
-            $modelBonus = new Bonus;
-            $modelBonus->insertLMBDividend([
-                'amount' => 19100,
-                'type' => 4,
-                'status' => 1,
-                'source_id' => $user->id,
-                'created_at' => date('Y-m-d H:i:s')
-            ]);
+            // Create LMBdividend
+            $dividend = new LMBdividend;
+            $dividend->amount = 19750;
+            $dividend->type = 4;
+            $dividend->status = 1;
+            $dividend->source_id = $user->id;
+            $dividend->save();
 
             $lock->release();
 

@@ -8,12 +8,11 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
-use App\Model\Sales;
+use App\Model\Member\LMBdividend;
 use App\Model\Member\MasterSales;
 use App\User;
 use Illuminate\Support\Facades\Config;
 use IEXBase\TronAPI\Exception\TronException;
-use App\Model\Bonus;
 use App\Http\Controllers\Controller;
 use App\Jobs\eIDRrebalanceJob;
 use Telegram\Bot\Laravel\Facades\Telegram;
@@ -138,15 +137,13 @@ class ForwardShoppingPaymentJob implements ShouldQueue
                     eIDRrebalanceJob::dispatch()->onQueue('tron');
                 }
 
-                // Add dividend to Dividend Pool
-                $modelBonus = new Bonus;
-                $modelBonus->insertLMBDividend([
-                    'amount' => $lmbDiv,
-                    'type' => 1,
-                    'status' => 1,
-                    'source_id' => $this->masterSalesID,
-                    'created_at' => date('Y-m-d H:i:s')
-                ]);
+                // Create LMBdividend (1% from sales)
+                $dividend = new LMBdividend;
+                $dividend->amount = $lmbDiv;
+                $dividend->type = 1;
+                $dividend->status = 1;
+                $dividend->source_id = $this->masterSalesID;
+                $dividend->save();
 
                 return;
             } else {

@@ -9,6 +9,7 @@ use App\Model\Member\EidrBalance;
 use GuzzleHttp\Client;
 use App\Model\Bonus;
 use Telegram\Bot\Laravel\Facades\Telegram;
+use App\Model\Member\LMBdividend;
 
 class DigiflazzController extends Controller
 {
@@ -83,14 +84,14 @@ class DigiflazzController extends Controller
                     } elseif ($salesData->type >= 21) {
                         $lmbDiv = $divProportion * 200; //e-Money
                     }
-                    $modelBonus = new Bonus;
-                    $modelBonus->insertLMBDividend([
-                        'amount' => $lmbDiv,
-                        'type' => 3,
-                        'status' => 1,
-                        'source_id' => $salesData->id,
-                        'created_at' => date('Y-m-d H:i:s')
-                    ]);
+
+                    // Create LMBdividend
+                    $dividend = new LMBdividend;
+                    $dividend->amount = $lmbDiv;
+                    $dividend->type = 3;
+                    $dividend->status = 1;
+                    $dividend->source_id = $salesData->id;
+                    $dividend->save();
                 }
 
                 //low balance notif

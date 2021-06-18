@@ -28,4 +28,29 @@ class BonusRoyalty extends Model
 
         return $return;
     }
+
+    public function getTotalBonusRoyalti($user_id)
+    {
+        try {
+            $sql = $this->selectRaw('
+                sum(case when status = 0 then amount else 0 end) as credited,
+                sum(case when status = 1 then amount else 0 end) as claimed
+            ')
+                ->where('user_id', '=', $user_id)
+                ->first();
+            $return = (object) [
+                'credited' => $sql->credited,
+                'claimed' => $sql->claimed,
+                'net' => $sql->credited - $sql->claimed
+            ];
+        } catch (\Throwable $th) {
+            $return = (object) [
+                'credited' => 0,
+                'claimed' => 0,
+                'net' => 0
+            ];
+        }
+
+        return $return;
+    }
 }
