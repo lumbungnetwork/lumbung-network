@@ -62,7 +62,11 @@
                         </tr>
                         @endforeach
                     </tbody>
+
                 </table>
+                <div class="object-contain w-full text-xs p-2">
+                    {{ $rewardedHistory->links() }}
+                </div>
                 @else
                 <div class="my-3 text-sm text-gray-600 text-center">
                     Anda belum memiliki Riwayat Bonus Royalty
@@ -106,6 +110,9 @@
 
                     </tbody>
                 </table>
+                <div class="object-contain w-full text-xs p-2">
+                    {{ $claimedHistory->links() }}
+                </div>
                 @else
                 <div class="my-3 text-sm text-gray-600 text-center">
                     Anda belum memiliki Riwayat Claim LMB dari Bonus Royalty
