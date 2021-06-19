@@ -80,10 +80,6 @@
             <div class="text-xs text-gray-500">Status:</div>
             <h4 class="text-md text-red-600">Batal</h4>
             <p class="text-xs font-light text-gray-600">{{ $data->reason }}</p>
-            @php
-            $returnData = json_decode($data->return_buy, true);
-            @endphp
-            <p class="text-xs font-light text-gray-600">{{ $returnData['data']['message'] ?? ''}}</p>
         </div>
         @endif
 
