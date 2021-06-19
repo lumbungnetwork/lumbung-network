@@ -126,10 +126,10 @@ class Controller extends BaseController
         $lv3 = Finance::where('id', $lv2->sponsor_id)->select('id', 'sponsor_id')->first();
         $lv4 = Finance::where('id', $lv3->sponsor_id)->select('id', 'sponsor_id')->first();
 
-        $amount1 = round($amount / 2, 2, PHP_ROUND_HALF_DOWN); // 50%
-        $amount2 = round($amount * (3 / 10), 2, PHP_ROUND_HALF_DOWN); // 30%
-        $amount3 = round($amount * (1 / 10), 2, PHP_ROUND_HALF_DOWN); // 10%
-        $amount4 = round($amount * (1 / 10), 2, PHP_ROUND_HALF_DOWN); // 10%
+        $amount1 = round($amount / 2, 6, PHP_ROUND_HALF_DOWN); // 50%
+        $amount2 = round($amount * (3 / 10), 6, PHP_ROUND_HALF_DOWN); // 30%
+        $amount3 = round($amount * (1 / 10), 6, PHP_ROUND_HALF_DOWN); // 10%
+        $amount4 = round($amount * (1 / 10), 6, PHP_ROUND_HALF_DOWN); // 10%
 
         // Check Lv.1
         $check1 = $modelContract->getUserTotalLiquidity($lv1->id);
