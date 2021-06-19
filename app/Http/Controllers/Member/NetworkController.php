@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Member;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\ClaimNetworkRewardJob;
+use App\Model\Member\BonusBinary;
 use App\Model\Member\BonusRoyalty;
 use App\User;
 use Illuminate\Http\Request;
@@ -307,5 +308,45 @@ class NetworkController extends Controller
             ->with(compact('bonus'))
             ->with(compact('rewardedHistory'))
             ->with(compact('claimedHistory'));
+    }
+
+    public function getPairing()
+    {
+        $user = Auth::user();
+        // Check Binary balance
+        $left = 0;
+        if ($user->left_id) {
+            // Upline details is an upward user_id chain following upline_id sequence
+            $uplines = $user->upline_detail . ',[' . $user->id . '],[' . $user->left_id . ']';
+            $count = User::where('upline_detail', 'LIKE', $uplines . '%')
+                ->where('member_type', '>', 0)
+                ->count();
+            // We add +1 to count lowest node (because upline_detail only get as far as the upline)
+            $left = $count + 1;
+        }
+        $right = 0;
+        if ($user->right_id) {
+            // Upline details is an upward user_id chain following upline_id sequence
+            $uplines = $user->upline_detail . ',[' . $user->id . '],[' . $user->right_id . ']';
+            $count = User::where('upline_detail', 'LIKE', $uplines . '%')
+                ->where('member_type', '>', 0)
+                ->count();
+            // We add +1 to count lowest node (because upline_detail only get as far as the upline)
+            $right = $count + 1;
+        }
+        // Get Binary History to check the paid/waiting balance
+        $paid = DB::table('binary_history')
+            ->selectRaw(' sum(total_left) as sum_left,
+                            sum(total_right) as sum_right')
+            ->where('user_id', $user->id)
+            ->first();
+        $binaryHistory = BonusBinary::where('user_id', $user->id)->paginate();
+        return view('member.app.network.pairing')
+            ->with(compact('user'))
+            ->with(compact('left'))
+            ->with(compact('right'))
+            ->with(compact('paid'))
+            ->with(compact('binaryHistory'))
+            ->with('title', 'Bonus Pairing');
     }
 }

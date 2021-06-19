@@ -84,7 +84,7 @@
                 </div>
                 <div class="text-xs text-gray-700">Placing</div>
             </a>
-            <a href="#"
+            <a href="{{ route('member.network.pairing') }}"
                 class="my-2 nm-convex-gray-100 w-14 h-14 p-1 rounded-lg flex flex-wrap justify-center items-center">
                 <div>
                     <svg viewBox="0 0 511.998 511.998" class="w-6">
