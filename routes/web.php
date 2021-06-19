@@ -126,6 +126,7 @@ Route::domain('member.' . config('services.app.domain'))->group(function () {
     Route::get('/network/royalty', 'Member\NetworkController@getRoyalty')->name('member.network.royalty')->middleware('auth');
     Route::get('/network/pairing', 'Member\NetworkController@getPairing')->name('member.network.pairing')->middleware('auth');
     Route::get('/network/affiliate-register/{affiliate_code}', 'Member\NetworkController@getAffiliateRegister')->where('affiliate_code', '(3|6)')->name('member.network.affiliateRegister')->middleware('auth');
+    Route::post('/network/affiliate-register/{affiliate_code}', 'Member\NetworkController@postAffiliateRegister')->where('affiliate_code', '(3|6)')->name('member.network.postAffiliateRegister')->middleware('auth');
 
     Route::post('/network/claim-reward', 'Member\NetworkController@postClaimNetworkReward')->name('member.network.postClaimNetworkReward')->middleware('auth');
     Route::post('/network/binary-placement', 'Member\NetworkController@postBinaryPlacement')->name('member.network.postBinaryPlacement')->middleware('auth');

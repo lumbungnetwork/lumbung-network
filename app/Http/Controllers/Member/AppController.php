@@ -291,6 +291,11 @@ class AppController extends Controller
             Alert::error('Oops', 'Untuk menggunakan fitur Bank, anda perlu melengkapi Data Profil terlebih dahulu')->persistent(true);
             return redirect()->route('member.profile');
         }
+        // check Affiliate special rules
+        if ($user->affiliate == 6) {
+            Alert::info('KSGA', 'Seluruh anggota KSGA telah menggunakan Rekening Bank a/n KSGA');
+            return redirect()->back();
+        }
 
         return view('member.app.account.bank')
             ->with(compact('user'))

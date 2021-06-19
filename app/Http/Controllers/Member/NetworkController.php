@@ -10,6 +10,8 @@ use App\User;
 use Illuminate\Http\Request;
 use Auth;
 use Cache;
+use Hash;
+use App\Jobs\SendRegistrationEmailJob;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\DB;
 
@@ -246,7 +248,8 @@ class NetworkController extends Controller
             case 6:
                 $view = 'member.auth.ksga_register';
         }
-        return view($view);
+        return view($view)
+            ->with('title', 'Affiliate Register');
     }
 
     public function postAffiliateRegister($affiliate_code, Request $request)
@@ -262,16 +265,17 @@ class NetworkController extends Controller
             $password = config('services.affiliate.ksga.password');
             $pin2fa = config('services.affiliate.ksga.2fa');
             $tron = 'TSEs7nx1XQxddGMzL8fBdH5iija1aHBY5m';
-
-            User::create([
-                'name' => $validated['username'],
-                'username' => $validated['username'],
-                'email' => $email,
-                'password' => Hash::make($password),
-                '2fa' => Hash::make($pin2fa),
-                'tron' => $tron,
-                'sponsor_id' => $sponsor_id
-            ]);
+            // Create user
+            $user = new User;
+            $user->name = $validated['username'];
+            $user->username = $validated['username'];
+            $user->email = $email;
+            $user->password = Hash::make($password);
+            $user->{'2fa'} = Hash::make($pin2fa);
+            $user->tron = $tron;
+            $user->sponsor_id = $sponsor_id;
+            $user->affiliate = $affiliate_code;
+            $user->save();
 
             $dataEmail = [
                 'username' => $validated['username'],

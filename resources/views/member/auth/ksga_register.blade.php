@@ -22,8 +22,7 @@
                 <!-- Layout  -->
                 <h1 class="text-3xl font-medium mb-2">Register</h1>
                 <p class="text-sm">Formulir Khusus Pendaftaran anggota KSGA.</p>
-                <form class="mt-5" action="{{ route('member.postRegister') }}" method="POST" id="register-form"
-                    autocomplete="off">
+                <form class="mt-5" action="" method="POST" id="register-form" autocomplete="off">
                     @csrf
                     <label for="username" class="text-gray-500">Username</label>
                     <div class="mt-2 nm-inset-gray-50 rounded-xl p-2 ">
