@@ -14,7 +14,7 @@
                 <div class="text-xs text-gray-500">Total Left</div>
             </div>
             <div class="nm-flat-gray-100 w-20 p-2 rounded-lg flex-col justify-center items-center text-center">
-                <div class="text-lg text-gray-600 font-bold">{{ $paid->sum_left }}</div>
+                <div class="text-lg text-gray-600 font-bold">{{ $paid->sum_left ?? 0 }}</div>
                 <div class="text-xs text-gray-500">Total Paid</div>
             </div>
             <div class="nm-flat-gray-100 w-20 p-2 rounded-lg flex-col justify-center items-center text-center">
