@@ -28,19 +28,28 @@
                         <td class="py-1 px-2">
                             @php
                             $source = 'Kontribusi Penjualan Produk Fisik';
+                            $type = 'physical';
                             switch ($row->type) {
-                            case 3:
-                            $source = 'Kontribusi Penjualan Produk Digital';
-                            break;
-                            case 4:
-                            $source = 'Kontribusi dari Premium Membership';
-                            break;
-                            case 5:
-                            $source = 'Kontribusi Dari Fee Lumbung Finance';
-                            break;
+                                case 3:
+                                    $source = 'Kontribusi Penjualan Produk Digital';
+                                    $type = 'digital';
+                                    break;
+                                case 4:
+                                    $source = 'Kontribusi dari Premium Membership (ID: ' . $row->source_id . ')';
+                                    break;
+                                case 5:
+                                    $source = 'Kontribusi Dari Fee Lumbung Finance';
+                                    break;
                             }
                             @endphp
+                            @if ($row->type <= 3)
+                            <span class="text-green-600 underline">
+                                <a href="{{ route('market.transaction', ['type' => $type, 'transaction_id' => $row->source_id]) }}">{{ $source }}</a>
+                            </span>
+                            @else
                             <span class="text-green-600 font-medium">{{ $source }}</span>
+                            @endif
+                            
                         </td>
 
                     </tr>

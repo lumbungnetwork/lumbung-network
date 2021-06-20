@@ -13,7 +13,11 @@ module.exports = {
       lg: '0.4em',
       xl: '0.8em',
     },
-    extend: {},
+    extend: {
+      fontFamily: {
+        'seaweed-script': ['"Seaweed Script"', 'cursive']
+      }
+    },
   },
   variants: {
     neumorphismFlat: ['responsive'],

@@ -107,14 +107,13 @@
                 @endif
         </div>
 
-        @if ($data->type > 2 && $data->type < 11) {{-- Print Receipt button --}} <div class="mt-4 flex justify-end">
-            <a href="{{ route('member.shopping.receipt', ['sale_id' => $data->id]) }}">
+        {{-- Print Receipt button --}} 
+        <div class="mt-4 flex justify-end">
+            <a href="{{ route('market.transaction', ['type' => 'digital', 'transaction_id' => $data->id]) }}">
                 <button
-                    class="rounded-lg py-1 px-2 h-8 bg-gradient-to-br from-green-400 to-purple-300 text-xs font-medium text-gray-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Print
-                    Struk</button>
+                    class="rounded-lg py-1 px-2 h-8 bg-gradient-to-br from-green-400 to-purple-300 text-xs font-medium text-gray-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Bukti Transaksi</button>
             </a>
-    </div>
-    @endif
+        </div>
     @endif
 
     @if ($data->status == 5)

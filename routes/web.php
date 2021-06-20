@@ -818,3 +818,8 @@ Route::get('/', function () {
 Route::get('/about-core', function () {
     return view('about-core')->with('title', 'Tentang Lumbung Network');
 });
+
+// Market
+Route::group(['prefix' => 'market'], function () {
+    Route::get('/transaction/{type}/{transaction_id}', 'Market\PublicTransactionsController@getTransaction')->where('type', '(physical|digital)')->whereNumber('transaction_id')->name('market.transaction');
+});
