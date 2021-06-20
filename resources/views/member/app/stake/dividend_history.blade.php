@@ -43,7 +43,7 @@
                             }
                             @endphp
                             @if ($row->type <= 3)
-                            <span class="text-green-600 underline">
+                            <span class="text-green-600 underline font-medium tracking-wide">
                                 <a href="{{ route('market.transaction', ['type' => $type, 'transaction_id' => $row->source_id]) }}">{{ $source }}</a>
                             </span>
                             @else
