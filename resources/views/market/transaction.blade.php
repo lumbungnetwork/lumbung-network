@@ -88,7 +88,8 @@ if ($type == 'digital') {
                 {{-- Physical --}}
                 @if ($type == 'physical' && count($salesData) > 0)
                 @foreach ($salesData as $row)
-                <div class="flex justify-between space-x-1">
+                {{-- Pretty Receipt view --}}
+                <div class="flex justify-between space-x-1 exclude-print">
                     <div class="w-1/4">
                         <img class="object-cover rounded-2xl"
                             src="{{ asset('/storage/products') }}/{{$row->product->image}}" alt="product-picture">
@@ -103,6 +104,13 @@ if ($type == 'digital') {
                         <hr class="my-1 border-b-0 border-gray-300">
                         <div class="text-xs text-right">Subtotal: Rp{{number_format($row->sale_price)}}</div>
                     </div>
+                </div>
+                {{-- Printing view --}}
+                <div class="hidden justify-between space-x-1 include-to-print">
+                    <div class="w-3/4 text-sm text-gray-800">
+                        <b>{{ number_format($row->amount, 0) }}x </b> {{$row->product->name}}
+                    </div>
+                    <div class="w-1/4 text-sm text-gray-800 font-bold">{{number_format($row->sale_price)}}</div>
                 </div>
                 <hr class="my-2 border-b-0 border-gray-400">
                 @endforeach
@@ -260,6 +268,12 @@ if ($type == 'digital') {
     @media print {
         body * {
             visibility: hidden;
+        }
+        .exclude-print, .exclude-print * {
+            display: none !important;
+        }
+        .include-to-print, .include-to-print * {
+            display: flex !important;
         }
         #section-to-print, #section-to-print * {
             visibility: visible;
