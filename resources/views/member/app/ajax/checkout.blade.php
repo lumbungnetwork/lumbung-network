@@ -5,11 +5,15 @@
 
     @if ($status == false)
     <div class="my-1">
+        @if ($message == 'Insufficient Stock')
         <h5 class="text-xl text-red-600 text-center font-medium">Stock tidak cukup!</h5>
         <p class="text-sm text-gray-600 font-light">Produk <mark>{{$name}}</mark> hanya tersedia sebanyak {{$stock}}
             saja. Silakan menghapus produk tersebut dan
             menambahkan
             sesuai stock yang tersedia.</p>
+        @else
+        <h5 class="text-xl text-red-600 text-center font-medium">{{ $message }}</h5> 
+        @endif
     </div>
     <div class="my-1 flex justify-end">
         <button
@@ -22,7 +26,7 @@
         <p class="text-sm text-gray-600 font-light">Silakan klik Bayar untuk lanjut ke pembayaran.</p>
     </div>
     <div class="mt-2">
-        <form action="{{ route('member.shopping.postCheckout') }}" method="POST">
+        <form action="{{ $route }}" method="POST">
             @csrf
             <input type="hidden" name="masterSalesID" value="{{ $masterSalesID }}">
             <button type="submit"

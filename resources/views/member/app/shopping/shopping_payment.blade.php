@@ -395,6 +395,7 @@
                                     'Keranjang belanja telah dibatalkan',
                                     'info'
                                 )
+                                href = '{{ route('member.home') }}';
                                 setTimeout(window.location.replace(href), 3000);
                                 
                             } else {

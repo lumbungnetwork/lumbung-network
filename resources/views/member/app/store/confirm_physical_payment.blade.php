@@ -80,8 +80,12 @@
             @endphp
             <p class="text-xs font-light text-gray-600">Metode Pembayaran: {{ $payment }}</p>
         </div>
-        {{-- Print Receipt button --}} 
-        <div class="mt-4 flex justify-end">
+        {{-- POS shortcut and Print Receipt button --}} 
+        <div class="mt-4 flex justify-end space-x-2">
+            <a href="{{ route('member.store.pos') }}">
+                <button
+                    class="rounded-lg py-1 px-2 h-8 bg-gradient-to-br from-yellow-400 to-purple-300 text-xs font-medium text-gray-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">P.O.S</button>
+            </a>
             <a href="{{ route('market.transaction', ['type' => 'physical', 'transaction_id' => $masterSalesData->id]) }}">
                 <button
                     class="rounded-lg py-1 px-2 h-8 bg-gradient-to-br from-green-400 to-purple-300 text-xs font-medium text-gray-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Bukti Transaksi</button>

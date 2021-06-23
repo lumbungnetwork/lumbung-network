@@ -74,6 +74,9 @@ Route::domain('member.' . config('services.app.domain'))->group(function () {
     Route::get('/store/apply', 'Member\StoreController@getApplyStore')->name('member.store.apply')->middleware('auth');
     Route::post('/store/apply', 'Member\StoreController@postApplyStore')->name('member.store.postApplyStore')->middleware('auth');
     Route::get('/store/info', 'Member\StoreController@getStoreInfo')->name('member.store.info')->middleware('auth');
+    Route::get('/store/pos', 'Member\StoreController@getPOS')->name('member.store.pos')->middleware('auth');
+    Route::post('/store/pos', 'Member\StoreController@postPOS')->name('member.store.postPos')->middleware('auth');
+    Route::post('/store/pos-checkout', 'Member\StoreController@postCheckoutPOS')->name('member.store.postCheckoutPOS')->middleware('auth');
     Route::get('/store/edit-info', 'Member\StoreController@getStoreEditInfo')->name('member.store.editInfo')->middleware('auth');
     Route::post('/store/add-info', 'Member\StoreController@postStoreAddInfo')->name('member.store.postStoreAddInfo')->middleware('auth');
     Route::post('/store/edit-info', 'Member\StoreController@postStoreEditInfo')->name('member.store.postStoreEditInfo')->middleware('auth');

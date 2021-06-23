@@ -143,7 +143,7 @@
                     <p style="font-size: 10px" class="font-light text-center text-gray-600">Inventory</p>
                 </a>
                 {{-- P.O.S --}}
-                <a class="mt-1 mx-0.5 flex flex-col w-8 items-center" href="#">
+                <a class="mt-1 mx-0.5 flex flex-col w-8 items-center" href="{{ route('member.store.pos') }}">
                     <div
                         class="rounded-2xl bg-gradient-to-br from-purple-400 to-blue-200 w-12 h-12 p-1 flex justify-center items-end">
                         <svg class="w-8" viewBox="0 0 20 20">

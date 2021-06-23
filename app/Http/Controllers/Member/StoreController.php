@@ -179,6 +179,10 @@ class StoreController extends Controller
             Alert::error('Oops', 'Access Denied');
             return redirect()->back();
         }
+        if (!$user->sellerProfile) {
+            Alert::warning('Oops', 'Anda harus melengkapi Informasti Toko anda terlebih dahulu');
+            return redirect()->route('member.store.info');
+        }
         $products = Product::where('seller_id', $user->id)->where('is_active', 1)->get();
 
         return view('member.app.store.inventory')
@@ -688,4 +692,77 @@ class StoreController extends Controller
         Alert::success('Berhasil', 'Aplikasi Pengajuan Stockist telah diajukan ke Tim Delegasi, hubungi Delegasi anda untuk progress moderasi.');
         return redirect()->route('member.home');
     }
+
+    public function getPOS()
+    {
+        $user = Auth::user();
+        // Privilege check
+        if ($user->user_type != 10 || !$user->is_store) {
+            Alert::error('Oops', 'Access Denied');
+            return redirect()->back();
+        }
+        if (!$user->sellerProfile) {
+            Alert::warning('Oops', 'Anda harus melengkapi Informasti Toko anda terlebih dahulu');
+            return redirect()->route('member.store.info');
+        }
+
+        $MasterSales = new MasterSales;
+        $sales = $MasterSales->getMemberSpending(2, $user->id, date('m', strtotime('this month')), date('Y', strtotime('this month')));
+        $bestSells = cache()->remember('pos_' . $user->id, 43200, function() {
+            $user_id = Auth::id();
+            $Sales = new Sales;
+            return $Sales->getBestSellingProducts($user_id, date('Y-m-01 00:00:01', strtotime('last month')), date('Y-m-01 00:00:00', strtotime('this month')));
+        });
+        
+        return view('member.app.store.pos')
+            ->with(compact('user'))
+            ->with(compact('sales'))
+            ->with(compact('bestSells'))
+            ->with('title', 'P.O.S');
+
+    }
+
+    public function postPOS(Request $request)
+    {
+        $user = Auth::user();
+        // Privilege check
+        if ($user->user_type != 10 || !$user->is_store) {
+            Alert::error('Oops', 'Access Denied');
+            return redirect()->back();
+        }
+        if (!$user->sellerProfile) {
+            Alert::warning('Oops', 'Anda harus melengkapi Informasti Toko anda terlebih dahulu');
+            return redirect()->route('member.store.info');
+        }
+
+        $buyer_id = $user->id;
+        if ($request->buyer_id) {
+            $buyer_id = $request->buyer_id;
+        }
+        $products = Product::where('seller_id', $user->id)->where('is_active', 1)->get();
+        $categories = Category::select('id', 'name')->get();
+
+        return view('member.app.store.pos_input_belanja')
+            ->with('seller_id', $user->id)
+            ->with(compact('products'))
+            ->with(compact('categories'))
+            ->with(compact('buyer_id'))
+            ->with('title', 'Input Belanja');
+    }
+
+    public function postCheckoutPOS(Request $request)
+    {
+        $user = Auth::user();
+        $data = MasterSales::where('id', $request->masterSalesID)->select('user_id', 'stockist_id')->first();
+        // Check priviledge
+        if (!$user->is_store || $data->stockist_id != $user->id) {
+            Alert::error('Error', 'Access Denied!');
+            return redirect()->route('member.home');
+        }
+
+        \Cart::session($data->user_id)->clear();
+
+        return redirect()->route('member.store.confirmPhysicalOrder', [$request->masterSalesID]);
+    }
+
 }
