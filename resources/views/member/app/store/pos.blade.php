@@ -86,7 +86,7 @@
                 </div>
                 {{-- Last Month Best Seller --}}
                 <div class="mt-3">
-                    <div class="text-sm text-gray-500 font-bold text-gray-600">Best Selling Bulan Lalu</div>
+                    <div class="text-sm font-bold text-gray-600">Best Selling Bulan Lalu</div>
                     {{-- Best Selling Physical Product --}}
                     <div class="mt-3">
                         <div class="text-xs text-gray-400">Produk Fisik</div>

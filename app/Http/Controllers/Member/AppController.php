@@ -21,6 +21,7 @@ use DB;
 use Illuminate\Support\Facades\Hash;
 use IEXBase\TronAPI\Exception\TronException;
 use App\Http\Controllers\TelegramBotController;
+use App\Model\Member\Bank;
 
 class AppController extends Controller
 {
@@ -292,13 +293,16 @@ class AppController extends Controller
             return redirect()->route('member.profile');
         }
         // check Affiliate special rules
+        $affiliate_banks = null;
         if ($user->affiliate == 6) {
-            Alert::info('KSGA', 'Seluruh anggota KSGA telah menggunakan Rekening Bank a/n KSGA');
-            return redirect()->back();
+            $affiliate_banks = [
+                $user->affiliate => Bank::find(7)
+            ];
         }
 
         return view('member.app.account.bank')
             ->with(compact('user'))
+            ->with(compact('affiliate_banks'))
             ->with('title', 'Bank');
     }
 

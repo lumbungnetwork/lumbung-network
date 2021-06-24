@@ -8,7 +8,8 @@
 <div class="max-w-xs mx-auto">
     <div class="p-3">
         <div class="mt-4 nm-convex-gray-50 rounded-xl p-2 ">
-            @if ($user->bank == null)
+            {{-- Empty --}}
+            @if (!$user->bank && $user->affiliate < 6)
             <div class="flex items-center py-2">
                 <span class="w-3 h-3 bg-red-400 rounded-full mr-2"></span>
                 <p class="text-sm font-light ">Inactive</p>
@@ -51,6 +52,31 @@
                     class="float-right mt-3 p-3 bg-gray-500 rounded-2xl text-white text-xs focus:outline-none focus:bg-gray-600">Simpan</button>
 
             </form>
+            {{-- Affiliate --}}
+            @elseif (!$user->bank && $user->affiliate >= 6)
+            @php
+                // Get affiliate's bank according to affiliate id
+                $bank = null;
+                foreach ($affiliate_banks as $key => $value) {
+                    if ($key == $user->affiliate) {
+                        $bank = $value;
+                    }
+                }
+            @endphp
+            <div class="flex items-center py-2">
+                <span class="w-3 h-3 bg-green-400 rounded-full mr-2"></span>
+                <p class="text-sm font-light ">Active</p>
+            </div>
+            <div class="mt-2 nm-inset-gray-100 rounded-xl p-2 overflow-x-scroll">
+                <p class="ml-2 text-xs font-extralight">{{$bank->bank}}</p>
+            </div>
+            <div class="mt-2 nm-inset-gray-100 rounded-xl p-2 overflow-x-scroll">
+                <p class="ml-2 text-xs font-extralight">{{$bank->account_no}}</p>
+            </div>
+            <div class="mt-2 nm-inset-gray-100 rounded-xl p-2 overflow-x-scroll">
+                <p class="ml-2 text-xs font-extralight">{{$bank->name}}</p>
+            </div>
+            {{-- Filled --}}
             @else
             <div class="flex items-center py-2">
                 <span class="w-3 h-3 bg-green-400 rounded-full mr-2"></span>
