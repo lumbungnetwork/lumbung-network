@@ -121,6 +121,7 @@ Route::domain('member.' . config('services.app.domain'))->group(function () {
     Route::post('/shopping/digital-order', 'Member\ShoppingController@postShoppingDigitalOrder')->name('member.shopping.postShoppingDigitalOrder')->middleware('auth');
     Route::post('/shopping/digital-order-quickbuy', 'Member\ShoppingController@postShoppingStoreQuickbuy')->name('member.shopping.postShoppingStoreQuickbuy')->middleware('auth');
     Route::post('/shopping/confirm-digital-order', 'Member\ShoppingController@postShoppingConfirmDigitalOrderByEidr')->name('member.shopping.postShoppingConfirmDigitalOrderByEidr')->middleware('auth');
+    Route::post('/shopping/search-product', 'Member\ShoppingController@postSearchProduct')->name('member.shopping.postSearchProduct')->middleware('auth');
 
     // Network
     Route::get('/network', 'Member\NetworkController@getNetwork')->name('member.network')->middleware('auth');

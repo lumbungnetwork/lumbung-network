@@ -499,9 +499,14 @@ class AjaxController extends Controller
 
     public function getProductById(Request $request)
     {
-        $getProduct = Product::find($request->product_id);
+        $getProduct = Product::findOrFail($request->product_id);
+        $search = false;
+        if ($request->search) {
+            $search = true;
+        }
 
         return view('member.app.ajax.product-by-id')
+            ->with(compact('search'))
             ->with('product', $getProduct);
     }
 

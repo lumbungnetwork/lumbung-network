@@ -25,16 +25,14 @@
                 <div class="px-2">
                     <div>
                         <p class="mb-2 text-lg text-gray-600 font-light text-center">Cari Toko</p>
-                        <p class="text-xs text-gray-400 font-light py-0 leading-3">Ketikkan 3-4 huruf awal nama toko
-                            lalu klik
-                            pada
-                            nama yang
+                        <p class="text-xs text-gray-400 font-light py-0 leading-3">
+                            Ketikkan 3-4 huruf awal nama toko lalu klik pada nama yang
                             tampil, lalu klik "Go"</p>
                     </div>
                     <div>
                         <div class="mt-2 nm-inset-gray-200 p-2 rounded-2xl">
                             <input class="ml-2 bg-transparent focus:outline-none w-full" type="text" name="input_toko"
-                                id="get_id">
+                                id="get_id" autocomplete="off">
                         </div>
                         <div class="px-2">
                             <input type="hidden" id="id_get_id">
@@ -54,14 +52,19 @@
                 <div class="px-2">
                     {{-- Produk --}}
                     <p class="mb-2 text-lg text-gray-600 font-light text-center">Cari Produk</p>
-                    <p class="text-sm text-red-600 text-center">(Dalam proses konstruksi)</p>
+                    <p class="text-xs text-gray-400 font-light py-0 leading-3">
+                        Masukkan kata kunci produk yang ingin anda cari, lalu klik "Cari"</p>
                     <div class="mt-2 nm-inset-gray-200 p-2 rounded-2xl">
-                        <input class="ml-2 bg-transparent focus:outline-none w-full" type="text" name="product"
-                            id="product">
+                        <form action="{{ route('member.shopping.postSearchProduct') }}" method="POST" id="search-product-form" autocomplete="off">
+                            @csrf
+                            <input class="ml-2 bg-transparent focus:outline-none w-full" type="text" name="keyword"
+                            id="keyword">
+                        </form>
+                        
                     </div>
                     <div class="mt-2 flex justify-end">
-                        <a id="check-store-btn" href="#"
-                            class="rounded-lg py-1 px-2 h-8 w-20 bg-gradient-to-br from-green-200 to-purple-300 text-md text-center font-medium text-gray-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Go</a>
+                        <button id="search-product-btn" type="button"
+                            class="rounded-lg py-1 px-2 h-8 w-20 bg-gradient-to-br from-green-200 to-purple-300 text-md text-center font-medium text-gray-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Cari</button>
                     </div>
                 </div>
             </div>
@@ -132,5 +135,16 @@
             $("#check-store-btn").attr("href", "/shop/" + valNew[0] );
             $("#get_id-box").hide();
         }
+
+    // Search Product
+    $('#search-product-btn').click( function () {
+        if ($('#keyword').val() == '') {
+            Swal.fire('Oops', 'Anda belum mengisi kata kunci pencarian', 'warning');
+            return false;
+        }
+        $('#search-product-form').submit();
+        Swal.fire('Mencari Produk');
+        Swal.showLoading();
+    })
 </script>
 @endsection

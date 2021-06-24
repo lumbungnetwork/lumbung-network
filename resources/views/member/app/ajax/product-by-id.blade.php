@@ -14,8 +14,9 @@
             <p class="text-xs text-gray-600 font-extralight">Deskripsi: {{$product->desc}}</p>
         </div>
     </div>
+
     <div class="mt-1">
-        @if($product->qty > 0)
+        @if($product->qty > 0 && !$search)
         <form id="form-order" method="post" action="/m/add-to-cart">
             @csrf
             <label for="quantity">Jumlah Order</label>
@@ -51,13 +52,24 @@
         </button>
 
     </div>
-    @else
-    <p class="mt-4 text-gray-400 font-medium text-center text-xl">Stok Produk Habis</p>
-</div>
-<div class="flex justify-end">
+    @elseif ($product->qty < 1 && !$search)
+        <p class="mt-4 text-gray-400 font-medium text-center text-xl">Stok Produk Habis</p>
+    </div>
+    <div class="flex justify-end">
 
-    <button onclick="swal.close()"
-        class="rounded-lg py-1 px-2 h-8 bg-gradient-to-br from-red-400 to-purple-300 text-xs font-medium text-gray-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Batal</button>
-</div>
-@endif
+        <button onclick="swal.close()"
+            class="rounded-lg py-1 px-2 h-8 bg-gradient-to-br from-red-400 to-purple-300 text-xs font-medium text-gray-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Batal</button>
+    </div>
+    @elseif ($search)
+        <div class="mt-2 p-1 flex flex-col justify-center">
+            <div class="text-xs text-gray-600 font-light">Penjual: {{ $product->seller->sellerProfile->shop_name ?? $product->seller->username }}</div>
+            <div class="mt-3 flex justify-center space-x-2">
+                <a class="focus:outline-none" href="{{ route('member.shop', ['id' => $product->seller_id]) }}">
+                    <button class="rounded-lg py-1 px-2 h-8 bg-gradient-to-br from-green-400 to-purple-300 text-xs font-medium text-gray-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Kunjungi Toko</button>
+                </a>
+                <button onclick="Swal.close()" class="rounded-lg py-1 px-2 h-8 bg-gradient-to-br from-red-400 to-purple-300 text-xs font-medium text-gray-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Nanti saja</button>
+            </div>
+        </div>
+    </div>  
+    @endif
 </div>

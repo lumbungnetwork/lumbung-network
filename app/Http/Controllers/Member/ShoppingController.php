@@ -54,6 +54,49 @@ class ShoppingController extends Controller
         return redirect()->route('member.shopping.payment', [$request->masterSalesID]);
     }
 
+    public function postSearchProduct(Request $request) {
+        $user = Auth::user();
+        // validate input
+        $validator = Validator::make($request->all(), [
+            'keyword' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            Alert::error('Oops', 'Ada yang salah dari kata kunci yang anda masukkan');
+            return redirect()->back();
+        }
+        $filter = null;
+        // Search products with keyword as wildcard and use filter if exist
+        if ($request->filter) {
+            $filter = $request->filter;
+            if ($filter == 'provinsi' || $filter == 'kota') {
+                $products = Product::where('products.name', 'LIKE', '%' . $request->keyword . '%')
+                    ->where('products.is_active', 1)
+                    ->get();
+                $products = $products->filter( function ($product) use ($filter, $user) {
+                    return $product->seller->$filter == $user->$filter;
+                });
+            } elseif ($filter == 'asc' || $filter == 'desc') {
+                $products = Product::where('name', 'LIKE', '%' . $request->keyword . '%')
+                    ->where('is_active', 1)
+                    ->orderBy('price', $filter)
+                    ->get();
+            }
+        } else {
+            $products = Product::where('name', 'LIKE', '%' . $request->keyword . '%')
+            ->where('is_active', 1)
+            ->get();
+        }
+        
+        
+        return view('member.app.shopping.search_product')
+            ->with('title', 'Cari Produk')
+            ->with('keyword', $request->keyword)
+            ->with(compact('user'))
+            ->with(compact('filter'))
+            ->with(compact('products'));
+    }
+
     public function getShoppingPayment($masterSalesID)
     {
         $user = Auth::user();

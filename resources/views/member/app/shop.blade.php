@@ -7,7 +7,7 @@
 {{-- Content wrapper --}}
 <div class="max-w-xs mx-auto">
     <div class="mt-4 px-4">
-        <h2 class="text-lg font-seaweed-script text-gray-600">{{ $sellerProfile->shop_name }}</h2>
+        <h2 class="text-xl font-seaweed-script text-gray-600">{{ $sellerProfile->shop_name }}</h2>
     </div>
 
     <div class="p-4">
