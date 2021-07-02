@@ -248,7 +248,7 @@ class AjaxController extends Controller
                 $stake->user_id = $user->id;
                 $stake->type = 1;
                 $stake->amount = $bonus->net;
-                $stake->hash = 'Stake dari Bonus Royalty';
+                $stake->hash = 'Stake dari Bonus Royalty ' . date('d M Y');
                 $stake->save();
 
                 $lock->release();
