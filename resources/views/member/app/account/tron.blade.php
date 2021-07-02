@@ -39,7 +39,7 @@
                 <p style="font-size: 10px" class="font-extralight">{{$user->tron}}</p>
             </div>
             <div class="mt-2 flex justify-end">
-                <button id="reset-btn"
+                <button id="reset-btn" type="button"
                     class="rounded-lg py-1 px-2 h-8 bg-gradient-to-br from-red-400 to-purple-300 text-xs font-medium text-gray-700 outline-none focus:outline-none hover:shadow-lg hover:from-green-200 transition duration-200 ease-in-out">Reset
                     Address</button>
             </div>
