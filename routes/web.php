@@ -28,8 +28,12 @@ Route::domain('member.' . config('services.app.domain'))->group(function () {
     Route::post('/register', 'Auth\RegisterController@postRegister')->name('member.postRegister');
     Route::get('/ref/{ref}', 'Auth\RegisterController@getRegisterRef')->where(['ref' => '^[\w-]+$'])->name('member.registerRef');
 
-    Route::get('/forgot/passwd', 'FrontEnd\FrontEndController@getForgotPassword')->name('forgotPasswd');
-    Route::post('/forgot/passwd', 'FrontEnd\FrontEndController@postForgotPassword');
+    // Forgot Password
+    Route::get('/password/forgot', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('member.password.forgot');
+    Route::post('/password/forgot', 'Auth\ForgotPasswordController@postRequestResetPassword');
+    Route::get('/password/reset/{token}', 'Auth\ResetPasswordController@getResetPassword')->name('member.password.reset');
+    Route::post('/password/reset', 'Auth\ResetPasswordController@postResetPassword')->name('member.password.postReset');
+
     Route::get('/auth/passwd/{code}/{email}', 'FrontEnd\FrontEndController@getAuthPassword')->name('passwdauth');
     Route::post('/auth/passwd', 'FrontEnd\FrontEndController@postAuthPassword');
 

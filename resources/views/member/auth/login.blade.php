@@ -37,7 +37,7 @@
 
 
                     <div class="">
-                        <a href="/password/reset"
+                        <a href="{{ route('member.password.forgot') }}"
                             class="font-medium text-blue-700 hover:bg-blue-300 rounded-full p-2">Lupa Password?</a>
                     </div>
 

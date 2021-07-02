@@ -1,208 +1,81 @@
+
 <!doctype html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
-    <head>
-        <title></title>
-        <!--[if !mso]><!-- -->
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <!--<![endif]-->
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style type="text/css">
-            #outlook a { padding: 0; }
-            .ReadMsgBody { width: 100%; }
-            .ExternalClass { width: 100%; }
-            .ExternalClass * { line-height:100%; }
-            body { margin: 0; padding: 0; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
-            table, td { border-collapse:collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
-            img { border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; }
-            p { display: block; margin: 13px 0; }
-        </style>
-        <!--[if !mso]><!-->
-        <style type="text/css">
-            @media only screen and (max-width:480px) {
-            @-ms-viewport { width:320px; }
-            @viewport { width:320px; }
-            }
-        </style>
-        <!--<![endif]-->
-        <!--[if mso]>
-        <xml>
-            <o:OfficeDocumentSettings>
-                <o:AllowPNG/>
-                <o:PixelsPerInch>96</o:PixelsPerInch>
-            </o:OfficeDocumentSettings>
-        </xml>
-        <![endif]-->
-        <!--[if lte mso 11]>
-        <style type="text/css">
-            .outlook-group-fix {
-            width:100% !important;
-            }
-        </style>
-        <![endif]-->
-        <!--[if !mso]><!-->
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,500,700" rel="stylesheet" type="text/css">
-        <style type="text/css">
-            @import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,500,700);
-        </style>
-        <!--<![endif]-->
-        <style type="text/css">
-            @media only screen and (min-width:480px) {
-            .mj-column-per-100 { width:100%!important; }
-            }
-        </style>
-    </head>
-    <body style="background: #EBF2F5;">
-        <div class="mj-container" style="background-color:#EBF2F5;">
-            <!--[if mso | IE]>
-            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" align="center" style="width:600px;">
-                <tr>
-                    <td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;">
-                        <![endif]-->
-                        <div style="margin:0px auto;max-width:600px;">
-                            <table role="presentation" cellpadding="0" cellspacing="0" style="font-size:0px;width:100%;" align="center" border="0">
-                                <tbody>
-                                    <tr>
-                                        <td style="text-align:center;vertical-align:top;direction:ltr;font-size:0px;padding:20px 0px;padding-bottom:30px;padding-top:0px;"></td>
-                                    </tr>
-                                </tbody>
+<html lang="en-US">
+
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <title>Reset Password</title>
+    <meta name="description" content="Reset Password.">
+    <style type="text/css">
+        a:hover {text-decoration: underline !important;}
+    </style>
+</head>
+
+<body marginheight="0" topmargin="0" marginwidth="0" style="margin: 0px; background-color: #f2f3f8;" leftmargin="0">
+    <!--100% body table-->
+    <table cellspacing="0" border="0" cellpadding="0" width="100%" bgcolor="#f2f3f8"
+        style="@import url(https://fonts.googleapis.com/css?family=Rubik:300,400,500,700|Open+Sans:300,400,600,700); font-family: 'Open Sans', sans-serif;">
+        <tr>
+            <td>
+                <table style="background-color: #f2f3f8; max-width:670px;  margin:0 auto;" width="100%" border="0"
+                    align="center" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td style="height:80px;">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center;">
+                          <a href="https://lumbung.network" title="logo" target="_blank">
+                            <img width="60" src="{{ asset('image/icon_lumbung_2x.png') }}" title="lumbung network logo" alt="lumbung network logo">
+                          </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="height:20px;">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table width="95%" border="0" align="center" cellpadding="0" cellspacing="0"
+                                style="max-width:670px;background:#fff; border-radius:3px; text-align:center;-webkit-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);-moz-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);box-shadow:0 6px 18px 0 rgba(0,0,0,.06);">
+                                <tr>
+                                    <td style="height:40px;">&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:0 35px;">
+                                        <h1 style="color:#1e1e2d; font-weight:500; margin:0;font-size:32px;font-family:'Rubik',sans-serif;">
+                                            Halo, {{ $username }}! <br>
+                                            Anda mengajukan permintaan Reset Password</h1>
+                                        <span
+                                            style="display:inline-block; vertical-align:middle; margin:29px 0 26px; border-bottom:1px solid #cecece; width:100px;"></span>
+                                        <p style="color:#455056; font-size:15px;line-height:24px; margin:0;">
+                                            Anda bisa mengatur password baru dengan klik tombol Reset Password di bawah. <br><br>
+                                            <b>Bila anda tidak merasa ingin melakukan Reset Password, ABAIKAN pesan ini!</b>
+                                        </p>
+                                        <a href="{{ route('member.password.reset', ['token' => $token]) }}"
+                                            style="background:#20e277;text-decoration:none !important; font-weight:500; margin-top:35px; color:#fff;text-transform:uppercase; font-size:14px;padding:10px 24px;display:inline-block;border-radius:50px;">Reset
+                                            Password</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="height:40px;">&nbsp;</td>
+                                </tr>
                             </table>
-                        </div>
-                        <!--[if mso | IE]>
-                    </td>
-                </tr>
-            </table>
-            <![endif]-->
-            <!--[if mso | IE]>
-            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" align="center" style="width:600px;">
-                <tr>
-                    <td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;">
-                        <![endif]-->
-                        <div style="margin:0px auto;border-radius:4px;max-width:600px;background:#fff;">
-                            <table role="presentation" cellpadding="0" cellspacing="0" style="font-size:0px;width:100%;border-radius:4px;background:#fff;" align="center" border="0">
-                                <tbody>
-                                    <tr>
-                                        <td style="text-align:center;vertical-align:top;direction:ltr;font-size:0px;padding:1px;">
-                                            <!--[if mso | IE]>
-                                            <table role="presentation" border="0" cellpadding="0" cellspacing="0">
-                                                <tr>
-                                                    <td style="vertical-align:top;width:600px;">
-                                                        <![endif]-->
-                                                        <div class="mj-column-per-100 outlook-group-fix" style="vertical-align:top;display:inline-block;direction:ltr;font-size:13px;text-align:left;width:100%;">
-                                                            <table role="presentation" cellpadding="0" cellspacing="0" style="background:white;" width="100%" border="0">
-                                                                <tbody>
-                                                                    <tr>
-                                                                        <td style="word-wrap:break-word;font-size:0px;padding:10px 25px;padding-top:30px;" align="left">
-                                                                            <table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border-spacing:0px;" align="left" border="0">
-                                                                                <tbody>
-                                                                                </tbody>
-                                                                            </table>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td style="word-wrap:break-word;font-size:0px;padding:0px;padding-top:25px;" align="center">
-                                                                            <div style="cursor:auto;color:#000000;font-family:Open Sans, Proxima Nova, Arial, Arial, Helvetica, sans-serif;font-size:20px;line-height:22px;">
-<img alt="" height="auto" src="https://member.lumbung.network/image/logo_lumbung2.png" style="border:none;border-radius:0px;display:block;font-size:13px;outline:none;text-decoration:none;width:15%;height:auto;margin-bottom: 20px;" width="180">
-Reset Password
-</div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td style="word-wrap:break-word;font-size:0px;padding:20px;" align="center">
-                                                                            <div style="cursor:auto;color:#000000;font-family:Open Sans, Proxima Nova, Arial, Arial, Helvetica, sans-serif;font-size:14px;line-height:22px;text-align:center;">Klik dibawah untuk me-reset password userID anda</div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td style="word-wrap:break-word;font-size:0px;padding:11px 20px;padding-bottom:30px;padding-right:30px;padding-left:30px;" align="center">
-                                                                            <table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:separate;" align="center" border="0">
-                                                                                <tbody>
-                                                                                    <tr>
-                                                                                        <td style="border:none;border-radius:3px;color:white;cursor:auto;padding:10px 25px;" align="center" valign="middle" bgcolor="#269af1"><a href="{{ URL::to('/') }}/{{$dataLink}}/{{$email}}" style="text-decoration:none;background:#269af1;color:white;font-family:Open Sans, Proxima Nova, Arial, Arial, Helvetica, sans-serif;font-size:14px;font-weight:400;line-height:120%;text-transform:none;margin:0px;" target="_blank">Reset Password</a></td>
-                                                                                    </tr>
-                                                                                </tbody>
-                                                                            </table>
-                                                                        </td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                        <!--[if mso | IE]>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                            <![endif]-->
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <!--[if mso | IE]>
-                    </td>
-                </tr>
-            </table>
-            <![endif]-->
-            <!--[if mso | IE]>
-            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" align="center" style="width:600px;">
-                <tr>
-                    <td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;">
-                        <![endif]-->
-                        <div style="margin:0px auto;max-width:600px;">
-                            <table role="presentation" cellpadding="0" cellspacing="0" style="font-size:0px;width:100%;" align="center" border="0">
-                                <tbody>
-                                    <tr>
-                                        <td style="text-align:center;vertical-align:top;direction:ltr;font-size:0px;padding:15px 0px 0px;">
-                                            <!--[if mso | IE]>
-                                            <table role="presentation" border="0" cellpadding="0" cellspacing="0">
-                                                <tr>
-                                                    <td style="vertical-align:top;width:600px;">
-                                                        <![endif]-->
-                                                        <div class="mj-column-per-100 outlook-group-fix" style="vertical-align:top;display:inline-block;direction:ltr;font-size:13px;text-align:left;width:100%;">
-                                                            <table role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
-                                                                <tbody>
-                                                                    <tr>
-                                                                        <td style="word-wrap:break-word;font-size:0px;padding:0px;" align="center">
-                                                                            <div style="cursor:auto;color:#939daa;font-family:Open Sans, Proxima Nova, Arial, Arial, Helvetica, sans-serif;font-size:13px;line-height:22px;text-align:center;">
-                                                                                <a href="https://lumbung.network/" style="color: #939daa; display: inline-block; margin-right: 20px;text-decoration: none;">Main Site</a>
-                                                                            </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                        <!--[if mso | IE]>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                            <![endif]-->
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <!--[if mso | IE]>
-                    </td>
-                </tr>
-            </table>
-            <![endif]-->
-            <!--[if mso | IE]>
-            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" align="center" style="width:600px;">
-                <tr>
-                    <td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;">
-                        <![endif]-->
-                        <div style="margin:0px auto;max-width:600px;">
-                            <table role="presentation" cellpadding="0" cellspacing="0" style="font-size:0px;width:100%;" align="center" border="0">
-                                <tbody>
-                                    <tr>
-                                        <td style="text-align:center;vertical-align:top;direction:ltr;font-size:0px;padding:20px 0px;padding-bottom:30px;padding-top:0px;"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <!--[if mso | IE]>
-                    </td>
-                </tr>
-            </table>
-            <![endif]-->
-        </div>
-    </body>
+                        </td>
+                    <tr>
+                        <td style="height:20px;">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center;">
+                            <p style="font-size:14px; color:rgba(69, 80, 86, 0.7411764705882353); line-height:18px; margin:0 0 0;">&copy; <strong>Lumbung Network</strong></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="height:80px;">&nbsp;</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <!--/100% body table-->
+</body>
+
 </html>

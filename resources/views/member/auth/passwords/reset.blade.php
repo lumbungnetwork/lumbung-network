@@ -1,4 +1,4 @@
-@extends('finance.layout.app')
+@extends('member.components.main')
 @section('content')
 
 <div class="mt-10 flex flex-col justify-center px-6">
@@ -17,8 +17,8 @@
             <div class="px-10 lg:px-20 py-6">
 
                 <div class="flex justify-center">
-                    <img class="object-contain w-32 opacity-90" src="/image/lumbung-finance_2.png"
-                        alt="lumbung finance">
+                    <img class="object-contain w-32 opacity-90" src="/image/icon_lumbung_2x.png"
+                        alt="lumbung network">
                 </div>
 
                 @if (session('status'))
@@ -29,18 +29,15 @@
 
                 <!-- Layout  -->
                 <h1 class="text-3xl font-medium mb-2">Reset Password</h1>
-                <p class="text-sm">Fill this form to create new password.</p>
-                <form class="mt-5" action="/password/reset" method="POST" autocomplete="off">
+                <p class="text-sm">Silakan buat password baru anda.</p>
+                <form class="mt-5" action="{{ route('member.password.postReset') }}" method="POST" autocomplete="off">
                     @csrf
                     <input type="hidden" name="token" value="{{ $token }}">
-                    <label for="email" class="text-gray-500">Email</label>
+                    <label for="username" class="text-gray-500">Username</label>
                     <div class="mt-2 nm-inset-gray-50 rounded-xl p-2 ">
-                        <input type="text" class="w-full focus:outline-none bg-transparent" value="{{$email}}"
-                            name="email" id="email" required>
+                        <input type="text" class="w-full focus:outline-none bg-transparent" value="{{$username}}"
+                            disabled>
                     </div>
-                    @error('email')
-                    <div class="text-red-600">{{ $message }}</div>
-                    @enderror
                     <label for="password" class="text-gray-500">Password</label>
                     <div class="mt-2 nm-inset-gray-50 rounded-xl p-2 ">
                         <input type="password" class="w-full focus:outline-none bg-transparent" name="password"
@@ -50,15 +47,15 @@
                     @error('password')
                     <div class="text-red-600">{{ $message }}</div>
                     @enderror
-                    <label for="password_confirmation" class="text-gray-500">Re-type Password</label>
+                    <label for="password_confirmation" class="text-gray-500">Ulangi Password</label>
                     <div class="mt-2 nm-inset-gray-50 rounded-xl p-2 ">
                         <input type="password" class="w-full focus:outline-none bg-transparent"
                             name="password_confirmation" id="password_confirmation" required>
                     </div>
 
                     <button type="submit"
-                        class="mt-3 focus:outline-none focus:bg-yellow-400 text-center w-full bg-yellow-300 rounded-full text-black  py-3 font-medium">Reset
-                        Password</button>
+                        class="mt-3 focus:outline-none focus:bg-yellow-400 text-center w-full bg-yellow-300 rounded-full text-black  py-3 font-medium">Buat
+                        Password Baru</button>
 
                 </form>
 
