@@ -8,15 +8,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\DB;
-use App\Model\Bonus;
-use App\User;
-use IEXBase\TronAPI\Exception\TronException;
-use Illuminate\Support\Facades\Config;
-use App\Http\Controllers\Controller;
-use App\Jobs\eIDRrebalanceJob;
-use App\Notifications\eIDRNotification;
-use Telegram\Bot\Laravel\Facades\Telegram;
 use App\Model\Member\EidrBalance;
 use App\Model\Member\EidrBalanceTransaction;
 
@@ -59,24 +50,25 @@ class ManualTopUpeIDRjob implements ShouldQueue
             return;
         }
 
-        $method = 'Bank ' . $data->tx_id;
-        if ($data->method == 2) {
-            $method = 'TRON';
+        if ($this->approval == 1) {
+            $method = 'Bank ' . $data->tx_id;
+            if ($data->method == 2) {
+                $method = 'TRON';
+            }
+
+            // Create Internal eIDR balance
+            $balance = new EidrBalance;
+            $balance->user_id = $data->user_id;
+            $balance->amount = $data->amount;
+            $balance->type = 1;
+            $balance->source = 5;
+            $balance->tx_id = $data->id;
+            $balance->note = 'Deposit via ' . $method;
+            $balance->save();
+
+            $data->status = 2;
+            $data->save();
         }
-
-        // Create Internal eIDR balance
-        $balance = new EidrBalance;
-        $balance->user_id = $data->user_id;
-        $balance->amount = $data->amount;
-        $balance->type = 1;
-        $balance->source = 5;
-        $balance->tx_id = $data->id;
-        $balance->note = 'Deposit via ' . $method;
-        $balance->save();
-
-        $data->status = 2;
-        $data->save();
-
 
         return;
     }
