@@ -12,7 +12,7 @@ use App\User;
 use Telegram\Bot\Laravel\Facades\Telegram;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Config;
-use App\Model\Bonus;
+use DB;
 use IEXBase\TronAPI\Exception\TronException;
 use GuzzleHttp\Client;
 
@@ -51,6 +51,12 @@ class SendUnstakedLMBJob implements ShouldQueue
         // Get minimum timestamp for failcheck
         $minTimestamp = time() * 1000;
 
+        // Double Check
+        $unstakeData = DB::table('unstake')->where('staking_id', $this->staking_id)->first();
+        if ($unstakeData->status) {
+            $this->delete();
+        }
+
         $getUserTronAddress = User::where('id', $this->user_id)->select('tron')->first();
         $sendAmount = $this->amount * 1000000;
 
@@ -59,8 +65,8 @@ class SendUnstakedLMBJob implements ShouldQueue
         $tron->setPrivateKey(Config::get('services.tron.lmb_staking'));
 
         $to = $getUserTronAddress->tron;
-        $from = 'TY8JfoCbsJ4qTh1r9HBtmZ88xQLsb6MKuZ';
-        $tokenID = '1002640';
+        $from = config('services.tron.address.lmb_staking');
+        $tokenID = config('services.tron.token_id.lmb');
 
         //send LMB
         try {
@@ -79,7 +85,7 @@ class SendUnstakedLMBJob implements ShouldQueue
         if ($response['result'] == true) {
             $txHash = $response['txid'];
             //fail check
-            sleep(15);
+            sleep(10);
             try {
                 $tron->getTransaction($txHash);
             } catch (TronException $e) {
@@ -114,12 +120,19 @@ class SendUnstakedLMBJob implements ShouldQueue
                     'chat_id' => config('services.telegram.overlord'),
                     'text' => 'SendUnstakedLMB failcheck jump anomaly, UserID: ' . $this->user_id . ',tron addr: ' . $to . ', staking id: ' . $this->staking_id
                 ]);
-                return;
             }
 
             //log to app history
-            $modelBonus = new Bonus;
-            $modelBonus->updateUserStake('id', $this->staking_id, ['hash' => $txHash, 'updated_at' => date('Y-m-d H:i:s')]);
+            DB::table('unstake')->where('id', $unstakeData->id)->update([
+                'status' => 1,
+                'updated_at' => date('Y-m-d H:i:s')
+            ]);
+            DB::table('staking')->where('id', $this->staking_id)->update([
+                'hash' => $txHash,
+                'updated_at' => date('Y-m-d H:i:s')
+            ]);
+
+            return;
         }
     }
 }

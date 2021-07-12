@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use App\Model\Bonus;
 use App\Jobs\SendUnstakedLMBJob;
 
 class LMBunstakePatrol extends Command
@@ -47,12 +46,8 @@ class LMBunstakePatrol extends Command
             ->get();
 
         if (count($dataCheck) > 0) {
-            $modelBonus = new Bonus;
-
             foreach ($dataCheck as $data) {
                 SendUnstakedLMBJob::dispatch($data->user_id, $data->staking_id, $data->amount)->onQueue('tron');
-
-                $modelBonus->updateUnstakingData('id', $data->id, ['status' => 1, 'updated_at' => date('Y-m-d H:i:s')]);
             }
         }
     }
