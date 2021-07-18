@@ -14,20 +14,17 @@ return [
     |
     */
 
-    'mailgun' => [
-        'domain' => env('MAILGUN_DOMAIN'),
-        'secret' => env('MAILGUN_SECRET'),
-        'endpoint' => env('MAILGUN_ENDPOINT', 'api.mailgun.net'),
+    'affiliate' => [
+        'ksga' => [
+            'password' => env('KSGA_PASSWORD'),
+            '2fa' => env('KSGA_2FA')
+        ],
     ],
 
-    'ses' => [
-        'key' => env('SES_KEY'),
-        'secret' => env('SES_SECRET'),
-        'region' => env('SES_REGION', 'us-east-1'),
-    ],
-
-    'sparkpost' => [
-        'secret' => env('SPARKPOST_SECRET'),
+    'app' => [
+        'url' => env('BASE_URL'),
+        'domain' => env('APP_DOMAIN'),
+        'protocol_url' => env('APP_URL')
     ],
 
     'digiflazz' => [
@@ -44,50 +41,54 @@ return [
         'kbbmaster' => env('KBBMASTER'),
     ],
 
+    'lmb_div' => [
+        'proportion' => env('LMB_DIV_PROPORTION'),
+        'cellular' =>env('LMB_DIV_CELLULAR'),
+        'pln_prepaid' => env('LMB_DIV_PLNPREPAID'),
+        'telkom' => env('LMB_DIV_TELKOM'),
+        'pln_postpaid' => env('LMB_DIV_PLNPOSTPAID'),
+        'hp_postpaid' => env('LMB_DIV_HPPOSTPAID'),
+        'bpjs' => env('LMB_DIV_BPJS'),
+        'pdam' => env('LMB_DIV_PDAM'),
+        'pgn' => env('LMB_DIV_PGN'),
+        'multifinance' => env('LMB_DIV_MULTIFINANCE'),
+        'emoney' => env('LMB_DIV_EMONEY')
+    ],
+
     'telegram' => [
-        'eidr' => '1300893823:' . env('BEIDR'),
+        'eidr' => env('EIDRBOT_TOKEN'),
         'build' => env('AEIDR') . env('DEIDR'),
         'test' => env('CEIDR') . env('AEIDR'),
-        'lmb' => '1402924705:' . env('BLMB'),
+        'lmb' => env('LMBBOT_TOKEN'),
         'rebuild' => env('DLMB') . env('CLMB'),
         'retest' => env('DLMB') . env('ALMB'),
         'delegates' => env('TELEGRAM_DELEGATES_CHAT_ID'),
         'overlord' => env('TELEGRAM_OVERLORD_CHAT_ID'),
-        'webhook' => env('TELEGRAM_WEBHOOK_URL')
+        'webhook' => env('TELEGRAM_WEBHOOK_URL'),
+        'channel' => env('TELEGRAM_CHANNEL_ID')
 
-    ],
-
-    'telegram-bot-api' => [
-        'token' => '1402924705:' . env('BLMB')
     ],
 
     'tron' => [
         'lmb_staking' => env('LMBSTAKING'),
-        'lmb_distributor' => env('DLMB') . env('CLMB'),
-        'eidr_hot' => env('CEIDR') . env('AEIDR')
-    ],
-
-    'app' => [
-        'url' => env('BASE_URL'),
-        'domain' => env('APP_DOMAIN'),
-        'protocol_url' => env('APP_URL')
-    ],
-
-    'affiliate' => [
-        'ksga' => [
-            'password' => env('KSGA_PASSWORD'),
-            '2fa' => env('KSGA_2FA')
+        'lmb_distributor' => env('LMBDISTRIBUTOR'),
+        'eidr_hot' => env('EIDRHOT'),
+        'address' => [
+            'lmb_distributor' => env('LMBDISTRIBUTOR_ADDRESS'),
+            'lmb_staking' => env('LMBSTAKING_ADDRESS'),
+            'eidr_hot' => env('EIDRHOT_ADDRESS'),
+            'eidr_deposit' => env('EIDRDEPOSIT_ADDRESS'),
+            'burn' => env('TRONBURN_ADDRESS')
         ],
+        'token_id' => [
+            'lmb' => env('LMB_TOKEN_ID'),
+            'eidr' => env('EIDR_TOKEN_ID')
+        ],
+        'decimals' => [
+            'lmb' => env('LMB_DECIMALS'),
+            'eidr' => env('EIDR_DECIMALS')
+        ]
     ],
 
-    'stripe' => [
-        'model' => App\User::class,
-        'key' => env('STRIPE_KEY'),
-        'secret' => env('STRIPE_SECRET'),
-        'webhook' => [
-            'secret' => env('STRIPE_WEBHOOK_SECRET'),
-            'tolerance' => env('STRIPE_WEBHOOK_TOLERANCE', 300),
-        ],
-    ],
 
 ];
