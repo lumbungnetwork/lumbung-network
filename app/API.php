@@ -459,10 +459,10 @@ class API extends Model
     {
         $data = User::where('users.premium_at', '>=', $date->start_day)
                 ->where('users.premium_at', '<=', $date->end_day)
-                ->selectRaw('users.id, u1.username as sponsor, '
+                ->selectRaw('users.premium_at, u1.username as sponsor, '
                 . 'users.username')
                 ->leftJoin('users as u1', 'users.sponsor_id', '=', 'u1.id')
-                ->orderBy('users.id')
+                ->orderBy('users.premium_at')
                 ->get();
 
         return ['details' => $data];
