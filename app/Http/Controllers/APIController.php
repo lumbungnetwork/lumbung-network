@@ -155,6 +155,111 @@ class APIController extends Controller
         }
     }
 
+    // Lumbung Network API v.2.0
+    /**
+     * Get Total Count of Premium Membership bought, use empty default params for all-time count
+     * @param string $since
+     * @param string $until
+     * @return JSON
+     */ 
+    public function getPremiumMembershipRevenue($since = null, $until = null)
+    {
+        $modelAPI = new API;
+        if ($since && $until) {
+            // Check the parameter (if exists and valid)
+            if (!strtotime($since) || !strtotime($until)) {
+                return response()->json([], 400);
+            }
+            // Create date object to pass the time constraint
+            $date = (object) [
+                'start_day' => date('Y-m-d H:i:s', strtotime($since)),
+                'end_day' => date('Y-m-d H:i:s', strtotime($until))
+            ];
+            return response()->json($modelAPI->getPremiumMembershipCount($date), 200);
+        } elseif (!$since && !$until) {
+            // Return all time date when no parameter included
+            return response()->json($modelAPI->getPremiumMembershipCount(), 200);
+        } else {
+            return response()->json([], 400);
+        }
+    }
+
+    /**
+     * Get Details on Premium Membership Data by Monthly query
+     * @param string $year
+     * @param string $month
+     * @return JSON
+     */ 
+    public function getPremiumMembershipDetailbyMonth($year, $month)
+    {
+        $modelAPI = new API;
+        // Validate params
+        $timeScope = strtotime($year . '-' . $month);
+        if (!$timeScope) {
+            return response()->json([], 400);
+        }
+        // Build monthly date object
+        $date = (object) [
+            'start_day' => date('Y-m-01 00:00:00', $timeScope),
+            'end_day' => date('Y-m-t 23:59:59', $timeScope)
+        ];
+        return response()->json($modelAPI->getPremiumMembershipDetails($date), 200);
+    }
+
+    /**
+     * Get All Store total sales by Monthly query
+     * @param string $year
+     * @param string $month
+     * @return JSON
+     */ 
+    public function getAllStoreTotalSalesbyMonth($year = null, $month = null)
+    {
+        $modelAPI = new API;
+        // Validate params, use default when no param passed in
+        if (!$year && !$month) {
+            return response()->json([
+                'total' => $modelAPI->getAllStoreMonthlySales()
+            ], 200);
+        }
+        $timeScope = strtotime($year . '-' . $month);
+        if (!$timeScope) {
+            return response()->json([], 400);
+        }
+        // Build monthly date object
+        $date = (object) [
+            'start_day' => date('Y-m-01 00:00:00', $timeScope),
+            'end_day' => date('Y-m-t 23:59:59', $timeScope)
+        ];
+        return response()->json([
+            'total' => $modelAPI->getAllStoreMonthlySales($date)
+        ], 200);
+    }
+
+    /**
+     * Get Monthly data of Profit Sharing Pool, use empty params to get alltime data
+     * @param string $year
+     * @param string $month
+     * @return JSON
+     */ 
+    public function getProfitSharingPoolDetails($year = null, $month = null)
+    {
+        $modelAPI = new API;
+        // Validate params, use default when no param passed in
+        if (!$year && !$month) {
+            return response()->json($modelAPI->getProfitSharingPool(), 200);
+        }
+        $timeScope = strtotime($year . '-' . $month);
+        if (!$timeScope) {
+            return response()->json([], 400);
+        }
+        // Build monthly date object
+        $date = (object) [
+            'start_day' => date('Y-m-01 00:00:00', $timeScope),
+            'end_day' => date('Y-m-t 23:59:59', $timeScope)
+        ];
+        return response()->json($modelAPI->getProfitSharingPool($date), 200);
+    }
+
     public function getFinancePlatformLiquidity()
     {
         $ajaxController = new AjaxController;
