@@ -128,21 +128,21 @@
 
 <div class="mt-8 px-4 lg:px-10 lg:flex lg:flex-wrap lg:justify-center">
     <div class="p-3 rounded-2xl nm-flat-gray-50 lg:w-2/5">
-        <div class="my-2">
-            <p class="font-extralight text-gray-600 text-center text-2xl lg:text-4xl animate-pulse" id="dividends">
-                Rp103,892,928.21
+        <div class="my-2 flex flex-col items-center">
+            <p class="font-extralight text-gray-600 text-center text-2xl lg:text-4xl animate-pulse statistics bg-gray-400" id="dividends">
+                Rp000,000,000.00
             </p>
             <p class="text-sm lg:text-xl font-light text-center text-gray-600">Bagi Hasil</p>
         </div>
-        <div class="my-2">
-            <p class="font-extralight text-gray-600 text-center text-2xl lg:text-4xl animate-pulse" id="bonuses">
-                Rp103,892,928.21</p>
+        <div class="my-2 flex flex-col items-center">
+            <p class="font-extralight text-gray-600 text-center text-2xl lg:text-4xl animate-pulse statistics bg-gray-400" id="bonuses">
+                Rp000,000,000.00</p>
             <p class="text-sm lg:text-xl font-light text-center text-gray-600">Network Bonus</p>
         </div>
         <p class="text-sm lg:text-xl font-light text-center text-gray-600">...telah didistribusikan dari total:</p>
-        <div class="my-2">
-            <p class="font-extralight text-gray-600 text-center text-2xl lg:text-4xl animate-pulse" id="sales">
-                Rp3,103,892,928.21</p>
+        <div class="my-2 flex flex-col items-center">
+            <p class="font-extralight text-gray-600 text-center text-2xl lg:text-4xl animate-pulse statistics bg-gray-400" id="sales">
+                Rp000,000,000.00</p>
             <p class="text-sm lg:text-xl font-light text-center text-gray-600">Nilai Transaksi</p>
             <p class="text-sm lg:text-xl font-light text-center text-gray-600">Sejak November 2019</p>
         </div>
@@ -362,16 +362,15 @@
         function main() {
             $.ajax({
                 type: "GET",
-                url: "{{ route('api.statisticOverview') }}",
-                success: function(response) {
-                    var data = response.data.alltime;
-                    $('#dividends').html('Rp.' + data.lmb_dividend.toLocaleString('EN-us'));
-                    $('#dividends').removeClass('animate-pulse');
-                    $('#bonuses').html('Rp.' + data.network_bonus.toLocaleString('EN-us'));
-                    $('#bonuses').removeClass('animate-pulse');
-                    var sales = parseFloat(data.stockist_sales) + parseFloat(data.vendor_sales);
-                    $('#sales').html('Rp.' + sales.toLocaleString('EN-us'));
-                    $('#sales').removeClass('animate-pulse');
+                url: "{{ route('api.v2.main.statistic.overview') }}",
+                success: function(data) {
+                    
+                    setTimeout( () => {
+                        $('#dividends').html('Rp.' + data.dividend.toLocaleString('EN-us'));
+                        $('#bonuses').html('Rp.' + data.bonus.toLocaleString('EN-us'));
+                        $('#sales').html('Rp.' + data.sales.toLocaleString('EN-us'));
+                        $('.statistics').removeClass("animate-pulse bg-gray-400");
+                    }, 2000)
                     
                 }
             });

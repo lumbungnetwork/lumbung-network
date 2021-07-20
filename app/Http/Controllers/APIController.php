@@ -5,157 +5,43 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\API;
 use App\Http\Controllers\Finance\AjaxController;
+use App\User;
 use Illuminate\Support\Facades\Cache;
 
 class APIController extends Controller
 {
-    public function getStatisticOverviewCached()
-    {
-        $stats = Cache::remember('overview_statistic', 3600, function () {
-            return $this->getStatisticOverview();
-        });
+    // Lumbung Network API v.2.0
 
-        return $stats;
-    }
+    /**
+     * Get Statistic Overview
+     * All time Dividend, Network Bonus, Total Sales, Users count, Stores count
+     * @return JSON
+     */ 
     public function getStatisticOverview()
     {
-        $modelAPI = new API;
+        return Cache::remember('statistic_overview', 3600, function () {
+            $modelAPI = new API;
+            // Get All Sales
+            $physicalSales = $modelAPI->getAllStoreMonthlySales();
+            $digitalSales = $modelAPI->getAllDigitalSales();
+            // Calculate Dividend
+            $dividend = 0.02 * ($physicalSales + $digitalSales) * config('services.lmb_div.proportion');
+            // Get Network Bonus
+            $bonus = $modelAPI->getAllTimeNetworkBonus();
+            // Get Users and Stores count
+            $users = User::whereIn('user_type', [9, 10])->count();
+            $stores = User::where('is_store', 1)->count();
 
-        //all time
-        $activations = $modelAPI->getAllTimeActivations();
-        $totalWD = $modelAPI->getAllTimeNetworkBonus();
-        $stockistSales = $modelAPI->getAllTimeStockistSales();
-        $vendorSales = $modelAPI->getAllTimeVendorSales();
-        $LMBclaimedFromMarketplace = $modelAPI->getAllTimeClaimedLMBfromMarketplace();
-        $LMBclaimedFromNetwork = $modelAPI->getAllTimeClaimedLMBfromNetwork();
-        $lmbClaimed = $LMBclaimedFromMarketplace['total'] + $LMBclaimedFromNetwork['total'];
-        $getLmbDividend = $this->getStatisticDetail('all', 'dividend');
-        $lmbDividend = json_decode($getLmbDividend->getContent(), true);
-
-        //last month
-        $lastMonthData = $modelAPI->getLastMonthOverview();
-        $getLastMonthLmbDividend = $this->getStatisticDetail('last-month', 'dividend');
-        $lastMonthLMBDividend = json_decode($getLastMonthLmbDividend->getContent(), true);
-
-        $data = [
-            'alltime' => [
-                'account_activations' => $activations['total'],
-                'network_bonus' => $totalWD['total'],
-                'stockist_sales' => $stockistSales['total'],
-                'vendor_sales' => $vendorSales['total'],
-                'lmb_claimed' => floor($lmbClaimed),
-                'lmb_dividend' => $lmbDividend['data']['total']
-            ],
-            'last-month' => [
-                'account_activations' => $lastMonthData['activations'],
-                'network_bonus' => $lastMonthData['network_bonus'],
-                'stockist_sales' => $lastMonthData['stockist_sales'],
-                'vendor_sales' => $lastMonthData['vendor_sales'],
-                'lmb_claimed' => floor($lastMonthData['lmb_claimed']),
-                'lmb_dividend' => $lastMonthLMBDividend['data']['total']
-            ]
-        ];
-
-        return response()->json([
-            'data' => $data
-        ], 200);
+            return response()->json([
+                'dividend' => round($dividend, 2),
+                'bonus' => round($bonus, 2),
+                'sales' => $physicalSales + $digitalSales,
+                'users' => (int) $users,
+                'stores' => (int) $stores
+            ], 200);
+        });
     }
 
-    public function getStatisticDetail($time, $name)
-    {
-        $modelAPI = new API;
-        if ($time == 'all') {
-            if ($name == 'activations') {
-                $data = $modelAPI->getAllTimeActivations();
-                return response()->json([
-                    'data' => $data
-                ], 200);
-            } elseif ($name == 'lmb') {
-                $LMBclaimedFromMarketplace = $modelAPI->getAllTimeClaimedLMBfromMarketplace();
-                $LMBclaimedFromNetwork = $modelAPI->getAllTimeClaimedLMBfromNetwork();
-                return response()->json([
-                    'data' => [
-                        'claimed_from_marketplace' => $LMBclaimedFromMarketplace,
-                        'claimed_from_network' => $LMBclaimedFromNetwork
-                    ]
-                ], 200);
-            } elseif ($name == 'stockist-sales') {
-                $data = $modelAPI->getAllTimeStockistSales();
-                return response()->json([
-                    'data' => $data
-                ], 200);
-            } elseif ($name == 'vendor-sales') {
-                $data = $modelAPI->getAllTimeVendorSales();
-                return response()->json([
-                    'data' => $data
-                ], 200);
-            } else if ($name == 'dividend') {
-                $stockistContribution = $modelAPI->getAllTimeStockistSales();
-                $profitSharingPool = $modelAPI->getAllTimeProfitSharingPool();
-                return response()->json([
-                    'data' => [
-                        'profit_share' => $profitSharingPool['total'] * 80 / 100,
-                        'profit_share_details' => $profitSharingPool['detail'],
-                        'stockist_contribution' => $stockistContribution['total'] * 1 / 100,
-                        'total' => ($profitSharingPool['total'] * 80 / 100) + ($stockistContribution['total'] * 1 / 100)
-                    ]
-                ], 200);
-            } elseif ($name == 'network-bonus') {
-                $data = $modelAPI->getAllTimeNetworkBonus();
-                return response()->json([
-                    'data' => $data
-                ]);
-            }
-        } elseif ($time == 'last-month') {
-            $last_month = (object) array(
-                'start_day' => date("Y-m-d", strtotime("first day of previous month")),
-                'end_day' => date("Y-m-d", strtotime("last day of previous month"))
-            );
-            if ($name == 'activations') {
-                $data = $modelAPI->getActivations($last_month);
-                return response()->json([
-                    'data' => $data
-                ], 200);
-            } elseif ($name == 'dividend') {
-                $stockistContribution = $modelAPI->getStockistSales($last_month);
-                $profitSharingPool = $modelAPI->getProfitSharingPool($last_month);
-                return response()->json([
-                    'data' => [
-                        'profit_share' => $profitSharingPool['total'] * 70 / 100,
-                        'profit_share_details' => $profitSharingPool['detail'],
-                        'stockist_contribution' => $stockistContribution['total'] * 1 / 100,
-                        'total' => ($profitSharingPool['total'] * 70 / 100) + ($stockistContribution['total'] * 1 / 100)
-                    ]
-                ], 200);
-            } elseif ($name == 'vendor-sales') {
-                $data = $modelAPI->getVendorSales($last_month);
-                return response()->json([
-                    'data' => $data
-                ], 200);
-            } elseif ($name == 'stockist-sales') {
-                $data = $modelAPI->getStockistSales($last_month);
-                return response()->json([
-                    'data' => $data
-                ], 200);
-            } elseif ($name == 'network-bonus') {
-                $data = $modelAPI->getNetworkBonus($last_month);
-                return response()->json([
-                    'data' => $data
-                ], 200);
-            } elseif ($name == 'lmb') {
-                $LMBclaimedFromMarketplace = $modelAPI->getClaimedLMBfromMarketplace($last_month);
-                $LMBclaimedFromNetwork = $modelAPI->getClaimedLMBfromNetwork($last_month);
-                return response()->json([
-                    'data' => [
-                        'claimed_from_marketplace' => $LMBclaimedFromMarketplace,
-                        'claimed_from_network' => $LMBclaimedFromNetwork
-                    ]
-                ], 200);
-            }
-        }
-    }
-
-    // Lumbung Network API v.2.0
     /**
      * Get Total Count of Premium Membership bought, use empty default params for all-time count
      * @param string $since
@@ -207,7 +93,7 @@ class APIController extends Controller
     }
 
     /**
-     * Get All Store total sales by Monthly query
+     * Get All Store total sales by Monthly query, use empty param to get All time data
      * @param string $year
      * @param string $month
      * @return JSON
@@ -236,6 +122,35 @@ class APIController extends Controller
     }
 
     /**
+     * Get All Digital Product sales by Monthly query, use empty param to get All time data
+     * @param string $year
+     * @param string $month
+     * @return JSON
+     */ 
+    public function getDigitalProductTotalSales($year = null, $month = null)
+    {
+        $modelAPI = new API;
+        // Validate params, use default when no param passed in
+        if (!$year && !$month) {
+            return response()->json([
+                'total' => $modelAPI->getAllDigitalSales()
+            ], 200);
+        }
+        $timeScope = strtotime($year . '-' . $month);
+        if (!$timeScope) {
+            return response()->json([], 400);
+        }
+        // Build monthly date object
+        $date = (object) [
+            'start_day' => date('Y-m-01 00:00:00', $timeScope),
+            'end_day' => date('Y-m-t 23:59:59', $timeScope)
+        ];
+        return response()->json([
+            'total' => $modelAPI->getAllDigitalSales($date)
+        ], 200);
+    }
+
+    /**
      * Get Monthly data of Profit Sharing Pool, use empty params to get alltime data
      * @param string $year
      * @param string $month
@@ -260,6 +175,35 @@ class APIController extends Controller
         return response()->json($modelAPI->getProfitSharingPool($date), 200);
     }
 
+    /**
+     * Get All Time LMB Dividend from All Sales
+     * Store contribution for every sales = 2% (0.02)
+     * LMB Proportion set by community consensus
+     * @return JSON
+     */ 
+    public function getAllTimeLMBDividend()
+    {
+        $modelAPI = new API;
+        $physicalSales = $modelAPI->getAllStoreMonthlySales();
+        $digitalSales = $modelAPI->getAllDigitalSales();
+
+        $dividend = 0.02 * ($physicalSales + $digitalSales) * config('services.lmb_div.proportion');
+
+        return response()->json(['total' => $dividend], 200);
+    }
+
+    /**
+     * Get All Time Network Bonus (Including Legacy)
+     * Sponsor Bonus and Binary Bonus
+     * @return JSON
+     */ 
+    public function getAllTimeNetworkBonus()
+    {
+        $modelAPI = new API;
+        return response()->json(['total' => $modelAPI->getAllTimeNetworkBonus()], 200);
+    }
+
+    // Lumbung Finance related APIs
     public function getFinancePlatformLiquidity()
     {
         $ajaxController = new AjaxController;
