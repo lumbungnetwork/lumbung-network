@@ -28,4 +28,6 @@ Route::prefix('/v2')->group(function () {
     Route::get('/main/statistic/lmb-dividend', 'APIController@getAllTimeLMBDividend')->name('api.v2.main.statistic.lmb_dividend');
     Route::get('/main/statistic/network-bonus', 'APIController@getAllTimeNetworkBonus')->name('api.v2.main.statistic.network_bonus');
     Route::get('/main/statistic/overview', 'APIController@getStatisticOverview')->name('api.v2.main.statistic.overview');
+
+    Route::get('/finance/platform-liquidity', 'APIController@getFinancePlatformLiquidity')->name('finance.platform-liquidity');
 });
