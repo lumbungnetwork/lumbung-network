@@ -39,6 +39,7 @@ class SudoCommand extends Command
         $response = $this->getUpdate();
         $chat_id = $response->getMessage()->getChat()->getId();
         $textContent = $response->getMessage()->getText();
+        $banks = ['MANDIRI', 'BCA', 'BRI'];
 
         $modelMember = new Member;
 
@@ -67,11 +68,21 @@ class SudoCommand extends Command
                     $text = 'Topup amount insufficient!';
                     $this->replyWithMessage(compact('text'));
                     return;
+                } elseif (!isset($params[4]) || !in_array(strtoupper($params[4]), $banks)) {
+                    $text = 'Wrong Bank format!';
+                    $this->replyWithMessage(compact('text'));
+                    return;
+                } elseif (!isset($params[5])) {
+                    $text = 'Bank owner\'s name needed';
+                    $this->replyWithMessage(compact('text'));
+                    return;
                 } else {
                     $username   = Config::get('services.digiflazz.user');
                     $apiKey   = Config::get('services.digiflazz.key');
                     $sign = md5($username . $apiKey . 'deposit');
                     $amount = (int) $params[3];
+                    $bank = strtoupper($params[4]);
+                    $owner_name = strtoupper($params[5]);
 
                     $url = 'https://api.digiflazz.com/v1/deposit';
                     $client = new Client;
@@ -80,8 +91,8 @@ class SudoCommand extends Command
                             'json' => [
                                 'username' => $username,
                                 'amount' => $amount,
-                                'Bank' => 'BRI',
-                                'owner_name' => 'Lumbung',
+                                'Bank' => $bank,
+                                'owner_name' => $owner_name,
                                 'sign' => $sign
                             ]
                         ]);
