@@ -154,7 +154,7 @@
                 <form action="{{ route('finance.contracts.post.upgrade', ['contract_id' => $contract->id]) }}"
                     method="POST">
                     @csrf
-                    <input type="hidden" id="hash" name="hash" value="0">
+                    <input type="hidden" name="hash" value="0">
                     <div class="flex justify-center">
                         <button type="submit"
                             class="mt-3 py-3 px-1 bg-gray-500 rounded-2xl w-32 text-white text-xs focus:outline-none focus:bg-gray-600">Upgrade
@@ -504,9 +504,14 @@
                                     );
                                     if (tx.transaction.txID !== undefined) {
                                         $('#hash').val(tx.transaction.txID);
-                                        $('#trc10-confirm-form').submit();
-                                        Swal.fire('Verifying...');
-                                        Swal.showLoading();
+                                        if (tx.transaction.txID.length == 64) {
+                                            $('#trc10-confirm-form').submit();
+                                            Swal.fire('Verifying...');
+                                            Swal.showLoading();
+                                        } else {
+                                            eAlert('Submit Failed, Please Report to Admin');
+                                        }
+                                        
                                     } else {
                                         eAlert('Transaction Failed, Try again later');
                                     }
