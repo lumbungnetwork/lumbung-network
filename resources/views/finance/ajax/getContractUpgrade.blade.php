@@ -41,15 +41,6 @@
         </div>
         <p class="text-sm text-center text-gray-400">Click on the type of LMB you want to burn.</p>
 
-
-
-        <div>
-            <form action="{{ route('finance.account.activate.postTRC10') }}" method="POST" id="trc10-confirm-form">
-                @csrf
-                <input type="hidden" id="hash" name="hash" value="0">
-            </form>
-        </div>
-
     </div>
     @endif
 
