@@ -112,17 +112,20 @@
 
 @section('scripts')
 <script>
-    // Doc ready func
-    $(document).ready(function () {
-        setTimeout(function () {
-            main()
-        }, 200)
-    });
-
     var _LMBbalance = 0;
     let _token = '{{ csrf_token() }}';
     const netDividend = {{$userDividend->net}};
     const userStakedLMB = {{$userStakedLMB}};
+    
+    // Doc ready func
+    $(document).ready(function () {
+        setTimeout(function () {
+            main();
+            if (userStakedLMB > 0) {
+                $('#unstake-btn').attr("disabled", false);
+            }
+        }, 200)
+    });
 
     //TronWeb
     var toAddress = 'TY8JfoCbsJ4qTh1r9HBtmZ88xQLsb6MKuZ';
@@ -136,9 +139,6 @@
         tronWeb = window.tronWeb;
         try {
             await showTronBalance();
-            if (userStakedLMB > 0) {
-                $('#unstake-btn').attr("disabled", false);
-            }
         } catch (a) {
             console.log(a);
         }
