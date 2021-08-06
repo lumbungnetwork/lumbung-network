@@ -54,8 +54,10 @@
             <div>
                 <p class="text-xs text-gray-500">Your Stake</p>
                 <p class="text-md font-light text-gray-700">{{number_format($userStakedLMB)}} LMB</p>
-                <small
-                    class="text-xs font-light text-gray-500">({{number_format($userStakedLMB/$totalStakedLMB * 100, 2)}}%)</small>
+                <small class="text-xs font-light text-gray-500">({{number_format($userStakedLMB/$totalStakedLMB * 100, 2)}}%)</small>
+                @if ($userUnstaking)
+                <p class="text-sm font-medium text-yellow-500">Unstaking Process: {{number_format($userUnstaking, 2)}} LMB</p>
+                @endif
 
             </div>
             <div class="my-1 pt-2">
@@ -134,6 +136,9 @@
         tronWeb = window.tronWeb;
         try {
             await showTronBalance();
+            if (userStakedLMB > 0) {
+                $('#unstake-btn').attr("disabled", false);
+            }
         } catch (a) {
             console.log(a);
         }
@@ -171,11 +176,6 @@
             } else {
                 $('#tronweb-warning').html('No LMB Available');
             }
-
-            if ({{$userStakedLMB}} > 0) {
-                $('#unstake-btn').attr("disabled", false);
-            }
-            
             
             $(".availableLMB").html(`<small class='text-gray-500 font-light'>Available: ${LMBbalance.toLocaleString("en-US")} LMB`);
         
