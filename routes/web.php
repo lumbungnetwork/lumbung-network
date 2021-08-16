@@ -207,27 +207,6 @@ Route::domain('member.' . config('services.app.domain'))->group(function () {
 
 });
 
-Route::group(['domain' => 'finance.' . config('services.app.domain')], function () {
-    Route::get('/', function () {
-        return view('lumbung_finance')->with('title', 'Lumbung Finance');
-    });
-
-    Route::get('/login', 'FinanceAuth\LoginController@showLoginForm');
-    Route::post('/login', 'FinanceAuth\LoginController@postLogin')->name('finance.login');
-    Route::post('/logout', 'FinanceAuth\LoginController@logout');
-
-    Route::get('/register', 'FinanceAuth\RegisterController@showRegistrationForm')->name('finance.register');
-    Route::get('/ref/{referral}', 'FinanceAuth\RegisterController@getRegisterRef');
-    Route::post('/register', 'FinanceAuth\RegisterController@postRegister');
-
-    Route::post('/password/email', 'FinanceAuth\ForgotPasswordController@sendResetLinkEmail');
-    Route::post('/password/reset', 'FinanceAuth\ResetPasswordController@reset');
-    Route::get('/password/reset', 'FinanceAuth\ForgotPasswordController@showLinkRequestForm');
-    Route::get('/password/reset/{token}', 'FinanceAuth\ResetPasswordController@showResetForm');
-
-});
-
-
 //main domain
 
 Route::get('/', function () {
