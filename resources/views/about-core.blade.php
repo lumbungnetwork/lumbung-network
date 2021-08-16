@@ -1,4 +1,4 @@
-@extends('finance.layout.app')
+@extends('member.components.main')
 @section('content')
 <div class="mt-4 px-4 py-2 lg:px-24">
     <div class="aspect-w-16 aspect-h-9">

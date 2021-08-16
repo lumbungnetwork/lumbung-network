@@ -1,61 +1,37 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+<p align="center"><a href="https://lumbung.network" target="_blank"><img src="https://avatars.githubusercontent.com/u/83419736?s=200&v=4" width="400"></a></p>
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
 
-## About Laravel
+## About Lumbung Network
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Lumbung Network is a community of buyers, sellers and marketeers of staples, daily goods and essential supplies, committed to create new revolution on daily economic activities by distributing all the revenue on this platform to all its member as daily dividend. The dividend will be distributed proportionally to each member's staked LMB (a reward token gained from every activity on Lumbung Network platform).
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Lumbung Network use TRON Main Network's blockchain as public ledger to account all rewards and dividend distribution, enabling trustless consensus among every member, making Lumbung Network community a literal Decentralized Autonomous Organization (DAO).
+It has no owner, it's owned collectively by its community.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Free tier membership to access all basic feature, and gain reward token (LMB) from shopping physical or digital goods for everyday needs.
+- Affordable one time contribution to get Premium access, gain Dividend from LMB Staking, access to open Shop and start selling your goods.
+- Decentralized, democratized, every member has their own saying and can voice their inputs to the community or by delegating to elected Delegates.
+- Built on blockchain technology to support transparency, trustless transaction, secure and future proof technology.
 
-## Learning Laravel
+LMB (Lumbung Network Reward Token)
+- No pre-mine, no reserve, no ICO, no Presale, no Developer's or platform's cut.
+- Every LMB can only mined through participation on buying, selling or market any products on Lumbung Network.
+- Gain priviledges and access to many future projects, gain daily dividends while staked.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Development and Support
 
-## Laravel Sponsors
+Lumbung Network and all of its ecosystems developed by [Evan Stinger](https://evanstinger.com).
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[OP.GG](https://op.gg)**
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Thank you for considering contributing to the Lumbung Network! At this time, any contributor could reach Evan Stinger directly, contact can be found on his website.
 
 ## Security Vulnerabilities
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+If you discover a security vulnerability within Lumbung Network, please send an e-mail to Evanstinger via [contact@evanstinger.com](mailto:contact@evanstinger.com). All security vulnerabilities will be promptly addressed.
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Lumbung Network is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

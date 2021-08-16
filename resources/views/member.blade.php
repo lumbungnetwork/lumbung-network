@@ -1,4 +1,4 @@
-@extends('finance.layout.app')
+@extends('member.components.main')
 @section('content')
 
 <div class="mt-8 min-w-full flex flex-col justify-center px-3 sm:px-4">
