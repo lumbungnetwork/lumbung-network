@@ -110,14 +110,14 @@ class SendUnstakedLMBJob implements ShouldQueue
                 // If transaction not found, this job fails
                 if (!$done) {
                     Telegram::sendMessage([
-                        'chat_id' => config('services.telegram.overlord'),
+                        'chat_id' => config('services.telegram.supervisor'),
                         'text' => 'SendUnstakedLMB Fail on FAILCHECK, UserID: ' . $this->user_id . ',tron addr: ' . $to . ', staking id: ' . $this->staking_id
                     ]);
                     $this->fail();
                 }
 
                 Telegram::sendMessage([
-                    'chat_id' => config('services.telegram.overlord'),
+                    'chat_id' => config('services.telegram.supervisor'),
                     'text' => 'SendUnstakedLMB failcheck jump anomaly, UserID: ' . $this->user_id . ',tron addr: ' . $to . ', staking id: ' . $this->staking_id
                 ]);
             }

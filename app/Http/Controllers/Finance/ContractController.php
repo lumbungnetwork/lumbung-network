@@ -389,7 +389,7 @@ class ContractController extends Controller
             $text .= 'Hash: ' . $hash . chr(10);
 
             Telegram::sendMessage([
-                'chat_id' => config('services.telegram.overlord'),
+                'chat_id' => config('services.telegram.supervisor'),
                 'text' => $text,
                 'parse_mode' => 'markdown'
             ]);
@@ -467,14 +467,14 @@ class ContractController extends Controller
                 return redirect()->back();
             }
 
-            // Send notification to overlord
+            // Send notification to supervisor
             $text = 'Break Contract emitted' . chr(10);
             $text .= 'User: ' . $user->username . chr(10);
             $text .= 'Contract ID: ' . $contract->id . chr(10);
             $text .= 'Amount: ' . $amount . chr(10);
 
             Telegram::sendMessage([
-                'chat_id' => config('services.telegram.overlord'),
+                'chat_id' => config('services.telegram.supervisor'),
                 'text' => $text,
                 'parse_mode' => 'markdown'
             ]);

@@ -118,14 +118,14 @@ class SendLMBRewardMarketplaceJob implements ShouldQueue
                 // If transaction not found, this job fails
                 if (!$done) {
                     Telegram::sendMessage([
-                        'chat_id' => config('services.telegram.overlord'),
+                        'chat_id' => config('services.telegram.supervisor'),
                         'text' => 'SendLMBRewardMarketplace Fail on FAILCHECK, UserID: ' . $user->id . ',tron addr: ' . $to . ', reward id: ' . $this->reward_id
                     ]);
                     $this->fail();
                 }
 
                 Telegram::sendMessage([
-                    'chat_id' => config('services.telegram.overlord'),
+                    'chat_id' => config('services.telegram.supervisor'),
                     'text' => 'SendLMBRewardMarketplace failcheck jump anomaly, user: ' . $user->id . ',tron addr: ' . $to . ', reward id: ' . $this->reward_id
                 ]);
                 return;
@@ -162,7 +162,7 @@ class SendLMBRewardMarketplaceJob implements ShouldQueue
                 //Notify when LMBbalance low
 
                 Telegram::sendMessage([
-                    'chat_id' => config('services.telegram.overlord'),
+                    'chat_id' => config('services.telegram.supervisor'),
                     'text' => $LMBbalance . ' LMB left in Distribution account',
                     'parse_mode' => 'markdown'
                 ]);

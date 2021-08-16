@@ -162,7 +162,7 @@ class FireDigiflazzTransactionJob implements ShouldQueue
             //low balance notif
             if ($payload['data']['buyer_last_saldo'] < 1500000) {
                 Telegram::sendMessage([
-                    'chat_id' => config('services.telegram.overlord'),
+                    'chat_id' => config('services.telegram.supervisor'),
                     'text' => 'Digiflazz balance left: Rp' . number_format($payload['data']['buyer_last_saldo'], 0)
                 ]);
             }

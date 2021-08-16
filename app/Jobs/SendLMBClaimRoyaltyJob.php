@@ -72,7 +72,7 @@ class SendLMBClaimRoyaltyJob implements ShouldQueue
             $response = $tron->sendRawTransaction($signedTransaction);
         } catch (TronException $e) {
             Telegram::sendMessage([
-                'chat_id' => config('services.telegram.overlord'),
+                'chat_id' => config('services.telegram.supervisor'),
                 'text' => 'SendLMBClaimRoyalty Fail, ID: ' . $bonus->id . ' UserID: ' . $user->id . ' to: ' . $to . ', amount: ' . $bonus->amount
             ]);
             $this->fail();
@@ -80,7 +80,7 @@ class SendLMBClaimRoyaltyJob implements ShouldQueue
 
         if (!isset($response['result'])) {
             Telegram::sendMessage([
-                'chat_id' => config('services.telegram.overlord'),
+                'chat_id' => config('services.telegram.supervisor'),
                 'text' => 'SendLMBClaimRoyalty Fail, ID: ' . $bonus->id . ' UserID: ' . $user->id . ' to: ' . $to . ', amount: ' . $bonus->amount
             ]);
             $this->fail();
@@ -120,7 +120,7 @@ class SendLMBClaimRoyaltyJob implements ShouldQueue
             if ($LMBbalance < 2000) {
                 //Notify supervisor
                 Telegram::sendMessage([
-                    'chat_id' => config('services.telegram.overlord'),
+                    'chat_id' => config('services.telegram.supervisor'),
                     'text' => $LMBbalance . ' LMB left in Distribution account',
                     'parse_mode' => 'markdown'
                 ]);
@@ -132,7 +132,7 @@ class SendLMBClaimRoyaltyJob implements ShouldQueue
                 $tron->getTransaction($txHash);
             } catch (TronException $e) {
                 Telegram::sendMessage([
-                    'chat_id' => config('services.telegram.overlord'),
+                    'chat_id' => config('services.telegram.supervisor'),
                     'text' => 'SendLMBClaimRoyalty Fail on FAILCHECK, ID: ' . $bonus->id . ' UserID: ' . $user->id . ' to: ' . $to . ', amount: ' . $bonus->amount
                 ]);
                 $this->fail();

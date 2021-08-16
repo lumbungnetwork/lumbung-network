@@ -80,7 +80,7 @@ class AjaxController extends Controller
                 $message_text .= 'Amount: $' . number_format($amount) . chr(10);
 
                 Telegram::sendMessage([
-                    'chat_id' => Config::get('services.telegram.overlord'),
+                    'chat_id' => Config::get('services.telegram.supervisor'),
                     'text' => $message_text,
                     'parse_mode' => 'markdown'
                 ]);

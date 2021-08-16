@@ -52,7 +52,7 @@ class eIDRrebalanceJob implements ShouldQueue
                 $response = $tron->sendRawTransaction($signedTransaction);
             } catch (TronException $e) {
                 Telegram::sendMessage([
-                    'chat_id' => config('services.telegram.overlord'),
+                    'chat_id' => config('services.telegram.supervisor'),
                     'text' => 'eIDR Rebalancing Failed'
                 ]);
                 $this->fail();
@@ -60,7 +60,7 @@ class eIDRrebalanceJob implements ShouldQueue
 
             if (!isset($response['result'])) {
                 Telegram::sendMessage([
-                    'chat_id' => config('services.telegram.overlord'),
+                    'chat_id' => config('services.telegram.supervisor'),
                     'text' => 'eIDR Rebalancing Failed'
                 ]);
                 $this->fail();
@@ -73,7 +73,7 @@ class eIDRrebalanceJob implements ShouldQueue
                 $tron->getTransaction($txHash);
             } catch (TronException $e) {
                 Telegram::sendMessage([
-                    'chat_id' => config('services.telegram.overlord'),
+                    'chat_id' => config('services.telegram.supervisor'),
                     'text' => 'eIDR Rebalancing Failed on FAIL CHECK'
                 ]);
                 $this->fail();
@@ -84,7 +84,7 @@ class eIDRrebalanceJob implements ShouldQueue
         $message_text .= 'From Deposit: Rp' . number_format($depositBalance) . chr(10);
 
         Telegram::sendMessage([
-            'chat_id' => config('services.telegram.overlord'),
+            'chat_id' => config('services.telegram.supervisor'),
             'text' => $message_text,
             'parse_mode' => 'markdown'
         ]);

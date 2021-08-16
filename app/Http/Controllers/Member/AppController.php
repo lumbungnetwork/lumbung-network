@@ -463,7 +463,7 @@ class AppController extends Controller
             $text .= 'transaction_id: ' . $data->id;
 
             Telegram::sendMessage([
-                'chat_id' => config('services.telegram.overlord'),
+                'chat_id' => config('services.telegram.supervisor'),
                 'text' => $text
             ]);
 

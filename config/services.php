@@ -63,7 +63,7 @@ return [
         'rebuild' => env('DLMB') . env('CLMB'),
         'retest' => env('DLMB') . env('ALMB'),
         'delegates' => env('TELEGRAM_DELEGATES_CHAT_ID'),
-        'overlord' => env('TELEGRAM_OVERLORD_CHAT_ID'),
+        'supervisor' => env('TELEGRAM_OVERLORD_CHAT_ID'),
         'webhook' => env('TELEGRAM_WEBHOOK_URL'),
         'channel' => env('TELEGRAM_CHANNEL_ID')
 

@@ -121,7 +121,7 @@ class ClaimNetworkRewardJob implements ShouldQueue
                 // If transaction not found, this job fails
                 if (!$done) {
                     Telegram::sendMessage([
-                        'chat_id' => config('services.telegram.overlord'),
+                        'chat_id' => config('services.telegram.supervisor'),
                         'text' => 'ClaimNetworkRewardJob Fail on FAILCHECK, UserID: ' . $user->id . ',tron addr: ' . $to . ', reward id: ' . $this->claimRewardID
                     ]);
                     $this->fail();
@@ -166,7 +166,7 @@ class ClaimNetworkRewardJob implements ShouldQueue
                 //Notify when LMBbalance low
 
                 Telegram::sendMessage([
-                    'chat_id' => config('services.telegram.overlord'),
+                    'chat_id' => config('services.telegram.supervisor'),
                     'text' => $LMBbalance . ' LMB left in Distribution account',
                     'parse_mode' => 'markdown'
                 ]);

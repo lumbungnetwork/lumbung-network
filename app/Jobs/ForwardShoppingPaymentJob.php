@@ -72,7 +72,7 @@ class ForwardShoppingPaymentJob implements ShouldQueue
 
             if ($sellerTron == null) {
                 Telegram::sendMessage([
-                    'chat_id' => config('services.telegram.overlord'),
+                    'chat_id' => config('services.telegram.supervisor'),
                     'text' => 'ForwardShoppingPaymentJob failed because the seller address is null' . chr(10) . 'Seller: ' . $seller->usernamed
                 ]);
                 $this->delete();
@@ -94,7 +94,7 @@ class ForwardShoppingPaymentJob implements ShouldQueue
                 $response = $tron->sendRawTransaction($signedTransaction);
             } catch (TronException $e) {
                 Telegram::sendMessage([
-                    'chat_id' => config('services.telegram.overlord'),
+                    'chat_id' => config('services.telegram.supervisor'),
                     'text' => 'ForwardShoppingPayment Fail, UserID: ' . $seller->id . ' sales_id: ' . $this->masterSalesID
                 ]);
                 return;
@@ -102,7 +102,7 @@ class ForwardShoppingPaymentJob implements ShouldQueue
 
             if (!isset($response['result'])) {
                 $response = Telegram::sendMessage([
-                    'chat_id' => config('services.telegram.overlord'),
+                    'chat_id' => config('services.telegram.supervisor'),
                     'text' => 'ForwardShoppingPayment Fail, UserID: ' . $seller->id . ' sales_id: ' . $this->masterSalesID
                 ]);
                 return;
@@ -121,7 +121,7 @@ class ForwardShoppingPaymentJob implements ShouldQueue
                     $tron->getTransaction($response['txid']);
                 } catch (TronException $e) {
                     Telegram::sendMessage([
-                        'chat_id' => config('services.telegram.overlord'),
+                        'chat_id' => config('services.telegram.supervisor'),
                         'text' => 'ForwardShoppingPayment Fail, UserID: ' . $seller->id . ' sales_id: ' . $this->masterSalesID
                     ]);
                     $this->fail();
@@ -144,7 +144,7 @@ class ForwardShoppingPaymentJob implements ShouldQueue
                 return;
             } else {
                 Telegram::sendMessage([
-                    'chat_id' => config('services.telegram.overlord'),
+                    'chat_id' => config('services.telegram.supervisor'),
                     'text' => 'ForwardShoppingPaymentJob failed cause: response result != true' . chr(10) . 'MasterSalesID: ' . $this->masterSalesID
                 ]);
                 $this->fail();

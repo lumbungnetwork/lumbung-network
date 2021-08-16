@@ -325,7 +325,7 @@ class AppController extends Controller
         $afterUSDTbalance = $modelUSDT->getUserNetUSDTbalance($user->id);
         if ($afterUSDTbalance != $newUSDTBalance) {
             Telegram::sendMessage([
-                'chat_id' => Config::get('services.telegram.overlord'),
+                'chat_id' => Config::get('services.telegram.supervisor'),
                 'text' => 'Anomaly in USDT Withdraw UserID: ' . $user->id,
                 'parse_mode' => 'markdown'
             ]);
@@ -339,7 +339,7 @@ class AppController extends Controller
         $text .= 'Amount: ' . $net . chr(10);
 
         Telegram::sendMessage([
-            'chat_id' => Config::get('services.telegram.overlord'),
+            'chat_id' => Config::get('services.telegram.supervisor'),
             'text' => $text,
             'parse_mode' => 'markdown'
         ]);

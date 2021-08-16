@@ -40,7 +40,7 @@ class SudoCommand extends Command
         $username   = config('services.digiflazz.user');
         $apiKey   = config('services.digiflazz.key');
 
-        if ($chat_id != config('services.telegram.overlord')) {
+        if ($chat_id != config('services.telegram.supervisor')) {
             $text = 'unauthorized access!';
             $this->replyWithMessage(compact('text'));
             return;
