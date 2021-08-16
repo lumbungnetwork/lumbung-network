@@ -5,8 +5,8 @@ namespace App\Telegram\Commands;
 use Telegram\Bot\Commands\Command;
 use Telegram;
 use Illuminate\Support\Facades\Cache;
-use App\Model\Member;
 use App\Finance;
+use App\User;
 
 /**
  * Class HelpCommand.
@@ -61,10 +61,9 @@ class StartCommand extends Command
             $key = substr($textContent, 7);
             if (Cache::has($key)) {
                 $user_id = Cache::pull($key);
-                $data = ['chat_id' => $chat_id];
-
-                $modelMember = new Member;
-                $modelMember->getUpdateUsers('id', $user_id, $data);
+                $user = User::find($user_id);
+                $user->chat_id = $chat_id;
+                $user->save();
                 $text .= 'Akun anda telah berhasil ditautkan!';
             } else {
                 $text .= 'Ada yang salah!' . chr(10) . chr(10);

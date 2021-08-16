@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Model\Member\DigitalSale;
 use App\Model\Member\EidrBalance;
 use GuzzleHttp\Client;
-use App\Model\Bonus;
 use Telegram\Bot\Laravel\Facades\Telegram;
 use App\Model\Member\LMBdividend;
 
@@ -62,27 +61,27 @@ class DigiflazzController extends Controller
 
                     //fill dividend pool
                     $lmbDiv = 0;
-                    $divProportion = 0.7; // 70% from Profit Sharing Pool
+                    $divProportion = config('services.lmb_div.proportion'); // proportion from Profit Sharing Pool
                     if ($salesData->type <= 2) {
-                        $lmbDiv = (1.1 / 100) * $salesData->ppob_price;
+                        $lmbDiv = (config('services.lmb_div.cellular') / 100) * $salesData->ppob_price; //Cellular
                     } elseif ($salesData->type = 3) {
-                        $lmbDiv = $divProportion * 755; //PLN Prepaid
+                        $lmbDiv = $divProportion * config('services.lmb_div.pln_prepaid'); //PLN Prepaid
                     } elseif ($salesData->type = 4) {
-                        $lmbDiv = $divProportion * 600; //Telkom
+                        $lmbDiv = $divProportion * config('services.lmb_div.telkom'); //Telkom
                     } elseif ($salesData->type = 5) {
-                        $lmbDiv = $divProportion * 800; //PLN Postpaid
+                        $lmbDiv = $divProportion * config('services.lmb_div.pln_postpaid'); //PLN Postpaid
                     } elseif ($salesData->type = 6) {
-                        $lmbDiv = $divProportion * 600; //HP Postpaid
+                        $lmbDiv = $divProportion * config('services.lmb_div.hp_postpaid'); //HP Postpaid
                     } elseif ($salesData->type = 7) {
-                        $lmbDiv = $divProportion * 300; //BPJS
+                        $lmbDiv = $divProportion * config('services.lmb_div.bpjs'); //BPJS
                     } elseif ($salesData->type = 8) {
-                        $lmbDiv = $divProportion * 300; //PDAM
+                        $lmbDiv = $divProportion * config('services.lmb_div.pdam'); //PDAM
                     } elseif ($salesData->type = 9) {
-                        $lmbDiv = $divProportion * 400; //PGN
+                        $lmbDiv = $divProportion * config('services.lmb_div.pgn'); //PGN
                     } elseif ($salesData->type = 10) {
-                        $lmbDiv = $divProportion * 1000; //Multifinance
+                        $lmbDiv = $divProportion * config('services.lmb_div.multifinance'); //Multifinance
                     } elseif ($salesData->type >= 21) {
-                        $lmbDiv = $divProportion * 200; //e-Money
+                        $lmbDiv = $divProportion * config('services.lmb_div.emoney'); //e-Money
                     }
 
                     // Create LMBdividend

@@ -72,9 +72,8 @@ class ForwardShoppingPaymentJob implements ShouldQueue
 
             if ($sellerTron == null) {
                 Telegram::sendMessage([
-                    'chat_id' => Config::get('services.telegram.overlord'),
-                    'text' => 'ForwardShoppingPaymentJob failed because the seller address is null' . chr(10) . 'Seller: ' . $seller->username,
-                    'parse_mode' => 'markdown'
+                    'chat_id' => config('services.telegram.overlord'),
+                    'text' => 'ForwardShoppingPaymentJob failed because the seller address is null' . chr(10) . 'Seller: ' . $seller->usernamed
                 ]);
                 $this->delete();
                 return;
@@ -85,8 +84,8 @@ class ForwardShoppingPaymentJob implements ShouldQueue
             $to = $sellerTron;
             $amount = $netPayment * 100;
 
-            $from = 'TWJtGQHBS8PfZTXvWAYhQEMrx36eX2F9Pc';
-            $tokenID = '1002652';
+            $from = config('services.tron.address.eidr_hot');
+            $tokenID = config('services.tron.token_id.eidr');
 
             //send eIDR
             try {
@@ -95,18 +94,16 @@ class ForwardShoppingPaymentJob implements ShouldQueue
                 $response = $tron->sendRawTransaction($signedTransaction);
             } catch (TronException $e) {
                 Telegram::sendMessage([
-                    'chat_id' => Config::get('services.telegram.overlord'),
-                    'text' => 'ForwardShoppingPayment Fail, UserID: ' . $seller->id . ' sales_id: ' . $this->masterSalesID,
-                    'parse_mode' => 'markdown'
+                    'chat_id' => config('services.telegram.overlord'),
+                    'text' => 'ForwardShoppingPayment Fail, UserID: ' . $seller->id . ' sales_id: ' . $this->masterSalesID
                 ]);
                 return;
             }
 
             if (!isset($response['result'])) {
                 $response = Telegram::sendMessage([
-                    'chat_id' => Config::get('services.telegram.overlord'),
-                    'text' => 'ForwardShoppingPayment Fail, UserID: ' . $seller->id . ' sales_id: ' . $this->masterSalesID,
-                    'parse_mode' => 'markdown'
+                    'chat_id' => config('services.telegram.overlord'),
+                    'text' => 'ForwardShoppingPayment Fail, UserID: ' . $seller->id . ' sales_id: ' . $this->masterSalesID
                 ]);
                 return;
             }
@@ -123,12 +120,11 @@ class ForwardShoppingPaymentJob implements ShouldQueue
                 try {
                     $tron->getTransaction($response['txid']);
                 } catch (TronException $e) {
-                    $response = Telegram::sendMessage([
-                        'chat_id' => Config::get('services.telegram.overlord'),
-                        'text' => 'ForwardShoppingPayment Fail, UserID: ' . $seller->id . ' sales_id: ' . $this->masterSalesID,
-                        'parse_mode' => 'markdown'
+                    Telegram::sendMessage([
+                        'chat_id' => config('services.telegram.overlord'),
+                        'text' => 'ForwardShoppingPayment Fail, UserID: ' . $seller->id . ' sales_id: ' . $this->masterSalesID
                     ]);
-                    return;
+                    $this->fail();
                 }
 
                 $eIDRbalance = $tron->getTokenBalance($tokenID, $from, $fromTron = false) / 100;
@@ -148,11 +144,10 @@ class ForwardShoppingPaymentJob implements ShouldQueue
                 return;
             } else {
                 Telegram::sendMessage([
-                    'chat_id' => Config::get('services.telegram.overlord'),
-                    'text' => 'ForwardShoppingPaymentJob failed because anomaly' . chr(10) . 'MasterSalesID: ' . $this->masterSalesID,
-                    'parse_mode' => 'markdown'
+                    'chat_id' => config('services.telegram.overlord'),
+                    'text' => 'ForwardShoppingPaymentJob failed cause: response result != true' . chr(10) . 'MasterSalesID: ' . $this->masterSalesID
                 ]);
-                return;
+                $this->fail();
             }
         }
     }

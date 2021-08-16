@@ -44,14 +44,15 @@ class GenerateMarketplaceLMBRewardsJob implements ShouldQueue
     {
         $MasterSales = new MasterSales;
 
-        // get user's last month spending
-        // params: ($type = 1 Buyer, 2 Seller)
+        // Get user's last month spending
+        // @params: ($type => 1 == Buyer, 2 == Seller), using 1 to get Spending
         $spending = $MasterSales->getMemberSpending(1, $this->user_id, date('m', strtotime('last month')), date('Y', strtotime('last month')));
         $spent = $spending->total;
 
+        // Require minimum 1000 IDR spent to be eligible for Spending Reward
         if ($spent >= 1000) {
             $multiplier = 1;
-            // LMB Reward Rate
+            // LMB Reward Rate (0.025 for Buyer, 0.01 for Seller)
             $rate = 0.025;
             // If Spending > 300000, bonus 100% LMB
             if ($spent > 300000) {
@@ -61,7 +62,7 @@ class GenerateMarketplaceLMBRewardsJob implements ShouldQueue
             // Calculate the base spending (per 1000)
             $base = floor($spent / 1000);
             $reward_amount = round($base * $rate * $multiplier, 2);
-            // set max reward
+            // Max Reward (Buyer = 50, Seller = 200)
             if ($reward_amount > 50) {
                 $reward_amount = 50;
             }
@@ -77,19 +78,21 @@ class GenerateMarketplaceLMBRewardsJob implements ShouldQueue
             $reward->save();
         }
 
+        // If this user is store, count selling reward based on sales
         if ($this->is_store) {
-            // get user's current month spending
-            // params: ($type = 1 Buyer, 2 Seller)
+            // get user's (Store) current month sales
+            // @params: ($type => 1 == Buyer, 2 == Seller), using 2 to get Sales
             $selling = $MasterSales->getMemberSpending(2, $this->user_id, date('m', strtotime('last month')), date('Y', strtotime('last month')));
             $sold = $selling->total;
 
             if ($sold >= 1000) {
-                // LMB Reward Rate
+                // LMB Reward Rate (0.025 for Buyer, 0.01 for Seller)
                 $rate = 0.01;
 
-                // Calculate the base spending (per 1000)
+                // Calculate the base sales (per 1000)
                 $base = floor($sold / 1000);
                 $selling_reward_amount = round($base * $rate, 2);
+                // Max Reward (Buyer = 50, Seller = 200)
                 if ($selling_reward_amount > 200) {
                     $selling_reward_amount = 200;
                 }

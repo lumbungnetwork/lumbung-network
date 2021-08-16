@@ -417,6 +417,37 @@ namespace App\Model\Member{
 
 namespace App\Model\Member{
 /**
+ * App\Model\Member\BonusBinary
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property string $amount
+ * @property int $pairs
+ * @property string $index
+ * @property string $index_date
+ * @property int $total_premiums
+ * @property int $total_pairs
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|BonusBinary newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|BonusBinary newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|BonusBinary query()
+ * @method static \Illuminate\Database\Eloquent\Builder|BonusBinary whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BonusBinary whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BonusBinary whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BonusBinary whereIndex($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BonusBinary whereIndexDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BonusBinary wherePairs($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BonusBinary whereTotalPairs($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BonusBinary whereTotalPremiums($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BonusBinary whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BonusBinary whereUserId($value)
+ */
+	class BonusBinary extends \Eloquent {}
+}
+
+namespace App\Model\Member{
+/**
  * App\Model\Member\BonusRoyalty
  *
  * @property int $id
@@ -429,6 +460,7 @@ namespace App\Model\Member{
  * @property string $bonus_date
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\User|null $from
  * @method static \Illuminate\Database\Eloquent\Builder|BonusRoyalty newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BonusRoyalty newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BonusRoyalty query()
@@ -595,6 +627,31 @@ namespace App\Model\Member{
  * @method static \Illuminate\Database\Eloquent\Builder|EidrBalanceTransaction whereUserId($value)
  */
 	class EidrBalanceTransaction extends \Eloquent {}
+}
+
+namespace App\Model\Member{
+/**
+ * App\Model\Member\LMBdividend
+ *
+ * @property int $id
+ * @property string $amount
+ * @property int $type 1 = Stockist, 2 = Vendor, 3 = Digital, 4 = Membership, 5 = Lending Fee
+ * @property int $status 0 = Deduction, 1 = Addition
+ * @property int $source_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|LMBdividend newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|LMBdividend newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|LMBdividend query()
+ * @method static \Illuminate\Database\Eloquent\Builder|LMBdividend whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LMBdividend whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LMBdividend whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LMBdividend whereSourceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LMBdividend whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LMBdividend whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LMBdividend whereUpdatedAt($value)
+ */
+	class LMBdividend extends \Eloquent {}
 }
 
 namespace App\Model\Member{
@@ -798,6 +855,58 @@ namespace App\Model\Member{
  * @method static \Illuminate\Database\Eloquent\Builder|SellerProfile whereUpdatedAt($value)
  */
 	class SellerProfile extends \Eloquent {}
+}
+
+namespace App\Model\Member{
+/**
+ * App\Model\Member\Staking
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property int $type 1 = Stake, 2 = Unstake, 3 = Claim Dividend
+ * @property string $amount
+ * @property string|null $hash
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|Staking newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Staking newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Staking query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Staking whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Staking whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Staking whereHash($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Staking whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Staking whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Staking whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Staking whereUserId($value)
+ */
+	class Staking extends \Eloquent {}
+}
+
+namespace App\Model\Member{
+/**
+ * App\Model\Member\UsersDividend
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property int $type 0 = Out, 1 = In
+ * @property string $amount 0 = Claimed, 1 = Rewarded
+ * @property string $date
+ * @property string|null $hash
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|UsersDividend newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UsersDividend newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UsersDividend query()
+ * @method static \Illuminate\Database\Eloquent\Builder|UsersDividend whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UsersDividend whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UsersDividend whereDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UsersDividend whereHash($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UsersDividend whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UsersDividend whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UsersDividend whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UsersDividend whereUserId($value)
+ */
+	class UsersDividend extends \Eloquent {}
 }
 
 namespace App\Model{
@@ -1226,20 +1335,20 @@ namespace App{
  * @property string $password
  * @property string|null $2fa
  * @property string|null $username
- * @property int $user_type 1 = super admin, 2 = master admin, 3 = admin, 10 = member
+ * @property int $user_type 9 = Starter, 10 = Premium
  * @property int $is_store
- * @property int $member_type Berhubungan dgn order paket diawal setelah diaktifasi. 0 => belum pernah aktifasi pin, 1 =>  reseller, 2 => Agen, 3 => Stockist 4 => Master Stockist
+ * @property int $member_type 0 = Starter, >= 1 = (Premium) New Member, 10 = Silver III, 11 = Silver II, 12 = Silver I, 13 = Gold III, 14 = Gold II, 15 = Gold I, 16 = Sapphire, 17 = Diamond, 18 = Royal Diamond
  * @property int|null $sponsor_id
  * @property int $total_sponsor
  * @property int|null $upline_id
  * @property int|null $left_id
  * @property int|null $right_id
  * @property string|null $upline_detail
- * @property string|null $full_name buat di account_name bank
+ * @property string|null $full_name
  * @property string|null $alamat
  * @property string|null $provinsi
  * @property string|null $kota
- * @property int $is_profile 0 = belum, 1 = sudah
+ * @property int $is_profile
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null $expired_at

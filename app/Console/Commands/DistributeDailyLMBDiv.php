@@ -3,7 +3,9 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Model\Bonus;
+use App\Model\Member\LMBdividend;
+use App\Model\Member\Staking;
+use App\Model\Member\UsersDividend;
 use App\User;
 use Illuminate\Support\Facades\DB;
 
@@ -45,36 +47,42 @@ class DistributeDailyLMBDiv extends Command
             return;
         }
 
-        $modelBonus = new Bonus;
+        $LMBDividend = new LMBdividend;
+        $Staking = new Staking;
 
-        $LMBDividendPool = $modelBonus->getLMBDividendPool();
-        $totalStakedLMB = $modelBonus->getStakedLMB();
+        $LMBDividendPool = $LMBDividend->getLMBDividendPool();
+        $totalStakedLMB = $Staking->getStakedLMB();
         $todaysDividendPool = 2 / 100 * $LMBDividendPool;
         $dividendPerLMB = $todaysDividendPool / $totalStakedLMB;
 
-        $stakers = $modelBonus->getAllStakers();
+        $stakers = $Staking->getAllStakers();
 
         foreach ($stakers as $staker) {
             $netStakedLMB = $staker->net;
             $premiumMembership = User::where('id', $staker->user_id)->where('user_type', 10)->exists();
 
+            // Double check staked amount and premium membership
             if ($netStakedLMB > 0 && $premiumMembership) {
-                $dividend = round($netStakedLMB * $dividendPerLMB, 2, PHP_ROUND_HALF_DOWN);
-                $modelBonus->insertUserDividend([
-                    'user_id' => $staker->user_id,
-                    'type' => 1,
-                    'amount' => $dividend,
-                    'date' => date('Y-m-d')
-                ]);
+                // Calculate amount based on net staked LMB times today's dividend per LMB
+                $amount = round($netStakedLMB * $dividendPerLMB, 2, PHP_ROUND_HALF_DOWN);
+                // Create dividend for each user
+                $dividend = new UsersDividend;
+                $dividend->user_id = $staker->user_id;
+                $dividend->type = 1;
+                $dividend->amount = $amount;
+                $dividend->date = date('Y-m-d');
+                $dividend->save();
             }
         }
 
-        $modelBonus->insertLMBDividend([
-            'amount' => round($todaysDividendPool, 2),
-            'type' => 0,
-            'status' => 0,
-            'source_id' => 0,
-            'created_at' => date('Y-m-d H:i:s')
-        ]);
+        // Deduct distributed amount from Dividend pool
+        $distributed = new LMBdividend;
+        $distributed->amount = round($todaysDividendPool, 2);
+        $distributed->type = 0;
+        $distributed->status = 0;
+        $distributed->source_id = 0;
+        $distributed->save();
+
+        return;
     }
 }

@@ -8,18 +8,11 @@ class CreateStockistRequest extends Migration {
 
     public function up() {
         Schema::create('stockist_request', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
-            $table->increments('id');
+            $table->id('id');
             $table->integer('user_id');
-            $table->smallInteger('status')->default(0)->comment('0 = request, 1 = aktif, 2 = batal');
+            $table->smallInteger('status')->default(0);
             $table->timestamp('active_at')->nullable();
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('deleted_at')->nullable();
-            
-            $table->index('user_id');
-            $table->index('status');
-            $table->index('active_at');
-            $table->index('created_at');
+            $table->timestamps();
         });
     }
 

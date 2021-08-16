@@ -9,7 +9,7 @@ class CreateBonusReward2 extends Migration {
     public function up() {
         Schema::create('bonus_reward2', function (Blueprint $table) {
             $table->increments('id');
-            $table->tinyInteger('is_active')->default(1)->comment('0 = tidak aktif, 1 = aktif');
+            $table->tinyInteger('is_active')->default(1);
             $table->string('name', 50)->nullable();
             $table->string('reward_detail', 120)->nullable();
             $table->string('image', 100)->nullable();

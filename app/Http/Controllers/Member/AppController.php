@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 use App\Model\Member\MasterSales;
 use App\Model\Member\DigitalSale;
-use App\Model\Bonus;
 use App\Model\Member\LMBreward;
 use App\Model\Member\EidrBalance;
 use App\Model\Member\EidrBalanceTransaction;
@@ -22,6 +21,9 @@ use Illuminate\Support\Facades\Hash;
 use IEXBase\TronAPI\Exception\TronException;
 use App\Http\Controllers\TelegramBotController;
 use App\Model\Member\Bank;
+use App\Model\Member\LMBdividend;
+use App\Model\Member\Staking;
+use App\Model\Member\UsersDividend;
 
 class AppController extends Controller
 {
@@ -29,14 +31,15 @@ class AppController extends Controller
     {
         $user = Auth::user();
 
-        // get user's current month spending
+        // Get user's current month spending
         $MasterSales = new MasterSales;
         $spending = $MasterSales->getMemberSpending(1, $user->id, date('m'), date('Y'));
 
-        // get dividend pool and user's staked LMB
-        $Bonus = new Bonus;
-        $LMBDividendPool = $Bonus->getLMBDividendPool();
-        $userStakedLMB = $Bonus->getUserStakedLMB($user->id);
+        // Get dividend pool and user's staked LMB
+        $Staking = new Staking;
+        $LMBDividend = new LMBdividend;
+        $LMBDividendPool = $LMBDividend->getLMBDividendPool();
+        $userStakedLMB = $Staking->getUserStakedLMB($user->id);
         $total_notifs = 0;
 
         // if user is_store check relevant unconfirmed transactions
@@ -139,12 +142,15 @@ class AppController extends Controller
     {
         $user = Auth::user();
 
-        $modelBonus = new Bonus;
-        $LMBDividendPool = $modelBonus->getLMBDividendPool();
-        $totalStakedLMB = $modelBonus->getStakedLMB();
-        $userStakedLMB = $modelBonus->getUserStakedLMB($user->id);
-        $userDividend = $modelBonus->getUserDividend($user->id);
-        $userUnstaking = $modelBonus->getUserUnstakeProgress($user->id);
+        $LMBDividend = new LMBdividend;
+        $UsersDividend = new UsersDividend;
+        $Staking = new Staking;
+
+        $LMBDividendPool = $LMBDividend->getLMBDividendPool();
+        $totalStakedLMB = $Staking->getStakedLMB();
+        $userStakedLMB = $Staking->getUserStakedLMB($user->id);
+        $userUnstaking = $Staking->getUserUnstakeProgress($user->id);
+        $userDividend = $UsersDividend->getUserDividend($user->id);
 
         if ($user->user_type == 9) {
             Alert::warning('Membership Limitation', 'Untuk menerima Dividen harian dari Staking LMB, anda memerlukan Premium Membership')->persistent(true);
@@ -171,8 +177,9 @@ class AppController extends Controller
     public function getStakeHistory()
     {
         $user = Auth::user();
-        $Bonus = new Bonus;
-        $data = $Bonus->getUserStakingHistory($user->id);
+        $data = Staking::selectRaw('DATE_FORMAT(created_at, "%M - %Y") as date, amount, type, hash')
+                ->where('user_id', $user->id)
+                ->paginate(20);
 
         return view('member.app.stake.history')
             ->with('title', 'Stake History')
@@ -182,8 +189,10 @@ class AppController extends Controller
     public function getStakeDivHistory()
     {
         $user = Auth::user();
-        $Bonus = new Bonus;
-        $data = $Bonus->getUserDividendHistory($user->id);
+        $data = UsersDividend::select('date', 'amount', 'type')
+                ->where('user_id', $user->id)
+                ->orderByDesc('date')
+                ->paginate(20);
 
         return view('member.app.stake.div_history')
             ->with('title', 'Dividend History')
@@ -193,8 +202,10 @@ class AppController extends Controller
     public function getStakeClaimedDivHistory()
     {
         $user = Auth::user();
-        $Bonus = new Bonus;
-        $data = $Bonus->getUserClaimedDividend($user->id);
+        $data = UsersDividend::select('date', 'amount', 'hash')
+                ->where('user_id', $user->id)
+                ->where('type', 0)
+                ->paginate(20);
 
         return view('member.app.stake.history')
             ->with('title', 'Claimed Dividend')
@@ -204,9 +215,9 @@ class AppController extends Controller
     public function getStakeLeaderboard()
     {
         $user = Auth::user();
-        $Bonus = new Bonus;
-        $totalStakedLMB = $Bonus->getStakedLMB();
-        $stakers = $Bonus->getAllStakersLeaderboard();
+        $Staking = new Staking;
+        $totalStakedLMB = $Staking->getStakedLMB();
+        $stakers = $Staking->getAllStakersLeaderboard();
 
         return view('member.app.stake.leaderboard')
             ->with('title', 'Staking Leaderboard')

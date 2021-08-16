@@ -8,9 +8,8 @@ use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Model\Bonus;
-use Illuminate\Support\Facades\DB;
 use App\Model\Member\EidrBalance;
+use App\Model\Member\UsersDividend;
 
 class UserClaimDividendJob implements ShouldQueue
 {
@@ -41,8 +40,7 @@ class UserClaimDividendJob implements ShouldQueue
      */
     public function handle()
     {
-        $modelBonus = new Bonus;
-        $claim = DB::table('users_dividend')->select('hash', 'amount')->where('id', $this->div_id)->first();
+        $claim = UsersDividend::find($this->div_id);
 
         // check before execute
         if ($claim->hash == null) {
@@ -53,14 +51,13 @@ class UserClaimDividendJob implements ShouldQueue
             $balance->amount = $claim->amount;
             $balance->type = 1;
             $balance->source = 1;
-            $balance->note = "Claim Dividend from LMB Stake";
+            $balance->note = "Claim Dividend from LMB Stake " . date('d M y');
             $balance->save();
 
 
             // update claim record with hash
-            $modelBonus->updateUserDividend('id', $this->div_id, [
-                'hash' => "Claimed to Internal eIDR Balance"
-            ]);
+            $claim->hash = "Claimed to Internal eIDR Balance " . date('d M y');
+            $claim->save();
 
             return;
         } else {

@@ -68,8 +68,8 @@ class ClaimNetworkRewardJob implements ShouldQueue
         $to = $user->tron;
         $amount = $reward->reward_detail * 1000000;
 
-        $from = 'TSqTD8gsnGBKxgqFJkGLAupWwF3JbHGjz8';
-        $tokenID = '1002640';
+        $from = config('services.tron.address.lmb_distributor');
+        $tokenID = config('services.tron.token_id.lmb');
 
         //send LMB
         try {
@@ -126,12 +126,6 @@ class ClaimNetworkRewardJob implements ShouldQueue
                     ]);
                     $this->fail();
                 }
-
-                Telegram::sendMessage([
-                    'chat_id' => config('services.telegram.overlord'),
-                    'text' => 'ClaimNetworkRewardJob failcheck jump anomaly, UserID: ' . $user->id . ',tron addr: ' . $to . ', reward id: ' . $this->claimRewardID
-                ]);
-                return;
             }
 
             // Send Notification to User's Telegram and Telegram Channel

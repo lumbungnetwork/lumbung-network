@@ -4,10 +4,6 @@ namespace App\Telegram\Commands;
 
 use Telegram\Bot\Commands\Command;
 use Telegram;
-use Illuminate\Support\Facades\Cache;
-use App\Model\Member;
-use App\User;
-use Illuminate\Support\Facades\Config;
 use GuzzleHttp\Client;
 
 /**
@@ -40,10 +36,11 @@ class SudoCommand extends Command
         $chat_id = $response->getMessage()->getChat()->getId();
         $textContent = $response->getMessage()->getText();
         $banks = ['MANDIRI', 'BCA', 'BRI'];
+        // Digiflazz credentials
+        $username   = config('services.digiflazz.user');
+        $apiKey   = config('services.digiflazz.key');
 
-        $modelMember = new Member;
-
-        if ($chat_id != Config::get('services.telegram.overlord')) {
+        if ($chat_id != config('services.telegram.overlord')) {
             $text = 'unauthorized access!';
             $this->replyWithMessage(compact('text'));
             return;
@@ -77,8 +74,6 @@ class SudoCommand extends Command
                     $this->replyWithMessage(compact('text'));
                     return;
                 } else {
-                    $username   = Config::get('services.digiflazz.user');
-                    $apiKey   = Config::get('services.digiflazz.key');
                     $sign = md5($username . $apiKey . 'deposit');
                     $amount = (int) $params[3];
                     $bank = strtoupper($params[4]);
@@ -127,22 +122,26 @@ class SudoCommand extends Command
                     }
                 }
             } elseif ($params[1] == 'saldo' && $params[2] == 'df') {
-                //get Saldo Digiflazz
-                $modelMember = new Member;
-                $getDataAPI = $modelMember->getDataAPIMobilePulsa();
-                $username   = $getDataAPI->username;
-                $apiKey   = $getDataAPI->api_key;
+                
                 $sign = md5($username . $apiKey . 'depo');
-                $array = array(
-                    'cmd' => 'deposit',
-                    'username' => $username,
-                    'sign' => $sign
-                );
-                $json = json_encode($array);
-                $url = $getDataAPI->master_url . '/v1/cek-saldo';
-                $cek = $modelMember->getAPIurlCheck($url, $json);
-                $arrayResult = json_decode($cek, true);
-                $saldoDigiflazz = $arrayResult['data']['deposit'];
+                $url = 'https://api.digiflazz.com/v1/deposit';
+                $client = new Client;
+                try {
+                    $response = $client->request('POST', $url, [
+                        'json' => [
+                            'cmd' => 'deposit',
+                            'username' => $username,
+                            'sign' => $sign
+                        ]
+                    ]);
+                } catch (\GuzzleHttp\Exception\ClientException $ex) {
+                    $text = 'Bad Response!' . chr(10);
+                    $text .= 'Exception: ' . $ex->getMessage() . chr(10);
+                    $this->replyWithMessage(['text' => $text]);
+                    return;
+                }
+                $arrayData = json_decode($response->getBody()->getContents(), true);
+                $saldoDigiflazz = $arrayData['data']['deposit'];
 
                 $text = 'Rp' . number_format($saldoDigiflazz);
                 $this->replyWithMessage(['text' => $text]);

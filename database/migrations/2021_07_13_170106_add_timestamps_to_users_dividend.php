@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class DropUnusedColumnFromSales extends Migration
+class AddTimestampsToUsersDividend extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class DropUnusedColumnFromSales extends Migration
      */
     public function up()
     {
-        Schema::table('sales', function (Blueprint $table) {
-            $table->dropColumn('is_stockist');
+        Schema::table('users_dividend', function (Blueprint $table) {
+            $table->timestamps();
         });
     }
 
@@ -25,8 +25,8 @@ class DropUnusedColumnFromSales extends Migration
      */
     public function down()
     {
-        Schema::table('sales', function (Blueprint $table) {
-            //
+        Schema::table('users_dividend', function (Blueprint $table) {
+            $table->dropColumn('created_at', 'updated_at');
         });
     }
 }

@@ -117,7 +117,7 @@ class ShoppingController extends Controller
             ->with(compact('masterSalesData'))
             ->with(compact('salesData'))
             ->with(compact('balance'))
-            ->with('shopName', $sellerProfile->shop_name);
+            ->with('shopName', $sellerProfile->shop_name ?? 'Toko ' . $masterSalesData->stockist_id);
     }
 
     // Digiflazz API

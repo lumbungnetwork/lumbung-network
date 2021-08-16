@@ -3,12 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Finance;
-use App\Model\Pin;
-use App\Model\Transaction;
-use App\Model\Bonus;
-use App\Model\Transferwd;
 use App\Model\Finance\Credit;
 use App\Model\Finance\Contract;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -22,6 +19,27 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+    /**
+     * Check if a transaction ID (Hash) has used (exist in DB)
+     *
+     * @param string $hash txid
+     * @param string $table name
+     * @param string $column name
+     * @return bool
+     */
+    public function checkUsedHashExist($hash, $table, $column)
+    {
+        return DB::table($table)
+            ->where($column, $hash)
+            ->exists();
+    }
+
+    /**
+     * Instantiate Tron object with pre-defined $fullNode, $solidityNode, and $eventServer
+     *
+     * @return object
+     * @throws TronException
+     */
     public function getTron()
     {
         $fullNode = new HttpProvider('https://api.tronstack.io');
@@ -37,77 +55,15 @@ class Controller extends BaseController
         return $tron;
     }
 
-    public function getTronLocalWallet($pk)
-    {
-        $fullNode = new HttpProvider('https://api.tronstack.io');
-        $solidityNode = new HttpProvider('https://api.tronstack.io');
-        $eventServer = new HttpProvider('https://api.tronstack.io');
-
-        try {
-            $tron = new Tron($fullNode, $solidityNode, $eventServer, $signServer = null, $explorer = null, $pk);
-        } catch (TronException $e) {
-            exit($e->getMessage());
-        }
-
-        return $tron;
-    }
-
-    public function getVendorAvailableDeposit($vendor_id)
-    {
-        $modelTrans = new Transaction;
-        $modelPin = new Pin;
-
-        $getTotalDeposit = $modelPin->getVendorDepositBalance($vendor_id);
-        $getTotalDepositWithdrawn = $modelTrans->getVendorTotalDepositWithdrawn($vendor_id);
-        $getOnTheFlyDeposit = $modelPin->getPPOBFly($vendor_id);
-
-        $total_credits = 0;
-        $total_debits = 0;
-        $total_withdrawn = 0;
-        $total_onTheFly = 0;
-
-        if ($getTotalDeposit->credits != null) {
-            $total_credits = $getTotalDeposit->credits;
-        }
-        if ($getTotalDeposit->debits != null) {
-            $total_debits = $getTotalDeposit->debits;
-        }
-        if ($getTotalDepositWithdrawn->total != null) {
-            $total_withdrawn = $getTotalDepositWithdrawn->total;
-        }
-        if ($getOnTheFlyDeposit->deposit_out != null) {
-            $total_onTheFly = $getOnTheFlyDeposit->deposit_out;
-        }
-
-        $available_balance = $total_credits - $total_debits - $total_withdrawn - $total_onTheFly;
-
-        return $available_balance;
-    }
-
-    public function getMemberAvailableBonus($user_id)
-    {
-        $dataUser = (object) array(
-            'id' => $user_id
-        );
-
-        $bonus = new Bonus;
-        $transfered = new Transferwd;
-
-        //daily bonus
-
-        $getTotalBonus = $bonus->getTotalBonus($dataUser);
-        $totalWD = $transfered->getTotalDiTransfer($dataUser);
-        $totalWDeIDR = $transfered->getTotalDiTransfereIDR($dataUser);
-
-        $dailyWithdrawn = $totalWD->total_wd + $totalWD->total_tunda + $totalWD->total_fee_admin + $totalWDeIDR->total_wd + $totalWDeIDR->total_tunda + $totalWDeIDR->total_fee_admin;
-        $totalAvailable = $getTotalBonus->total_bonus - $dailyWithdrawn;
-
-        return (object) array(
-            'daily_bonus' => $totalAvailable,
-            'daily_withdrawn' => $dailyWithdrawn
-        );
-    }
-
+    /**
+     * Generate Credit unique txid
+     *
+     * @param int|float $amount
+     * @param int $type
+     * @param int $source
+     * @param int $source_id
+     * @return string
+     */
     public function createCreditTxId($amount, $type, $source, $source_id)
     {
         $count = Credit::where('created_at', '>', date('Y-m-d 00:00:00'))->count();
@@ -117,6 +73,14 @@ class Controller extends BaseController
         return $tx_id;
     }
 
+    /**
+     * Generate Referral Bonus to 4 levels above a transacting user
+     *
+     * @param int $user_id
+     * @param int $sponsor_id
+     * @param int|float $amount
+     * @return void
+     */
     public function creditReferralBonus($user_id, $sponsor_id, $amount)
     {
         $modelContract = new Contract;

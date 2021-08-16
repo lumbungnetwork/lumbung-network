@@ -7,7 +7,6 @@ use Auth;
 use App\Model\Member\LMBreward;
 use Illuminate\Http\Request;
 use App\Jobs\Member\SendLMBRewardMarketplaceJob;
-use App\Model\Bonus;
 use App\User;
 use Hash;
 use App\Model\Member\Product;
@@ -28,6 +27,8 @@ use App\Model\Member\BonusRoyalty;
 use App\Model\Member\EidrBalanceTransaction;
 use App\Model\Member\LMBdividend;
 use App\Model\Member\Staking;
+use App\Model\Member\UsersDividend;
+use DB;
 use Validator;
 use IEXBase\TronAPI\Exception\TronException;
 
@@ -38,18 +39,20 @@ class AjaxController extends Controller
     {
         $user = Auth::user();
 
+        // Check (only premiumed account allowed)
         if ($user->member_type == 0) {
             return response()->json(['success' => false, 'message' => 'Anda belum berhak untuk Resubscribe!']);
         }
 
-        $Bonus = new Bonus;
+        // Check the txid hash
         $hash = $request->hash;
-        $check = $Bonus->checkUsedHashExist($hash, 'resubscribe', 'hash');
-        if ($check) {
+        $check = $this->checkUsedHashExist($hash, 'resubscribe', 'hash');
+        $check2 = $this->checkUsedHashExist($hash, 'stockist_request', 'hash');
+        if ($check || $check2) {
             return response()->json(['success' => false, 'message' => 'Hash Transaksi sudah pernah digunakan pada transaksi sebelumnya']);
         }
-        $receiver = 'TLsV52sRDL79HXGGm9yzwKibb6BeruhUzy';
-        $amount = $request->amount;
+        $receiver = config('services.tron.address.burn');
+        $amount = 100000000; // 100 LMB
 
         // Use Atomic lock to prevent race condition
         $lock = Cache::lock('resubscribe_' . $user->id, 20);
@@ -79,6 +82,7 @@ class AjaxController extends Controller
             $hashAsset = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['asset_name']);
             $hashAmount = $response['raw_data']['contract'][0]['parameter']['value']['amount'];
 
+            // Check receiver address, token id and amount
             if ($hashReceiver != $receiver) {
                 $lock->release();
                 return response()->json(['success' => false, 'message' => 'Alamat Tujuan Transfer Salah!']);
@@ -87,11 +91,12 @@ class AjaxController extends Controller
                 $lock->release();
                 return response()->json(['success' => false, 'message' => 'Bukan token LMB yang benar!']);
             }
-            if ($hashAmount != 100000000) {
+            if ($hashAmount != $amount) {
                 $lock->release();
                 return response()->json(['success' => false, 'message' => 'Jumlah transfer salah!']);
             }
 
+            // Modify User's model and save
             $user->user_type = 10;
             $user->expired_at = date('Y-m-d 00:00:00', strtotime('+365 days'));
             $user->save();
@@ -100,6 +105,7 @@ class AjaxController extends Controller
             return response()->json(['success' => true]);
         }
     }
+
     //LMB Rewards
     public function postClaimShoppingReward()
     {
@@ -174,6 +180,7 @@ class AjaxController extends Controller
         return response()->json(['success' => false, 'message' => 'Something is wrong, try again later']);
     }
 
+    // Claim Shopping Reward directly into Staked amount
     public function postStakeShoppingReward()
     {
         $user = Auth::user();
@@ -201,14 +208,12 @@ class AjaxController extends Controller
                 $reward->save();
 
                 // Add Stake
-                $Bonus = new Bonus;
-                $Bonus->insertUserStake([
-                    'user_id' => $user->id,
-                    'type' => 1,
-                    'amount' => $netLMBReward,
-                    'hash' => 'Stake dari Shopping Reward',
-                    'created_at' => date('Y-m-d H:i:s')
-                ]);
+                $stake = new Staking;
+                $stake->user_id = $user->id;
+                $stake->type = 1;
+                $stake->amount = $netLMBReward;
+                $stake->hash = 'Stake dari Reward Jual-Beli ' . date('M y');
+                $stake->save();
 
                 $lock->release();
 
@@ -276,14 +281,13 @@ class AjaxController extends Controller
     {
         $user = Auth::user();
 
-        $Bonus = new Bonus;
-
+        // Check the hash
         $hash = $request->hash;
-        $check = $Bonus->checkUsedHashExist($hash, 'staking', 'hash');
+        $check = $this->checkUsedHashExist($hash, 'staking', 'hash');
         if ($check) {
             return response()->json(['success' => false, 'message' => 'Hash Transaksi sudah pernah digunakan pada transaksi sebelumnya']);
         }
-        $receiver = 'TY8JfoCbsJ4qTh1r9HBtmZ88xQLsb6MKuZ';
+        $receiver = config('services.tron.address.lmb_staking');
         $amount = $request->amount;
 
         // Use Atomic lock to prevent race condition
@@ -312,17 +316,18 @@ class AjaxController extends Controller
             $hashAsset = $tron->fromHex($response['raw_data']['contract'][0]['parameter']['value']['asset_name']);
             $hashAmount = $response['raw_data']['contract'][0]['parameter']['value']['amount'];
 
-            if ($hashAmount == $amount * 1000000) {
-                if ($hashAsset == '1002640') {
+            // Check amount (with decimals precision), token_id, and receiver's address
+            if ($hashAmount == $amount * config('services.tron.decimals.lmb')) {
+                if ($hashAsset == config('services.tron.token_id.lmb')) {
                     if ($hashReceiver == $receiver) {
+                        // Add Stake
+                        $stake = new Staking;
+                        $stake->user_id = $user->id;
+                        $stake->type = 1;
+                        $stake->amount = $amount;
+                        $stake->hash = $hash;
+                        $stake->save();
 
-                        $Bonus->insertUserStake([
-                            'user_id' => $user->id,
-                            'type' => 1,
-                            'amount' => $amount,
-                            'hash' => $hash,
-                            'created_at' => date('Y-m-d H:i:s')
-                        ]);
                         $lock->release();
                         return response()->json(['success' => true]);
                     } else {
@@ -346,7 +351,6 @@ class AjaxController extends Controller
         if ($user->expired_at < date('Y-m-d', strtotime('Today +1 minute'))) {
             return response()->json(['success' => false, 'message' => 'Membership Expired!']);
         }
-        $Bonus = new Bonus;
 
         // Use Atomic lock to prevent race condition
         $lock = Cache::lock('stake_' . $user->id, 20);
@@ -354,71 +358,81 @@ class AjaxController extends Controller
         if ($lock->get()) {
             $amount = $request->amount;
 
-            if (
-                $amount <= 0
-            ) {
+            // check negative overdraft
+            if ($amount <= 0) {
                 $lock->release();
                 return response()->json(['success' => false, 'message' => 'Amount cannot be zero or less!']);
             }
 
-            $userStakedLMB = $Bonus->getUserStakedLMB($user->id);
+            $Staking = new Staking;
+            $userStakedLMB = $Staking->getUserStakedLMB($user->id);
+            // Double check to preven negative overdraft
             $newStakedLMB = $userStakedLMB - $amount;
             if ($newStakedLMB < 0) {
                 $lock->release();
                 return response()->json(['success' => false, 'message' => 'Amount exceeds staked balance!']);
             } else {
                 $due_date = date('Y-m-d', strtotime('+7 days'));
-                $unstake = $Bonus->insertUserStake([
-                    'user_id' => $user->id,
-                    'type' => 2,
-                    'amount' => $amount,
-                    'hash' => 'Unstaking Process (' . $due_date . ')',
-                    'created_at' => date('Y-m-d H:i:s')
-                ]);
-
-                $Bonus->insertUnstakingData([
-                    'staking_id' => $unstake->lastID,
-                    'user_id' => $user->id,
-                    'amount' => $amount,
-                    'due_date' => $due_date,
-                    'created_at' => date('Y-m-d H:i:s')
-                ]);
-
-                $lock->release();
-                return response()->json(['success' => true]);
+                try {
+                    // Insert record to update staking balance
+                    $unstake_id = DB::table('staking')->insertGetId([
+                        'user_id' => $user->id,
+                        'type' => 2,
+                        'amount' => $amount,
+                        'hash' => 'Unstaking Process (' . $due_date . ') ' . $user->id,
+                        'created_at' => date('Y-m-d H:i:s')
+                    ]);
+                    // Insert unstake schedule
+                    DB::table('unstake')->insertGetId([
+                        'staking_id' => $unstake_id,
+                        'user_id' => $user->id,
+                        'amount' => $amount,
+                        'due_date' => $due_date,
+                        'created_at' => date('Y-m-d H:i:s')
+                    ]);
+                    $lock->release();
+                    return response()->json(['success' => true]);
+                } catch (\Throwable $th) {
+                    $lock->release();
+                    return response()->json(['success' => false, 'message' => 'Error updating Staking data!']);
+                }
             }
         }
     }
 
-    public function postClaimStakingDividend(Request $request)
+    public function postClaimStakingDividend()
     {
         $user = Auth::user();
         if ($user->expired_at < date('Y-m-d', strtotime('Today +1 minute'))) {
             return response()->json(['success' => false, 'message' => 'Membership Expired!']);
         }
-        $Bonus = new Bonus;
-
         // Use Atomic lock to prevent race condition
         $lock = Cache::lock('stake_' . $user->id, 20);
 
         if ($lock->get()) {
-            $userDividend = $Bonus->getUserDividend($user->id);
+            // Double check dividend amount
+            $UsersDividend = new UsersDividend;
+            $userDividend = $UsersDividend->getUserDividend($user->id);
 
             if ($userDividend->net >= 1000) {
-                $deductDiv = $Bonus->insertUserDividend([
-                    'user_id' => $user->id,
-                    'type' => 0,
-                    'amount' => $userDividend->net,
-                    'date' => date('Y-m-d H:i:s')
-                ]);
-                UserClaimDividendJob::dispatch($user->id, $deductDiv->lastID)->onQueue('tron');
-                sleep(4);
+                // Create new negative record in user's dividend table
+                $dividend = new UsersDividend;
+                $dividend->user_id = $user->id;
+                $dividend->type = 0;
+                $dividend->amount = $userDividend->net;
+                $dividend->date = date('Y-m-d');
+                $dividend->save();
+                // Dispatch the job
+                UserClaimDividendJob::dispatch($user->id, $dividend->id)->onQueue('bonus');
+                sleep(3);
                 $lock->release();
                 return response()->json(['success' => true]);
             } else {
                 $lock->release();
                 return response()->json(['success' => false, 'message' => 'Not enough available dividend!']);
             }
+        } else {
+            return response()->json(['success' => false, 'message' => 'Access Denied!']);
         }
     }
 
